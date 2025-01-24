@@ -1,0 +1,30 @@
+# Battman localizations.
+# Copyright (C) 2025 Torrekie
+# This file is distributed under the same license as the Battman package.
+# Torrekie <me@torrekie.dev>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Battman --keyword=_\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-01-24 15:43+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:25
+msgid "Battman"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:57
+msgid "Battery"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:65
+msgid "More"
+msgstr ""

@@ -6,14 +6,51 @@
 	objectVersion = 50;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		687742AB2D437EE400375A2C /* Gettext Localizations */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 687742AC2D437EE400375A2C /* Build configuration list for PBXAggregateTarget "Gettext Localizations" */;
+			buildPhases = (
+				687742AF2D437EEA00375A2C /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "Gettext Localizations";
+			productName = "Gettext Localizations";
+		};
+		68DCA5AF2D40EC57004D0104 /* base.pot */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 68DCA5B02D40EC58004D0104 /* Build configuration list for PBXAggregateTarget "base.pot" */;
+			buildPhases = (
+				68DCA5B32D40EC61004D0104 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = base.pot;
+			productName = "Gettext Locales";
+		};
+		68DCA5B82D40FA9F004D0104 /* pofiles */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 68DCA5B92D40FA9F004D0104 /* Build configuration list for PBXAggregateTarget "pofiles" */;
+			buildPhases = (
+				68DCA5BC2D40FAB1004D0104 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = pofiles;
+			productName = zh_CN.po;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC32D3B93CB0059ECD0 /* AppDelegate.m */; };
 		686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */; };
 		686AECCA2D3B93CB0059ECD0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC92D3B93CB0059ECD0 /* ViewController.m */; };
 		686AECCF2D3B93CD0059ECD0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
+		687742B62D43838500375A2C /* locales in Resources */ = {isa = PBXBuildFile; fileRef = 687742B52D43837B00375A2C /* locales */; };
 		68DCA5592D3BBC6A004D0104 /* Battman.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 68DCA5582D3BBC6A004D0104 /* Battman.storyboard */; };
-		68DCA55C2D3D0A62004D0104 /* Localizables.strings in Resources */ = {isa = PBXBuildFile; fileRef = 68DCA55E2D3D0A62004D0104 /* Localizables.strings */; };
+		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,10 +64,17 @@
 		686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		686AECD32D3B93CD0059ECD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		686AECD42D3B93CD0059ECD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		687742B52D43837B00375A2C /* locales */ = {isa = PBXFileReference; lastKnownFileType = folder; path = locales; sourceTree = "<group>"; };
 		68DCA5582D3BBC6A004D0104 /* Battman.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Battman.storyboard; sourceTree = "<group>"; };
-		68DCA55D2D3D0A62004D0104 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizables.strings; sourceTree = "<group>"; };
-		68DCA55F2D3D0A8E004D0104 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizables.strings"; sourceTree = "<group>"; };
 		68DCA5602D3D0AC5004D0104 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
+		68DCA5A82D3F9338004D0104 /* common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
+		68DCA5AA2D3F935E004D0104 /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
+		68DCA5AB2D3F9A10004D0104 /* gtkextern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gtkextern.h; sourceTree = "<group>"; };
+		68DCA5AD2D3F9BFD004D0104 /* glibextern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glibextern.h; sourceTree = "<group>"; };
+		68DCA5AE2D3FA4DA004D0104 /* intlextern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = intlextern.h; sourceTree = "<group>"; };
+		68DCA5B72D40F4A5004D0104 /* base.pot */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = base.pot; sourceTree = "<group>"; };
+		68DCA5BD2D40FDE3004D0104 /* en.po */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = en.po; sourceTree = "<group>"; };
+		68DCA5BE2D40FDE3004D0104 /* zh_CN.po */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = zh_CN.po; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +107,8 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				687742B52D43837B00375A2C /* locales */,
+				68DCA5B42D40EDE8004D0104 /* Localizations */,
 				686AECC22D3B93CB0059ECD0 /* AppDelegate.h */,
 				686AECC32D3B93CB0059ECD0 /* AppDelegate.m */,
 				686AECC52D3B93CB0059ECD0 /* SceneDelegate.h */,
@@ -73,10 +119,24 @@
 				686AECD32D3B93CD0059ECD0 /* Info.plist */,
 				686AECD42D3B93CD0059ECD0 /* main.m */,
 				68DCA5582D3BBC6A004D0104 /* Battman.storyboard */,
-				68DCA55E2D3D0A62004D0104 /* Localizables.strings */,
 				68DCA5602D3D0AC5004D0104 /* main.h */,
+				68DCA5A82D3F9338004D0104 /* common.m */,
+				68DCA5AA2D3F935E004D0104 /* common.h */,
+				68DCA5AB2D3F9A10004D0104 /* gtkextern.h */,
+				68DCA5AD2D3F9BFD004D0104 /* glibextern.h */,
+				68DCA5AE2D3FA4DA004D0104 /* intlextern.h */,
 			);
 			path = Battman;
+			sourceTree = "<group>";
+		};
+		68DCA5B42D40EDE8004D0104 /* Localizations */ = {
+			isa = PBXGroup;
+			children = (
+				68DCA5BD2D40FDE3004D0104 /* en.po */,
+				68DCA5BE2D40FDE3004D0104 /* zh_CN.po */,
+				68DCA5B72D40F4A5004D0104 /* base.pot */,
+			);
+			path = Localizations;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -110,6 +170,15 @@
 					686AECBE2D3B93CB0059ECD0 = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
+					687742AB2D437EE400375A2C = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					68DCA5AF2D40EC57004D0104 = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
+					68DCA5B82D40FA9F004D0104 = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
 				};
 			};
 			buildConfigurationList = 686AECBA2D3B93CB0059ECD0 /* Build configuration list for PBXProject "Battman" */;
@@ -127,6 +196,9 @@
 			projectRoot = "";
 			targets = (
 				686AECBE2D3B93CB0059ECD0 /* Battman */,
+				68DCA5AF2D40EC57004D0104 /* base.pot */,
+				68DCA5B82D40FA9F004D0104 /* pofiles */,
+				687742AB2D437EE400375A2C /* Gettext Localizations */,
 			);
 		};
 /* End PBXProject section */
@@ -136,7 +208,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				68DCA55C2D3D0A62004D0104 /* Localizables.strings in Resources */,
+				687742B62D43838500375A2C /* locales in Resources */,
 				686AECCF2D3B93CD0059ECD0 /* Assets.xcassets in Resources */,
 				68DCA5592D3BBC6A004D0104 /* Battman.storyboard in Resources */,
 			);
@@ -144,12 +216,71 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		687742AF2D437EEA00375A2C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/zh_CN.po",
+				"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/en.po",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nLOCS=\"zh_CN en\"\nLOC_BASE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations\"\nLOC_TGT=\"${PROJECT_DIR}/${PROJECT_NAME}/locales\"\nPOT_FILE=\"${LOC_BASE}/base.pot\"\n\nfor locs in $LOCS; do mkdir -p \"${LOC_TGT}/${locs}/LC_MESSAGES/\" && msgfmt \"${LOC_BASE}/$locs.po\" -o \"${LOC_TGT}/${locs}/LC_MESSAGES/${PROJECT_NAME}.mo\"; done\n";
+		};
+		68DCA5B32D40EC61004D0104 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nPOT_FILE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot\"\nexec xgettext -v --copyright-holder=\"Torrekie <me@torrekie.dev>\" --package-name=\"${PROJECT_NAME}\" --package-version\"$(CURRENT_PROJECT_VERSION)\" --keyword=_ --output=$POT_FILE --from-code=UTF-8 $(find ${PROJECT_DIR} -name \"*.m\" -or -name \"*.c\" -or -name \"*.h\")\n";
+		};
+		68DCA5BC2D40FAB1004D0104 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nLOCS=\"zh_CN en\"\nLOC_BASE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations\"\nPOT_FILE=\"${LOC_BASE}/base.pot\"\n\nfor locs in $LOCS; do msginit --input=\"${POT_FILE}\" --output-file=\"${LOC_BASE}/$locs.po\" --locale=\"$locs\" --no-translator; done\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		686AECBB2D3B93CB0059ECD0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				686AECCA2D3B93CB0059ECD0 /* ViewController.m in Sources */,
+				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
 				686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */,
 				686AECD52D3B93CD0059ECD0 /* main.m in Sources */,
 				686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */,
@@ -157,18 +288,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		68DCA55E2D3D0A62004D0104 /* Localizables.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				68DCA55D2D3D0A62004D0104 /* en */,
-				68DCA55F2D3D0A8E004D0104 /* zh-Hans */,
-			);
-			name = Localizables.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		686AECD62D3B93CD0059ECD0 /* Debug */ = {
@@ -205,6 +324,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1.0;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -213,8 +333,8 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					"BATTMAN_INTL=\\\"battman\\\"",
 					"DEBUG=1",
-					"$(inherited)",
 				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
@@ -223,10 +343,13 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				VERSION_INFO_BUILDER = Torrekie;
+				VERSION_INFO_FILE = "";
 			};
 			name = Debug;
 		};
@@ -264,11 +387,13 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1.0;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = "BATTMAN_INTL=\\\"battman\\\"";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -276,10 +401,13 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+				VERSION_INFO_BUILDER = Torrekie;
+				VERSION_INFO_FILE = "";
 			};
 			name = Release;
 		};
@@ -295,9 +423,16 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LOCALIZED_STRING_MACRO_NAMES = _;
+				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.torrekie.Battman;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSION_INFO_FILE = "";
 			};
 			name = Debug;
 		};
@@ -313,9 +448,70 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LOCALIZED_STRING_MACRO_NAMES = _;
+				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.torrekie.Battman;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSION_INFO_FILE = "";
+			};
+			name = Release;
+		};
+		687742AD2D437EE400375A2C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		687742AE2D437EE400375A2C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		68DCA5B12D40EC58004D0104 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_INSTALL_NAME_BASE = "";
+				LOCALIZED_STRING_MACRO_NAMES = _;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = build;
+			};
+			name = Debug;
+		};
+		68DCA5B22D40EC58004D0104 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DYLIB_INSTALL_NAME_BASE = "";
+				LOCALIZED_STRING_MACRO_NAMES = _;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SYMROOT = build;
+			};
+			name = Release;
+		};
+		68DCA5BA2D40FA9F004D0104 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		68DCA5BB2D40FA9F004D0104 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
 		};
@@ -336,6 +532,33 @@
 			buildConfigurations = (
 				686AECD92D3B93CD0059ECD0 /* Debug */,
 				686AECDA2D3B93CD0059ECD0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		687742AC2D437EE400375A2C /* Build configuration list for PBXAggregateTarget "Gettext Localizations" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				687742AD2D437EE400375A2C /* Debug */,
+				687742AE2D437EE400375A2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		68DCA5B02D40EC58004D0104 /* Build configuration list for PBXAggregateTarget "base.pot" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68DCA5B12D40EC58004D0104 /* Debug */,
+				68DCA5B22D40EC58004D0104 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		68DCA5B92D40FA9F004D0104 /* Build configuration list for PBXAggregateTarget "pofiles" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				68DCA5BA2D40FA9F004D0104 /* Debug */,
+				68DCA5BB2D40FA9F004D0104 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
