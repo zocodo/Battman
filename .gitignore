@@ -1,9 +1,12 @@
 **/.DS_Store
 # Locales are generated binaries
 Battman/locales
+# gettext generated
 includes/
 intl/
 iphoneos/
 iphonesimulator/
 libs/
 gettext-0.23/
+# Xcode generated
+**/project.xcworkspace
