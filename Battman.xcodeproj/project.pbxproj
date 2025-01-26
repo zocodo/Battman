@@ -53,6 +53,16 @@
 		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		687742B72D43866400375A2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 686AECB72D3B93CB0059ECD0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 687742AB2D437EE400375A2C;
+			remoteInfo = "Gettext Localizations";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		686AECC22D3B93CB0059ECD0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -153,6 +163,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				687742B82D43866400375A2C /* PBXTargetDependency */,
 			);
 			name = Battman;
 			productName = Battman;
@@ -288,6 +299,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		687742B82D43866400375A2C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 687742AB2D437EE400375A2C /* Gettext Localizations */;
+			targetProxy = 687742B72D43866400375A2C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		686AECD62D3B93CD0059ECD0 /* Debug */ = {
