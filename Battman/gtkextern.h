@@ -130,11 +130,11 @@ WEAK_LINK_FORCE_IMPORT(gtk_dialog_add_button);
 WEAK_LINK_FORCE_IMPORT(gtk_dialog_run);
 WEAK_LINK_FORCE_IMPORT(gtk_widget_destroy);
 
-static typeof(gtk_dialog_get_type) *gtk_dialog_get_type_ptr;
-static typeof(gtk_message_dialog_new) *gtk_message_dialog_new_ptr;
-static typeof(gtk_dialog_add_button) *gtk_dialog_add_button_ptr;
-static typeof(gtk_dialog_run) *gtk_dialog_run_ptr;
-static typeof(gtk_widget_destroy) *gtk_widget_destroy_ptr;
+extern typeof(gtk_dialog_get_type) *gtk_dialog_get_type_ptr;
+extern typeof(gtk_message_dialog_new) *gtk_message_dialog_new_ptr;
+extern typeof(gtk_dialog_add_button) *gtk_dialog_add_button_ptr;
+extern typeof(gtk_dialog_run) *gtk_dialog_run_ptr;
+extern typeof(gtk_widget_destroy) *gtk_widget_destroy_ptr;
 
 __END_DECLS
 

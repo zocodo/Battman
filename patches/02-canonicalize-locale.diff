@@ -1,0 +1,52 @@
+--- gettext-0.23-orig/gettext-runtime/intl/gnulib-lib/localename-unsafe.c	2024-10-04 02:52:24.000000000 +0800
++++ gettext-0.23/gettext-runtime/intl/gnulib-lib/localename-unsafe.c	2025-01-27 15:58:27.000000000 +0800
+@@ -1320,7 +1321,11 @@ gl_locale_name_canonicalize (char *name)
+ 
+   /* Convert new-style locale names with language tags (ISO 639 and ISO 15924)
+      to Unix (ISO 639 and ISO 3166) names.  */
+-  typedef struct { const char langtag[7+1]; const char unixy[12+1]; }
++  /* Torrekie: The original code cannot handle modern CFLocale which formatted
++     in {ISO 639}-{ISO 15924}_{ISO 3166} (e.g. zh-Hans_US when system language
++     is Simplified Chinese but system region is US)
++     So handle common scene by first 7 chars and match specific scene by rest */
++  typedef struct { const char langtag[10+1]; const char unixy[12+1]; }
+           langtag_entry;
+   static const langtag_entry langtag_table[] = {
+     /* Mac OS X has "az-Arab", "az-Cyrl", "az-Latn".
+@@ -1366,8 +1371,14 @@ gl_locale_name_canonicalize (char *name)
+     { "yue-Hans", "yue" },
+     /* Mac OS X has "zh-Hans", "zh-Hant".
+        Country codes are used to distinguish these on Unix.  */
++    /* "zh-Hans_*" should always be zh_CN, "zh-Hant_*" should check
++       whether TW or HK */
++    /* Consider use CFLocaleCreateCanonicalLocaleIdentifierFromString to
++       do an extra check */
+     { "zh-Hans", "zh_CN" },
+-    { "zh-Hant", "zh_TW" }
++    { "zh-Hant", "zh_TW" },
++    /* Torrekie: Where's zh_HK? Hant has HK and TW. */
++    { "zh-Hant_HK", "zh_HK" },
+   };
+ 
+   /* Convert script names (ISO 15924) to Unix conventions.
+@@ -1406,7 +1417,8 @@ gl_locale_name_canonicalize (char *name)
+     }
+ 
+   /* Step 2: Convert using langtag_table and script_table.  */
+-  if (strlen (name) == 7 && name[2] == '-')
++  /* Torrekie: zh-Hans[7] or zh-Hans_US[10] */
++  if ((strlen (name) == 7 || strlen (name) == 10) && name[2] == '-')
+     {
+       unsigned int i1, i2;
+       i1 = 0;
+@@ -1422,7 +1434,9 @@ gl_locale_name_canonicalize (char *name)
+           else
+             i1 = i;
+         }
+-      if (strcmp (name, langtag_table[i1].langtag) == 0)
++      /* Torrekie: only compare first 7 chars, thus we can convert zh-Hans_US
++         to correct language code, which is zh_CN */
++      if (strncmp (name, langtag_table[i1].langtag, strlen (langtag_table[i1].langtag)) == 0)
+         {
+           strcpy (name, langtag_table[i1].unixy);
+           return;

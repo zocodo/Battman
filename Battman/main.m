@@ -34,27 +34,49 @@ NSString *cond_localize(char *str) {
 
     dispatch_once(&onceToken, ^{
         if (libintl_available()) {
+            /* For some reason, libintl's locale guess was not quite working,
+               this is a workaround to force it read correct language */
+            char *lang = preferred_language();
+            setlocale(LC_ALL, lang);
+            free(lang);
+
             char mainBundle[PATH_MAX];
             uint32_t size = sizeof(mainBundle);
             char binddir[PATH_MAX];
-            if (_NSGetExecutablePath(mainBundle, &size)) {
+            if (_NSGetExecutablePath(mainBundle, &size) == KERN_SUCCESS) {
                 char *bundledir = dirname(mainBundle);
                 /* Either /Applications/Battman.app/locales or ./locales */
                 sprintf(binddir, "%s/%s", bundledir ? bundledir : ".", "locales");
                 char *bindbase = bindtextdomain_ptr(BATTMAN_INTL, binddir);
                 if (bindbase) {
-                    NSLog(@"i18n base dir: %s", bindbase);
-                    textdomain(BATTMAN_INTL);
+                    DBGLOG(@"i18n base dir: %s", bindbase);
+                    char *dom = textdomain_ptr(BATTMAN_INTL);
+                    DBGLOG(@"textdomain: %s", dom);
                     use_libintl = true;
                 } else {
                     show_alert("Error", "Failed to get i18n base", "Cancel");
                 }
+            } else {
+                show_alert("Error", "Unable to get executable path", "Cancel");
             }
         } else {
             show_alert("Warning", "Failed to load Gettext localization, defaulting to English", "OK");
         }
+#ifdef _
+#undef _
+#endif
+// Redefine _() for PO template generation
+#define _(x) gettext_ptr(x)
+        char *locale_name = _("locale_name");
+        DBGLOG(@"Locale Name: %s", locale_name);
+        if (use_libintl && !strcmp("locale_name", locale_name)) {
+            show_alert("Error", "Unable to match existing Gettext localization, defaulting to English", "Cancel");
+        }
+#undef _
+#define _(x) cond_localize(x)
     });
 
+    DBGLOG(@"gettext_ptr(%s) = %s", str, gettext_ptr(str));
     return [NSString stringWithCString:(use_libintl ? gettext_ptr(str) : str) encoding:NSUTF8StringEncoding];
 }
 

@@ -11,7 +11,7 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 687742AC2D437EE400375A2C /* Build configuration list for PBXAggregateTarget "Gettext Localizations" */;
 			buildPhases = (
-				687742AF2D437EEA00375A2C /* ShellScript */,
+				687742AF2D437EEA00375A2C /* Run Script */,
 			);
 			dependencies = (
 			);
@@ -49,7 +49,6 @@
 		686AECCF2D3B93CD0059ECD0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
 		687742B62D43838500375A2C /* locales in Resources */ = {isa = PBXBuildFile; fileRef = 687742B52D43837B00375A2C /* locales */; };
-		68DCA5592D3BBC6A004D0104 /* Battman.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 68DCA5582D3BBC6A004D0104 /* Battman.storyboard */; };
 		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
 
@@ -60,6 +59,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 687742AB2D437EE400375A2C;
 			remoteInfo = "Gettext Localizations";
+		};
+		687743142D461E4400375A2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 6877430F2D461E4300375A2C /* gettext.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 687742F42D44E40700375A2C;
+			remoteInfo = intl;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -75,6 +81,9 @@
 		686AECD32D3B93CD0059ECD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		686AECD42D3B93CD0059ECD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		687742B52D43837B00375A2C /* locales */ = {isa = PBXFileReference; lastKnownFileType = folder; path = locales; sourceTree = "<group>"; };
+		6877430F2D461E4300375A2C /* gettext.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = gettext.xcodeproj; sourceTree = "<group>"; };
+		687743182D4629CB00375A2C /* Battman.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Battman.entitlements; sourceTree = "<group>"; };
+		687743192D46359200375A2C /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		68DCA5582D3BBC6A004D0104 /* Battman.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Battman.storyboard; sourceTree = "<group>"; };
 		68DCA5602D3D0AC5004D0104 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		68DCA5A82D3F9338004D0104 /* common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
@@ -101,8 +110,12 @@
 		686AECB62D3B93CB0059ECD0 = {
 			isa = PBXGroup;
 			children = (
+				687743192D46359200375A2C /* Config.xcconfig */,
+				687743182D4629CB00375A2C /* Battman.entitlements */,
+				6877430F2D461E4300375A2C /* gettext.xcodeproj */,
 				686AECC12D3B93CB0059ECD0 /* Battman */,
 				686AECC02D3B93CB0059ECD0 /* Products */,
+				687743162D461E5100375A2C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -137,6 +150,21 @@
 				68DCA5AE2D3FA4DA004D0104 /* intlextern.h */,
 			);
 			path = Battman;
+			sourceTree = "<group>";
+		};
+		687743102D461E4300375A2C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				687743152D461E4400375A2C /* intl.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		687743162D461E5100375A2C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		68DCA5B42D40EDE8004D0104 /* Localizations */ = {
@@ -198,12 +226,17 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 				"zh-Hans",
 			);
 			mainGroup = 686AECB62D3B93CB0059ECD0;
 			productRefGroup = 686AECC02D3B93CB0059ECD0 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 687743102D461E4300375A2C /* Products */;
+					ProjectRef = 6877430F2D461E4300375A2C /* gettext.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				686AECBE2D3B93CB0059ECD0 /* Battman */,
@@ -214,6 +247,16 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXReferenceProxy section */
+		687743152D461E4400375A2C /* intl.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = intl.framework;
+			remoteRef = 687743142D461E4400375A2C /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
 /* Begin PBXResourcesBuildPhase section */
 		686AECBD2D3B93CB0059ECD0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
@@ -221,14 +264,13 @@
 			files = (
 				687742B62D43838500375A2C /* locales in Resources */,
 				686AECCF2D3B93CD0059ECD0 /* Assets.xcassets in Resources */,
-				68DCA5592D3BBC6A004D0104 /* Battman.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		687742AF2D437EEA00375A2C /* ShellScript */ = {
+		687742AF2D437EEA00375A2C /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -239,13 +281,16 @@
 				"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/zh_CN.po",
 				"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/en.po",
 			);
+			name = "Run Script";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${PROJECT_DIR}/${PROJECT_NAME}/locales/en/LC_MESSAGES/battman.mo",
+				"${PROJECT_DIR}/${PROJECT_NAME}/locales/zh_CN/LC_MESSAGES/battman.mo",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nLOCS=\"zh_CN en\"\nLOC_BASE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations\"\nLOC_TGT=\"${PROJECT_DIR}/${PROJECT_NAME}/locales\"\nPOT_FILE=\"${LOC_BASE}/base.pot\"\n\nfor locs in $LOCS; do mkdir -p \"${LOC_TGT}/${locs}/LC_MESSAGES/\" && msgfmt \"${LOC_BASE}/$locs.po\" -o \"${LOC_TGT}/${locs}/LC_MESSAGES/${PROJECT_NAME}.mo\"; done\n";
+			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nLOCS=\"zh_CN en\"\nLOC_BASE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations\"\nLOC_TGT=\"${PROJECT_DIR}/${PROJECT_NAME}/locales\"\nNAME_LOW=\"$(echo ${PROJECT_NAME} | tr '[:upper:]' '[:lower:]')\"\n\nfor locs in $LOCS; do mkdir -p \"${LOC_TGT}/${locs}/LC_MESSAGES/\" && msgfmt \"${LOC_BASE}/$locs.po\" -o \"${LOC_TGT}/${locs}/LC_MESSAGES/${NAME_LOW}.mo\"; done\n";
 		};
 		68DCA5B32D40EC61004D0104 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -263,7 +308,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nPOT_FILE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot\"\nexec xgettext -v --copyright-holder=\"Torrekie <me@torrekie.dev>\" --package-name=\"${PROJECT_NAME}\" --package-version\"$(CURRENT_PROJECT_VERSION)\" --keyword=_ --output=$POT_FILE --from-code=UTF-8 $(find ${PROJECT_DIR} -name \"*.m\" -or -name \"*.c\" -or -name \"*.h\")\n";
+			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nPOT_FILE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot\"\nexec xgettext -v --keyword=_ --copyright-holder=\"Torrekie <me@torrekie.dev>\" --package-name=\"${PROJECT_NAME}\" --package-version=\"${CURRENT_PROJECT_VERSION}\" --output=$POT_FILE --from-code=UTF-8 $(find ${PROJECT_DIR}/${PROJECT_NAME} -name \"*.m\" -or -name \"*.c\" -or -name \"*.h\")\n";
 		};
 		68DCA5BC2D40FAB1004D0104 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -311,6 +356,7 @@
 /* Begin XCBuildConfiguration section */
 		686AECD62D3B93CD0059ECD0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 687743192D46359200375A2C /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -374,6 +420,7 @@
 		};
 		686AECD72D3B93CD0059ECD0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 687743192D46359200375A2C /* Config.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -432,11 +479,20 @@
 		};
 		686AECD92D3B93CD0059ECD0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 687743192D46359200375A2C /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CODE_SIGN_ENTITLEMENTS = "$(PROJECT_DIR)/Battman.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Battman/Info.plist;
+				INSTALL_GROUP = wheel;
+				INSTALL_OWNER = root;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -444,12 +500,10 @@
 				);
 				LOCALIZED_STRING_MACRO_NAMES = _;
 				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
-				OTHER_LDFLAGS = (
-					"-undefined",
-					dynamic_lookup,
-				);
+				OTHER_LDFLAGS = "$(OLDFL)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.torrekie.Battman;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSION_INFO_FILE = "";
 			};
@@ -457,11 +511,20 @@
 		};
 		686AECDA2D3B93CD0059ECD0 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 687743192D46359200375A2C /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES;
+				CODE_SIGN_ENTITLEMENTS = "$(PROJECT_DIR)/Battman.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Battman/Info.plist;
+				INSTALL_GROUP = wheel;
+				INSTALL_OWNER = root;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -469,12 +532,10 @@
 				);
 				LOCALIZED_STRING_MACRO_NAMES = _;
 				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
-				OTHER_LDFLAGS = (
-					"-undefined",
-					dynamic_lookup,
-				);
+				OTHER_LDFLAGS = "$(OLDFL)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.torrekie.Battman;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSION_INFO_FILE = "";
 			};
@@ -544,7 +605,7 @@
 				686AECD72D3B93CD0059ECD0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		686AECD82D3B93CD0059ECD0 /* Build configuration list for PBXNativeTarget "Battman" */ = {
 			isa = XCConfigurationList;
@@ -553,7 +614,7 @@
 				686AECDA2D3B93CD0059ECD0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		687742AC2D437EE400375A2C /* Build configuration list for PBXAggregateTarget "Gettext Localizations" */ = {
 			isa = XCConfigurationList;
@@ -562,7 +623,7 @@
 				687742AE2D437EE400375A2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		68DCA5B02D40EC58004D0104 /* Build configuration list for PBXAggregateTarget "base.pot" */ = {
 			isa = XCConfigurationList;
@@ -571,7 +632,7 @@
 				68DCA5B22D40EC58004D0104 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		68DCA5B92D40FA9F004D0104 /* Build configuration list for PBXAggregateTarget "pofiles" */ = {
 			isa = XCConfigurationList;
@@ -580,7 +641,7 @@
 				68DCA5BB2D40FA9F004D0104 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

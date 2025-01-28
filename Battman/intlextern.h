@@ -38,7 +38,7 @@ static const char *libintl_paths[] = {
     "/opt/local/lib/libintl.dylib",
     "/opt/homebrew/lib/libintl.dylib",
     "libintl.dylib",
-    "intl.framework/libintl",
+    "intl.framework/intl",
     NULL,
 };
 
@@ -54,9 +54,9 @@ static char * (*gettext_ptr) (const char *__msgid);
 static char * (*textdomain_ptr) (const char *__domainname);
 static char * (*bindtextdomain_ptr) (const char *__domainname, const char *__dirname);
 #else
-static typeof(gettext) *gettext_ptr;
-static typeof(textdomain) *textdomain_ptr;
-static typeof(bindtextdomain) *bindtextdomain_ptr;
+extern typeof(gettext) *gettext_ptr;
+extern typeof(textdomain) *textdomain_ptr;
+extern typeof(bindtextdomain) *bindtextdomain_ptr;
 #endif
 
 __END_DECLS

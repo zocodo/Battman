@@ -62,7 +62,7 @@
     // Bottom Bar - More
     self.moreBarItemController = [[UIViewController alloc] init];
     self.moreBarItemController.tabBarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:1];
-    self.moreBarItemController.tabBarItem.title = _("More");
+    //[self.moreBarItemController.tabBarItem.setValue(_("More"), forKey: "internalTitle")];
 
 
     // Bottom Bar Summary

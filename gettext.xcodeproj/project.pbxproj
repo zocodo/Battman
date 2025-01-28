@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -18,6 +18,17 @@
 			name = Automake;
 			productName = Autoconf;
 		};
+		6877431B2D4763F900375A2C /* Autoclean */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 6877431E2D4763F900375A2C /* Build configuration list for PBXAggregateTarget "Autoclean" */;
+			buildPhases = (
+				6877431F2D47641700375A2C /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = Autoclean;
+			productName = Autoclean;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -25,6 +36,16 @@
 		687743042D46144D00375A2C /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743032D46144D00375A2C /* CoreFoundation.framework */; };
 		6877430E2D4619F800375A2C /* libintl.h in Headers */ = {isa = PBXBuildFile; fileRef = 6877430D2D4619E600375A2C /* libintl.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		687743212D4770F300375A2C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 687742E22D438B2300375A2C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 687742E82D438B5500375A2C;
+			remoteInfo = Automake;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		687742F42D44E40700375A2C /* intl.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = intl.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -132,6 +153,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				687743222D4770F300375A2C /* PBXTargetDependency */,
 			);
 			name = intl;
 			productName = intl;
@@ -152,6 +174,9 @@
 					687742F32D44E40700375A2C = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
+					6877431B2D4763F900375A2C = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
 				};
 			};
 			buildConfigurationList = 687742E52D438B2300375A2C /* Build configuration list for PBXProject "gettext" */;
@@ -169,6 +194,7 @@
 			targets = (
 				687742E82D438B5500375A2C /* Automake */,
 				687742F32D44E40700375A2C /* intl */,
+				6877431B2D4763F900375A2C /* Autoclean */,
 			);
 		};
 /* End PBXProject section */
@@ -201,7 +227,25 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#! /bin/sh\nset -e -x\n\nINITDIR=`pwd`\nSKIP_BUILD=0\n\nif [ ! -d ${INITDIR} ]; then false; fi\n\nALTBINDIR=\"${INITDIR}/${PLATFORM_NAME}/altbin\"\n\nif [ -e \"${INITDIR}/${PLATFORM_NAME}/dst/usr/lib/libintl.a\" ]; then cp \"${INITDIR}/${PLATFORM_NAME}/dst/usr/lib/libintl.a\" \"${PROJECT_DIR}/libs/libintl-${PLATFORM_NAME}.a\" && SKIP_BUILD=1; fi\n\nif [ -e \"${INITDIR}/${PLATFORM_NAME}/dst/usr/include/libintl.h\" ]; then cp \"${INITDIR}/${PLATFORM_NAME}/dst/usr/include/libintl.h\" \"${PROJECT_DIR}/includes/libintl-${PLATFORM_NAME}.h\" && SKIP_BUILD=1; fi\n\nif [ ${SKIP_BUILD} == 1 ]; then exit 0; fi\n\nVERSIONFLAGS=\"${DEPLOYMENT_TARGET_CLANG_FLAG_PREFIX}${IPHONEOS_DEPLOYMENT_TARGET} -isysroot ${SDKROOT}\"\n\n\nmkdir -p ${ALTBINDIR}\nln -sf $(xcrun --find --sdk \"${SDK_NAME}\" clang) ${ALTBINDIR}/aarch64-apple-darwin20.1.0-cc\nln -sf $(xcrun --find --sdk \"${SDK_NAME}\" clang++) ${ALTBINDIR}/aarch64-apple-darwin20.1.0-c++\nln -sf $(xcrun --find --sdk \"${SDK_NAME}\" ld) ${ALTBINDIR}/aarch64-apple-darwin20.1.0-ld\n\nexport PATH=\"${ALTBINDIR}:${PATH}\"\n#export CC=cc CXX=c++\nexport CFLAGS=\"${VERSIONFLAGS}\"\nexport CXXFLAGS=\"${VERSIONFLAGS}\"\nexport LDFLAGS=\"${VERSIONFLAGS}\"\n\ncd ${INITDIR}/${PLATFORM_NAME} &&\n${INITDIR}/gettext-0.23/configure -C \\\n    --build=\"aarch64-apple-darwin20.3.0\" \\\n    --host=\"aarch64-apple-darwin20.1.0\" \\\n    --prefix=\"/usr\" \\\n    --enable-static \\\n    --disable-shared \\\n    --with-included-gettext \\\n    --disable-silent-rules \\\n    --with-included-glib \\\n    --with-included-libcroco \\\n    --with-included-libunistring \\\n    --disable-java \\\n    --disable-csharp \\\n    --without-emacs \\\n    --without-git \\\n    --without-cvs \\\n    --without-xz\ncd ${INITDIR}/${PLATFORM_NAME} && make V=1 -j4\ncd ${INITDIR}/${PLATFORM_NAME} && make install DESTDIR=\"${INITDIR}/${PLATFORM_NAME}/dst\"\n\nif [ -e \"${INITDIR}/${PLATFORM_NAME}/dst/usr/lib/libintl.a\" ]; then cp \"${INITDIR}/${PLATFORM_NAME}/dst/usr/lib/libintl.a\" \"${PROJECT_DIR}/libs/libintl-${PLATFORM_NAME}.a\" && SKIP_BUILD=1; fi\nif [ -e \"${INITDIR}/${PLATFORM_NAME}/dst/usr/include/libintl.h\" ]; then cp \"${INITDIR}/${PLATFORM_NAME}/dst/usr/include/libintl.h\" \"${PROJECT_DIR}/includes/libintl-${PLATFORM_NAME}.h\" && SKIP_BUILD=1; fi\n";
+			shellScript = "#! /bin/sh\nset -e -x\n\nINITDIR=`pwd`\nSKIP_BUILD=0\n\nif [ ! -d ${INITDIR} ]; then false; fi\n\nALTBINDIR=\"${INITDIR}/${PLATFORM_NAME}/altbin\"\n\n#if [ -e \"${INITDIR}/${PLATFORM_NAME}/dst/usr/lib/libintl.a\" ]; then cp \"${INITDIR}/${PLATFORM_NAME}/dst/usr/lib/libintl.a\" \"${PROJECT_DIR}/libs/libintl-${PLATFORM_NAME}.a\" && SKIP_BUILD=1; fi\n\n#if [ -e \"${INITDIR}/${PLATFORM_NAME}/dst/usr/include/libintl.h\" ]; then cp \"${INITDIR}/${PLATFORM_NAME}/dst/usr/include/libintl.h\" \"${PROJECT_DIR}/includes/libintl-${PLATFORM_NAME}.h\" && SKIP_BUILD=1; fi\n\n#if [ ${SKIP_BUILD} == 1 ]; then exit 0; fi\n\nVERSIONFLAGS=\"${DEPLOYMENT_TARGET_CLANG_FLAG_PREFIX}${IPHONEOS_DEPLOYMENT_TARGET} -isysroot ${SDKROOT}\"\n\n\nmkdir -p ${ALTBINDIR}\nln -sf $(xcrun --find --sdk \"${SDK_NAME}\" clang) ${ALTBINDIR}/aarch64-apple-darwin20.1.0-cc\nln -sf $(xcrun --find --sdk \"${SDK_NAME}\" clang++) ${ALTBINDIR}/aarch64-apple-darwin20.1.0-c++\nln -sf $(xcrun --find --sdk \"${SDK_NAME}\" ld) ${ALTBINDIR}/aarch64-apple-darwin20.1.0-ld\n\nexport PATH=\"${ALTBINDIR}:${PATH}\"\n#export CC=cc CXX=c++\nexport CFLAGS=\"${VERSIONFLAGS}\"\nexport CXXFLAGS=\"${VERSIONFLAGS}\"\nexport LDFLAGS=\"${VERSIONFLAGS}\"\n\n[ ! -e ${INITDIR}/${PLATFORM_NAME}/config.status ] && cd ${INITDIR}/${PLATFORM_NAME} &&\n${INITDIR}/gettext-0.23/configure -C \\\n    --build=\"aarch64-apple-darwin20.3.0\" \\\n    --host=\"aarch64-apple-darwin20.1.0\" \\\n    --prefix=\"/usr\" \\\n    --enable-static \\\n    --disable-shared \\\n    --with-included-gettext \\\n    --disable-silent-rules \\\n    --with-included-glib \\\n    --with-included-libcroco \\\n    --with-included-libunistring \\\n    --disable-java \\\n    --disable-csharp \\\n    --without-emacs \\\n    --without-git \\\n    --without-cvs \\\n    --without-xz\ncd ${INITDIR}/${PLATFORM_NAME} && make V=1 -j4\ncd ${INITDIR}/${PLATFORM_NAME} && make install DESTDIR=\"${INITDIR}/${PLATFORM_NAME}/dst\"\n\nif [ -e \"${INITDIR}/${PLATFORM_NAME}/dst/usr/lib/libintl.a\" ]; then cp \"${INITDIR}/${PLATFORM_NAME}/dst/usr/lib/libintl.a\" \"${PROJECT_DIR}/libs/libintl-${PLATFORM_NAME}.a\" && SKIP_BUILD=1; fi\nif [ -e \"${INITDIR}/${PLATFORM_NAME}/dst/usr/include/libintl.h\" ]; then cp \"${INITDIR}/${PLATFORM_NAME}/dst/usr/include/libintl.h\" \"${PROJECT_DIR}/includes/libintl-${PLATFORM_NAME}.h\" && SKIP_BUILD=1; fi\n";
+		};
+		6877431F2D47641700375A2C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#! /bin/sh\nset -e -x\n\nINITDIR=`pwd`\n\ncd ${INITDIR}/${PLATFORM_NAME} && make V=1 -j4 clean || true\nrm -rf ${INITDIR}/${PLATFORM_NAME}/dst\nrm -f \"${PROJECT_DIR}/libs/libintl-${PLATFORM_NAME}.a\"\nrm -f \"${PROJECT_DIR}/includes/libintl-${PLATFORM_NAME}.h\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -214,6 +258,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		687743222D4770F300375A2C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 687742E82D438B5500375A2C /* Automake */;
+			targetProxy = 687743212D4770F300375A2C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		687742E62D438B2300375A2C /* Debug */ = {
@@ -408,6 +460,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"-L$(PROJECT_DIR)/libs",
 					"-lintl-$(PLATFORM_NAME)",
@@ -421,6 +474,24 @@
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		6877431C2D4763F900375A2C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		6877431D2D4763F900375A2C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
 			};
 			name = Release;
 		};
@@ -450,6 +521,15 @@
 			buildConfigurations = (
 				687742FB2D44E40700375A2C /* Debug */,
 				687742FC2D44E40700375A2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		6877431E2D4763F900375A2C /* Build configuration list for PBXAggregateTarget "Autoclean" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6877431C2D4763F900375A2C /* Debug */,
+				6877431D2D4763F900375A2C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
