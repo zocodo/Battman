@@ -98,5 +98,9 @@ int main(int argc, char * argv[]) {
 #endif
     }
 
+    /* Not running as App, CLI/Daemon code */
+    {
+        // TODO: cli + x11
+    }
     return EXIT_SUCCESS;
 }

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -18,6 +18,17 @@
 			name = "Gettext Localizations";
 			productName = "Gettext Localizations";
 		};
+		687743262D4CACBD00375A2C /* pofiles update */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 687743272D4CACBD00375A2C /* Build configuration list for PBXAggregateTarget "pofiles update" */;
+			buildPhases = (
+				6877432A2D4CACCC00375A2C /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "pofiles update";
+			productName = "pofiles update";
+		};
 		68DCA5AF2D40EC57004D0104 /* base.pot */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 68DCA5B02D40EC58004D0104 /* Build configuration list for PBXAggregateTarget "base.pot" */;
@@ -29,15 +40,15 @@
 			name = base.pot;
 			productName = "Gettext Locales";
 		};
-		68DCA5B82D40FA9F004D0104 /* pofiles */ = {
+		68DCA5B82D40FA9F004D0104 /* pofiles_new */ = {
 			isa = PBXAggregateTarget;
-			buildConfigurationList = 68DCA5B92D40FA9F004D0104 /* Build configuration list for PBXAggregateTarget "pofiles" */;
+			buildConfigurationList = 68DCA5B92D40FA9F004D0104 /* Build configuration list for PBXAggregateTarget "pofiles_new" */;
 			buildPhases = (
 				68DCA5BC2D40FAB1004D0104 /* ShellScript */,
 			);
 			dependencies = (
 			);
-			name = pofiles;
+			name = pofiles_new;
 			productName = zh_CN.po;
 		};
 /* End PBXAggregateTarget section */
@@ -49,6 +60,7 @@
 		686AECCF2D3B93CD0059ECD0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
 		687742B62D43838500375A2C /* locales in Resources */ = {isa = PBXBuildFile; fileRef = 687742B52D43837B00375A2C /* locales */; };
+		6877432C2D4CBB0200375A2C /* SPWaterProgressIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6877432B2D4CBB0200375A2C /* SPWaterProgressIndicatorView.m */; };
 		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
 
@@ -84,6 +96,8 @@
 		6877430F2D461E4300375A2C /* gettext.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = gettext.xcodeproj; sourceTree = "<group>"; };
 		687743182D4629CB00375A2C /* Battman.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Battman.entitlements; sourceTree = "<group>"; };
 		687743192D46359200375A2C /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		6877432B2D4CBB0200375A2C /* SPWaterProgressIndicatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPWaterProgressIndicatorView.m; sourceTree = "<group>"; };
+		6877432D2D4CBB3200375A2C /* SPWaterProgressIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPWaterProgressIndicatorView.h; sourceTree = "<group>"; };
 		68DCA5582D3BBC6A004D0104 /* Battman.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Battman.storyboard; sourceTree = "<group>"; };
 		68DCA5602D3D0AC5004D0104 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		68DCA5A82D3F9338004D0104 /* common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
@@ -148,6 +162,8 @@
 				68DCA5AB2D3F9A10004D0104 /* gtkextern.h */,
 				68DCA5AD2D3F9BFD004D0104 /* glibextern.h */,
 				68DCA5AE2D3FA4DA004D0104 /* intlextern.h */,
+				6877432B2D4CBB0200375A2C /* SPWaterProgressIndicatorView.m */,
+				6877432D2D4CBB3200375A2C /* SPWaterProgressIndicatorView.h */,
 			);
 			path = Battman;
 			sourceTree = "<group>";
@@ -212,6 +228,9 @@
 					687742AB2D437EE400375A2C = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
+					687743262D4CACBD00375A2C = {
+						CreatedOnToolsVersion = 12.5.1;
+					};
 					68DCA5AF2D40EC57004D0104 = {
 						CreatedOnToolsVersion = 12.5.1;
 					};
@@ -241,8 +260,9 @@
 			targets = (
 				686AECBE2D3B93CB0059ECD0 /* Battman */,
 				68DCA5AF2D40EC57004D0104 /* base.pot */,
-				68DCA5B82D40FA9F004D0104 /* pofiles */,
+				68DCA5B82D40FA9F004D0104 /* pofiles_new */,
 				687742AB2D437EE400375A2C /* Gettext Localizations */,
+				687743262D4CACBD00375A2C /* pofiles update */,
 			);
 		};
 /* End PBXProject section */
@@ -292,8 +312,27 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nLOCS=\"zh_CN en\"\nLOC_BASE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations\"\nLOC_TGT=\"${PROJECT_DIR}/${PROJECT_NAME}/locales\"\nNAME_LOW=\"$(echo ${PROJECT_NAME} | tr '[:upper:]' '[:lower:]')\"\n\nfor locs in $LOCS; do mkdir -p \"${LOC_TGT}/${locs}/LC_MESSAGES/\" && msgfmt \"${LOC_BASE}/$locs.po\" -o \"${LOC_TGT}/${locs}/LC_MESSAGES/${NAME_LOW}.mo\"; done\n";
 		};
+		6877432A2D4CACCC00375A2C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot",
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nLOCS=\"zh_CN en\"\nLOC_BASE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations\"\nPOT_FILE=\"${LOC_BASE}/base.pot\"\n\nfor locs in $LOCS; do msginit --input=\"${POT_FILE}\" --output-file=\"${LOC_BASE}/$locs.po.step\" --locale=\"$locs\" --no-translator && msgmerge -N \"${LOC_BASE}/$locs.po\" \"${LOC_BASE}/$locs.po.step\" > \"${LOC_BASE}/$locs.po.new\" && mv \"${LOC_BASE}/$locs.po.new\" \"${LOC_BASE}/$locs.po\" && rm \"${LOC_BASE}/$locs.po.step\"; done\n";
+		};
 		68DCA5B32D40EC61004D0104 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -308,7 +347,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nPOT_FILE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot\"\nexec xgettext -v --keyword=_ --copyright-holder=\"Torrekie <me@torrekie.dev>\" --package-name=\"${PROJECT_NAME}\" --package-version=\"${CURRENT_PROJECT_VERSION}\" --output=$POT_FILE --from-code=UTF-8 $(find ${PROJECT_DIR}/${PROJECT_NAME} -name \"*.m\" -or -name \"*.c\" -or -name \"*.h\")\n";
+			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nPOT_FILE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot\"\nrm \"${POT_FILE}\"\nexec xgettext -v --keyword=_ --copyright-holder=\"Torrekie <me@torrekie.dev>\" --package-name=\"${PROJECT_NAME}\" --package-version=\"${CURRENT_PROJECT_VERSION}\" --output=$POT_FILE --from-code=UTF-8 $(find ${PROJECT_DIR}/${PROJECT_NAME} -name \"*.m\" -or -name \"*.c\" -or -name \"*.h\")\n";
 		};
 		68DCA5BC2D40FAB1004D0104 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -318,7 +357,6 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot",
 			);
 			outputFileListPaths = (
 			);
@@ -335,6 +373,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6877432C2D4CBB0200375A2C /* SPWaterProgressIndicatorView.m in Sources */,
 				686AECCA2D3B93CB0059ECD0 /* ViewController.m in Sources */,
 				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
 				686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */,
@@ -557,6 +596,22 @@
 			};
 			name = Release;
 		};
+		687743282D4CACBD00375A2C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		687743292D4CACBD00375A2C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		68DCA5B12D40EC58004D0104 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -625,6 +680,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		687743272D4CACBD00375A2C /* Build configuration list for PBXAggregateTarget "pofiles update" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				687743282D4CACBD00375A2C /* Debug */,
+				687743292D4CACBD00375A2C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		68DCA5B02D40EC58004D0104 /* Build configuration list for PBXAggregateTarget "base.pot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -634,7 +698,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		68DCA5B92D40FA9F004D0104 /* Build configuration list for PBXAggregateTarget "pofiles" */ = {
+		68DCA5B92D40FA9F004D0104 /* Build configuration list for PBXAggregateTarget "pofiles_new" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				68DCA5BA2D40FA9F004D0104 /* Debug */,

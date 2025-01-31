@@ -15,8 +15,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "68DCA5B82D40FA9F004D0104"
-               BuildableName = "pofiles"
-               BlueprintName = "pofiles"
+               BuildableName = "pofiles_new"
+               BlueprintName = "pofiles_new"
                ReferencedContainer = "container:Battman.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -51,8 +51,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "68DCA5B82D40FA9F004D0104"
-            BuildableName = "pofiles"
-            BlueprintName = "pofiles"
+            BuildableName = "pofiles_new"
+            BlueprintName = "pofiles_new"
             ReferencedContainer = "container:Battman.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
