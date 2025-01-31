@@ -7,7 +7,8 @@
 //  Great Thanks to Stefan Ceriu.
 //  Ref: https://github.com/stefanceriu/SCSiriWaveformView
 
-@import UIKit;
+#import <UIKit/UIKit.h>
+//@import UIKit;
 
 IB_DESIGNABLE
 @interface SPWaterProgressIndicatorView : UIView

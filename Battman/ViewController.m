@@ -7,8 +7,8 @@
 
 #import "ViewController.h"
 #import "SceneDelegate.h"
-#include "common.h"
 #import "SPWaterProgressIndicatorView.h"
+#include "common.h"
 
 @interface ViewController () <UINavigationBarDelegate, UICollectionViewDataSource, UICollectionViewDelegate>
 @property (strong, nonatomic) UINavigationController *titleBar;

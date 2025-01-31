@@ -201,8 +201,18 @@ bool libintl_available(void)
     static void *libintl_handle = NULL;
 
     if (avail) return avail;
+    
+    if(PTR_TYPE_DLSYM(RTLD_DEFAULT, gettext)&&
+    	PTR_TYPE_DLSYM(RTLD_DEFAULT, bindtextdomain)&&
+    	PTR_TYPE_DLSYM(RTLD_DEFAULT, textdomain)) {
+    	avail=true;
+    }else if(PTR_TYPE_NAME_DLSYM(RTLD_DEFAULT, gettext, libintl_gettext)&&
+    	PTR_TYPE_NAME_DLSYM(RTLD_DEFAULT, bindtextdomain, libintl_bindtextdomain)&&
+    	PTR_TYPE_NAME_DLSYM(RTLD_DEFAULT, textdomain,libintl_textdomain)) {
+    	avail=true;
+    }
 
-    if (SYM_EXIST(gettext, bindtextdomain, textdomain)) {
+    /*if (SYM_EXIST(gettext, bindtextdomain, textdomain)) {
         DBGLOG(@"Avail as direct: %p %p %p", gettext, bindtextdomain, textdomain);
         avail = true;
         PTR_TYPE(gettext);
@@ -214,7 +224,7 @@ bool libintl_available(void)
         PTR_TYPE_NAME(gettext, libintl_gettext);
         PTR_TYPE_NAME(bindtextdomain, libintl_bindtextdomain);
         PTR_TYPE_NAME(textdomain, libintl_textdomain);
-    }
+    }*/
 
     if (!avail) {
         if (!libintl_handle) {
@@ -251,14 +261,19 @@ bool gtk_available(void)
 
     if (avail) return avail;
 
-    if (SYM_EXIST(gtk_dialog_get_type, gtk_message_dialog_new, gtk_dialog_add_button, gtk_dialog_run, gtk_widget_destroy)) {
+    /*if (SYM_EXIST(gtk_dialog_get_type, gtk_message_dialog_new, gtk_dialog_add_button, gtk_dialog_run, gtk_widget_destroy)) {
         avail = true;
         PTR_TYPE(gtk_dialog_get_type);
         PTR_TYPE(gtk_message_dialog_new);
         PTR_TYPE(gtk_dialog_add_button);
         PTR_TYPE(gtk_dialog_run);
         PTR_TYPE(gtk_widget_destroy);
-    }
+    }*/
+    if (PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_dialog_get_type) &&
+                PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_message_dialog_new) &&
+                PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_dialog_add_button) &&
+                PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_dialog_run) &&
+                PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_widget_destroy)) avail = true;
 
     if (!avail) {
         if (!libgtk3_handle) {
@@ -285,12 +300,12 @@ bool show_alert(const char *title, const char *message, const char *cancel_butto
 
     /* Alert in GTK+ if under X Window */
     if (gtk_available() && getenv("DISPLAY")) {
-        GtkWidget *dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_NONE, "%s", message);
-        gtk_dialog_add_button(GTK_DIALOG(dialog), cancel_button_title, GTK_RESPONSE_CANCEL);
+        GtkWidget *dialog = gtk_message_dialog_new_ptr(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_NONE, "%s", message);
+        gtk_dialog_add_button_ptr(GTK_DIALOG(dialog), cancel_button_title, GTK_RESPONSE_CANCEL);
         // gtk_dialog_add_button(GTK_DIALOG(dialog), "OK", GTK_RESPONSE_ACCEPT);
         
-        int response = gtk_dialog_run(GTK_DIALOG(dialog));
-        gtk_widget_destroy(dialog);
+        int response = gtk_dialog_run_ptr(GTK_DIALOG(dialog));
+        gtk_widget_destroy_ptr(dialog);
         return response == GTK_RESPONSE_CANCEL;
     }
 #if TARGET_OS_IPHONE

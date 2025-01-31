@@ -24,6 +24,7 @@
 extern int _NSGetExecutablePath(char* buf, uint32_t* bufsize);
 #endif
 
+
 /* Use gettext i18n for App & CLI consistency */
 /* While running as CLI, NSBundle is unset,
    which means we cannot use Localizables.strings
@@ -90,7 +91,7 @@ int main(int argc, char * argv[]) {
             appDelegateClassName = NSStringFromClass([AppDelegate class]);
         }
         /* TODO: add X11 and AppKit support? */
-        return UIApplicationMain(argc, argv, nil, appDelegateClassName);
+        return UIApplicationMain(argc, argv, nil, @"AppDelegate");
 #else
         @autoreleasepool {
         }

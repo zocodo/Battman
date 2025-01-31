@@ -27,6 +27,10 @@
 #define _(x) cond_localize(x)
 #endif
 
+#ifndef BATTMAN_INTL
+#define BATTMAN_INTL "en"
+#endif
+
 __BEGIN_DECLS
 
 NSString *cond_localize(char *);
