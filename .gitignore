@@ -10,7 +10,4 @@ libs/
 gettext-0.23/
 # Xcode generated
 **/project.xcworkspace
-Battman/ipa/mount
-Battman/ipa/Battman.ipa
-Battman/Battman
-Battman/ipa/Payload/Battman.app/Battman
+Battman/build
