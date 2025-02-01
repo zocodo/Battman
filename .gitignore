@@ -12,3 +12,5 @@ gettext-0.23/
 **/project.xcworkspace
 Battman/ipa/mount
 Battman/ipa/Battman.ipa
+Battman/Battman
+Battman/ipa/Payload/Battman.app/Battman

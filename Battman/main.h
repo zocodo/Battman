@@ -28,7 +28,7 @@
 #endif
 
 #ifndef BATTMAN_INTL
-#define BATTMAN_INTL "en"
+#define BATTMAN_INTL "battman"
 #endif
 
 __BEGIN_DECLS
