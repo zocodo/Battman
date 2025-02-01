@@ -6,7 +6,8 @@
 //
 
 #import "SceneDelegate.h"
-#import "ViewController.h"
+#import "BatteryInfoViewController.h"
+#import "SettingsViewController.h"
 
 @interface SceneDelegate ()
 
@@ -18,11 +19,14 @@ UIWindow *gWindow;
 
 
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
-    self.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
-    self.window.rootViewController = [[UINavigationController alloc] initWithRootViewController:[[ViewController alloc] init]];
-//    [self.window setRootViewController:[[ViewController alloc] init]];
-    [self.window makeKeyAndVisible];
-    gWindow = self.window;
+	self.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
+	UITabBarController *tabbar=[UITabBarController new];
+	tabbar.viewControllers=@[[BatteryInfoViewController new],[SettingsViewController new]];
+	gWindow=self.window;
+	gWindow.rootViewController=tabbar;
+
+	[self.window makeKeyAndVisible];
+	gWindow = self.window;
 }
 
 
