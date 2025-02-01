@@ -2,6 +2,10 @@
 
 @implementation SettingsViewController
 
+- (NSString *)title {
+	return @"Battman";
+}
+
 - (instancetype)init {
 	UITabBarItem *tabbarItem=[[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:1];
 	tabbarItem.title=@"More";

@@ -2,6 +2,10 @@
 
 @implementation BatteryInfoViewController
 
+- (NSString *)title {
+	return @"Battman";
+}
+
 - (instancetype)init {
 	UITabBarItem *tabbarItem=[UITabBarItem new];
 	tabbarItem.title=@"Battery";

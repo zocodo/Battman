@@ -21,7 +21,10 @@ UIWindow *gWindow;
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
 	self.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
 	UITabBarController *tabbar=[UITabBarController new];
-	tabbar.viewControllers=@[[BatteryInfoViewController new],[SettingsViewController new]];
+	tabbar.viewControllers=@[
+		[[UINavigationController alloc] initWithRootViewController:[BatteryInfoViewController new]],
+		[[UINavigationController alloc] initWithRootViewController:[SettingsViewController new]]
+	];
 	gWindow=self.window;
 	gWindow.rootViewController=tabbar;
 
