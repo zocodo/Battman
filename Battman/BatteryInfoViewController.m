@@ -96,16 +96,21 @@
         [waterViewSoC startAnimation];
     }
 
-	UIView *positionView=[[UIView alloc] initWithFrame:CGRectMake(10,10,80,80)];
+	UIView *positionView=[[UIView alloc] initWithFrame:CGRectMake(20,20,80,80)];
 	[positionView addSubview:batteryCell];
 	[batteryChargeCell.contentView addSubview:positionView];
+	UILabel *batteryRemainingLabel=[[UILabel alloc] initWithFrame:CGRectMake(120,10,600,100)];
+	batteryRemainingLabel.lineBreakMode=NSLineBreakByWordWrapping;
+	batteryRemainingLabel.numberOfLines=0;
+	batteryRemainingLabel.text=@"Battery Capacity: 90%\nCharge: 50%\nHotness: 0%";
+	[batteryChargeCell.contentView addSubview:batteryRemainingLabel];
 	//batteryChargeCell.textLabel.text=@"Test";
 	return batteryChargeCell;
 }
 
 - (CGFloat)tableView:(id)tv heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 	if(indexPath.row==0) {
-		return 100;
+		return 130;
 	}
 	return 30;
 }
