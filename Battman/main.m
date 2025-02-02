@@ -35,6 +35,11 @@ NSString *cond_localize(char *str) {
 
     dispatch_once(&onceToken, ^{
         if (libintl_available()) {
+#ifdef DEBUG
+            assert(bindtextdomain_ptr != NULL);
+            assert(textdomain_ptr != NULL);
+            assert(gettext_ptr != NULL);
+#endif
             /* For some reason, libintl's locale guess was not quite working,
                this is a workaround to force it read correct language */
             char *lang = preferred_language();
@@ -60,24 +65,24 @@ NSString *cond_localize(char *str) {
             } else {
                 show_alert("Error", "Unable to get executable path", "Cancel");
             }
-        } else {
-            show_alert("Warning", "Failed to load Gettext localization, defaulting to English", "OK");
-        }
 #ifdef _
 #undef _
 #endif
 // Redefine _() for PO template generation
 #define _(x) gettext_ptr(x)
-        char *locale_name = _("locale_name");
-        DBGLOG(@"Locale Name: %s", locale_name);
-        if (use_libintl && !strcmp("locale_name", locale_name)) {
-            show_alert("Error", "Unable to match existing Gettext localization, defaulting to English", "Cancel");
-        }
+            char *locale_name = _("locale_name");
+            DBGLOG(@"Locale Name: %s", locale_name);
+            if (use_libintl && !strcmp("locale_name", locale_name)) {
+                show_alert("Error", "Unable to match existing Gettext localization, defaulting to English", "Cancel");
+            }
 #undef _
 #define _(x) cond_localize(x)
+            DBGLOG(@"gettext_ptr(%s) = %s", str, gettext_ptr(str));
+        } else {
+            show_alert("Warning", "Failed to load Gettext localization, defaulting to English", "OK");
+        }
     });
 
-    DBGLOG(@"gettext_ptr(%s) = %s", str, gettext_ptr(str));
     return [NSString stringWithCString:(use_libintl ? gettext_ptr(str) : str) encoding:NSUTF8StringEncoding];
 }
 
