@@ -3,7 +3,12 @@ LOCAL_IP:=$(shell /sbin/ifconfig |sed -n "s/.*inet \([0-9]*\.[0-9]*\.[0-9]*\.[0-
 all:
 	rm -rf build/
 	mkdir -p build/Payload/Battman.app/
-	${THEOS}/toolchain/linux/iphone/bin/clang -F${THEOS}/vendor/lib -target arm64-apple-ios14.0 -target arm64-apple-darwin -isysroot ${THEOS}/sdks/iPhoneOS14.5.sdk -lobjc -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore AppDelegate.m main.m SceneDelegate.m SPWaterProgressIndicatorView.m BatteryInfoViewController.m SettingsViewController.m common.m -o build/Payload/Battman.app/Battman
+	${THEOS}/toolchain/linux/iphone/bin/clang -F${THEOS}/vendor/lib -target arm64-apple-ios14.0 -target arm64-apple-darwin -isysroot ${THEOS}/sdks/iPhoneOS14.5.sdk -lobjc -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore \
+		AppDelegate.m main.m SceneDelegate.m \
+		BatteryCellView/BatteryCellView.m BatteryCellView/SPWaterProgressIndicatorView.m \
+		BatteryCellView/BatteryInfoTableViewCell.m \
+		BatteryInfoViewController.m SettingsViewController.m common.m \
+		-o build/Payload/Battman.app/Battman
 	${THEOS}/toolchain/linux/iphone/bin/ldid -S../Battman.entitlements build/Payload/Battman.app/Battman
 	sed 's/\$$(DEVELOPMENT_LANGUAGE)/en/;s/\$$(EXECUTABLE_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_IDENTIFIER)/ct.battman/;s/\$$(PRODUCT_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/' Info.plist > build/Payload/Battman.app/Info.plist
 	cd build;zip -r Battman.ipa ./Payload;rm -rf Payload
