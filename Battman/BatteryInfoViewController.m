@@ -33,6 +33,11 @@
 }
 
 - (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	// TODO:
+	// Call underlying functions here to provide linked list
+	// NOTE that if more than one cell presents
+	// if(indexPath.[row or section]) is NEEDED
+	
 	BatteryInfoTableViewCell *cell=[[BatteryInfoTableViewCell alloc] initWithFrame:CGRectMake(0,0,1000,100)];
 #define CREATE_TEST_NODE(name, _prev, id, desc, cont) \
 		struct battery_info_node *name=malloc(sizeof(struct battery_info_node)); \

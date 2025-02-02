@@ -22,7 +22,7 @@
 - (void)updateBatteryInfo {
 	NSString *final_str=@"";
 	for(struct battery_info_node *i=_batteryInfo;i!=NULL;i=i->next) {
-		if((uint64_t)i->content > 1024) {
+		if((uint64_t)i->content >= 1024) {
 			final_str=[NSString stringWithFormat:@"%@\n%s: %s",final_str,i->description,(char*)i->content];
 		}else if(((uint64_t)i->content & (1<<9))){
 			// True
@@ -43,7 +43,7 @@
 			}
 		}
 	}
-	_batteryLabel.text=final_str;
+	_batteryLabel.text=[final_str substringFromIndex:1];
 }
 
 - (void)dealloc {
