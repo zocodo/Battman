@@ -29,6 +29,7 @@ extern int _NSGetExecutablePath(char* buf, uint32_t* bufsize);
 /* While running as CLI, NSBundle is unset,
    which means we cannot use Localizables.strings
    and NSLocalizedString() at such scene. */
+/* TODO: try implement void *cond_localize(void *strOrCFSTR)? */
 NSString *cond_localize(char *str) {
     static dispatch_once_t onceToken;
     static bool use_libintl = false;
@@ -70,6 +71,7 @@ NSString *cond_localize(char *str) {
 #endif
 // Redefine _() for PO template generation
 #define _(x) gettext_ptr(x)
+            /* locale_name should not be "locale_name" if target language has been translated */
             char *locale_name = _("locale_name");
             DBGLOG(@"Locale Name: %s", locale_name);
             if (use_libintl && !strcmp("locale_name", locale_name)) {
@@ -79,7 +81,7 @@ NSString *cond_localize(char *str) {
 #define _(x) cond_localize(x)
             DBGLOG(@"gettext_ptr(%s) = %s", str, gettext_ptr(str));
         } else {
-            show_alert("Warning", "Failed to load Gettext localization, defaulting to English", "OK");
+            show_alert("Warning", "Failed to load Gettext, defaulting to English", "OK");
         }
     });
 
@@ -107,6 +109,8 @@ int main(int argc, char * argv[]) {
     /* Not running as App, CLI/Daemon code */
     {
         // TODO: cli + x11
+        fprintf(stderr, "%s\n", [_("Battman CLI not implemented yet.") UTF8String]);
+        return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;
 }

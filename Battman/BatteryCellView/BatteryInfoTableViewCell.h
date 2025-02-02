@@ -18,12 +18,13 @@
 // ^ Please malloc().
 // Not used now. Ignore.
 // ELSE: char *
-#define BIN_AFFECTS_BATTERY_CELL 1<<8
-#define BIN_IS_FOREGROUND 1<<7|BIN_AFFECTS_BATTERY_CELL
-#define BIN_IS_BACKGROUND 0|BIN_AFFECTS_BATTERY_CELL
-#define BIN_IS_TRUE_OR_FALSE 1<<9
+#define BIN_IS_TRUE_OR_FALSE        1 << 9
+#define BIN_AFFECTS_BATTERY_CELL    1 << 8
+#define BIN_IS_FOREGROUND           1 << 7 | BIN_AFFECTS_BATTERY_CELL
+#define BIN_IS_BACKGROUND           0 << 0 | BIN_AFFECTS_BATTERY_CELL
+
 struct battery_info_node {
-	const char *description; // NONNULL
+	NSString *description; // NONNULL
 	int identifier;
 	void *content;
 	struct battery_info_node *prev;

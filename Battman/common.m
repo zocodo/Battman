@@ -172,7 +172,8 @@ char *preferred_language (void)
 /* https://developer.apple.com/library/archive/documentation/MacOSX/Conceptual/BPFrameworks/Concepts/WeakLinking.html
     Note: When checking for the existence of a symbol, you must explicitly compare it to NULL or nil in your code. You cannot use the negation operator ( ! ) to negate the address of the symbol.
 */
-bool check_ptr(void* ptr1, ...) {
+bool check_ptr(void* ptr1, ...)
+{
     va_list args;
     va_start(args, ptr1);
 
@@ -296,15 +297,30 @@ bool gtk_available(void)
     return avail;
 }
 
+#if TARGET_OS_IPHONE
+UIViewController* find_top_controller(UIViewController *root)
+{
+    if ([root isKindOfClass:[UINavigationController class]]) {
+        return find_top_controller(((UINavigationController *)root).topViewController);
+    } else if ([root isKindOfClass:[UITabBarController class]]) {
+        return find_top_controller(((UITabBarController *)root).selectedViewController);
+    } else if (root.presentedViewController != nil) {
+        return find_top_controller(root.presentedViewController);
+    }
+    return root;
+}
+#endif
+
 /* Alert for multiple scene */
 /* TODO: Check if program running under SSH */
-bool show_alert(const char *title, const char *message, const char *cancel_button_title) {
-    DBGLOG(@"show_alert called: [%s], [%s], [%s]", title, message, cancel_button_title);
+bool show_alert(const char *title, const char *message, const char *button) {
+    DBGLOG(@"show_alert called: [%s], [%s], [%s]", title, message, button);
 
-    /* Alert in GTK+ if under X Window */
+    /* Alert in GTK+ if under Xfce / GNOME */
+    /* this check may not accurate */
     if (gtk_available() && getenv("DISPLAY")) {
         GtkWidget *dialog = gtk_message_dialog_new_ptr(NULL, GTK_DIALOG_MODAL, GTK_MESSAGE_ERROR, GTK_BUTTONS_NONE, "%s", message);
-        gtk_dialog_add_button_ptr(GTK_DIALOG(dialog), cancel_button_title, GTK_RESPONSE_CANCEL);
+        gtk_dialog_add_button_ptr(GTK_DIALOG(dialog), button, GTK_RESPONSE_CANCEL);
         // gtk_dialog_add_button(GTK_DIALOG(dialog), "OK", GTK_RESPONSE_ACCEPT);
         
         int response = gtk_dialog_run_ptr(GTK_DIALOG(dialog));
@@ -315,17 +331,22 @@ bool show_alert(const char *title, const char *message, const char *cancel_butto
     /* Alert using system UIAlert */
     if (@available(iOS 9.0, *)) {
         // Use UIAlertController if iOS 10 or later
-        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithUTF8String:title]
-                                                                                 message:[NSString stringWithUTF8String:message]
-                                                                          preferredStyle:UIAlertControllerStyleAlert];
-
-        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSString stringWithUTF8String:cancel_button_title] style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {}];
-        [alertController addAction:cancelAction];
-
-        UIViewController *rootViewController = gWindow.rootViewController;
-        [rootViewController presentViewController:alertController animated:YES completion:nil];
-
-        /* TODO: check button */
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIWindowScene *scene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] anyObject];
+            UIWindow *keyWindow = scene.windows.firstObject;
+            
+            UIViewController *topController = find_top_controller(keyWindow.rootViewController);
+            
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithUTF8String:title] message:[NSString stringWithUTF8String:message] preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:[NSString stringWithUTF8String:button] style:UIAlertActionStyleDefault handler:nil];
+            [alert addAction:action];
+            
+            if (topController.presentedViewController) {
+                [topController.presentedViewController presentViewController:alert animated:YES completion:nil];
+            } else {
+                [topController presentViewController:alert animated:YES completion:nil];
+            }
+        });
         return true;
     } else {
 #pragma clang diagnostic push
@@ -335,7 +356,7 @@ bool show_alert(const char *title, const char *message, const char *cancel_butto
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithUTF8String:title]
                                                         message:[NSString stringWithUTF8String:message]
                                                        delegate:nil
-                                              cancelButtonTitle:[NSString stringWithUTF8String:cancel_button_title]
+                                              cancelButtonTitle:[NSString stringWithUTF8String:button]
                                               otherButtonTitles:@"OK", nil];
         [alert show];
         /* TODO: check button */
@@ -346,7 +367,7 @@ bool show_alert(const char *title, const char *message, const char *cancel_butto
     NSAlert *alert = [[NSAlert alloc] init];
     [alert setMessageText:[NSString stringWithUTF8String:title]];
     [alert setInformativeText:[NSString stringWithUTF8String:message]];
-    [alert addButtonWithTitle:[NSString stringWithUTF8String:cancel_button_title]];
+    [alert addButtonWithTitle:[NSString stringWithUTF8String:button]];
     [alert runModal];
     /* TODO: check button */
     return true;

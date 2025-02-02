@@ -7,20 +7,20 @@
 }
 
 - (void)updateBackgroundPercentage:(NSUInteger)percent {
-	[backgroundView updateWithPercentCompletion:100-percent];
+	[backgroundView updateWithPercentCompletion:100 - percent];
 }
 
 - (instancetype)initWithFrame:(CGRect)frame foregroundPercentage:(NSUInteger)percent backgroundPercentage:(NSUInteger)bpercent {
 	self=[super initWithFrame:frame];
-	UIView *batteryView=[[UIView alloc] initWithFrame:CGRectMake(0,0,frame.size.width,frame.size.height)];
-	batteryView.layer.cornerRadius=30;
-	batteryView.layer.masksToBounds=YES;
+	UIView *batteryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
+	batteryView.layer.cornerRadius = 30;
+	batteryView.layer.masksToBounds = YES;
 	batteryView.backgroundColor=[UIColor secondarySystemFillColor];
 	// Battery Animation -- Start
 	{
 		/* True Remaining */
 		SPWaterProgressIndicatorView *waterViewTR = [[SPWaterProgressIndicatorView alloc] initWithFrame:batteryView.bounds];
-		waterViewTR.center=batteryView.center;
+		waterViewTR.center = batteryView.center;
 		// Create the background layer that will hold the gradient
 		CAGradientLayer *waterViewTRGradient = [CAGradientLayer layer];
 		waterViewTRGradient.frame = batteryView.frame;
@@ -44,9 +44,9 @@
 		waterViewTR.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		waterViewTR.transform = CGAffineTransformMakeRotation(M_PI);
 		//TODO: FullChargeCapacity/DesignCapacity (B0FC/B0DC)
-		[waterViewTR updateWithPercentCompletion:100-bpercent];
+		[waterViewTR updateWithPercentCompletion:100 - bpercent];
 		[waterViewTR startAnimation];
-		backgroundView=waterViewTR;
+		backgroundView = waterViewTR;
 	}
 	{
 		SPWaterProgressIndicatorView *waterViewSoC = [[SPWaterProgressIndicatorView alloc] initWithFrame:batteryView.bounds];
@@ -76,7 +76,7 @@
 		[waterViewSoC updateWithPercentCompletion:percent];
 
 		[waterViewSoC startAnimation];
-		foregroundView=waterViewSoC;
+		foregroundView = waterViewSoC;
 	}
 	[self addSubview:batteryView];
 	return self;

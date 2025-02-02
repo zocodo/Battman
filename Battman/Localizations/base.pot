@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Battman 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-01-31 15:32+0800\n"
+"POT-Creation-Date: 2025-02-02 18:27+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,34 +17,69 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:27
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:7
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:13
+msgid "More"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:27
+msgid "About Battman"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:44
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:62
+msgid "Credit"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:48
+msgid "Source Code"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:78
+msgid "Battman Credit"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:8
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:39
 msgid "Battman"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:86
-msgid "2025 Ⓒ Torrekie <me@torrekie.dev>"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:143
-msgid "SoC"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:143
-msgid "Health"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:143
-msgid "Temperature"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:143
-msgid "Remain Time"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:167
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:13
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:277
 msgid "Battery"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/main.m:70
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:29
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:167
+msgid "2025 Ⓒ Torrekie <me@torrekie.dev>"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:53
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
+msgid "Health"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:54
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
+msgid "SoC"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:56
+msgid "Charging"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
+msgid "Temperature"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
+msgid "Remain Time"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/main.m:75
 msgid "locale_name"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/main.m:112
+msgid "Battman CLI not implemented yet."
 msgstr ""
