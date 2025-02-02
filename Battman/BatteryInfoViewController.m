@@ -1,5 +1,6 @@
 #import "BatteryInfoViewController.h"
 #import "BatteryCellView/BatteryInfoTableViewCell.h"
+#include "common.h"
 
 @implementation BatteryInfoViewController
 
@@ -8,9 +9,9 @@
 }
 
 - (instancetype)init {
-	UITabBarItem *tabbarItem=[UITabBarItem new];
-	tabbarItem.title=@"Battery";
-	tabbarItem.image=[UIImage systemImageNamed:@"battery.100"];
+	UITabBarItem *tabbarItem = [UITabBarItem new];
+	tabbarItem.title = _("Battery");
+	tabbarItem.image =  [UIImage systemImageNamed:@"battery.100"];
 	tabbarItem.tag = 0;
 	self.tabBarItem=tabbarItem;
 	return [super initWithStyle:UITableViewStyleGrouped]; // or grouped if desired
@@ -39,6 +40,10 @@
 	// if(indexPath.[row or section]) is NEEDED
 	
 	BatteryInfoTableViewCell *cell=[[BatteryInfoTableViewCell alloc] initWithFrame:CGRectMake(0,0,1000,100)];
+        // _("Health"):		Battery Capacity/Battery Health
+        // _("SoC"):		State of Charge
+	// _("Temperature"):	Temperature
+        // _("Charging"):	Charging
 #define CREATE_TEST_NODE(name, _prev, id, desc, cont) \
 		struct battery_info_node *name=malloc(sizeof(struct battery_info_node)); \
 		name->prev=_prev; \

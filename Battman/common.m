@@ -202,14 +202,16 @@ bool libintl_available(void)
 
     if (avail) return avail;
     
-    if(PTR_TYPE_DLSYM(RTLD_DEFAULT, gettext)&&
-    	PTR_TYPE_DLSYM(RTLD_DEFAULT, bindtextdomain)&&
-    	PTR_TYPE_DLSYM(RTLD_DEFAULT, textdomain)) {
+    if (PTR_TYPE_DLSYM(NULL, gettext) &&
+    	PTR_TYPE_DLSYM(NULL, bindtextdomain) &&
+    	PTR_TYPE_DLSYM(NULL, textdomain)) {
     	avail=true;
-    }else if(PTR_TYPE_NAME_DLSYM(RTLD_DEFAULT, gettext, libintl_gettext)&&
-    	PTR_TYPE_NAME_DLSYM(RTLD_DEFAULT, bindtextdomain, libintl_bindtextdomain)&&
-    	PTR_TYPE_NAME_DLSYM(RTLD_DEFAULT, textdomain,libintl_textdomain)) {
+        DBGLOG(@"Avail as direct: %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr);
+    } else if (PTR_TYPE_NAME_DLSYM(NULL, gettext, libintl_gettext) &&
+               PTR_TYPE_NAME_DLSYM(NULL, bindtextdomain, libintl_bindtextdomain) &&
+               PTR_TYPE_NAME_DLSYM(NULL, textdomain, libintl_textdomain)) {
     	avail=true;
+        DBGLOG(@"Avail as direct (libintl_*): %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr);
     }
 
     /*if (SYM_EXIST(gettext, bindtextdomain, textdomain)) {
@@ -243,7 +245,7 @@ bool libintl_available(void)
                 avail = true;
                 DBGLOG(@"Avail as dlsym: %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr);
             } else if (PTR_TYPE_NAME_DLSYM(libintl_handle, gettext, libintl_gettext) &&
-                     PTR_TYPE_NAME_DLSYM(libintl_handle, bindtextdomain, libintl_bindtextdomain) &&
+                       PTR_TYPE_NAME_DLSYM(libintl_handle, bindtextdomain, libintl_bindtextdomain) &&
                        PTR_TYPE_NAME_DLSYM(libintl_handle, textdomain, libintl_textdomain)) {
                 DBGLOG(@"Avail as dlsym (libintl_*): %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr);
                 avail = true;
@@ -269,11 +271,11 @@ bool gtk_available(void)
         PTR_TYPE(gtk_dialog_run);
         PTR_TYPE(gtk_widget_destroy);
     }*/
-    if (PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_dialog_get_type) &&
-                PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_message_dialog_new) &&
-                PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_dialog_add_button) &&
-                PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_dialog_run) &&
-                PTR_TYPE_DLSYM(RTLD_DEFAULT, gtk_widget_destroy)) avail = true;
+    if (PTR_TYPE_DLSYM(NULL, gtk_dialog_get_type) &&
+        PTR_TYPE_DLSYM(NULL, gtk_message_dialog_new) &&
+        PTR_TYPE_DLSYM(NULL, gtk_dialog_add_button) &&
+        PTR_TYPE_DLSYM(NULL, gtk_dialog_run) &&
+        PTR_TYPE_DLSYM(NULL, gtk_widget_destroy)) avail = true;
 
     if (!avail) {
         if (!libgtk3_handle) {
@@ -297,6 +299,7 @@ bool gtk_available(void)
 /* Alert for multiple scene */
 /* TODO: Check if program running under SSH */
 bool show_alert(const char *title, const char *message, const char *cancel_button_title) {
+    DBGLOG(@"show_alert called: [%s], [%s], [%s]", title, message, cancel_button_title);
 
     /* Alert in GTK+ if under X Window */
     if (gtk_available() && getenv("DISPLAY")) {
@@ -315,6 +318,7 @@ bool show_alert(const char *title, const char *message, const char *cancel_butto
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:[NSString stringWithUTF8String:title]
                                                                                  message:[NSString stringWithUTF8String:message]
                                                                           preferredStyle:UIAlertControllerStyleAlert];
+
         UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:[NSString stringWithUTF8String:cancel_button_title] style:UIAlertActionStyleCancel handler:^(UIAlertAction * action) {}];
         [alertController addAction:cancelAction];
 

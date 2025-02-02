@@ -56,11 +56,12 @@
 /* Begin PBXBuildFile section */
 		686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC32D3B93CB0059ECD0 /* AppDelegate.m */; };
 		686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */; };
-		686AECCA2D3B93CB0059ECD0 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC92D3B93CB0059ECD0 /* ViewController.m */; };
 		686AECCF2D3B93CD0059ECD0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
 		687742B62D43838500375A2C /* locales in Resources */ = {isa = PBXBuildFile; fileRef = 687742B52D43837B00375A2C /* locales */; };
 		6877432C2D4CBB0200375A2C /* SPWaterProgressIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6877432B2D4CBB0200375A2C /* SPWaterProgressIndicatorView.m */; };
+		687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743342D4E08AD00375A2C /* SettingsViewController.m */; };
+		687743372D4E08AD00375A2C /* BatteryInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743352D4E08AD00375A2C /* BatteryInfoViewController.m */; };
 		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
 
@@ -98,6 +99,10 @@
 		687743192D46359200375A2C /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 		6877432B2D4CBB0200375A2C /* SPWaterProgressIndicatorView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPWaterProgressIndicatorView.m; sourceTree = "<group>"; };
 		6877432D2D4CBB3200375A2C /* SPWaterProgressIndicatorView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPWaterProgressIndicatorView.h; sourceTree = "<group>"; };
+		6877432F2D4E08AD00375A2C /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		687743332D4E08AD00375A2C /* BatteryInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryInfoViewController.h; sourceTree = "<group>"; };
+		687743342D4E08AD00375A2C /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		687743352D4E08AD00375A2C /* BatteryInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatteryInfoViewController.m; sourceTree = "<group>"; };
 		68DCA5582D3BBC6A004D0104 /* Battman.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Battman.storyboard; sourceTree = "<group>"; };
 		68DCA5602D3D0AC5004D0104 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		68DCA5A82D3F9338004D0104 /* common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
@@ -144,6 +149,10 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				687743332D4E08AD00375A2C /* BatteryInfoViewController.h */,
+				687743352D4E08AD00375A2C /* BatteryInfoViewController.m */,
+				6877432F2D4E08AD00375A2C /* SettingsViewController.h */,
+				687743342D4E08AD00375A2C /* SettingsViewController.m */,
 				687742B52D43837B00375A2C /* locales */,
 				68DCA5B42D40EDE8004D0104 /* Localizations */,
 				686AECC22D3B93CB0059ECD0 /* AppDelegate.h */,
@@ -374,11 +383,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				6877432C2D4CBB0200375A2C /* SPWaterProgressIndicatorView.m in Sources */,
-				686AECCA2D3B93CB0059ECD0 /* ViewController.m in Sources */,
 				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
 				686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */,
+				687743372D4E08AD00375A2C /* BatteryInfoViewController.m in Sources */,
 				686AECD52D3B93CD0059ECD0 /* main.m in Sources */,
 				686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */,
+				687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

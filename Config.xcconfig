@@ -8,6 +8,6 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
-OLDFL[sdk=iphonesimulator*] = -Wl,-sectcreate,__TEXT,__entitlements,$(PROJECT_DIR)/Battman.entitlements -Wl,-undefined,dynamic_lookup
+OLDFL[sdk=iphonesimulator*] = -Wl,-sectcreate,__TEXT,__entitlements,$(PROJECT_DIR)/Battman.entitlements
 
-OLDFL[sdk=iphoneos*] = -Wl,-undefined,dynamic_lookup
+OLDFL[sdk=iphoneos*] = 
