@@ -8,7 +8,9 @@
 - (instancetype)initWithFrame:(CGRect)frame {
 	self = [super initWithFrame:frame];
 	BatteryCellView *batteryCell = [[BatteryCellView alloc] initWithFrame:CGRectMake(20, 20, 80, 80) foregroundPercentage:0 backgroundPercentage:0];
+	batteryCell.translatesAutoresizingMaskIntoConstraints=NO;
 	[self.contentView addSubview:batteryCell];
+	//[batteryCell.centerYAnchor constraintEqualToAnchor:self.centerYAnchor constant:0].active=YES;
 	UILabel *batteryRemainingLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 10, 600, 100)];
 	batteryRemainingLabel.lineBreakMode = NSLineBreakByWordWrapping;
 	batteryRemainingLabel.numberOfLines = 0;
@@ -22,7 +24,7 @@
 
 - (void)updateBatteryInfo {
 	NSString *final_str = @"";
-    // TODO: Arabian? We need Arabian hackers to fix this code
+	// TODO: Arabian? We need Arabian hackers to fix this code
 	for (struct battery_info_node *i = _batteryInfo; i != NULL; i = i->next) {
 		if ((uint64_t)i->content >= 1024) {
 			final_str = [NSString stringWithFormat:@"%@\n%@: %s", final_str, _(i->description), (char*)i->content];

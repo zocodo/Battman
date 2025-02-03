@@ -29,7 +29,7 @@ endif
 
 SDKROOT := ${THEOS}/sdks/iPhoneOS14.5.sdk
 LIBS := -lobjc
-FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore
+FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework IOKit
 
 SOURCES := 	main.m \
 		AppDelegate.m \

@@ -4,6 +4,12 @@
 #include <stddef.h>
 #include <stdlib.h>
 
+#include <CoreFoundation/CFBase.h>
+#include <CoreFoundation/CFNumber.h>
+#include <CoreFoundation/CFArray.h>
+#include <CoreFoundation/CFDictionary.h>
+#include <CoreFoundation/CFString.h>
+
 // Internal IDs:
 // They are intended to be here, not in headers
 
@@ -89,21 +95,51 @@ struct battery_info_node *battery_info_init() {
 	return info;
 }
 
+#define MAKE_PERCENTAGE(a,b) (int)((float)a*100.0/(float)b)
+
+CFTypeRef IOPSCopyPowerSourcesByType(int);
+CFArrayRef IOPSCopyPowerSourcesList(CFTypeRef);
+CFDictionaryRef IOPSGetPowerSourceDescription(CFTypeRef,CFTypeRef);
+
 void battery_info_update(struct battery_info_node *head) {
-	// TODO: Put real implementations HERE
-	if(bi_find_next(&head, ID_BI_BATTERY_HEALTH)) {
-		bi_node_change_content_value(head, 80);
+	CFTypeRef powersources=IOPSCopyPowerSourcesByType(0);
+	CFArrayRef pslist=IOPSCopyPowerSourcesList(powersources);
+	int pscnt=CFArrayGetCount(pslist);
+	for(int i=0;i<pscnt;i++) {
+		CFTypeRef cursrc=CFArrayGetValueAtIndex(pslist,i);
+		CFTypeRef desc=IOPSGetPowerSourceDescription(powersources, cursrc);
+		if(CFStringCompare((CFStringRef)CFDictionaryGetValue(desc, CFSTR("Type")), CFSTR("InternalBattery"),0)==kCFCompareEqualTo) {
+			CFNumberRef curCapacity=(CFNumberRef)CFDictionaryGetValue(desc, CFSTR("Current Capacity"));
+			CFNumberRef maxCapacity=(CFNumberRef)CFDictionaryGetValue(desc, CFSTR("Max Capacity"));
+			CFNumberRef designCapacity=(CFNumberRef)CFDictionaryGetValue(desc, CFSTR("DesignCapacity"));
+			long cc;
+			long mc;
+			long dc;
+			CFNumberGetValue(curCapacity, kCFNumberLongType, &cc);
+			CFNumberGetValue(maxCapacity, kCFNumberLongType, &mc);
+			//CFNumberGetValue(designCapacity, kCFNumberLongType, &dc);
+			dc=mc;
+			// idk how to get battery health :(
+			CFBooleanRef isCharging=(CFBooleanRef)CFDictionaryGetValue(desc,CFSTR("Is Charging"));
+			
+			if(bi_find_next(&head, ID_BI_BATTERY_HEALTH)) {
+				bi_node_change_content_value(head, MAKE_PERCENTAGE(mc,dc));
+			}
+			if(bi_find_next(&head, ID_BI_BATTERY_SOC)) {
+				bi_node_change_content_value(head, MAKE_PERCENTAGE(cc,dc));
+			}
+			if(bi_find_next(&head, ID_BI_BATTERY_TEMP)) {
+				bi_node_change_content_value(head, 32);
+			}
+			if(bi_find_next(&head, ID_BI_BATTERY_CHARGING)) {
+				bi_node_change_content_value(head, CFBooleanGetValue(isCharging));
+			}
+			if(bi_find_next(&head, ID_BI_BATTERY_ALWAYS_FALSE)) {
+				bi_node_change_content_value(head, 0);
+			}
+			break;
+		}
 	}
-	if(bi_find_next(&head, ID_BI_BATTERY_SOC)) {
-		bi_node_change_content_value(head, 50);
-	}
-	if(bi_find_next(&head, ID_BI_BATTERY_TEMP)) {
-		bi_node_change_content_value(head, 32);
-	}
-	if(bi_find_next(&head, ID_BI_BATTERY_CHARGING)) {
-		bi_node_change_content_value(head, 1);
-	}
-	if(bi_find_next(&head, ID_BI_BATTERY_ALWAYS_FALSE)) {
-		bi_node_change_content_value(head, 0);
-	}
+	CFRelease(pslist);
+	CFRelease(powersources);
 }
