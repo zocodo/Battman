@@ -101,4 +101,9 @@
 	return nil;
 }
 
++ (NSArray *)debugGetBatteryCausesLeakDoNotUseInProduction {
+	void *IOPSCopyPowerSourcesByType(int);
+	return (__bridge NSArray *)IOPSCopyPowerSourcesByType(1);
+}
+
 @end

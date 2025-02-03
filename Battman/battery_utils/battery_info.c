@@ -102,7 +102,7 @@ CFArrayRef IOPSCopyPowerSourcesList(CFTypeRef);
 CFDictionaryRef IOPSGetPowerSourceDescription(CFTypeRef,CFTypeRef);
 
 void battery_info_update(struct battery_info_node *head) {
-	CFTypeRef powersources=IOPSCopyPowerSourcesByType(0);
+	CFTypeRef powersources=IOPSCopyPowerSourcesByType(1);
 	CFArrayRef pslist=IOPSCopyPowerSourcesList(powersources);
 	int pscnt=CFArrayGetCount(pslist);
 	for(int i=0;i<pscnt;i++) {
@@ -111,22 +111,21 @@ void battery_info_update(struct battery_info_node *head) {
 		if(CFStringCompare((CFStringRef)CFDictionaryGetValue(desc, CFSTR("Type")), CFSTR("InternalBattery"),0)==kCFCompareEqualTo) {
 			CFNumberRef curCapacity=(CFNumberRef)CFDictionaryGetValue(desc, CFSTR("Current Capacity"));
 			CFNumberRef maxCapacity=(CFNumberRef)CFDictionaryGetValue(desc, CFSTR("Max Capacity"));
-			CFNumberRef designCapacity=(CFNumberRef)CFDictionaryGetValue(desc, CFSTR("DesignCapacity"));
+			CFNumberRef designCapacity=(CFNumberRef)CFDictionaryGetValue(desc, CFSTR("Maximum Capacity Percent"));
 			long cc;
 			long mc;
 			long dc;
 			CFNumberGetValue(curCapacity, kCFNumberLongType, &cc);
 			CFNumberGetValue(maxCapacity, kCFNumberLongType, &mc);
-			//CFNumberGetValue(designCapacity, kCFNumberLongType, &dc);
-			dc=mc;
+			CFNumberGetValue(designCapacity, kCFNumberLongType, &dc);
 			// idk how to get battery health :(
 			CFBooleanRef isCharging=(CFBooleanRef)CFDictionaryGetValue(desc,CFSTR("Is Charging"));
 			
 			if(bi_find_next(&head, ID_BI_BATTERY_HEALTH)) {
-				bi_node_change_content_value(head, MAKE_PERCENTAGE(mc,dc));
+				bi_node_change_content_value(head, dc);
 			}
 			if(bi_find_next(&head, ID_BI_BATTERY_SOC)) {
-				bi_node_change_content_value(head, MAKE_PERCENTAGE(cc,dc));
+				bi_node_change_content_value(head, (int)((float)dc*(float)cc/(float)mc));
 			}
 			if(bi_find_next(&head, ID_BI_BATTERY_TEMP)) {
 				bi_node_change_content_value(head, 32);
