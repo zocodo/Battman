@@ -124,7 +124,7 @@ static const CGFloat kDefaultMinimumFontSize    = 12.f;
 {
     self.completionInPercent = MAX(0, MIN(kDefaultMaximumPercent, percent));
     
-    self.textLayer.string = [NSString stringWithFormat:@"%zd %%", self.completionInPercent];
+    //self.textLayer.string = [NSString stringWithFormat:@"%zd %%", self.completionInPercent];
     
     [self setNeedsDisplay];
 }

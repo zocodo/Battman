@@ -24,6 +24,7 @@
 
 - (void)updateBatteryInfo {
 	NSString *final_str = @"";
+#warning TODO: Turn those magic bitwise to macros
 	// TODO: Arabian? We need Arabian hackers to fix this code
 	for (struct battery_info_node *i = _batteryInfo; i != NULL; i = i->next) {
 		if ((uint64_t)i->content >= 1024) {
@@ -35,8 +36,8 @@
 			}
 		} else {
 			uint64_t masked_num = (uint64_t)i->content;
-			int val = (masked_num & ((1 << 7) - 1));
-			final_str = [NSString stringWithFormat:@"%@\n%@: %d", final_str, _(i->description), val];
+			float val = (masked_num & ((1 << 7) - 1));
+			final_str = [NSString stringWithFormat:@"%@\n%@: %0.2f", final_str, _(i->description), val];
 			if(masked_num & (1 << 8)) {
 				final_str = [final_str stringByAppendingString:@"%"];
 				if(masked_num & (1 << 7)) {

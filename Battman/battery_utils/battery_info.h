@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdbool.h>
 // content: <1024: integer 1-127
 // Bit 1<<9 == 1 : IsTrueOrFalse
 // Bit 1<<9 == 0 : IsNum
@@ -29,9 +30,9 @@ struct battery_info_node {
 
 struct battery_info_node *bi_construct_linked_list(struct battery_info_node *template);
 // This navigates next chain first, then prev, if found, v is updated.
-int bi_find_next(struct battery_info_node **v, int identifier);
+bool bi_find_next(struct battery_info_node **v, int identifier);
 // This function modifies the value without changing the
 // definition bits.
 void bi_node_change_content_value(struct battery_info_node *node, unsigned int value);
 void battery_info_update(struct battery_info_node *head);
-struct battery_info_node *battery_info_init();
+struct battery_info_node *battery_info_init(void);

@@ -1,23 +1,23 @@
 #import "BatteryCellView.h"
-
+extern bool show_alert(char *, char*,char*);
 @implementation BatteryCellView
 
-- (void)updateForegroundPercentage:(NSUInteger)percent {
+- (void)updateForegroundPercentage:(float)percent {
 	[foregroundView updateWithPercentCompletion:percent];
 }
 
-- (void)updateBackgroundPercentage:(NSUInteger)percent {
-	[backgroundView updateWithPercentCompletion:100 - percent];
+- (void)updateBackgroundPercentage:(float)percent {
+	[backgroundView updateWithPercentCompletion:100.0 - percent];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame foregroundPercentage:(NSUInteger)percent backgroundPercentage:(NSUInteger)bpercent {
+- (instancetype)initWithFrame:(CGRect)frame foregroundPercentage:(float)percent backgroundPercentage:(float)bpercent {
 	self=[super initWithFrame:frame];
 	UIView *batteryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
 	batteryView.layer.cornerRadius = 30;
 	batteryView.layer.masksToBounds = YES;
 	batteryView.backgroundColor=[UIColor secondarySystemFillColor];
 	// Battery Animation -- Start
-	{
+    {
 		/* True Remaining */
 		SPWaterProgressIndicatorView *waterViewTR = [[SPWaterProgressIndicatorView alloc] initWithFrame:batteryView.bounds];
 		waterViewTR.center = batteryView.center;
@@ -44,11 +44,12 @@
 		waterViewTR.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
 		waterViewTR.transform = CGAffineTransformMakeRotation(M_PI);
 		//TODO: FullChargeCapacity/DesignCapacity (B0FC/B0DC)
-		[waterViewTR updateWithPercentCompletion:100 - bpercent];
+        [waterViewTR updateWithPercentCompletion:(NSUInteger)(100 - bpercent)];
 		[waterViewTR startAnimation];
 		backgroundView = waterViewTR;
 	}
-	{
+    
+    {
 		SPWaterProgressIndicatorView *waterViewSoC = [[SPWaterProgressIndicatorView alloc] initWithFrame:batteryView.bounds];
 		waterViewSoC.center = batteryView.center;
 
@@ -73,7 +74,7 @@
 		waterViewSoC.phaseShift = 0.1;
 		[batteryView addSubview:waterViewSoC];
 		//TODO: StateOfCharge (BRSC)
-		[waterViewSoC updateWithPercentCompletion:percent];
+		[waterViewSoC updateWithPercentCompletion:(NSUInteger)percent];
 
 		[waterViewSoC startAnimation];
 		foregroundView = waterViewSoC;

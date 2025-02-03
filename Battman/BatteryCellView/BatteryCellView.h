@@ -7,8 +7,8 @@
 	SPWaterProgressIndicatorView *foregroundView;
 }
 
-- (void)updateForegroundPercentage:(NSUInteger)percent;
-- (void)updateBackgroundPercentage:(NSUInteger)percent;
+- (void)updateForegroundPercentage:(float)percent;
+- (void)updateBackgroundPercentage:(float)percent;
 
-- (instancetype)initWithFrame:(CGRect)frame foregroundPercentage:(NSUInteger)percent backgroundPercentage:(NSUInteger)bpercent;
+- (instancetype)initWithFrame:(CGRect)frame foregroundPercentage:(float)percent backgroundPercentage:(float)bpercent;
 @end

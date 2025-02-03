@@ -195,6 +195,8 @@ bool check_ptr(void* ptr1, ...)
     return true;  // Return true if all pointers are non-NULL
 }
 
+
+
 /* Conditional libintl */
 bool libintl_available(void)
 {
