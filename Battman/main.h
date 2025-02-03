@@ -33,7 +33,7 @@
 
 __BEGIN_DECLS
 
-NSString *cond_localize(char *);
+NSString *cond_localize(const char *);
 
 __END_DECLS
 

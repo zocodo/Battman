@@ -1,6 +1,7 @@
 #import "BatteryInfoTableViewCell.h"
 #include <stdint.h>
 #include <stdlib.h>
+#include "../common.h"
 
 @implementation BatteryInfoTableViewCell
 
@@ -24,16 +25,16 @@
     // TODO: Arabian? We need Arabian hackers to fix this code
 	for (struct battery_info_node *i = _batteryInfo; i != NULL; i = i->next) {
 		if ((uint64_t)i->content >= 1024) {
-			final_str = [NSString stringWithFormat:@"%@\n%@: %s", final_str, i->description, (char*)i->content];
+			final_str = [NSString stringWithFormat:@"%@\n%@: %s", final_str, _(i->description), (char*)i->content];
 		} else if (((uint64_t)i->content & (1 << 9))) {
 			// True
 			if ((uint64_t)i->content & 1) {
-				final_str = [NSString stringWithFormat:@"%@\n%@", final_str, i->description];
+				final_str = [NSString stringWithFormat:@"%@\n%@", final_str, _(i->description)];
 			}
 		} else {
 			uint64_t masked_num = (uint64_t)i->content;
 			int val = (masked_num & ((1 << 7) - 1));
-			final_str = [NSString stringWithFormat:@"%@\n%@: %d", final_str, i->description, val];
+			final_str = [NSString stringWithFormat:@"%@\n%@: %d", final_str, _(i->description), val];
 			if(masked_num & (1 << 8)) {
 				final_str = [final_str stringByAppendingString:@"%"];
 				if(masked_num & (1 << 7)) {
@@ -48,7 +49,11 @@
 }
 
 - (void)dealloc {
-#warning potential memory leakage
+//#warning potential memory leakage
+#warning TODO: NO LEAKAGE, if confirmed remove
+// Analysis: >1024: malloc()ed ptrs, free
+// else: numbers within structs, no free
+// then: free structure itself.
 	for (struct battery_info_node *i = _batteryInfo; i != NULL; /*i=i->next*/) {
 		if ((uint64_t)i->content > 1024) {
 			free(i->content);

@@ -39,7 +39,8 @@ SOURCES := 	main.m \
 		common.m \
 		BatteryCellView/BatteryCellView.m \
 		BatteryCellView/SPWaterProgressIndicatorView.m \
-		BatteryCellView/BatteryInfoTableViewCell.m
+		BatteryCellView/BatteryInfoTableViewCell.m \
+		battery_utils/battery_info.c
 
 # TODO: Target splitting
 # TODO: gettext generation
@@ -49,6 +50,7 @@ all:
 	# TODO: Compile sources as *.o first
 	$(CC) -F${THEOS}/vendor/lib -target arm64-apple-ios14.0 -target arm64-apple-darwin \
 		-isysroot ${THEOS}/sdks/iPhoneOS14.5.sdk $(LIBS) $(FRAMEWORKS) \
+		-fobjc-arc \
 		$(CFLAGS) $(LDFLAGS) \
 		$(SOURCES) -o build/Payload/Battman.app/Battman
 	$(CODESIGN)../Battman.entitlements build/Payload/Battman.app/Battman

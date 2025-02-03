@@ -9,6 +9,7 @@
 
 - (instancetype)init {
 #warning UITabBarSystemItem cannot change title like this!
+// TODO: ^what??? I don't get it
 	UITabBarItem *tabbarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:1];
 	tabbarItem.title = _("More");
 	self.tabBarItem = tabbarItem;
