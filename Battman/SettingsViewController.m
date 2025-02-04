@@ -8,10 +8,9 @@
 }
 
 - (instancetype)init {
-#warning UITabBarSystemItem cannot change title like this!
-// TODO: ^what??? I don't get it
 	UITabBarItem *tabbarItem = [[UITabBarItem alloc] initWithTabBarSystemItem:UITabBarSystemItemMore tag:1];
-	tabbarItem.title = _("More");
+	tabbarItem.title = _("More"); // UITabBarSystemItem cannot change title like this
+    [tabbarItem setValue:_("More") forKey:@"internalTitle"]; // This is the correct way (But not accepted by App Store)
 	self.tabBarItem = tabbarItem;
 	return [super initWithStyle:UITableViewStyleGrouped]; // or plain if desired
 }

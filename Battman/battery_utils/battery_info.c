@@ -10,6 +10,7 @@
 #include <CoreFoundation/CFDictionary.h>
 #include <CoreFoundation/CFString.h>
 
+#warning TODO: IOKit/ps is not reliable, migrate to other impl
 #if __has_include(<IOKit/ps/IOPowerSources.h>)
 #include <IOKit/ps/IOPowerSources.h>
 #else
@@ -36,32 +37,48 @@ enum {
 #else
 /* Implemented Keys (Documented) */
 #define kIOPSIsPresentKey               "Is Present"
+#define kIOPSIsChargedKey               "Is Charged" // Only appears when charged
 #define kIOPSIsFinishingChargeKey       "Is Finishing Charge"
 #define kIOPSPowerSourceStateKey        "Power Source State"
-#define kIOPSCurrentKey                 "Current"
 #define kIOPSMaxCapacityKey             "Max Capacity"
 #define kIOPSCurrentCapacityKey         "Current Capacity"
-#define kIOPSBatteryHealthConditionKey  "BatteryHealthCondition"
 #define kIOPSIsChargingKey              "Is Charging"
 #define kIOPSHardwareSerialNumberKey    "Hardware Serial Number"
 #define kIOPSTransportTypeKey           "Transport Type"
 #define kIOPSTimeToEmptyKey             "Time to Empty"
 #define kIOPSNameKey                    "Name"
 #define kIOPSTypeKey                    "Type"
-#define kIOPSBatteryHealthKey           "BatteryHealth"
 #define kIOPSPowerSourceIDKey           "Power Source ID"
 
-/* Unimplemented Keys (At least not in Simulator) */
+/* Implemented Keys (Real device only) */
+
+/* Implemented Keys (Simulator / Mac only) */
+#define kIOPSBatteryHealthKey           "BatteryHealth"
+#define kIOPSCurrentKey                 "Current"
+#define kIOPSBatteryHealthConditionKey  "BatteryHealthCondition"
+
+/* Unimplemented Keys */
 #define kIOPSDesignCapacityKey          "DesignCapacity"
 #define kIOPSTemperatureKey             "Temperature"
 
 #define kIOPSInternalBatteryType        "InternalBattery"
 #endif
 
-/* Implemented Keys (Private) */
-#define kIOPSDesignCycleCountKey                "DesignCycleCount"
+#if __has_include(<IOKit/ps/IOPSKeysPrivate.h>)
+#include <IOKit/ps/IOPSKeysPrivate.h>
+#else
+/* Implemented Keys */
 #define kIOPSBatteryProvidesTimeRemainingKey    "Battery Provides Time Remaining"
 #define kIOPSOptimizedBatteryChargingEngagedKey "Optimized Battery Charging Engaged"
+
+/* Implemented Keys (Real device only) */
+#define kIOPSRawExternalConnectivityKey         "Raw External Connected"
+#define kIOPSShowChargingUIKey                  "Show Charging UI"
+#define kIOPSPlayChargingChimeKey               "Play Charging Chime"
+
+/* Implemented Keys (Simulator / Mac only) */
+#define kIOPSDesignCycleCountKey                "DesignCycleCount"
+#endif
 
 // Internal IDs:
 // They are intended to be here, not in headers
@@ -178,16 +195,18 @@ void battery_info_update(struct battery_info_node *head)
 		if (CFStringCompare((CFStringRef)CFDictionaryGetValue(desc, CFSTR(kIOPSTypeKey)), CFSTR(kIOPSInternalBatteryType),0) == kCFCompareEqualTo) {
 			CFNumberRef curCapacity = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSCurrentCapacityKey));
 			CFNumberRef maxCapacity = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSMaxCapacityKey));
-#if !TARGET_OS_SIMULATOR
+#if 0
+            // FIXME: Causing crash
             CFNumberRef designCapacity = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSDesignCapacityKey));
 #endif
 
 			int cc, mc, dc;
 			CFNumberGetValue(curCapacity, kCFNumberIntType, &cc);
 			CFNumberGetValue(maxCapacity, kCFNumberIntType, &mc);
-#if TARGET_OS_SIMULATOR
-            dc = 90;
+#if 1
+            dc = 100;
 #else
+            // FIXME: Causing crash
             CFNumberGetValue(designCapacity, kCFNumberIntType, &dc);
 #endif
             // idk how to get battery health :(

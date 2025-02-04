@@ -89,6 +89,7 @@ NSString *cond_localize(const char *str) {
 }
 
 int main(int argc, char * argv[]) {
+    // sleep(10);
     /* UIApplicationMain/NSApplicationMain only works when App launched with NSBundle */
     if ([NSBundle mainBundle]) {
 #if TARGET_OS_IPHONE

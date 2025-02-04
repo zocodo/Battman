@@ -8,6 +8,11 @@
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
 
+//#include "<DEVELOPER_DIR>/Makefiles/CoreOS/Xcode/BSD.xcconfig"
+
 OLDFL[sdk=iphonesimulator*] = -Wl,-sectcreate,__TEXT,__entitlements,$(PROJECT_DIR)/Battman.entitlements
 
-OLDFL[sdk=iphoneos*] = 
+OLDFL[sdk=iphoneos*] =
+
+// We do post-build codesigning
+CODE_SIGNING_ALLOWED = NO
