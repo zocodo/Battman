@@ -111,21 +111,20 @@ NSString *registeredStrings[] = {
 
 
 struct battery_info_node main_battery_template[] = {
-	{"Health",      ID_BI_BATTERY_HEALTH,   (void*)(BIN_IS_BACKGROUND)},
-	{"SoC",         ID_BI_BATTERY_SOC,      (void*)(BIN_IS_FOREGROUND)},
-	{"Temperature", ID_BI_BATTERY_TEMP,     (void*)(BIN_IS_VALUE)},
+	{"Health",      ID_BI_BATTERY_HEALTH,   (void*)(BIN_IS_BACKGROUND|BIN_IS_FLOAT)},
+	{"SoC",         ID_BI_BATTERY_SOC,      (void*)(BIN_IS_FOREGROUND|BIN_IS_FLOAT)},
+	{"Temperature", ID_BI_BATTERY_TEMP,     (void*)(BIN_IS_VALUE|BIN_IS_FLOAT)},
 	{"Charging",    ID_BI_BATTERY_CHARGING, (void*)(BIN_IS_TRUE_OR_FALSE)},
 
 	{"TEST FALSE YOU SHOULD NOT SEE THIS!!", ID_BI_BATTERY_ALWAYS_FALSE, (void*)(BIN_IS_TRUE_OR_FALSE)},
 	{NULL} // DO NOT DELETE
 };
 
-struct battery_info_node *bi_construct_linked_list(struct battery_info_node *template)
-{
+struct battery_info_node *bi_construct_linked_list(struct battery_info_node *template) {
 	struct battery_info_node *ret_head = NULL;
 	struct battery_info_node *tail = NULL;
 
-    for (struct battery_info_node *i = template; i->description; i++) {
+	for (struct battery_info_node *i = template; i->description; i++) {
 		struct battery_info_node *current = malloc(sizeof(struct battery_info_node));
 		current->description = i->description;
 		current->identifier = i->identifier;
@@ -141,11 +140,10 @@ struct battery_info_node *bi_construct_linked_list(struct battery_info_node *tem
 	if (tail)
 		tail->next = NULL;
 
-    return ret_head;
+	return ret_head;
 }
 
-bool bi_find_next(struct battery_info_node **v, int identifier)
-{
+bool bi_find_next(struct battery_info_node **v, int identifier) {
 	struct battery_info_node *beginning = *v;
 	for (struct battery_info_node *i = beginning; i != NULL; i = i->next) {
 		if (i->identifier == identifier) {
@@ -162,9 +160,7 @@ bool bi_find_next(struct battery_info_node **v, int identifier)
 	return true;
 }
 
-#warning Why not float?
-void bi_node_change_content_value(struct battery_info_node *node, unsigned int value)
-{
+void bi_node_change_content_value(struct battery_info_node *node, unsigned int value) {
 	assert(value <= 127);
 	node->content = (void*)(
 		// Drop lower bits
@@ -174,76 +170,41 @@ void bi_node_change_content_value(struct battery_info_node *node, unsigned int v
 	);
 }
 
-struct battery_info_node *battery_info_init()
-{
+void bi_node_change_content_value_float(struct battery_info_node *node, float value) {
+	assert(((uint64_t)node->content & BIN_IS_FLOAT)==BIN_IS_FLOAT);
+	uint32_t *ptr=(uint32_t*)&value;
+	node->content = (void*)(
+		// Drop higher bits
+		( ((uint64_t)node->content) & ((1L<<32)-1) ) |
+		// Attach value
+		((uint64_t)*ptr << 32)
+	);
+}
+
+struct battery_info_node *battery_info_init() {
 	struct battery_info_node *info = bi_construct_linked_list(main_battery_template);
 	battery_info_update(info);
 	return info;
 }
 
-#define MAKE_PERCENTAGE(a,b) (int)((float)a * 100.0 / (float)b)
-
-void battery_info_update(struct battery_info_node *head)
-{
-    CFNumberRef number;
-    float current_cap = 0, max_cap = 0, design_cap = 0, health = 0, temperature = 0;
-    
-	CFTypeRef powersources = IOPSCopyPowerSourcesByType(kIOPSSourceInternal);
-	CFArrayRef pslist = IOPSCopyPowerSourcesList(powersources);
-	CFIndex pscnt = CFArrayGetCount(pslist);
-
-	for (int i = 0; i < pscnt; i++) {
-		CFTypeRef cursrc = CFArrayGetValueAtIndex(pslist, i);
-        /* IOPMPowerSource was not that accurate, consider retrieve some AppleSMC */
-		CFTypeRef desc = IOPSGetPowerSourceDescription(powersources, cursrc);
-		if (CFStringCompare((CFStringRef)CFDictionaryGetValue(desc, CFSTR(kIOPSTypeKey)), CFSTR(kIOPSInternalBatteryType), 0) == kCFCompareEqualTo) {
-            if ((number = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSCurrentCapacityKey)))) {
-                CFNumberGetValue(number, kCFNumberFloatType, &current_cap);
-            }
-            if ((number = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSMaxCapacityKey)))) {
-                CFNumberGetValue(number, kCFNumberFloatType, &max_cap);
-            }
-
-            if ((number = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSDesignCapacityKey)))) {
-                CFNumberGetValue(number, kCFNumberFloatType, &design_cap);
-            } else {
-                float design_mah, current_mah;
-                health = get_battery_health(&design_mah, &current_mah);
-            }
-
-            if ((number = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSTemperatureKey)))) {
-                CFNumberGetValue(number, kCFNumberFloatType, &temperature);
-            } else {
-                // TODO: Get Average Temperature from AppleSMC (B0AT), or Current Temperature of each battery (TB?T)
-                temperature = get_temperature();
-            }
-
-            if (health == 0 && current_cap && design_cap) {
-                health = 100.0f * current_cap / design_cap;
-            }
-                
-            // idk how to get battery health :(
-			CFBooleanRef isCharging = (CFBooleanRef)CFDictionaryGetValue(desc, CFSTR(kIOPSIsChargingKey));
-			
-			if (bi_find_next(&head, ID_BI_BATTERY_HEALTH)) {
-				bi_node_change_content_value(head, health);
-			}
-			if (bi_find_next(&head, ID_BI_BATTERY_SOC)) {
-				//bi_node_change_content_value(head, (int)((float)dc * (float)cc / (float)mc));
-                bi_node_change_content_value(head, current_cap);
-			}
-			if (bi_find_next(&head, ID_BI_BATTERY_TEMP)) {
-				bi_node_change_content_value(head, temperature);
-			}
-			if (bi_find_next(&head, ID_BI_BATTERY_CHARGING)) {
-				bi_node_change_content_value(head, CFBooleanGetValue(isCharging));
-			}
-			if (bi_find_next(&head, ID_BI_BATTERY_ALWAYS_FALSE)) {
-				bi_node_change_content_value(head, 0);
-			}
-			break;
-		}
+void battery_info_update(struct battery_info_node *head) {
+	uint16_t bdata[3];
+	get_capacity(bdata, bdata+1, bdata+2);
+	if(bi_find_next(&head, ID_BI_BATTERY_HEALTH)) {
+		bi_node_change_content_value_float(head, 100.0*(float)bdata[1]/(float)bdata[2]);
 	}
-	CFRelease(pslist);
-	CFRelease(powersources);
+	if (bi_find_next(&head, ID_BI_BATTERY_SOC)) {
+		bi_node_change_content_value_float(head, 100.0*(float)*bdata/(float)bdata[1]);
+	}
+	if (bi_find_next(&head, ID_BI_BATTERY_TEMP)) {
+		bi_node_change_content_value_float(head, get_temperature());
+	}
+	if (bi_find_next(&head, ID_BI_BATTERY_CHARGING)) {
+		bi_node_change_content_value(head, 0);
+		// TODO: charging smc
+		//bi_node_change_content_value(head, CFBooleanGetValue(isCharging));
+	}
+	if (bi_find_next(&head, ID_BI_BATTERY_ALWAYS_FALSE)) {
+		bi_node_change_content_value(head, 0);
+	}
 }

@@ -40,7 +40,7 @@ SOURCES := 	main.m \
 		BatteryCellView/BatteryCellView.m \
 		BatteryCellView/SPWaterProgressIndicatorView.m \
 		BatteryCellView/BatteryInfoTableViewCell.m \
-		battery_utils/battery_info.c
+		battery_utils/battery_info.c battery_utils/libsmc.c
 
 # TODO: Target splitting
 # TODO: gettext generation

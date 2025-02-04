@@ -84,5 +84,6 @@ float get_temperature(void);
 int get_time_to_empty(void);
 int estimate_time_to_full(void);
 float get_battery_health(float *design_cap, float *full_cap);
+int get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design);
 
 #endif

@@ -19,6 +19,7 @@
 #define BIN_AFFECTS_BATTERY_CELL    (1 << 8)
 #define BIN_IS_FOREGROUND           (1 << 7 | BIN_AFFECTS_BATTERY_CELL)
 #define BIN_IS_BACKGROUND           (0 << 0 | BIN_AFFECTS_BATTERY_CELL)
+#define BIN_IS_FLOAT (1<<10 | 1)
 
 struct battery_info_node {
 	const char *description; // NONNULL
@@ -34,5 +35,6 @@ bool bi_find_next(struct battery_info_node **v, int identifier);
 // This function modifies the value without changing the
 // definition bits.
 void bi_node_change_content_value(struct battery_info_node *node, unsigned int value);
+void bi_node_change_content_value_float(struct battery_info_node *node, float value);
 void battery_info_update(struct battery_info_node *head);
 struct battery_info_node *battery_info_init(void);

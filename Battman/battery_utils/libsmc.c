@@ -17,7 +17,23 @@
 
 #include "libsmc.h"
 #include <CoreFoundation/CFBase.h>
-#include <IOKit/IOKitLib.h>
+#include <CoreFoundation/CFString.h>
+#include <string.h>
+//#include <IOKit/IOKitLib.h>
+typedef uint64_t io_service_t;
+typedef uint64_t IOReturn;
+typedef uint64_t mach_port_t;
+typedef uint64_t io_service_t;
+#define kIOReturnSuccess 0
+#define MACH_PORT_NULL 0
+IOReturn IOMasterPort(mach_port_t,mach_port_t*);
+uint64_t IOServiceMatching(const char*);
+io_service_t IOServiceGetMatchingService(mach_port_t, uint64_t);
+uint64_t mach_task_self();
+IOReturn IOServiceOpen(io_service_t, uint64_t,uint64_t,uint64_t*);
+IOReturn IOConnectCallStructMethod(uint64_t,uint64_t,void*,uint64_t,void*,size_t*);
+IOReturn IOServiceClose(io_service_t);
+
 
 #define DBGLOG(...) NSLog(__VA_ARGS__)
 
@@ -173,13 +189,13 @@ float get_temperature(void) {
     result = smc_open();
 
   if (result != kIOReturnSuccess)
-    return 0;
+    return -1;
 
   /* TB*T(flt), but normally they are same one */
   key = makeUInt32Key("TB0T", 4, 16);
   result = smc_read(key, &retval);
   if (result != kIOReturnSuccess)
-    return 0;
+    return -1;
 
   return retval;
 }
@@ -270,8 +286,33 @@ float get_battery_health(float *design_cap, float *full_cap) {
     if (result != kIOReturnSuccess)
       return 0;
 
+    if(design_cap) {
     *design_cap = designcap;
+    }
+    if(full_cap) {
     *full_cap = fullcap;
+    }
     /* Health = 100.0f * FullChargeCapacity (mAh) / DesignCapacity (mAh) */
     return (100.0f * fullcap / designcap);
+}
+
+int get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
+	if(!gConn) {
+		if(smc_open()!=kIOReturnSuccess)
+			return 0;
+	}
+	/* B0RM(ui16) RemainingCapacity (mAh) */
+	SMCKey key=makeUInt32Key("B0RM", 4, 16);
+	IOReturn result=smc_read(key, remaining);
+	if(result != kIOReturnSuccess)
+		return 0;
+	/* B0FC(ui16) FullChargeCapacity (mAh) */
+	key=makeUInt32Key("B0FC", 4, 16);
+	result=smc_read(key, full);
+	if(result != kIOReturnSuccess)
+		return 0;
+	/* B0DC(ui16) DesignCapacity (mAh) */
+	key = makeUInt32Key("B0DC", 4, 16);
+	result = smc_read(key, design);
+	return result==kIOReturnSuccess;
 }

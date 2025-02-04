@@ -27,7 +27,7 @@
 #warning TODO: Turn those magic bitwise to macros
 	// TODO: Arabian? We need Arabian hackers to fix this code
 	for (struct battery_info_node *i = _batteryInfo; i != NULL; i = i->next) {
-		if ((uint64_t)i->content >= 1024) {
+		if ((uint64_t)i->content >= 1024 && ((uint64_t)i->content&BIN_IS_FLOAT)!=BIN_IS_FLOAT) {
 			final_str = [NSString stringWithFormat:@"%@\n%@: %s", final_str, _(i->description), (char*)i->content];
 		} else if (((uint64_t)i->content & (1 << 9))) {
 			// True
@@ -36,25 +36,18 @@
 			}
 		} else {
 			uint64_t masked_num = (uint64_t)i->content;
-#warning This is not keeping float points
-			float val = (masked_num & ((1 << 7) - 1));
-            NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
-            [numberFormatter setMinimumFractionDigits:2];
-            [numberFormatter setMaximumFractionDigits:2];
-
-            NSMeasurementFormatter *formatter = [[NSMeasurementFormatter alloc] init];
-            [formatter setNumberFormatter:numberFormatter];
-
-            // FIXME: i->id is not in header, this is terrible
-            if (!strcmp(i->description, "Temperature")) {
-                NSMeasurement *temperature = [[NSMeasurement alloc] initWithDoubleValue:val unit:[NSUnitTemperature celsius]];
-                final_str = [NSString stringWithFormat:@"%@\n%@: %@", final_str, _(i->description), [formatter stringFromMeasurement:temperature]];
-            } else {
-                // TODO: format all values base on NSNumberFormatter/NSMeasurementFormatter
-                final_str = [NSString stringWithFormat:@"%@\n%@: %0.2f", final_str, _(i->description), val];
-            }
-
-            if (masked_num & (1 << 8)) {
+			float val;
+			if((masked_num&(1<<10))==0) {
+				uint64_t rval=(float)(masked_num&((1<<7)-1));
+				final_str = [NSString stringWithFormat:@"%@\n%@: %llu", final_str, _(i->description), rval];
+				val=rval;
+			}else{
+				uint32_t *vptr=(uint32_t*)&val;
+				*vptr=(uint32_t)(masked_num>>32);
+				final_str = [NSString stringWithFormat:@"%@\n%@: %0.2f", final_str, _(i->description), val];
+			}
+			
+			if (masked_num & (1 << 8)) {
 				final_str = [final_str stringByAppendingString:@"%"];
 				if (masked_num & (1 << 7)) {
 					[_batteryCell updateForegroundPercentage:val];
