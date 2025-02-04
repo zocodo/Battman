@@ -1,4 +1,5 @@
 #include "battery_info.h"
+#include "libsmc.h"
 #include <assert.h>
 #include <stdint.h>
 #include <stddef.h>
@@ -185,7 +186,7 @@ struct battery_info_node *battery_info_init()
 void battery_info_update(struct battery_info_node *head)
 {
     CFNumberRef number;
-    int current_cap = 0, max_cap = 0, design_cap = 0, temperature = 0;
+    float current_cap = 0, max_cap = 0, design_cap = 0, health = 0, temperature = 0;
     
 	CFTypeRef powersources = IOPSCopyPowerSourcesByType(kIOPSSourceInternal);
 	CFArrayRef pslist = IOPSCopyPowerSourcesList(powersources);
@@ -197,30 +198,35 @@ void battery_info_update(struct battery_info_node *head)
 		CFTypeRef desc = IOPSGetPowerSourceDescription(powersources, cursrc);
 		if (CFStringCompare((CFStringRef)CFDictionaryGetValue(desc, CFSTR(kIOPSTypeKey)), CFSTR(kIOPSInternalBatteryType), 0) == kCFCompareEqualTo) {
             if ((number = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSCurrentCapacityKey)))) {
-                CFNumberGetValue(number, kCFNumberIntType, &current_cap);
+                CFNumberGetValue(number, kCFNumberFloatType, &current_cap);
             }
             if ((number = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSMaxCapacityKey)))) {
-                CFNumberGetValue(number, kCFNumberIntType, &max_cap);
+                CFNumberGetValue(number, kCFNumberFloatType, &max_cap);
             }
 
             if ((number = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSDesignCapacityKey)))) {
-                CFNumberGetValue(number, kCFNumberIntType, &design_cap);
+                CFNumberGetValue(number, kCFNumberFloatType, &design_cap);
             } else {
-                design_cap = 100; // TODO: Get DesignCapacity from AppleSMC (B0DC)
+                float design_mah, current_mah;
+                health = get_battery_health(&design_mah, &current_mah);
             }
 
             if ((number = (CFNumberRef)CFDictionaryGetValue(desc, CFSTR(kIOPSTemperatureKey)))) {
-                CFNumberGetValue(number, kCFNumberIntType, &temperature);
+                CFNumberGetValue(number, kCFNumberFloatType, &temperature);
             } else {
                 // TODO: Get Average Temperature from AppleSMC (B0AT), or Current Temperature of each battery (TB?T)
-                temperature = 0;
+                temperature = get_temperature();
             }
 
+            if (health == 0 && current_cap && design_cap) {
+                health = 100.0f * current_cap / design_cap;
+            }
+                
             // idk how to get battery health :(
 			CFBooleanRef isCharging = (CFBooleanRef)CFDictionaryGetValue(desc, CFSTR(kIOPSIsChargingKey));
 			
 			if (bi_find_next(&head, ID_BI_BATTERY_HEALTH)) {
-				bi_node_change_content_value(head, design_cap);
+				bi_node_change_content_value(head, health);
 			}
 			if (bi_find_next(&head, ID_BI_BATTERY_SOC)) {
 				//bi_node_change_content_value(head, (int)((float)dc * (float)cc / (float)mc));

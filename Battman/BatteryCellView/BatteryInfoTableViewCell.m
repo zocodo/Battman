@@ -36,11 +36,27 @@
 			}
 		} else {
 			uint64_t masked_num = (uint64_t)i->content;
+#warning This is not keeping float points
 			float val = (masked_num & ((1 << 7) - 1));
-			final_str = [NSString stringWithFormat:@"%@\n%@: %0.2f", final_str, _(i->description), val];
-			if(masked_num & (1 << 8)) {
+            NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+            [numberFormatter setMinimumFractionDigits:2];
+            [numberFormatter setMaximumFractionDigits:2];
+
+            NSMeasurementFormatter *formatter = [[NSMeasurementFormatter alloc] init];
+            [formatter setNumberFormatter:numberFormatter];
+
+            // FIXME: i->id is not in header, this is terrible
+            if (!strcmp(i->description, "Temperature")) {
+                NSMeasurement *temperature = [[NSMeasurement alloc] initWithDoubleValue:val unit:[NSUnitTemperature celsius]];
+                final_str = [NSString stringWithFormat:@"%@\n%@: %@", final_str, _(i->description), [formatter stringFromMeasurement:temperature]];
+            } else {
+                // TODO: format all values base on NSNumberFormatter/NSMeasurementFormatter
+                final_str = [NSString stringWithFormat:@"%@\n%@: %0.2f", final_str, _(i->description), val];
+            }
+
+            if (masked_num & (1 << 8)) {
 				final_str = [final_str stringByAppendingString:@"%"];
-				if(masked_num & (1 << 7)) {
+				if (masked_num & (1 << 7)) {
 					[_batteryCell updateForegroundPercentage:val];
 				} else {
 					[_batteryCell updateBackgroundPercentage:val];
