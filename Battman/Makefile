@@ -34,7 +34,7 @@ FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -fr
 SOURCES := 	main.m \
 		AppDelegate.m \
 		SceneDelegate.m \
-		BatteryInfoViewController.m \
+		BatteryInfoViewController.m BatteryDetailsViewController.m \
 		SettingsViewController.m \
 		common.m \
 		BatteryCellView/BatteryCellView.m \

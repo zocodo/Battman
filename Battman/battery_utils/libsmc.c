@@ -192,7 +192,7 @@ float get_temperature(void) {
     return -1;
 
   /* TB*T(flt), but normally they are same one */
-  key = makeUInt32Key("TB0T", 4, 16);
+  key = makeUInt32Key("B0AT", 4, 16);
   result = smc_read(key, &retval);
   if (result != kIOReturnSuccess)
     return -1;

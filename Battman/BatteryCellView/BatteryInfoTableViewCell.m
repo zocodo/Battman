@@ -24,51 +24,41 @@
 
 - (void)updateBatteryInfo {
 	NSString *final_str = @"";
-#warning TODO: Turn those magic bitwise to macros
 	// TODO: Arabian? We need Arabian hackers to fix this code
 	for (struct battery_info_node *i = _batteryInfo; i != NULL; i = i->next) {
-		if ((uint64_t)i->content >= 1024 && ((uint64_t)i->content&BIN_IS_FLOAT)!=BIN_IS_FLOAT) {
-			final_str = [NSString stringWithFormat:@"%@\n%@: %s", final_str, _(i->description), (char*)i->content];
-		} else if (((uint64_t)i->content & (1 << 9))) {
-			// True
-			if ((uint64_t)i->content & 1) {
-				final_str = [NSString stringWithFormat:@"%@\n%@", final_str, _(i->description)];
+		if(i->content&BIN_IS_SPECIAL) {
+			uint32_t value=i->content>>32;
+			float *fvptr=(float*)&value;
+			float fvalue=*fvptr;
+			if((i->content&BIN_IS_FOREGROUND)==BIN_IS_FOREGROUND) {
+				[_batteryCell updateForegroundPercentage:fvalue];
+			}else if((i->content&BIN_IS_BACKGROUND)==BIN_IS_BACKGROUND) {
+				[_batteryCell updateBackgroundPercentage:fvalue];
 			}
-		} else {
-			uint64_t masked_num = (uint64_t)i->content;
-			float val;
-			if((masked_num&(1<<10))==0) {
-				uint64_t rval=(float)(masked_num&((1<<7)-1));
-				final_str = [NSString stringWithFormat:@"%@\n%@: %llu", final_str, _(i->description), rval];
-				val=rval;
-			}else{
-				uint32_t *vptr=(uint32_t*)&val;
-				*vptr=(uint32_t)(masked_num>>32);
-				final_str = [NSString stringWithFormat:@"%@\n%@: %0.2f", final_str, _(i->description), val];
-			}
+			if(i->content&BIN_IS_HIDDEN)
+				continue;
 			
-			if (masked_num & (1 << 8)) {
-				final_str = [final_str stringByAppendingString:@"%"];
-				if (masked_num & (1 << 7)) {
-					[_batteryCell updateForegroundPercentage:val];
-				} else {
-					[_batteryCell updateBackgroundPercentage:val];
-				}
+			if((i->content&BIN_IS_BOOLEAN)==BIN_IS_BOOLEAN && value) {
+				final_str = [NSString stringWithFormat:@"%@\n%@", final_str, _(i->description)];
+			}else if((i->content&BIN_IS_FLOAT)==BIN_IS_FLOAT) {
+				final_str = [NSString stringWithFormat:@"%@\n%@: %0.2f", final_str, _(i->description), fvalue];
 			}
+			if(i->content&BIN_HAS_UNIT) {
+				uint32_t unit=(i->content&BIN_UNIT_BITMASK)>>6;
+				NSString *unit_str=[[NSString alloc] initWithBytes:(char*)&unit length:4 encoding:NSUTF8StringEncoding];
+				final_str=[NSString stringWithFormat:@"%@ %@",final_str,unit_str];
+			}
+		}else{
+			final_str = [NSString stringWithFormat:@"%@\n%@: %s", final_str, _(i->description), (char*)i->content];
 		}
 	}
 	_batteryLabel.text = [final_str substringFromIndex:1];
 }
 
 - (void)dealloc {
-//#warning potential memory leakage
-#warning TODO: NO LEAKAGE, if confirmed remove
-// Analysis: >1024: malloc()ed ptrs, free
-// else: numbers within structs, no free
-// then: free structure itself.
 	for (struct battery_info_node *i = _batteryInfo; i != NULL; /*i=i->next*/) {
-		if ((uint64_t)i->content > 1024) {
-			free(i->content);
+		if (i->content > 1024&&(i->content&1)==0) {
+			free((void*)i->content);
 		}
 		void *cur = i;
 		i = i->next;

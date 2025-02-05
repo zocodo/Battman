@@ -11,6 +11,7 @@
 #include <CoreFoundation/CFDictionary.h>
 #include <CoreFoundation/CFString.h>
 
+#if 0
 #warning TODO: IOKit/ps is not reliable, migrate to other impl
 #if __has_include(<IOKit/ps/IOPowerSources.h>)
 #include <IOKit/ps/IOPowerSources.h>
@@ -80,19 +81,22 @@ enum {
 /* Implemented Keys (Simulator / Mac only) */
 #define kIOPSDesignCycleCountKey                "DesignCycleCount"
 #endif
+#endif
 
 // Internal IDs:
 // They are intended to be here, not in headers
 
 // You are free to change the IDs, as long as they do not collapse
 typedef enum {
-    ID_BI_BATTERY_HEALTH = 1,
-    ID_BI_BATTERY_SOC,
-    ID_BI_BATTERY_TEMP,
-    ID_BI_BATTERY_CHARGING,
+	ID_BI_BATTERY_HEALTH = 1,
+	ID_BI_BATTERY_SOC,
+	ID_BI_BATTERY_TEMP,
+	ID_BI_BATTERY_CHARGING,
 
-    // Can be omitted in production
-    ID_BI_BATTERY_ALWAYS_FALSE,
+	// Can be omitted in production
+	ID_BI_BATTERY_ALWAYS_FALSE,
+	
+	ID_BI_BATTERY_SOC_PER_HEALTH
 } id_bi_t;
 
 // Templates:
@@ -111,12 +115,13 @@ NSString *registeredStrings[] = {
 
 
 struct battery_info_node main_battery_template[] = {
-	{"Health",      ID_BI_BATTERY_HEALTH,   (void*)(BIN_IS_BACKGROUND|BIN_IS_FLOAT)},
-	{"SoC",         ID_BI_BATTERY_SOC,      (void*)(BIN_IS_FOREGROUND|BIN_IS_FLOAT)},
-	{"Temperature", ID_BI_BATTERY_TEMP,     (void*)(BIN_IS_VALUE|BIN_IS_FLOAT)},
-	{"Charging",    ID_BI_BATTERY_CHARGING, (void*)(BIN_IS_TRUE_OR_FALSE)},
+	{"Health",      ID_BI_BATTERY_HEALTH,   BIN_IS_BACKGROUND|BIN_UNIT_PERCENT},
+	{"SoC",         ID_BI_BATTERY_SOC,      BIN_IS_FLOAT|BIN_UNIT_PERCENT},
+	{"Temperature", ID_BI_BATTERY_TEMP,     BIN_IS_FLOAT|BIN_UNIT_DEGREE_C},
+	{"Charging",    ID_BI_BATTERY_CHARGING, BIN_IS_BOOLEAN},
+	{"SoC/Health(Hidden)",ID_BI_BATTERY_SOC_PER_HEALTH,BIN_IS_FOREGROUND|BIN_IS_HIDDEN},
 
-	{"TEST FALSE YOU SHOULD NOT SEE THIS!!", ID_BI_BATTERY_ALWAYS_FALSE, (void*)(BIN_IS_TRUE_OR_FALSE)},
+	{"TEST FALSE YOU SHOULD NOT SEE THIS!!", ID_BI_BATTERY_ALWAYS_FALSE, BIN_IS_BOOLEAN},
 	{NULL} // DO NOT DELETE
 };
 
@@ -161,24 +166,15 @@ bool bi_find_next(struct battery_info_node **v, int identifier) {
 }
 
 void bi_node_change_content_value(struct battery_info_node *node, unsigned int value) {
-	assert(value <= 127);
-	node->content = (void*)(
-		// Drop lower bits
-		( ((uint64_t)node->content) & (((uint64_t)-1) << 7) ) |
-		// Attach value
-		value
-	);
+	uint32_t *sects=(uint32_t*)&node->content;
+	sects[1]=value;
 }
 
 void bi_node_change_content_value_float(struct battery_info_node *node, float value) {
-	assert(((uint64_t)node->content & BIN_IS_FLOAT)==BIN_IS_FLOAT);
-	uint32_t *ptr=(uint32_t*)&value;
-	node->content = (void*)(
-		// Drop higher bits
-		( ((uint64_t)node->content) & ((1L<<32)-1) ) |
-		// Attach value
-		((uint64_t)*ptr << 32)
-	);
+	assert((node->content & BIN_IS_FLOAT)==BIN_IS_FLOAT);
+	float *sects=(float*)&node->content;
+	sects[1]=value;
+	// overwrite higher bits;
 }
 
 struct battery_info_node *battery_info_init() {
@@ -203,6 +199,9 @@ void battery_info_update(struct battery_info_node *head) {
 		bi_node_change_content_value(head, 0);
 		// TODO: charging smc
 		//bi_node_change_content_value(head, CFBooleanGetValue(isCharging));
+	}
+	if(bi_find_next(&head,ID_BI_BATTERY_SOC_PER_HEALTH)) {
+		bi_node_change_content_value_float(head, 100.0*(float)bdata[0]/(float)bdata[2]);
 	}
 	if (bi_find_next(&head, ID_BI_BATTERY_ALWAYS_FALSE)) {
 		bi_node_change_content_value(head, 0);
