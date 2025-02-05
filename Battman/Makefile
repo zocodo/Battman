@@ -49,25 +49,10 @@ else
 	PUBLISH_TARGET:=publish_none
 endif
 
-
-OLDSOURCES := 	main.m \
-		AppDelegate.m \
-		SceneDelegate.m \
-		BatteryInfoViewController.m BatteryDetailsViewController.m \
-		SettingsViewController.m \
-		common.m \
-		BatteryCellView/BatteryCellView.m \
-		BatteryCellView/SPWaterProgressIndicatorView.m \
-		BatteryCellView/BatteryInfoTableViewCell.m \
-		battery_utils/battery_info.c battery_utils/libsmc.c
-
 SOURCES:=$(wildcard *.m *.c */*.m */*.c)
 OBJECTS:=$(addprefix build/objects/,$(addsuffix .o,$(SOURCES)))
 
 all: $(PUBLISH_TARGET)
-
-build/objects:
-	mkdir -p build/objects
 
 $(OBJECTS): build/objects/%.o: %
 	@mkdir -p $(@D)
