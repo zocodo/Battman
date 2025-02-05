@@ -1,3 +1,5 @@
+.PHONY: all publish_mounted_site publish_local_site publish_none
+
 ifneq ($(shell which gsed),)
 SED = gsed
 else
@@ -6,14 +8,26 @@ endif
 
 LOCAL_IP := $(shell /sbin/ifconfig | $(SED) -n "s/.*inet \([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\) .*/\1/p" | tail -1)
 
+SDKROOT := ${THEOS}/sdks/iPhoneOS14.5.sdk
+LIBS := -lobjc
+FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework IOKit
+
+
 ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/clang && echo exists), exists)
-CC = ${THEOS}/toolchain/linux/iphone/bin/clang
+CC := ${THEOS}/toolchain/linux/iphone/bin/clang
+CFLAGS:=-F${THEOS}/vendor/lib -target arm64-apple-ios14.0 -target arm64-apple-darwin \
+		-isysroot $(SDKROOT) -fobjc-arc
+LDFLAGS:=-F${THEOS}/vendor/lib -isysroot $(SDKROOT) -target arm64-apple-ios14.0 -target arm64-apple-darwin \
+		$(LIBS) $(FRAMEWORKS)
 else ifeq ($(shell which xcrun),)
 CC = cc
+# TODO: add CFLAGS and LDFLAGS
 else ifneq ($(shell xcrun -sdk iphoneos cc --version > /dev/null 2>&1; echo $$?), 0)
 CC = cc
+# TODO: CFLAGS ...
 else
 CC = $(shell xcrun -sdk iphoneos cc)
+# TODO: CFLAGS ...
 endif
 
 ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/ldid && echo exists), exists)
@@ -27,11 +41,16 @@ else
 CODESIGN = echo "UNSIGNED: "
 endif
 
-SDKROOT := ${THEOS}/sdks/iPhoneOS14.5.sdk
-LIBS := -lobjc
-FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework IOKit
+ifneq (,$(wildcard ./mount/pub_html))
+	PUBLISH_TARGET:=publish_mounted_site
+else ifneq (,$(wildcard /var/www/html/files))
+	PUBLISH_TARGET:=publish_local_site
+else
+	PUBLISH_TARGET:=publish_none
+endif
 
-SOURCES := 	main.m \
+
+OLDSOURCES := 	main.m \
 		AppDelegate.m \
 		SceneDelegate.m \
 		BatteryInfoViewController.m BatteryDetailsViewController.m \
@@ -42,30 +61,40 @@ SOURCES := 	main.m \
 		BatteryCellView/BatteryInfoTableViewCell.m \
 		battery_utils/battery_info.c battery_utils/libsmc.c
 
-# TODO: Target splitting
-# TODO: gettext generation
-all:
-	rm -rf build/
-	mkdir -p build/Payload/Battman.app/
-	# TODO: Compile sources as *.o first
-	$(CC) -F${THEOS}/vendor/lib -target arm64-apple-ios14.0 -target arm64-apple-darwin \
-		-isysroot ${THEOS}/sdks/iPhoneOS14.5.sdk $(LIBS) $(FRAMEWORKS) \
-		-fobjc-arc \
-		$(CFLAGS) $(LDFLAGS) \
-		$(SOURCES) -o build/Payload/Battman.app/Battman
-	$(CODESIGN)../Battman.entitlements build/Payload/Battman.app/Battman
+SOURCES:=$(wildcard *.m *.c */*.m */*.c)
+OBJECTS:=$(addprefix build/objects/,$(addsuffix .o,$(SOURCES)))
+
+all: $(PUBLISH_TARGET)
+
+build/objects:
+	mkdir -p build/objects
+
+$(OBJECTS): build/objects/%.o: %
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+build/Payload/Battman.app/Battman: $(OBJECTS) ../Battman.entitlements
+	@mkdir -p $(@D)
+	$(CC) $(LDFLAGS) $(filter %.o,$^) -o $@
+	$(CODESIGN) -S../Battman.entitlements $@
+build/Payload/Battman.app/Info.plist: Info.plist
 	$(SED) 's/\$$(DEVELOPMENT_LANGUAGE)/en/;s/\$$(EXECUTABLE_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_IDENTIFIER)/ct.battman/;s/\$$(PRODUCT_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/' Info.plist > build/Payload/Battman.app/Info.plist
-	cd build; zip -r Battman.ipa ./Payload; rm -rf Payload
-ifneq (,$(wildcard ./mount/pub_html))
-	@echo Publishing to public website
-	cp build/Battman.ipa mount/pub_html/battman/
-	$(SED) 's/LATEST_UPDATE/$(shell date)/' mount/pub_html/battman/install_template.html>mount/pub_html/battman/index.html
-	@echo Install at your site.
-else ifneq (,$(wildcard /var/www/html/files))
-	@echo Publishing to local apache server
-	cp build/Battman.ipa /var/www/html/files/battman/
+build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist
+	cd build/&&zip -r Battman.ipa ./Payload
+
+%/Battman.ipa: build/Battman.ipa
+	cp $< $@
+%/index.html: %/install_template.html build/Battman.ipa
 	$(SED) 's/LOCAL_IP/${LOCAL_IP}/;s/LATEST_UPDATE/$(shell date)/' /var/www/html/files/battman/install_template.html>/var/www/html/files/battman/index.html
+
+publish_mounted_site: mount/pub_html/battman/ \
+			mount/pub_html/battman/Battman.ipa \
+			mount/pub_html/battman/index.html
+	@echo Install at your site.
+publish_local_site: /var/www/html/files/battman \
+			/var/www/html/files/battman/Battman.ipa \
+			/var/www/html/files/battman/index.html
 	@echo Install at: ${LOCAL_IP}
-else
+publish_none: build/Battman.ipa
 	@echo Not publishing.
-endif
+
