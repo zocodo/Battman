@@ -54,6 +54,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		68171A302D5221C400DD4224 /* libsmc.c in Sources */ = {isa = PBXBuildFile; fileRef = 68171A2F2D5221C400DD4224 /* libsmc.c */; };
 		686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC32D3B93CB0059ECD0 /* AppDelegate.m */; };
 		686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */; };
 		686AECCF2D3B93CD0059ECD0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */; };
@@ -64,6 +65,8 @@
 		687743462D4F6C7800375A2C /* BatteryCellView.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743412D4F6C7800375A2C /* BatteryCellView.m */; };
 		687743472D4F6C7800375A2C /* SPWaterProgressIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743422D4F6C7800375A2C /* SPWaterProgressIndicatorView.m */; };
 		687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743442D4F6C7800375A2C /* BatteryInfoTableViewCell.m */; };
+		68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */ = {isa = PBXBuildFile; fileRef = 68A3EAF62D5204D2003381DF /* battery_info.c */; };
+		68A3EAFD2D5204EA003381DF /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A3EAFC2D5204EA003381DF /* IOKit.framework */; };
 		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
 
@@ -85,6 +88,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		68171A2E2D5221C400DD4224 /* libsmc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = libsmc.h; sourceTree = "<group>"; };
+		68171A2F2D5221C400DD4224 /* libsmc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libsmc.c; sourceTree = "<group>"; };
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		686AECC22D3B93CB0059ECD0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		686AECC32D3B93CB0059ECD0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -109,6 +114,10 @@
 		687743432D4F6C7800375A2C /* BatteryCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BatteryCellView.h; path = BatteryCellView/BatteryCellView.h; sourceTree = "<group>"; };
 		687743442D4F6C7800375A2C /* BatteryInfoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BatteryInfoTableViewCell.m; path = BatteryCellView/BatteryInfoTableViewCell.m; sourceTree = "<group>"; };
 		687743452D4F6C7800375A2C /* SPWaterProgressIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SPWaterProgressIndicatorView.h; path = BatteryCellView/SPWaterProgressIndicatorView.h; sourceTree = "<group>"; };
+		68A3EAF52D5204D2003381DF /* battery_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = battery_utils.h; sourceTree = "<group>"; };
+		68A3EAF62D5204D2003381DF /* battery_info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = battery_info.c; sourceTree = "<group>"; };
+		68A3EAF72D5204D2003381DF /* battery_info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = battery_info.h; sourceTree = "<group>"; };
+		68A3EAFC2D5204EA003381DF /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		68DCA5582D3BBC6A004D0104 /* Battman.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Battman.storyboard; sourceTree = "<group>"; };
 		68DCA5602D3D0AC5004D0104 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		68DCA5A82D3F9338004D0104 /* common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
@@ -126,6 +135,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68A3EAFD2D5204EA003381DF /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -155,6 +165,7 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				68A3EAF42D5204D2003381DF /* battery_utils */,
 				687743432D4F6C7800375A2C /* BatteryCellView.h */,
 				687743412D4F6C7800375A2C /* BatteryCellView.m */,
 				687743402D4F6C7800375A2C /* BatteryInfoTableViewCell.h */,
@@ -198,8 +209,21 @@
 		687743162D461E5100375A2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				68A3EAFC2D5204EA003381DF /* IOKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		68A3EAF42D5204D2003381DF /* battery_utils */ = {
+			isa = PBXGroup;
+			children = (
+				68A3EAF52D5204D2003381DF /* battery_utils.h */,
+				68A3EAF62D5204D2003381DF /* battery_info.c */,
+				68A3EAF72D5204D2003381DF /* battery_info.h */,
+				68171A2E2D5221C400DD4224 /* libsmc.h */,
+				68171A2F2D5221C400DD4224 /* libsmc.c */,
+			);
+			path = battery_utils;
 			sourceTree = "<group>";
 		};
 		68DCA5B42D40EDE8004D0104 /* Localizations */ = {
@@ -222,6 +246,7 @@
 				686AECBB2D3B93CB0059ECD0 /* Sources */,
 				686AECBC2D3B93CB0059ECD0 /* Frameworks */,
 				686AECBD2D3B93CB0059ECD0 /* Resources */,
+				68171A2A2D520AB400DD4224 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -309,6 +334,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		68171A2A2D520AB400DD4224 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -e -x\n\nif [ ${PLATFORM_NAME} == \"iphoneos\" ]; then\n  codesign -f -s \"Apple Development\" --entitlements ${PROJECT_DIR}/Battman.entitlements ${CODESIGNING_FOLDER_PATH}\nfi\n";
+		};
 		687742AF2D437EEA00375A2C /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -399,8 +441,10 @@
 				687743372D4E08AD00375A2C /* BatteryInfoViewController.m in Sources */,
 				687743472D4F6C7800375A2C /* SPWaterProgressIndicatorView.m in Sources */,
 				686AECD52D3B93CD0059ECD0 /* main.m in Sources */,
+				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
 				686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */,
 				687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */,
+				68171A302D5221C400DD4224 /* libsmc.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
