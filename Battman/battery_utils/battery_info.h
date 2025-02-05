@@ -3,6 +3,26 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+
+/* ->content structure:
+STRING:
+| Bit   | Value
+| 0     | isString (=0)
+| 0:63  | strPointer (char *, guaranteed &1==0)
+SPECIAL:
+| Bit   | Value
+| 0     | isSpecial
+| 1     | isHidden
+| 2     | isBoolean
+| 3     | affectsBatteryView
+| 4     | isFloat (may be elimated in future)
+| 5     | isForeground
+| 6:29  | unit (UTF-8, 3 bytes max, little endian)
+| 30    | (unused)
+| 31    | hasUnit
+| 32:63 | value (32-bit)
+*/
+
 // Bit 1<<0: NotPointer, bc pointer alignments won't allow such bit
 // Bit 1<<1: 
 #define BIN_IS_STRING  0
