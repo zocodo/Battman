@@ -1,5 +1,6 @@
 #import "BatteryDetailsViewController.h"
 #include "battery_utils/libsmc.h"
+#include "common.h"
 
 // TODO: Function for advanced users to call SMC themselves.
 // or add them to tracklist
@@ -7,7 +8,7 @@
 @implementation BatteryDetailsViewController
 
 - (NSString *)title {
-    return @"System Battery";
+    return _("Internal Battery");
 }
 
 - (instancetype)init {
@@ -19,7 +20,7 @@
 
 - (NSString *)tableView:(id)tv titleForHeaderInSection:(NSInteger)section {
     if (section == 0)
-        return @"SMC Data";
+        return _("Hardware Data");
     return nil;
 }
 
@@ -44,17 +45,17 @@
     }
     if (ip.section == 0) {
         if (ip.row == 0) {
-            cell.textLabel.text = @"Full Charge Capacity";
+            cell.textLabel.text = _("Full Charge Capacity");
             cell.detailTextLabel.text =
                 [NSString stringWithFormat:@"%u mAh", b_full_capacity];
             return cell;
         } else if (ip.row == 1) {
-            cell.textLabel.text = @"Designed Charge Capacity";
+            cell.textLabel.text = _("Designed Capacity");
             cell.detailTextLabel.text =
                 [NSString stringWithFormat:@"%u mAh", b_designed_capacity];
             return cell;
         } else if (ip.row == 2) {
-            cell.textLabel.text = @"Remaining Charge";
+            cell.textLabel.text = _("Remaining Charge");
             cell.detailTextLabel.text =
                 [NSString stringWithFormat:@"%u mAh", b_remaining_capacity];
             return cell;

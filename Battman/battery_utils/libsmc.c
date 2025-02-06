@@ -201,8 +201,12 @@ float get_temperature(void) {
     if (result != kIOReturnSuccess)
         return -1;
 
-    /* TB*T(flt), but normally they are same one */
-    key = makeUInt32Key("B0AT", 4, 16);
+    /* TB*T(flt), but normally they are same */
+    key = makeUInt32Key("TB0T", 4, 16);
+    result = smc_read(key, &retval);
+    if (result != kIOReturnSuccess)
+        key = makeUInt32Key("B0AT", 4, 16);
+
     result = smc_read(key, &retval);
     if (result != kIOReturnSuccess)
         return -1;
@@ -225,6 +229,7 @@ int get_time_to_empty(void) {
     /* This is weird, why B0TF means TimeToEmpty on Embedded,
      * but TimeToFullCharge on macOS? */
     key = makeUInt32Key("B0TF", 4, 16);
+    /* Tested on iPhone 12 mini: B0TF */
 #else
     key = makeUInt32Key("B0TE", 4, 16);
 #endif
@@ -233,7 +238,7 @@ int get_time_to_empty(void) {
     if (result != kIOReturnSuccess)
         return 0;
 
-    /* 0xFFFF, battery charging */
+    /* 0xFFFF, battery charging (known scene, possibly others) */
     if (retval == 65535)
         return 0;
 
@@ -306,22 +311,25 @@ float get_battery_health(float *design_cap, float *full_cap) {
     return (100.0f * fullcap / designcap);
 }
 
-int get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
+bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
     if (!gConn) {
         if (smc_open() != kIOReturnSuccess)
-            return 0;
+            return false;
     }
+
+    /* TODO: B0FC and B0DC only represents average battery capacity, they should be multiplied by battery counts if TB*T more than one */
+
     /* B0RM(ui16) RemainingCapacity (mAh) */
     SMCKey key = makeUInt32Key("B0RM", 4, 16);
     IOReturn result = smc_read(key, remaining);
     if (result != kIOReturnSuccess)
-        return 0;
+        return false;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
     key = makeUInt32Key("B0FC", 4, 16);
     result = smc_read(key, full);
     if (result != kIOReturnSuccess)
-        return 0;
+        return false;
 
     /* B0DC(ui16) DesignCapacity (mAh) */
     key = makeUInt32Key("B0DC", 4, 16);

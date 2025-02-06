@@ -4,6 +4,11 @@
 #include <CoreFoundation/CFBase.h>
 #include <stdio.h>
 
+#if !defined(__arm64__) && !defined(__aarch64__) && !defined(__arm64e__)
+#error Current SMC implementation is arm64 only! \
+       Please file an issue if you would like to contribute!
+#endif
+
 /* SMC operations */
 typedef CF_ENUM(UInt8, SMCIndex) {
     /* the user client method name constants */
@@ -84,6 +89,6 @@ float get_temperature(void);
 int get_time_to_empty(void);
 int estimate_time_to_full(void);
 float get_battery_health(float *design_cap, float *full_cap);
-int get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design);
+bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design);
 
 #endif

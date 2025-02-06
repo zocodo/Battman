@@ -63,7 +63,7 @@
         return cell;
     } else {
         UITableViewCell *cell = [UITableViewCell new];
-        cell.textLabel.text = @"Charging Limit";
+        cell.textLabel.text = _("Charging Limit");
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         return cell;
     }
