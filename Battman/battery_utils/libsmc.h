@@ -84,11 +84,41 @@ typedef struct SMCParamStruct {
     } param;
 } SMCParamStruct;
 
+/* libsmc.c */
+
+typedef struct gas_gauge {
+    uint16_t Temperature;           /* Celsius */
+    uint16_t Voltage;               /* mV */
+    uint16_t Flags;                 /* hex_[2] */
+    uint16_t RemainingCapacity;     /* mAh */
+    uint16_t FullChargeCapacity;    /* mAh */
+    int16_t AverageCurrent;         /* mA */
+    uint16_t TimeToEmpty;           /* min */
+    uint16_t Qmax;                  /* mAh */
+    int16_t AveragePower;           /* mW */
+    int16_t OCV_Current;            /* mA */
+    uint16_t OCV_Voltage;           /* mV */
+    uint16_t CycleCount;
+    uint16_t StateOfCharge;         /* % */
+    int16_t TrueRemainingCapacity;  /* mAh */
+    int16_t PassedCharge;           /* mA ? */
+    uint16_t DOD0;                  /* mAh */
+    uint16_t DesignCapacity;        /* mAh */
+    int16_t IMAX;                   /* ? */
+    uint16_t NCC;                   /* mAh ? */
+    int16_t ResScale;
+    uint16_t ITMiscStatus;
+    int16_t IMAX2;                  /* ? */
+    uint32_t ChemID;                /* hex_[4] */
+    int16_t SimRate;                /* mA ? */
+} gas_gauge_t;
+
 int get_fan_status(void);
 float get_temperature(void);
 int get_time_to_empty(void);
 int estimate_time_to_full(void);
 float get_battery_health(float *design_cap, float *full_cap);
 bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design);
+int battery_num(void);
 
 #endif

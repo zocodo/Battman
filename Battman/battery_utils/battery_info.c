@@ -97,7 +97,7 @@ typedef enum {
     // Can be omitted in production
     ID_BI_BATTERY_ALWAYS_FALSE,
 
-    ID_BI_BATTERY_SOC_PER_HEALTH
+    ID_BI_BATTERY_ASOC
 } id_bi_t;
 
 // Templates:
@@ -119,8 +119,7 @@ struct battery_info_node main_battery_template[] = {
     {"SoC", ID_BI_BATTERY_SOC, BIN_IS_FLOAT | BIN_UNIT_PERCENT},
     {"Temperature", ID_BI_BATTERY_TEMP, BIN_IS_FLOAT | BIN_UNIT_DEGREE_C},
     {"Charging", ID_BI_BATTERY_CHARGING, BIN_IS_BOOLEAN},
-    {"SoC/Health(Hidden)", ID_BI_BATTERY_SOC_PER_HEALTH,
-     BIN_IS_FOREGROUND | BIN_IS_HIDDEN},
+    {"ASoC(Hidden)", ID_BI_BATTERY_ASOC, BIN_IS_FOREGROUND | BIN_IS_HIDDEN},
 
     {"TEST FALSE YOU SHOULD NOT SEE THIS!!", ID_BI_BATTERY_ALWAYS_FALSE,
      BIN_IS_BOOLEAN},
@@ -191,27 +190,32 @@ struct battery_info_node *battery_info_init() {
 }
 
 void battery_info_update(struct battery_info_node *head) {
-    uint16_t bdata[3];
-    get_capacity(bdata, bdata + 1, bdata + 2);
+    uint16_t remain_cap, full_cap, design_cap;
+    get_capacity(&remain_cap, &full_cap, &design_cap);
+
+    /* Health = 100.0f * FullChargeCapacity (mAh) / DesignCapacity (mAh) */
     if (bi_find_next(&head, ID_BI_BATTERY_HEALTH)) {
-        bi_node_change_content_value_float(head, 100.0 * (float)bdata[1] /
-                                                     (float)bdata[2]);
+        bi_node_change_content_value_float(head, 100.0f * full_cap / design_cap);
     }
+
+    /* SoC = 100.0f * RemainCapacity (mAh) / FullChargeCapacity (mAh) */
     if (bi_find_next(&head, ID_BI_BATTERY_SOC)) {
-        bi_node_change_content_value_float(head, 100.0 * (float)*bdata /
-                                                     (float)bdata[1]);
+        bi_node_change_content_value_float(head, 100.0f * remain_cap / full_cap);
     }
+
+    /* In Celsius, if you don't use Celsius, go learn it or PR to support your unit */
     if (bi_find_next(&head, ID_BI_BATTERY_TEMP)) {
-        // In Celsius, if you don't use Celsius, go learn it or PR to support your unit
         bi_node_change_content_value_float(head, get_temperature());
     }
+
     if (bi_find_next(&head, ID_BI_BATTERY_CHARGING)) {
         // TODO: Changing Type Display {"Battery Power", "AC Power", "UPS Power"}
         bi_node_change_content_value(head, (get_time_to_empty() == 0));
     }
-    if (bi_find_next(&head, ID_BI_BATTERY_SOC_PER_HEALTH)) {
-        bi_node_change_content_value_float(head, 100.0 * (float)bdata[0] /
-                                                     (float)bdata[2]);
+
+    /* ASoC = 100.0f * RemainCapacity (mAh) / DesignCapacity (mAh) */
+    if (bi_find_next(&head, ID_BI_BATTERY_ASOC)) {
+        bi_node_change_content_value_float(head, 100.0f * remain_cap / design_cap);
     }
     if (bi_find_next(&head, ID_BI_BATTERY_ALWAYS_FALSE)) {
         bi_node_change_content_value(head, 0);

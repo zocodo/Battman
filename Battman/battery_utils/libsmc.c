@@ -225,11 +225,14 @@ int get_time_to_empty(void) {
     if (result != kIOReturnSuccess)
         return 0;
 
-#if TARGET_OS_EMBEDDED
+#if TARGET_OS_EMBEDDED && !TARGET_OS_SIMULATOR
     /* This is weird, why B0TF means TimeToEmpty on Embedded,
      * but TimeToFullCharge on macOS? */
     key = makeUInt32Key("B0TF", 4, 16);
-    /* Tested on iPhone 12 mini: B0TF */
+    /* Tested on iPhone 12 mini: B0TF does not exist */
+    result = smc_read(key, &retval);
+    if (result != kIOReturnSuccess)
+        key = makeUInt32Key("B0TE", 4, 16);
 #else
     key = makeUInt32Key("B0TE", 4, 16);
 #endif
@@ -240,7 +243,7 @@ int get_time_to_empty(void) {
 
     /* 0xFFFF, battery charging (known scene, possibly others) */
     if (retval == 65535)
-        return 0;
+        return -1;
 
     return retval;
 }
@@ -317,22 +320,333 @@ bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
             return false;
     }
 
-    /* TODO: B0FC and B0DC only represents average battery capacity, they should be multiplied by battery counts if TB*T more than one */
+    int num = battery_num();
+    if (num == -1) num = 1;
+
+    uint16_t B0RM, B0FC, B0DC;
 
     /* B0RM(ui16) RemainingCapacity (mAh) */
     SMCKey key = makeUInt32Key("B0RM", 4, 16);
-    IOReturn result = smc_read(key, remaining);
+    IOReturn result = smc_read(key, &B0RM);
     if (result != kIOReturnSuccess)
         return false;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
     key = makeUInt32Key("B0FC", 4, 16);
-    result = smc_read(key, full);
+    result = smc_read(key, &B0FC);
     if (result != kIOReturnSuccess)
         return false;
 
     /* B0DC(ui16) DesignCapacity (mAh) */
     key = makeUInt32Key("B0DC", 4, 16);
-    result = smc_read(key, design);
+    result = smc_read(key, &B0DC);
+
+    /* B0RM should be read reversed that scene (e.g. 0x760D -> 0x0D76) */
+    /* TODO: We need a better detection for this */
+    if (B0RM > B0DC) {
+        B0RM = ((B0RM & 0xFF) << 8) | (B0RM >> 8);
+    }
+
+    *remaining = B0RM * num;
+    *full = B0FC * num;
+    *design = B0DC * num;
+
     return result == kIOReturnSuccess;
 }
+
+bool get_gas_gauge(gas_gauge_t *gauge) {
+    IOReturn result = kIOReturnSuccess;
+    SMCKey key;
+    uint16_t ui16ret = 0;
+    uint32_t ui32ret = 0;
+    int16_t si16ret = 0;
+    int32_t si32ret = 0;
+
+    if (gConn == 0)
+        result = smc_open();
+
+    if (result != kIOReturnSuccess)
+        return false;
+
+    /* TODO: Shorten those code */
+
+    /* B0AT(ui16): Temperature */
+    key = makeUInt32Key("B0AT", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->Temperature = ui16ret;
+
+    /* B0AV(ui16): Average Voltage */
+    key = makeUInt32Key("B0AV", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->Voltage = ui16ret;
+    
+    /* B0FI(hex_): Flags */
+    key = makeUInt32Key("B0FI", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->Flags = ui16ret;
+    
+    /* B0RM(ui16): RemainingCapacity */
+    key = makeUInt32Key("B0RM", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->RemainingCapacity = ui16ret;
+    
+    /* B0FC(ui16): FullChargeCapacity */
+    key = makeUInt32Key("B0FC", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->FullChargeCapacity = ui16ret;
+
+    /* B0AC(si16): AverageCurrent */
+    key = makeUInt32Key("B0AC", 4, 16);
+    result = smc_read(key, &si16ret);
+    if (result == kIOReturnSuccess)
+        gauge->AverageCurrent = si16ret;
+
+    /* B0TF(ui16): TimeToEmpty */
+    key = makeUInt32Key("B0TF", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->TimeToEmpty = ui16ret;
+
+    /* BQX1(ui16): Qmax */
+    key = makeUInt32Key("BQX1", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->Qmax = ui16ret;
+
+    /* B0AP(si16/si32): AveragePower */
+    key = makeUInt32Key("B0AP", 4, 16);
+    result = smc_read(key, &si32ret);
+    if (result == kIOReturnSuccess)
+        gauge->AveragePower = si32ret;
+
+    /* B0OC(si16): OCV_Current */
+    key = makeUInt32Key("B0OC", 4, 16);
+    result = smc_read(key, &si16ret);
+    if (result == kIOReturnSuccess)
+        gauge->OCV_Current = si16ret;
+
+    /* B0OV(ui16): OCV_Voltage */
+    key = makeUInt32Key("B0OV", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->OCV_Voltage = ui16ret;
+
+    /* B0CT(ui16): CycleCount */
+    key = makeUInt32Key("B0CT", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->CycleCount = ui16ret;
+
+    /* BRSC(ui16): StateOfCharge */
+    key = makeUInt32Key("BRSC", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->StateOfCharge = ui16ret;
+
+    /* B0TC(si16): TrueRemainingCapacity */
+    key = makeUInt32Key("B0TC", 4, 16);
+    result = smc_read(key, &si16ret);
+    if (result == kIOReturnSuccess)
+        gauge->TrueRemainingCapacity = si16ret;
+
+    /* BQCC(si16): PassedCharge */
+    key = makeUInt32Key("BQCC", 4, 16);
+    result = smc_read(key, &si16ret);
+    if (result == kIOReturnSuccess)
+        gauge->PassedCharge = si16ret;
+
+    /* BQD1(ui16): DOD0 */
+    key = makeUInt32Key("BQD1", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->DOD0 = ui16ret;
+
+    /* B0DC(ui16): DesignCapacity */
+    key = makeUInt32Key("B0DC", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->DesignCapacity = ui16ret;
+
+    /* B0IM(si16): IMAX */
+    key = makeUInt32Key("B0IM", 4, 16);
+    result = smc_read(key, &si16ret);
+    if (result == kIOReturnSuccess)
+        gauge->IMAX = si16ret;
+
+    /* B0NC(ui16): NCC */
+    key = makeUInt32Key("B0NC", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->NCC = ui16ret;
+
+    /* B0RS(si16): ResScale */
+    key = makeUInt32Key("B0RS", 4, 16);
+    result = smc_read(key, &si16ret);
+    if (result == kIOReturnSuccess)
+        gauge->ResScale = si16ret;
+
+    /* B0MS(ui16): ITMiscStatus */
+    key = makeUInt32Key("B0MS", 4, 16);
+    result = smc_read(key, &ui16ret);
+    if (result == kIOReturnSuccess)
+        gauge->ITMiscStatus = ui16ret;
+
+    /* B0I2(si16): IMAX2 */
+    key = makeUInt32Key("B0I2", 4, 16);
+    result = smc_read(key, &si16ret);
+    if (result == kIOReturnSuccess)
+        gauge->IMAX2 = si16ret;
+
+    /* B0CI(hex_): ChemID */
+    key = makeUInt32Key("B0CI", 4, 16);
+    result = smc_read(key, &ui32ret);
+    if (result == kIOReturnSuccess)
+        gauge->ChemID = ui32ret;
+
+    /* B0SR(si16): SimRate */
+    key = makeUInt32Key("B0SR", 4, 16);
+    result = smc_read(key, &si16ret);
+    if (result == kIOReturnSuccess)
+        gauge->SimRate = si16ret;
+
+    return true;
+}
+
+/* -1: Unknown */
+int battery_num(void) {
+    IOReturn result = kIOReturnSuccess;
+    SMCKey key;
+    int8_t count = 0;
+
+    if (gConn == 0)
+        result = smc_open();
+
+    if (result != kIOReturnSuccess)
+        return -1;
+    
+    /* BNCB(si8) Number of Chargable Batteries (Guessed) */
+    key = makeUInt32Key("BNCB", 4, 16);
+    result = smc_read(key, &count);
+    if (result != kIOReturnSuccess)
+        return -1;
+    
+    return (int)count;
+}
+
+bool is_charging(io_object_t family, char *type, char *manufacturer, char *name, char *serial) {
+    IOReturn result = kIOReturnSuccess;
+    SMCKey key;
+    uint8_t charging;
+    uint32_t family_code; /* D*FC */
+    
+
+    if (gConn == 0)
+        result = smc_open();
+
+    if (result != kIOReturnSuccess)
+        return false;
+    
+    /* AC-W(si8) Known cases */
+    /* -1: Uncharging (M Chip) */
+    /* 0: Uncharging (A Chip) */
+    /* 1: Charging at USB Port 1 */
+    /* 2: Charging at USB Port 2 */
+    /* Consider use 'D*AP' for mobile devices (AppleSMCCharger::_checkConnection) */
+    key = makeUInt32Key("AC-W", 4, 16);
+    result = smc_read(key, &charging);
+    if (result != kIOReturnSuccess)
+        return false;
+
+#if TARGET_OS_OSX
+    uint16_t time_to_full;
+    /* B0TF(ui16) TimeToFull */
+    key = makeUInt32Key("B0TF", 4, 16);
+    result = smc_read(key, &time_to_full);
+    if (result != kIOReturnSuccess)
+        return false;
+    /* Not charging */
+    if (time_to_full == 65535)
+        return false;
+#endif
+
+    /* D?if(ch8*) USB Port ? Firmware version */
+    /* D?ih(ch8*) USB Port ? Hardware version */
+    /* D?ii(ch8*) USB Port ? Adapter Model */
+    /* D?im(ch8*) USB Port ? Vendor */
+    /* D?in(ch8*) USB Port ? Name */
+    /* D?is(ch8*) USB Port ? Serial */
+
+    /* Not every charger sets those */
+    return true;
+}
+
+/* Notes on some guessed keys
+ Mobile Only:
+    D?DB(hex_): USB Port ? debounce
+    D?AR(si32): USB Port ? Ampere
+    D?SM(ui32): USB Port ? Socket Model
+    D?NO(ui8 ): (write only, unknown)
+    D?UD(ui32): USB Port ? SourceID
+    D?SD(flag): USB Port ? sharedSource
+    D?PM(hex_): USB Port ? HVC
+    D?PI(ui8 ): USB Port ? HVC Index
+    D1SX(ui8 ): High Voltage Charger Interrupt Action
+    D1SR(ui16): High Voltage Charger Request Ready
+    D1SP(ui8 ): High Voltage Charger Notification
+ 
+    WAFC(ui32): (write only) Smart Battery control bit (Enable: 0x10000) | (0x7: Wireless Cloak) (0x25: Charge Limit Display)
+    BD0E(ui32): DiffAmp
+    B0LP(ui16): Lpem Props
+ 
+    QQ0u(ioft): iBus accumulator
+ 
+ 
+ All:
+    AC-N(ui8 ): Adapter count
+    AC-W(si8 ): Active Adapter Index
+ 
+    D?FC(ui32): USB Port ? Family Code (kIOPSPowerAdapterFamilyKey)
+    D?IR(si32): USB Port ? input Current
+    D?VR(si32): USB Port ? input Voltage
+    D?BD(ui32): USB Port ? AdapterID
+    D?DE(ch8*): USB Port ? Description
+    D?PT(ui8 ): USB Port ? Adapter Type
+ 
+    B0Ti(ui32): Charge Limit Rate Index
+    
+
+    CHSC(ui8 ): Charger Status
+    CHPS(ui32): selected powerpath
+    CHA?(ui32): Powerpath ?
+    CHHV(ui64): (write only) USB Input High Voltage
+    CHI?(ui32): USB Port ? Input Current Limit / PMUConfiguration
+    CHBI(ui32): Charge Current Configuration
+    CHBV(ui32): Charge Voltage Configuration
+    CHTU(ui32): Carrier Mode upper voltage
+    CHTL(ui32): Carrier Mode lower voltage
+    CHTE(ui32): Carrier Mode
+    CHKL(ui16): Kiosk Mode voltage
+    CHKM(ui8 ): Kiosk Mode
+    CH0I(ui8 ): Battery Connected State 1 << 0
+    CH0J(ui8 ): Battery Connected State 1 << 1
+    CH0K(ui8 ): Battery Connected State 1 << 2
+ 
+    VBUS(ui32): SMC Detect Status
+
+    MBSE(hex_): Sleep-Wake related
+    MBSW(hex_): Sleep-Wake related
+ 
+    UPOF(hex_): Shutdown data error flags
+    UBNC(ui16): Shutdown nominal capacity
+    UB0C(ui8 ): (write only) Shutdown data (write 1 to clear)
+ 
+ Conditional:
+    VQ0u(ioft): VBUS Voltage
+    
+ */
+    

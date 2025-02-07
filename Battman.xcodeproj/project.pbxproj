@@ -99,7 +99,6 @@
 		686AECC52D3B93CB0059ECD0 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
 		686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		686AECC82D3B93CB0059ECD0 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		686AECC92D3B93CB0059ECD0 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		686AECD32D3B93CD0059ECD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		686AECD42D3B93CD0059ECD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -188,7 +187,6 @@
 				686AECC52D3B93CB0059ECD0 /* SceneDelegate.h */,
 				686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */,
 				686AECC82D3B93CB0059ECD0 /* ViewController.h */,
-				686AECC92D3B93CB0059ECD0 /* ViewController.m */,
 				686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */,
 				686AECD32D3B93CD0059ECD0 /* Info.plist */,
 				686AECD42D3B93CD0059ECD0 /* main.m */,
