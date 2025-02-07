@@ -101,7 +101,7 @@ typedef struct gas_gauge {
     uint16_t CycleCount;
     uint16_t StateOfCharge;         /* % */
     int16_t TrueRemainingCapacity;  /* mAh */
-    int16_t PassedCharge;           /* mA ? */
+    int16_t PassedCharge;           /* mAh */
     uint16_t DOD0;                  /* mAh */
     uint16_t DesignCapacity;        /* mAh */
     int16_t IMAX;                   /* ? */
@@ -120,5 +120,6 @@ int estimate_time_to_full(void);
 float get_battery_health(float *design_cap, float *full_cap);
 bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design);
 int battery_num(void);
+bool get_gas_gauge(gas_gauge_t *gauge);
 
 #endif

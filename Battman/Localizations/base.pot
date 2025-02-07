@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Battman 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-05 18:11+0800\n"
+"POT-Creation-Date: 2025-02-08 00:35+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,12 +41,10 @@ msgid "Battman Credit"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:10
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:39
 msgid "Battman"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:15
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:277
 msgid "Battery"
 msgstr ""
 
@@ -59,31 +57,11 @@ msgid "Manage"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:41
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:167
 msgid "2025 Ⓒ Torrekie <me@torrekie.dev>"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:66
 msgid "Charging Limit"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:111
-msgid "SoC"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:110
-msgid "Health"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:112
-msgid "Temperature"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
-msgid "Remain Time"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/main.m:75
@@ -94,24 +72,93 @@ msgstr ""
 msgid "Battman CLI not implemented yet."
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:11
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:15
 msgid "Internal Battery"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:23
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:39
 msgid "Hardware Data"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:48
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:65
 msgid "Full Charge Capacity"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:53
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:70
 msgid "Designed Capacity"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:58
-msgid "Remaining Charge"
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:75
+msgid "Remaining Capacity"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:81
+msgid "True Remaining Capacity"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:83
+msgid "None"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:86
+msgid "Qmax"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:91
+msgid "Depth of Discharge"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:96
+msgid "Passed Charge"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:101
+msgid "Voltage"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:106
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:112
+msgid "Temperature"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:111
+msgid "Average Current"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:116
+msgid "Average Power"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:121
+msgid "Battery Count"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:127
+msgid "Minutes"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:128
+msgid "Time To Empty"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:130
+msgid "Never"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:133
+msgid "Cycle Count"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:138
+msgid "State Of Charge"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:110
+msgid "Health"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:111
+msgid "SoC"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:113

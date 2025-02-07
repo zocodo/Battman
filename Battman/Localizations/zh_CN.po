@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Battman 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-05 18:11+0800\n"
+"POT-Creation-Date: 2025-02-08 00:35+0800\n"
 "PO-Revision-Date: 2025-01-27 17:32+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -41,12 +41,10 @@ msgid "Battman Credit"
 msgstr "Battman 贡献者名单"
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:10
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:39
 msgid "Battman"
 msgstr "Battman"
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:15
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:277
 msgid "Battery"
 msgstr "电池"
 
@@ -59,32 +57,12 @@ msgid "Manage"
 msgstr "管理"
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:41
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:167
 msgid "2025 Ⓒ Torrekie <me@torrekie.dev>"
 msgstr "2025 版权所有 Torrekie <me@torrekie.dev>"
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:66
 msgid "Charging Limit"
 msgstr "充电限制"
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:111
-msgid "SoC"
-msgstr "电池余量"
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:110
-msgid "Health"
-msgstr "电池健康"
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:112
-msgid "Temperature"
-msgstr "电池温度"
-
-#: /Users/torrekie/proj/Battman/Battman/ViewController.m:253
-msgid "Remain Time"
-msgstr "剩余时间"
 
 #: /Users/torrekie/proj/Battman/Battman/main.m:75
 msgid "locale_name"
@@ -94,25 +72,94 @@ msgstr "中文"
 msgid "Battman CLI not implemented yet."
 msgstr "Battman 命令行工具尚未实现。"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:11
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:15
 msgid "Internal Battery"
 msgstr "设备电池"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:23
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:39
 msgid "Hardware Data"
 msgstr "硬件信息"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:48
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:65
 msgid "Full Charge Capacity"
 msgstr "满充容量"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:53
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:70
 msgid "Designed Capacity"
 msgstr "设计容量"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:58
-msgid "Remaining Charge"
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:75
+msgid "Remaining Capacity"
 msgstr "剩余容量"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:81
+msgid "True Remaining Capacity"
+msgstr "真实剩余容量"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:83
+msgid "None"
+msgstr "无"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:86
+msgid "Qmax"
+msgstr "最大化学容量"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:91
+msgid "Depth of Discharge"
+msgstr "放电深度"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:96
+msgid "Passed Charge"
+msgstr "充放累积"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:101
+msgid "Voltage"
+msgstr "电压"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:106
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:112
+msgid "Temperature"
+msgstr "电池温度"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:111
+msgid "Average Current"
+msgstr "平均电流"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:116
+msgid "Average Power"
+msgstr "平均功率"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:121
+msgid "Battery Count"
+msgstr "电池数量"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:127
+msgid "Minutes"
+msgstr "分钟"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:128
+msgid "Time To Empty"
+msgstr "耗尽时间"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:130
+msgid "Never"
+msgstr "永不"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:133
+msgid "Cycle Count"
+msgstr "循环次数"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:138
+msgid "State Of Charge"
+msgstr "电池余量"
+
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:110
+msgid "Health"
+msgstr "电池健康"
+
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:111
+msgid "SoC"
+msgstr "电池余量"
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:113
 msgid "Charging"
