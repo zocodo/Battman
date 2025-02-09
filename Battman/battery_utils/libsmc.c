@@ -153,10 +153,16 @@ __attribute__((destructor)) void smc_close(void) {
         IOServiceClose(gConn);
 }
 
+bool smc_assign(SMCKey key, void *value) {
+    if (smc_read(key, value) == kIOReturnSuccess)
+        return true;
+
+    return false;
+}
+
+/* TODO: Return arrays */
 int get_fan_status(void) {
     IOReturn result = kIOReturnSuccess;
-    SMCKey key;
-    char keyStr[5];
     uint8_t fan_num;
     int i;
 
@@ -166,8 +172,7 @@ int get_fan_status(void) {
     if (result != kIOReturnSuccess)
         return 0;
 
-    key = makeUInt32Key("FNum", 4, 16);
-    result = smc_read(key, &fan_num);
+    result = smc_read('FNum', &fan_num);
     /* No hardware fan support, or permission deined */
     if (result != kIOReturnSuccess)
         return 0;
@@ -179,10 +184,7 @@ int get_fan_status(void) {
     /* If have fans, check 'F*Ac', which is current speed */
     for (i = 0; i < fan_num; i++) {
         float retval;
-
-        sprintf(keyStr, "F%dAc", i);
-        key = makeUInt32Key(keyStr, 4, 16);
-        result = smc_read(key, &retval);
+        result = smc_read('F\0Ac' | ((0x30 + i) << 0x10), &retval);
         /* F*Ac(flt), return 1 if any fan working */
         if (retval > 0.0)
             return 1;
@@ -194,7 +196,6 @@ int get_fan_status(void) {
 float get_temperature(void) {
     IOReturn result = kIOReturnSuccess;
     float retval;
-    SMCKey key;
 
     if (gConn == 0)
         result = smc_open();
@@ -203,12 +204,9 @@ float get_temperature(void) {
         return -1;
 
     /* TB*T(flt), but normally they are same */
-    key = makeUInt32Key("TB0T", 4, 16);
-    result = smc_read(key, &retval);
+    result = smc_read('TB0T', &retval);
     if (result != kIOReturnSuccess)
-        key = makeUInt32Key("B0AT", 4, 16);
-
-    result = smc_read(key, &retval);
+        result = smc_read('B0AT', &retval);
     if (result != kIOReturnSuccess)
         return -1;
 
@@ -217,7 +215,6 @@ float get_temperature(void) {
 
 int get_time_to_empty(void) {
     IOReturn result = kIOReturnSuccess;
-    SMCKey key;
     uint16_t retval;
 
     if (gConn == 0)
@@ -229,19 +226,17 @@ int get_time_to_empty(void) {
 #if TARGET_OS_EMBEDDED && !TARGET_OS_SIMULATOR
     /* This is weird, why B0TF means TimeToEmpty on Embedded,
      * but TimeToFullCharge on macOS? */
-    key = makeUInt32Key("B0TF", 4, 16);
     /* Tested on iPhone 12 mini: B0TF does not exist */
-    result = smc_read(key, &retval);
-    if (result != kIOReturnSuccess)
-        key = makeUInt32Key("B0TE", 4, 16);
-#else
-    key = makeUInt32Key("B0TE", 4, 16);
+    result = smc_read('B0TF', &retval);
+    if (result == kIOReturnSuccess)
+        goto got_time;
 #endif
 
-    result = smc_read(key, &retval);
+    result = smc_read('B0TE', &retval);
     if (result != kIOReturnSuccess)
         return 0;
 
+got_time:
     /* 0xFFFF, battery charging (known scene, possibly others) */
     if (retval == 65535)
         return -1;
@@ -251,7 +246,6 @@ int get_time_to_empty(void) {
 
 int estimate_time_to_full() {
     IOReturn result = kIOReturnSuccess;
-    SMCKey key;
     int16_t current;
     uint16_t fullcap;
 
@@ -262,14 +256,12 @@ int estimate_time_to_full() {
         return 0;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
-    key = makeUInt32Key("B0FC", 4, 16);
-    result = smc_read(key, &fullcap);
+    result = smc_read('B0FC', &fullcap);
     if (result != kIOReturnSuccess)
         return 0;
 
     /* B0AC(si16) AverageCurrent (mA) */
-    key = makeUInt32Key("B0AC", 4, 16);
-    result = smc_read(key, &current);
+    result = smc_read('B0AC', &current);
     if (result != kIOReturnSuccess)
         return 0;
 
@@ -283,7 +275,6 @@ int estimate_time_to_full() {
 
 float get_battery_health(float *design_cap, float *full_cap) {
     IOReturn result = kIOReturnSuccess;
-    SMCKey key;
     uint16_t fullcap;
     uint16_t designcap;
 
@@ -294,14 +285,12 @@ float get_battery_health(float *design_cap, float *full_cap) {
         return 0;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
-    key = makeUInt32Key("B0FC", 4, 16);
-    result = smc_read(key, &fullcap);
+    result = smc_read('B0FC', &fullcap);
     if (result != kIOReturnSuccess)
         return 0;
 
     /* B0DC(ui16) DesignCapacity (mAh) */
-    key = makeUInt32Key("B0DC", 4, 16);
-    result = smc_read(key, &designcap);
+    result = smc_read('B0DC', &designcap);
     if (result != kIOReturnSuccess)
         return 0;
 
@@ -327,20 +316,19 @@ bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
     uint16_t B0RM, B0FC, B0DC;
 
     /* B0RM(ui16) RemainingCapacity (mAh) */
-    SMCKey key = makeUInt32Key("B0RM", 4, 16);
-    IOReturn result = smc_read(key, &B0RM);
+    IOReturn result = smc_read('B0RM', &B0RM);
     if (result != kIOReturnSuccess)
         return false;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
-    key = makeUInt32Key("B0FC", 4, 16);
-    result = smc_read(key, &B0FC);
+    result = smc_read('B0FC', &B0FC);
     if (result != kIOReturnSuccess)
         return false;
 
     /* B0DC(ui16) DesignCapacity (mAh) */
-    key = makeUInt32Key("B0DC", 4, 16);
-    result = smc_read(key, &B0DC);
+    result = smc_read('B0DC', &B0DC);
+    if (result != kIOReturnSuccess)
+        return false;
 
     /* B0RM should be read reversed that scene (e.g. 0x760D -> 0x0D76) */
     /* TODO: We need a better detection for this */
@@ -357,11 +345,6 @@ bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
 
 bool get_gas_gauge(gas_gauge_t *gauge) {
     IOReturn result = kIOReturnSuccess;
-    SMCKey key;
-    uint16_t ui16ret = 0;
-    uint32_t ui32ret = 0;
-    int16_t si16ret = 0;
-    int32_t si32ret = 0;
 
     if (gConn == 0)
         result = smc_open();
@@ -369,151 +352,81 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     if (result != kIOReturnSuccess)
         return false;
 
-    /* TODO: Shorten those code */
+    /* TODO: Continue shorten those code */
 
     /* B0AT(ui16): Temperature */
-    key = makeUInt32Key("B0AT", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->Temperature = ui16ret;
+    (void)smc_read('B0AT', &gauge->Temperature);
 
     /* B0AV(ui16): Average Voltage */
-    key = makeUInt32Key("B0AV", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->Voltage = ui16ret;
+    (void)smc_read('B0AV', &gauge->Voltage);
     
     /* B0FI(hex_): Flags */
-    key = makeUInt32Key("B0FI", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->Flags = ui16ret;
+    (void)smc_read('B0FI', &gauge->Flags);
     
     /* B0RM(ui16): RemainingCapacity */
-    key = makeUInt32Key("B0RM", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->RemainingCapacity = ui16ret;
+    (void)smc_read('B0RM', &gauge->RemainingCapacity);
     
     /* B0FC(ui16): FullChargeCapacity */
-    key = makeUInt32Key("B0FC", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->FullChargeCapacity = ui16ret;
+    (void)smc_read('B0FC', &gauge->FullChargeCapacity);
 
     /* B0AC(si16): AverageCurrent */
-    key = makeUInt32Key("B0AC", 4, 16);
-    result = smc_read(key, &si16ret);
-    if (result == kIOReturnSuccess)
-        gauge->AverageCurrent = si16ret;
+    (void)smc_read('B0AC', &gauge->AverageCurrent);
 
     /* B0TF(ui16): TimeToEmpty */
-    key = makeUInt32Key("B0TF", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->TimeToEmpty = ui16ret;
+    (void)smc_read('B0TF', &gauge->TimeToEmpty);
 
     /* BQX1(ui16): Qmax */
-    key = makeUInt32Key("BQX1", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->Qmax = ui16ret;
+    (void)smc_read('BQX1', &gauge->Qmax);
 
     /* B0AP(si16/si32): AveragePower */
-    key = makeUInt32Key("B0AP", 4, 16);
-    result = smc_read(key, &si32ret);
-    if (result == kIOReturnSuccess)
-        gauge->AveragePower = si32ret;
+    (void)smc_read('B0AP', &gauge->AveragePower);
 
     /* B0OC(si16): OCV_Current */
-    key = makeUInt32Key("B0OC", 4, 16);
-    result = smc_read(key, &si16ret);
-    if (result == kIOReturnSuccess)
-        gauge->OCV_Current = si16ret;
+    (void)smc_read('B0OC', &gauge->OCV_Current);
 
     /* B0OV(ui16): OCV_Voltage */
-    key = makeUInt32Key("B0OV", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->OCV_Voltage = ui16ret;
+    (void)smc_read('B0OV', &gauge->OCV_Voltage);
 
     /* B0CT(ui16): CycleCount */
-    key = makeUInt32Key("B0CT", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->CycleCount = ui16ret;
+    (void)smc_read('B0CT', &gauge->CycleCount);
 
     /* BRSC(ui16): StateOfCharge */
-    key = makeUInt32Key("BRSC", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->StateOfCharge = ui16ret;
+    (void)smc_read('BRSC', &gauge->StateOfCharge);
 
     /* B0TC(si16): TrueRemainingCapacity */
-    key = makeUInt32Key("B0TC", 4, 16);
-    result = smc_read(key, &si16ret);
-    if (result == kIOReturnSuccess)
-        gauge->TrueRemainingCapacity = si16ret;
+    (void)smc_read('B0TC', &gauge->TrueRemainingCapacity);
 
     /* BQCC(si16): PassedCharge */
-    key = makeUInt32Key("BQCC", 4, 16);
-    result = smc_read(key, &si16ret);
-    if (result == kIOReturnSuccess)
-        gauge->PassedCharge = si16ret;
+    (void)smc_read('BQCC', &gauge->PassedCharge);
 
     /* BQD1(ui16): DOD0 */
-    key = makeUInt32Key("BQD1", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->DOD0 = ui16ret;
+    (void)smc_read('BQD1', &gauge->DOD0);
+    
+    /* TODO: BDD1(ui16): PresentDOD */
 
     /* B0DC(ui16): DesignCapacity */
-    key = makeUInt32Key("B0DC", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->DesignCapacity = ui16ret;
+    (void)smc_read('B0DC', &gauge->DesignCapacity);
 
     /* B0IM(si16): IMAX */
-    key = makeUInt32Key("B0IM", 4, 16);
-    result = smc_read(key, &si16ret);
-    if (result == kIOReturnSuccess)
-        gauge->IMAX = si16ret;
+    (void)smc_read('B0IM', &gauge->IMAX);
 
     /* B0NC(ui16): NCC */
-    key = makeUInt32Key("B0NC", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->NCC = ui16ret;
+    (void)smc_read('B0NC', &gauge->NCC);
 
     /* B0RS(si16): ResScale */
-    key = makeUInt32Key("B0RS", 4, 16);
-    result = smc_read(key, &si16ret);
-    if (result == kIOReturnSuccess)
-        gauge->ResScale = si16ret;
+    (void)smc_read('B0RS', &gauge->ResScale);
 
     /* B0MS(ui16): ITMiscStatus */
-    key = makeUInt32Key("B0MS", 4, 16);
-    result = smc_read(key, &ui16ret);
-    if (result == kIOReturnSuccess)
-        gauge->ITMiscStatus = ui16ret;
+    (void)smc_read('B0MS', &gauge->ITMiscStatus);
 
     /* B0I2(si16): IMAX2 */
-    key = makeUInt32Key("B0I2", 4, 16);
-    result = smc_read(key, &si16ret);
-    if (result == kIOReturnSuccess)
-        gauge->IMAX2 = si16ret;
+    (void)smc_read('B0I2', &gauge->IMAX2);
 
     /* B0CI(hex_): ChemID */
-    key = makeUInt32Key("B0CI", 4, 16);
-    result = smc_read(key, &ui32ret);
-    if (result == kIOReturnSuccess)
-        gauge->ChemID = ui32ret;
+    (void)smc_read('B0CI', &gauge->ChemID);
 
     /* B0SR(si16): SimRate */
-    key = makeUInt32Key("B0SR", 4, 16);
-    result = smc_read(key, &si16ret);
-    if (result == kIOReturnSuccess)
-        gauge->SimRate = si16ret;
+    (void)smc_read('B0SR', &gauge->SimRate);
 
     return true;
 }
@@ -521,7 +434,6 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
 /* -1: Unknown */
 int battery_num(void) {
     IOReturn result = kIOReturnSuccess;
-    SMCKey key;
     int8_t count = 0;
 
     if (gConn == 0)
@@ -531,59 +443,141 @@ int battery_num(void) {
         return -1;
     
     /* BNCB(si8) Number of Chargable Batteries (Guessed) */
-    key = makeUInt32Key("BNCB", 4, 16);
-    result = smc_read(key, &count);
+    result = smc_read('BNCB', &count);
     if (result != kIOReturnSuccess)
         return -1;
     
     return (int)count;
 }
 
-bool is_charging(io_object_t family, char *type, char *manufacturer, char *name, char *serial) {
+/* Then I found that this was how exactly IOPSCopyExternalPowerAdapterDetails returns */
+/*
+ SerialString => D?is
+ Watts => D?IR * D?VR
+ Description => D?DE
+ Model => D?ii
+ Name => D?in
+ PMUConfiguration => CHI?
+ Current => D?IR
+ FamilyCode => D?FC
+ Voltage => D?VR
+ FwVersion => D?if
+ UsbHvcMenu => D?PM
+ AdapterID => D?ii
+ UsbHvcHvcIndex => D?PI
+ IsWireless => D?FC - kIOPSFamilyCodeExternal < 5
+ HwVersion => D?ih
+ Manufacturer => D?im
+*/
+/*
+ === kIOPSPowerAdapterFamilyKey ===         Decimal       Hex
+ kIOPSFamilyCodeDisconnected                0             0
+ kIOPSFamilyCodeUnsupported                 -536870201    E00002C7
+ kIOPSFamilyCodeFirewire                    -536838144    E0008000
+ kIOPSFamilyCodeUSBHost                     -536854528    E0004000
+ kIOPSFamilyCodeUSBHostSuspended            -536854527    E0004001
+ kIOPSFamilyCodeUSBDevice                   -536854526    E0004002
+ kIOPSFamilyCodeUSBAdapter                  -536854525    E0004003
+ kIOPSFamilyCodeUSBChargingPortDedicated    -536854524    E0004004
+ kIOPSFamilyCodeUSBChargingPortDownstream   -536854523    E0004005
+ kIOPSFamilyCodeUSBChargingPort             -536854522    E0004006
+ kIOPSFamilyCodeUSBUnknown                  -536854521    E0004007
+ kIOPSFamilyCodeUSBCBrick                   -536854520    E0004008
+ kIOPSFamilyCodeUSBCTypeC                   -536854519    E0004009
+ kIOPSFamilyCodeUSBCPD                      -536854518    E000400A
+ kIOPSFamilyCodeAC                          -536723456    E0024000
+ kIOPSFamilyCodeExternal                    -536723455    E0024001
+ kIOPSFamilyCodeExternal2                   -536723454    E0024002
+ kIOPSFamilyCodeExternal3                   -536723453    E0024003
+ kIOPSFamilyCodeExternal4                   -536723452    E0024004
+ kIOPSFamilyCodeExternal5                   -536723451    E0024005
+ */
+charging_state_t is_charging(mach_port_t family, device_info_t *info) {
     IOReturn result = kIOReturnSuccess;
     SMCKey key;
-    uint8_t charging;
-    uint32_t family_code; /* D*FC */
+    int8_t charging;
+    bool ret = false;
     
 
     if (gConn == 0)
         result = smc_open();
 
     if (result != kIOReturnSuccess)
-        return false;
+        return kIsUnavail;
     
     /* AC-W(si8) Known cases */
-    /* -1: Uncharging (M Chip) */
-    /* 0: Uncharging (A Chip) */
-    /* 1: Charging at USB Port 1 */
-    /* 2: Charging at USB Port 2 */
+    /* -1: No Adapter (M Chip) */
+    /* 0: No Adapter (A Chip) */
+    /* 1: Adapter at USB Port 1 */
+    /* 2: Adapter at USB Port 2 */
     /* Consider use 'D*AP' for mobile devices (AppleSMCCharger::_checkConnection) */
-    key = makeUInt32Key("AC-W", 4, 16);
-    result = smc_read(key, &charging);
+    result = smc_read('AC-W', &charging);
     if (result != kIOReturnSuccess)
-        return false;
+        return kIsUnavail;
 
-#if TARGET_OS_OSX
+    if (!charging || charging == -1)
+        return kIsUnavail;
+
+#if TARGET_OS_OSX || TARGET_OS_SIMULATOR
     uint16_t time_to_full;
     /* B0TF(ui16) TimeToFull */
-    key = makeUInt32Key("B0TF", 4, 16);
-    result = smc_read(key, &time_to_full);
+    result = smc_read('B0TF', &time_to_full);
     if (result != kIOReturnSuccess)
-        return false;
-    /* Not charging */
+        return kIsUnavail;
+
+    /* Not charging, but Adapter attached */
     if (time_to_full == 65535)
-        return false;
+        ret = kIsPausing;
+    else
 #endif
+        ret = kIsCharging;
 
-    /* D?if(ch8*) USB Port ? Firmware version */
-    /* D?ih(ch8*) USB Port ? Hardware version */
-    /* D?ii(ch8*) USB Port ? Adapter Model */
-    /* D?im(ch8*) USB Port ? Vendor */
-    /* D?in(ch8*) USB Port ? Name */
-    /* D?is(ch8*) USB Port ? Serial */
+    /* kIOPSPowerAdapterFamily */
+    key = 'D\0FC' | ((0x30 + charging) << 0x10);
+    result = smc_read(key, &family);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Port: %d, Family Code: %X"), charging, family);
+    
+    /* Not every charger sets those, no return on err */
+    if (info != NULL) {
+        /* D?if(ch8*) USB Port ? Firmware version */
+        key = 'D\0if' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, info->firmware);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Firmware Version: %s"), charging, info->firmware);
 
-    /* Not every charger sets those */
-    return true;
+        /* D?ih(ch8*) USB Port ? Hardware version */
+        key = 'D\0ih' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, info->hardware);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Hardware Version: %s"), charging, info->hardware);
+
+        /* D?ii(ch8*) USB Port ? Adapter Model */
+        key = 'D\0ii' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, info->adapter);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Adapter Model: %s"), charging, info->adapter);
+
+        /* D?im(ch8*) USB Port ? Vendor */
+        key = 'D\0im' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, info->vendor);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Vendor: %s"), charging, info->vendor);
+
+        /* D?in(ch8*) USB Port ? Name */
+        key = 'D\0in' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, info->name);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Name: %s"), charging, info->name);
+
+        /* D?is(ch8*) USB Port ? Serial */
+        key = 'D\0is' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, info->serial);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Serial: %s"), charging, info->serial);
+    }
+
+    return ret;
 }
 
 /* Notes on some guessed keys
@@ -595,7 +589,6 @@ bool is_charging(io_object_t family, char *type, char *manufacturer, char *name,
     D?UD(ui32): USB Port ? SourceID
     D?SD(flag): USB Port ? sharedSource
     D?PM(hex_): USB Port ? HVC
-    D?PI(ui8 ): USB Port ? HVC Index
     D1SX(ui8 ): High Voltage Charger Interrupt Action
     D1SR(ui16): High Voltage Charger Request Ready
     D1SP(ui8 ): High Voltage Charger Notification
@@ -647,6 +640,8 @@ bool is_charging(io_object_t family, char *type, char *manufacturer, char *name,
     UB0C(ui8 ): (write only) Shutdown data (write 1 to clear)
  
  Conditional:
+    D?PI(ui8 ): USB Port ? HVC Index (Software HVC on Mac)
+
     VQ0u(ioft): VBUS Voltage
     
  */

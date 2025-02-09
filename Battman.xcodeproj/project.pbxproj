@@ -130,6 +130,8 @@
 		68DCA5B72D40F4A5004D0104 /* base.pot */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 4; path = base.pot; sourceTree = "<group>"; };
 		68DCA5BD2D40FDE3004D0104 /* en.po */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = en.po; sourceTree = "<group>"; };
 		68DCA5BE2D40FDE3004D0104 /* zh_CN.po */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = zh_CN.po; sourceTree = "<group>"; };
+		68E938992D58980B00223285 /* iokit_connection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iokit_connection.h; sourceTree = "<group>"; };
+		68E9389A2D58980B00223285 /* iokit_connection.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = iokit_connection.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -225,6 +227,8 @@
 				68A3EAF72D5204D2003381DF /* battery_info.h */,
 				68171A2E2D5221C400DD4224 /* libsmc.h */,
 				68171A2F2D5221C400DD4224 /* libsmc.c */,
+				68E938992D58980B00223285 /* iokit_connection.h */,
+				68E9389A2D58980B00223285 /* iokit_connection.c */,
 			);
 			path = battery_utils;
 			sourceTree = "<group>";
@@ -599,6 +603,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Battman/Info.plist;
 				INSTALL_GROUP = wheel;
 				INSTALL_OWNER = root;
@@ -631,6 +636,7 @@
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Battman/Info.plist;
 				INSTALL_GROUP = wheel;
 				INSTALL_OWNER = root;
