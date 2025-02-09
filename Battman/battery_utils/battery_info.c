@@ -11,6 +11,10 @@
 #include <CoreFoundation/CFNumber.h>
 #include <CoreFoundation/CFString.h>
 
+#ifndef _ID_
+#define _ID_(x) (x)
+#endif
+
 #if 0
 #warning TODO: IOKit/ps is not reliable, migrate to other impl
 #if __has_include(<IOKit/ps/IOPowerSources.h>)
@@ -115,10 +119,10 @@ NSString *registeredStrings[] = {
 #endif
 
 struct battery_info_node main_battery_template[] = {
-    {"Health", ID_BI_BATTERY_HEALTH, BIN_IS_BACKGROUND | BIN_UNIT_PERCENT},
-    {"SoC", ID_BI_BATTERY_SOC, BIN_IS_FLOAT | BIN_UNIT_PERCENT},
-    {"Temperature", ID_BI_BATTERY_TEMP, BIN_IS_FLOAT | BIN_UNIT_DEGREE_C},
-    {"Charging", ID_BI_BATTERY_CHARGING, BIN_IS_BOOLEAN},
+    {_ID_("Health"), ID_BI_BATTERY_HEALTH, BIN_IS_BACKGROUND | BIN_UNIT_PERCENT},
+    {_ID_("SoC"), ID_BI_BATTERY_SOC, BIN_IS_FLOAT | BIN_UNIT_PERCENT},
+    {_ID_("Temperature"), ID_BI_BATTERY_TEMP, BIN_IS_FLOAT | BIN_UNIT_DEGREE_C},
+    {_ID_("Charging"), ID_BI_BATTERY_CHARGING, BIN_IS_BOOLEAN},
     {"ASoC(Hidden)", ID_BI_BATTERY_ASOC, BIN_IS_FOREGROUND | BIN_IS_HIDDEN},
 
     {"TEST FALSE YOU SHOULD NOT SEE THIS!!", ID_BI_BATTERY_ALWAYS_FALSE,

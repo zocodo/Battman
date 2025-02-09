@@ -25,8 +25,8 @@ extern int _NSGetExecutablePath(char* buf, uint32_t* bufsize);
 #endif
 
 NSString *cond_localize(int localize_id) {
-	int preferred_language=0; // current: 0=eng 1=cn
-	// !COND_LOCALIZE_CODE!
+	int preferred_language=1; // current: 0=eng 1=cn
+	return nil; // !COND_LOCALIZE_CODE!
 	// ^ Do not remove, will be autoprocessed
 }
 

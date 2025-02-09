@@ -50,13 +50,20 @@ else
 endif
 
 SOURCES:=$(wildcard *.m *.c */*.m */*.c)
-OBJECTS:=$(addprefix build/objects/,$(addsuffix .o,$(SOURCES)))
+PRESRC:=$(addprefix build/preprocessed/,$(SOURCES))
+#OBJECTS:=$(addprefix build/objects/,$(addsuffix .o,$(SOURCES)))
+OBJECTS:=$(subst build/preprocessed,build/objects,$(addsuffix .o,$(PRESRC)))
 
 all: $(PUBLISH_TARGET)
 
-$(OBJECTS): build/objects/%.o: %
+$(PRESRC): build/preprocessed/%: % Localizations/*.po Localizations/*.sh
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -c $< -o $@
+	./Localizations/preprocess.sh $< > $@
+
+#$(OBJECTS): build/objects/%.o: %
+$(OBJECTS): build/objects/%.o: build/preprocessed/%
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -I.$(subst build/preprocessed,,$(dir $<)) -c $< -o $@
 
 build/Payload/Battman.app/Battman: $(OBJECTS) ../Battman.entitlements
 	@mkdir -p $(@D)

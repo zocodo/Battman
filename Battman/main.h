@@ -27,6 +27,10 @@
 #define _(x) (@x)
 #endif
 
+#ifndef _ID_
+#define _ID_(x) (x)
+#endif
+
 #ifndef BATTMAN_INTL
 #define BATTMAN_INTL "battman"
 #endif

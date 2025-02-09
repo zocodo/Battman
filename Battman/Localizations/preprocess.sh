@@ -1,20 +1,18 @@
 #! /bin/bash
 
-msgids=`sed -n 's/msgid "\(.\+\)"/\1/p' base.pot`
-locale_files=`ls *.po`
+msgids=`sed -n 's/msgid "\(.\+\)"/\1/p' Localizations/base.pot`
+locale_files=`ls Localizations/*.po`
 
 val=`cat $1`
 
 lid=1
 while read i; do
-	val=`sed "s/_(\"$i\")/cond_localize($lid)/" <<<$val`
+	val=`sed "s/_ID_(\"$i\")/(const char *)$lid/g;s/_(\"$i\")/cond_localize($lid)/g;s/\\([,({: 	]\\)_(\\([^\"]\\+\\))/\\1cond_localize((int)(unsigned long long)\\2)/g" <<<$val`
 	lid=$((lid+1))
 done<<<"$msgids"
-
-untranslated=`sed -n 's/.*_("\([^"]\+\)").*/\1/p' <<<$val`
-
-if [ "$untranslated" != "" ]; then
-	echo "$untranslated">>untranslated.pot.tmp
+if [ "$1" == "main.m" ]; then
+	#echo sed "s^return nil; // !COND_LOCALIZE_CODE!^$(./Localizations/generate_code.sh)^"
+	val=`sed "s^return nil; // !COND_LOCALIZE_CODE!^$(./Localizations/generate_code.sh)return nil;^" <<<$val` 
 fi
 
 echo "$val"

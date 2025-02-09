@@ -45,23 +45,6 @@ SPECIAL:
 // e.g. degreeC is e2 84 83 in utf8,
 // convert it to little endian, 0x8384e2, and put in the bitmask.
 
-// content: <1024: integer 1-127
-// Bit 1<<9 == 1 : IsTrueOrFalse
-// Bit 1<<9 == 0 : IsNum
-// Bit 1<<8 == 1 : Affects Progress View (is percentage)
-// Bit 1<<7 == 1 : Is Foreground
-// Bit 1<<7 == 0 : Is Background
-// Bit 1<<7 is ignored if bit 1<<8==0
-// ELSE IF: content: >=1024, content&1==1 && content&(1<<10)!=0
-// float point value.
-// ELSE: char *
-/*#define BIN_IS_TRUE_OR_FALSE        (1 << 9)
-#define BIN_IS_VALUE 0
-#define BIN_AFFECTS_BATTERY_CELL    (1 << 8)
-#define BIN_IS_FOREGROUND           (1 << 7 | BIN_AFFECTS_BATTERY_CELL)
-#define BIN_IS_BACKGROUND           (0 << 0 | BIN_AFFECTS_BATTERY_CELL)
-#define BIN_IS_FLOAT (1<<10 | 1)*/
-
 struct battery_info_node {
     const char *description; // NONNULL
     int identifier;
