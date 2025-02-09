@@ -9,15 +9,15 @@ lid=1
 while read i; do
 	for fn in $locale_files; do
 		v=`sed -nz "s/.*msgid \"$i\"\\nmsgstr \"\\([^\"]\\+\\)\".*/\\1/p" ${fn}`
-		lcs["$fn"]="${lcs[$fn]}if(localize_id==${lid}){return @\"$v\";}"
+		lcs["$fn"]="${lcs[$fn]}CFSTR(\"$v\"),"
 	done
 	lid=$((lid+1))
 done<<< "$msgids"
 
-lid=0
+
 for i in $locale_files; do
-	localize_code="${localize_code}if(preferred_language==${lid}){${lcs[${i}]}}"
-	lid=$((lid+1))
+	localize_code="${localize_code}${lcs[${i}]}"
 done
+localize_code="${localize_code}\\\\n#define LOCALIZATION_COUNT $((lid-1))"
 
 printf "$localize_code"

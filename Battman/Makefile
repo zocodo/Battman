@@ -16,7 +16,7 @@ FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -fr
 ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/clang && echo exists), exists)
 CC := ${THEOS}/toolchain/linux/iphone/bin/clang
 CFLAGS:=-F${THEOS}/vendor/lib -target arm64-apple-ios14.0 -target arm64-apple-darwin \
-		-isysroot $(SDKROOT) -fobjc-arc
+		-isysroot $(SDKROOT) -fobjc-arc -fconstant-cfstrings
 LDFLAGS:=-F${THEOS}/vendor/lib -isysroot $(SDKROOT) -target arm64-apple-ios14.0 -target arm64-apple-darwin \
 		$(LIBS) $(FRAMEWORKS)
 else ifeq ($(shell which xcrun),)

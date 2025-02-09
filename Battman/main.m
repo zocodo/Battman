@@ -24,10 +24,20 @@
 extern int _NSGetExecutablePath(char* buf, uint32_t* bufsize);
 #endif
 
+CFStringRef localization_arr[]={
+	// !LOCALIZATION_ARR_CODE!
+	// ^ DO NOT REMOVE, will be autoprocessed
+};
+
+#ifndef LOCALIZATION_COUNT
+#define LOCALIZATION_COUNT 1
+#endif
+
 NSString *cond_localize(int localize_id) {
-	int preferred_language=1; // current: 0=eng 1=cn
-	return nil; // !COND_LOCALIZE_CODE!
-	// ^ Do not remove, will be autoprocessed
+	int preferred_language=0; // current: 0=eng 1=cn
+	// ^^ TODO: Make it dynamically modifyable
+	// Also TODO: detect locale
+	return (__bridge NSString *)localization_arr[LOCALIZATION_COUNT*preferred_language+localize_id-1];
 }
 
 int main(int argc, char * argv[]) {

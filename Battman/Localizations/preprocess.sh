@@ -12,7 +12,8 @@ while read i; do
 done<<<"$msgids"
 if [ "$1" == "main.m" ]; then
 	#echo sed "s^return nil; // !COND_LOCALIZE_CODE!^$(./Localizations/generate_code.sh)^"
-	val=`sed "s^return nil; // !COND_LOCALIZE_CODE!^$(./Localizations/generate_code.sh)return nil;^" <<<$val` 
+	#val=`sed "s^return nil; // !COND_LOCALIZE_CODE!^$(./Localizations/generate_code.sh)return nil;^" <<<$val`
+	val=`sed "s^// !LOCALIZATION_ARR_CODE!^$(./Localizations/generate_code.sh)^" <<<$val`
 fi
 
 echo "$val"
