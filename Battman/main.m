@@ -24,13 +24,18 @@
 extern int _NSGetExecutablePath(char* buf, uint32_t* bufsize);
 #endif
 
+NSString *cond_localize(int localize_id) {
+	int preferred_language=0; // current: 0=eng 1=cn
+	// !COND_LOCALIZE_CODE!
+	// ^ Do not remove, will be autoprocessed
+}
 
 /* Use gettext i18n for App & CLI consistency */
 /* While running as CLI, NSBundle is unset,
    which means we cannot use Localizables.strings
    and NSLocalizedString() at such scene. */
 /* TODO: try implement void *cond_localize(void *strOrCFSTR)? */
-NSString *cond_localize(const char *str) {
+NSString *cond_localize_old(const char *str) {
     static dispatch_once_t onceToken;
     static bool use_libintl = false;
 

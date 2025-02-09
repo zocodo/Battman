@@ -24,7 +24,7 @@
 #endif
 
 #ifndef _
-#define _(x) cond_localize(x)
+#define _(x) (x)
 #endif
 
 #ifndef BATTMAN_INTL

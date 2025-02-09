@@ -1,0 +1,10 @@
+# Untranslated entries: 2
+
+
+
+msgid "Battery Info"
+msgstr ""
+
+msgid "Manage"
+msgstr ""
+
