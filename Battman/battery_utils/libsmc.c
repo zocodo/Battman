@@ -31,6 +31,7 @@ extern mach_port_t mach_task_self_;
 #else
 typedef mach_port_t io_service_t;
 typedef mach_port_t io_connect_t;
+typedef mach_port_t io_object_t;
 typedef mach_port_t task_port_t;
 typedef int IOReturn;
 typedef int kern_return_t;

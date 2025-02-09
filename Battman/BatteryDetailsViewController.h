@@ -1,6 +1,6 @@
 #pragma once
 #import <UIKit/UIKit.h>
-#include "libsmc.h"
+#include "battery_utils/libsmc.h"
 
 @interface BatteryDetailsViewController : UITableViewController {
     /* Even they comes from same source with gauge, they need extra calculations */

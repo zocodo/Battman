@@ -24,7 +24,7 @@
 #endif
 
 #ifndef _
-#define _(x) (x)
+#define _(x) (@x)
 #endif
 
 #ifndef BATTMAN_INTL
@@ -33,7 +33,8 @@
 
 __BEGIN_DECLS
 
-NSString *cond_localize(const char *);
+NSString *cond_localize(int localize_id);
+NSString *cond_localize_old(const char *);
 
 __END_DECLS
 
