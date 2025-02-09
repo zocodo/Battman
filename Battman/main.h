@@ -37,9 +37,7 @@
 
 __BEGIN_DECLS
 
-extern CFStringRef localization_arr[];
 NSString *cond_localize(int localize_id);
-NSString *cond_localize_old(const char *);
 
 __END_DECLS
 
