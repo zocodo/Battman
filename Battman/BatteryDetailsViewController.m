@@ -5,7 +5,10 @@
 // TODO: Function for advanced users to call SMC themselves.
 // or add them to tracklist
 
-NSInteger rows = 14;
+NSMutableArray *gas_gauge_row, *adapter_row;
+
+NSMutableArray *sections;
+
 // TODO: Config
 NSTimeInterval reload_interval = 5.0;
 
@@ -16,12 +19,101 @@ NSTimeInterval reload_interval = 5.0;
 }
 
 - (void)viewDidLoad {
+    /* We knows too less to listen on SMC events */
     (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval target:self selector:@selector(updateTableView) userInfo:nil repeats:YES];
 }
 
 - (void)updateTableView {
-    get_capacity(&b_remaining_capacity, &b_full_charge_capacity, &b_designed_capacity);
-    get_gas_gauge(&gauge);
+    /* Gas Gauge Section */
+    {
+        get_capacity(&b_remaining_capacity, &b_full_charge_capacity, &b_designed_capacity);
+        get_gas_gauge(&gauge);
+
+        char *buf;
+        NSArray *basic_gas = @[
+            @[_("Full Charge Capacity"),    @"%@ mAh", @(b_full_charge_capacity)],
+            @[_("Designed Capacity"),       @"%@ mAh", @(b_designed_capacity)],
+            @[_("Remaining Capacity"),      @"%@ mAh", @(b_remaining_capacity)],
+            @[_("Qmax"),                    @"%@ mAh", @(gauge.Qmax * battery_num())],
+            @[_("Depth of Discharge"),      @"%@ mAh", @(gauge.DOD0)],
+            @[_("Passed Charge"),           @"%@ mAh", @(gauge.PassedCharge)],
+            @[_("Voltage"),                 @"%@ mV",  @(gauge.Voltage)],
+            @[_("Temperature"),             @"%@ °C",  @(get_temperature())],
+            @[_("Average Current"),         @"%@ mA",  @(gauge.AverageCurrent)],
+            @[_("Average Power"),           @"%@ mW",  @(gauge.AveragePower)],
+            @[_("Battery Count"),           @"%@",     @(battery_num())],
+            @[_("Time To Empty"),           @"%@",     (get_time_to_empty() == -1) ? _("Never") : [NSString stringWithFormat:@"%d %@", get_time_to_empty(), _("Minutes")]],
+            @[_("Cycle Count"),             @"%@",     @(gauge.CycleCount)],
+            @[_("State Of Charge"),         @"%@%%",   @(gauge.StateOfCharge)],
+            @[_("Resistance Scale"),        @"%@",     @(gauge.ResScale)],
+            @[_("Battery Serial"),          @"%@",     (battery_serial(&buf) ? [NSString stringWithCString:buf encoding:NSUTF8StringEncoding] : _("None"))],
+            @[_("Chemistry ID"),            @"%@",     [NSString stringWithFormat:@"0x%.8X", gauge.ChemID]],
+            @[_("Flags"),                   @"%@",     [NSString stringWithFormat:@"0x%.4X", gauge.Flags]]
+        ];
+        gas_gauge_row = [basic_gas mutableCopy];
+
+        /* Not every device sets this, only show when do */
+        if (gauge.TrueRemainingCapacity != 0) {
+            /* After Remaining Capacity */
+            [gas_gauge_row insertObject:@[_("True Remaining Capacity"), @"%d mAh", @(gauge.TrueRemainingCapacity * battery_num())] atIndex:3];
+        }
+        /* OCV parameters only set when OCV */
+        if (gauge.OCV_Current != 0) {
+            [gas_gauge_row addObject:@[_("OCV Current"), @"%d mA", @(gauge.OCV_Current)]];
+        }
+        if (gauge.OCV_Voltage != 0) {
+            [gas_gauge_row addObject:@[_("OCV Voltage"), @"%d mV", @(gauge.OCV_Voltage)]];
+        }
+        /* IMAX and IMAX2 not always set */
+        if (gauge.IMAX != 0) {
+            [gas_gauge_row addObject:@[_("Peak Current"), @"%d mA", @(gauge.IMAX)]];
+        }
+        if (gauge.IMAX2 != 0) {
+            [gas_gauge_row addObject:@[_("Peak Current 2"), @"%d mA", @(gauge.IMAX2)]];
+        }
+        /* IT not always exist (at least not on Macs) */
+        if (gauge.ITMiscStatus != 0) {
+            [gas_gauge_row addObject:@[_("IT Misc Status"), @"%@", [NSString stringWithFormat:@"0x%.4X", gauge.ITMiscStatus]]];
+        }
+        if (gauge.SimRate != 0) {
+            [gas_gauge_row addObject:@[_("Simulation Rate"), @"%@ Hr", @(gauge.SimRate)]];
+        }
+        /* ResScale also IT, consider add it too */
+    }
+
+    /* Adapter Details Section */
+    /* TODO: Get this directly from AppleSMC via is_charging, not IOPS */
+    /* Simulator won't be able to get this thing */
+    extern CFDictionaryRef IOPSCopyExternalPowerAdapterDetails(void); // Avoid include
+    NSDictionary *IOPSAdapter = (__bridge NSDictionary *)IOPSCopyExternalPowerAdapterDetails();
+    if (IOPSAdapter != nil) {
+        NSArray *basic_adap = @[
+            @[_("Adapter Name"),     @"%@",    [IOPSAdapter valueForKey:@"Name"]],
+            @[_("Adapter Serial"),   @"%@",    [IOPSAdapter valueForKey:@"SerialString"]],
+            @[_("Manufacturer"),     @"%@",    [IOPSAdapter valueForKey:@"Manufacturer"]],
+            @[_("Description"),      @"%@",    [IOPSAdapter valueForKey:@"Description"]],
+            @[_("Adapter ID"),       @"%@",    [IOPSAdapter valueForKey:@"AdapterID"]],
+            @[_("Hardware Version"), @"%@",    [IOPSAdapter valueForKey:@"HwVersion"]],
+            @[_("Firmware Version"), @"%@",    [IOPSAdapter valueForKey:@"FwVersion"]],
+            @[_("Family Code"),      @"%@",    [IOPSAdapter valueForKey:@"FamilyCode"]],
+            @[_("Is Wireless"),      @"%@",    [IOPSAdapter valueForKey:@"IsWireless"]],
+            @[_("Watts"),            @"%@ W",  [IOPSAdapter valueForKey:@"Watts"]],
+            @[_("Current"),          @"%@ mA", [IOPSAdapter valueForKey:@"Current"]],
+            @[_("Voltage"),          @"%@ mV", [IOPSAdapter valueForKey:@"Voltage"]],
+            @[_("Adapter Model"),    @"%@",    [IOPSAdapter valueForKey:@"Model"]],
+            /* TODO: Parse PMUConfiguration */
+            @[_("PMU Config Flags"), @"%@",    [IOPSAdapter valueForKey:@"PMUConfiguration"]]
+
+            // UsbHvcMenu => D?PM
+            // UsbHvcHvcIndex => D?PI
+        ];
+        adapter_row = [basic_adap mutableCopy];
+    }
+
+    sections = [NSMutableArray arrayWithArray:@[
+        @[_("Gas Gauge"), gas_gauge_row]
+    ]];
+    if (IOPSAdapter != nil) [sections addObject:@[_("Adapter Details"), adapter_row]];
 
     [self.tableView reloadData];
 }
@@ -29,26 +121,39 @@ NSTimeInterval reload_interval = 5.0;
 - (instancetype)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     self.tableView.allowsSelection = NO;
-    get_capacity(&b_remaining_capacity, &b_full_charge_capacity, &b_designed_capacity);
-    get_gas_gauge(&gauge);
+    [self updateTableView];
     return self;
 }
 
 - (NSString *)tableView:(id)tv titleForHeaderInSection:(NSInteger)section {
-    if (section == 0)
-        return _("Hardware Data");
+    // Doesn't matter, it will be changed by willDisplayHeaderView
+    return @"This is a Title yeah";
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    if (section == 0) {
+        NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
+        NSString *explaination_IT = (gauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
+        NSString *explaination_Sim = (gauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
+        return [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
+    }
     return nil;
 }
 
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
+{
+    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
+
+    header.textLabel.text = sections[section][0];
+}
+
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        return rows;
-    }
-    return 0;
+    NSArray *target_section = sections[section][1];
+    return target_section.count;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
-    return 1;
+    return sections.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv
@@ -60,86 +165,12 @@ NSTimeInterval reload_interval = 5.0;
                                       reuseIdentifier:@"battmanbdvccl"];
     }
     /* FIXME: This shall be automatically refreshed without reloading */
-    if (ip.section == 0) {
-        if (ip.row == 0) {
-            cell.textLabel.text = _("Full Charge Capacity");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%u mAh", b_full_charge_capacity];
-            return cell;
-        } else if (ip.row == 1) {
-            cell.textLabel.text = _("Designed Capacity");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%u mAh", b_designed_capacity];
-            return cell;
-        } else if (ip.row == 2) {
-            cell.textLabel.text = _("Remaining Capacity");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%u mAh", b_remaining_capacity];
-            return cell;
-        } else if (ip.row == 3) {
-            NSString *rem_str = [NSString stringWithFormat:@"%d mAh", gauge.TrueRemainingCapacity * battery_num()];  // B0TR May not set
-            cell.textLabel.text = _("True Remaining Capacity");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%@", (gauge.TrueRemainingCapacity == 0) ? _("None") : rem_str];
-            return cell;
-        } else if (ip.row == 4) {
-            cell.textLabel.text = _("Qmax");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%u mAh", gauge.Qmax * battery_num()];
-            return cell;
-        } else if (ip.row == 5) {
-            cell.textLabel.text = _("Depth of Discharge");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%u mAh", gauge.DOD0]; // Does this need multiply battery_num?
-            return cell;
-        } else if (ip.row == 6) {
-            cell.textLabel.text = _("Passed Charge");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%u mAh", gauge.PassedCharge]; // Does this need multiply battery_num?
-            return cell;
-        } else if (ip.row == 7) {
-            cell.textLabel.text = _("Voltage");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%u mV", gauge.Voltage];
-            return cell;
-        } else if (ip.row == 8) {
-            cell.textLabel.text = _("Temperature");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%0.2f °C", get_temperature()];
-            return cell;
-        } else if (ip.row == 9) {
-            cell.textLabel.text = _("Average Current");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%d mA", gauge.AverageCurrent];
-            return cell;
-        } else if (ip.row == 10) {
-            cell.textLabel.text = _("Average Power");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%d mW", gauge.AveragePower];
-            return cell;
-        } else if (ip.row == 11) {
-            cell.textLabel.text = _("Battery Count");
-            cell.detailTextLabel.text =
-            [NSString stringWithFormat:@"%d", battery_num()];
-            return cell;
-        } else if (ip.row == 12) {
-            int time_to_empty = get_time_to_empty(); // Gas Gauge TTE may not set
-            NSString *time_str = [NSString stringWithFormat:@"%d %@", time_to_empty, _("Minutes")];
-            cell.textLabel.text = _("Time To Empty");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%@", (time_to_empty == -1) ? _("Never") : time_str];
-            return cell;
-        } else if (ip.row == 13) {
-            cell.textLabel.text = _("Cycle Count");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%u", gauge.CycleCount];
-            return cell;
-        } else if (ip.row == 14) {
-            cell.textLabel.text = _("State Of Charge");
-            cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%u", gauge.StateOfCharge];
-            return cell;
-        }
+    NSMutableArray *sect = sections[ip.section][1];
+    if (ip.row < sect.count) {
+        NSArray *data = sect[ip.row];
+        cell.textLabel.text = data[0];
+        cell.detailTextLabel.text = [NSString stringWithFormat:data[1], (data[2]) ? data[2] : _("None")];
+        return cell;
     }
     return nil;
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Battman 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-08 00:35+0800\n"
+"POT-Creation-Date: 2025-02-12 02:19+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,11 +64,11 @@ msgstr ""
 msgid "Charging Limit"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/main.m:75
+#: /Users/torrekie/proj/Battman/Battman/main.m:91
 msgid "locale_name"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/main.m:113
+#: /Users/torrekie/proj/Battman/Battman/main.m:131
 msgid "Battman CLI not implemented yet."
 msgstr ""
 
@@ -76,91 +76,159 @@ msgstr ""
 msgid "Internal Battery"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:39
-msgid "Hardware Data"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:65
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:31
 msgid "Full Charge Capacity"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:70
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:32
 msgid "Designed Capacity"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:75
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:33
 msgid "Remaining Capacity"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:81
-msgid "True Remaining Capacity"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:83
-msgid "None"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:86
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:34
 msgid "Qmax"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:91
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:35
 msgid "Depth of Discharge"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:96
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:36
 msgid "Passed Charge"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:101
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:37
 msgid "Voltage"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:106
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:112
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:38
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:117
 msgid "Temperature"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:111
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:39
 msgid "Average Current"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:116
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:40
 msgid "Average Power"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:121
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:41
 msgid "Battery Count"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:127
-msgid "Minutes"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:128
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:42
 msgid "Time To Empty"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:130
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:42
 msgid "Never"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:133
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:42
+msgid "Minutes"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:43
 msgid "Cycle Count"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:138
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:44
 msgid "State Of Charge"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:110
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:45
+msgid "Resistance Scale"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:46
+msgid "Battery Serial"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:46
+msgid "None"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:47
+msgid "Chemistry ID"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:48
+msgid "Simulation Rate"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:49
+msgid "Flags"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:56
+msgid "True Remaining Capacity"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:60
+msgid "OCV Current"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:63
+msgid "OCV Voltage"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:67
+msgid "Peak Current"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:70
+msgid "Peak Current 2"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:74
+msgid "IT Misc Status"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:94
+msgid ""
+"All Gas Gauge metrics are dynamically retrieved from the onboard sensor "
+"array in real time. Should anomalies be detected in specific readings, this "
+"may indicate the presence of unauthorized components or require diagnostics "
+"through Apple Authorised Service Provider."
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:95
+msgid ""
+"\n"
+"\n"
+"The \"IT Misc Status\" field refers to the miscellaneous data returned by "
+"battery Impedance Track™ Gas Gauge IC."
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:96
+msgid ""
+"\n"
+"\n"
+"The \"Simulation Rate\" field refers to the rate of battery performing "
+"Impedance Track™ simulations."
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:107
+msgid "Gas Gauge"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:109
+msgid "Adapter Details"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:115
 msgid "Health"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:111
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:116
 msgid "SoC"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:113
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:118
 msgid "Charging"
 msgstr ""

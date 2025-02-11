@@ -108,6 +108,7 @@ NSString *cond_localize(const char *str) {
 int main(int argc, char * argv[]) {
     // sleep(10);
     /* UIApplicationMain/NSApplicationMain only works when App launched with NSBundle */
+    /* FIXME: NSBundle still exists if with Info.plist, we need better detection */
     if ([NSBundle mainBundle]) {
 #if TARGET_OS_IPHONE
         NSString * appDelegateClassName;

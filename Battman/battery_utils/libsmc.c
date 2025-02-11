@@ -135,29 +135,9 @@ static IOReturn smc_read(UInt32 key, void *bytes) {
     return kIOReturnSuccess;
 }
 
-static UInt32 makeUInt32Key(char *keyString, int size, int base) {
-    UInt32 total = 0;
-    int i;
-
-    for (i = 0; i < size; i++) {
-        if (base == 16)
-            total += keyString[i] << (size - 1 - i) * 8;
-        else
-            total += ((unsigned char)(keyString[i]) << (size - 1 - i) * 8);
-    }
-    return total;
-}
-
 __attribute__((destructor)) void smc_close(void) {
     if (gConn != 0)
         IOServiceClose(gConn);
-}
-
-bool smc_assign(SMCKey key, void *value) {
-    if (smc_read(key, value) == kIOReturnSuccess)
-        return true;
-
-    return false;
 }
 
 /* TODO: Return arrays */
@@ -468,6 +448,25 @@ int battery_num(void) {
         return -1;
     
     return (int)count;
+}
+
+bool battery_serial(char **serial) {
+    IOReturn result = kIOReturnSuccess;
+    char retval[21];
+
+    if (gConn == 0)
+        result = smc_open();
+
+    if (result != kIOReturnSuccess)
+        return false;
+    
+    /* BMSN(ch8*) Battery Serial */
+    result = smc_read('BMSN', &retval);
+    if (result != kIOReturnSuccess)
+        return false;
+
+    *serial = strdup(retval);
+    return true;
 }
 
 /* Then I found that this was how exactly IOPSCopyExternalPowerAdapterDetails returns */

@@ -103,15 +103,15 @@ typedef struct gas_gauge {
     int16_t TrueRemainingCapacity;  /* mAh */
     int16_t PassedCharge;           /* mAh */
     uint16_t DOD0;                  /* mAh */
-    uint16_t PresentDOD;            /* mAh */
+    uint16_t PresentDOD;            /* %/mAh */
     uint16_t DesignCapacity;        /* mAh */
-    int16_t IMAX;                   /* ? */
-    uint16_t NCC;                   /* mAh ? */
+    int16_t IMAX;                   /* mA */
+    uint16_t NCC;
     int16_t ResScale;
-    uint16_t ITMiscStatus;
-    int16_t IMAX2;                  /* ? */
+    uint16_t ITMiscStatus;          /* Impedance Track™, this should be parseable but we don't know how */
+    int16_t IMAX2;                  /* mA */
     uint32_t ChemID;                /* hex_[4] */
-    int16_t SimRate;                /* mA ? */
+    int16_t SimRate;                /* Hr */
 } gas_gauge_t;
 
 typedef struct device_info {
@@ -141,5 +141,6 @@ bool get_gas_gauge(gas_gauge_t *gauge);
 typedef unsigned int mach_port_t;
 charging_state_t is_charging(mach_port_t family, device_info_t *info);
 float *get_temperature_per_batt(void);
+bool battery_serial(char **serial);
 
 #endif
