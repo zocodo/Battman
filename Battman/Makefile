@@ -1,10 +1,15 @@
 .PHONY: all publish_mounted_site publish_local_site publish_none
 
+SED = sed
 ifneq ($(shell which gsed),)
 SED = gsed
-else
-SED = sed
 endif
+
+ifneq ($(shell $(SED) --version | grep -q GNU && echo 1),1)
+$(error Need GNU sed!)
+endif
+
+IPHONEOS_DEPLOYMENT_TARGET := 13.0
 
 LOCAL_IP := $(shell /sbin/ifconfig | $(SED) -n "s/.*inet \([0-9]*\.[0-9]*\.[0-9]*\.[0-9]*\) .*/\1/p" | tail -1)
 
@@ -12,22 +17,18 @@ SDKROOT := ${THEOS}/sdks/iPhoneOS14.5.sdk
 LIBS := -lobjc
 FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework IOKit
 
+CFLAGS = -target arm64-apple-ios${IPHONEOS_DEPLOYMENT_TARGET} -target arm64-apple-darwin -fobjc-arc -fconstant-cfstrings
+LDFLAGS = -target arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET) -target arm64-apple-darwin $(LIBS) $(FRAMEWORKS) -Wl,-dead_strip_dylibs
+THEOS := ~/theos
 
 ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/clang && echo exists), exists)
-CC := ${THEOS}/toolchain/linux/iphone/bin/clang
-CFLAGS:=-F${THEOS}/vendor/lib -target arm64-apple-ios14.0 -target arm64-apple-darwin \
-		-isysroot $(SDKROOT) -fobjc-arc -fconstant-cfstrings
-LDFLAGS:=-F${THEOS}/vendor/lib -isysroot $(SDKROOT) -target arm64-apple-ios14.0 -target arm64-apple-darwin \
-		$(LIBS) $(FRAMEWORKS)
-else ifeq ($(shell which xcrun),)
-CC = cc
-# TODO: add CFLAGS and LDFLAGS
-else ifneq ($(shell xcrun -sdk iphoneos cc --version > /dev/null 2>&1; echo $$?), 0)
-CC = cc
-# TODO: CFLAGS ...
+CC = ${THEOS}/toolchain/linux/iphone/bin/clang
+CFLAGS += -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
+LDFLAGS = -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
+else ifneq ($(shell which xcrun),)
+CC = xcrun -sdk iphoneos cc
 else
-CC = $(shell xcrun -sdk iphoneos cc)
-# TODO: CFLAGS ...
+CC = cc
 endif
 
 ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/ldid && echo exists), exists)
@@ -42,17 +43,17 @@ CODESIGN = echo "UNSIGNED: "
 endif
 
 ifneq (,$(wildcard ./mount/pub_html))
-	PUBLISH_TARGET:=publish_mounted_site
+	PUBLISH_TARGET := publish_mounted_site
 else ifneq (,$(wildcard /var/www/html/files))
-	PUBLISH_TARGET:=publish_local_site
+	PUBLISH_TARGET := publish_local_site
 else
-	PUBLISH_TARGET:=publish_none
+	PUBLISH_TARGET := publish_none
 endif
 
-SOURCES:=$(wildcard *.m *.c */*.m */*.c)
-PRESRC:=$(addprefix build/preprocessed/,$(SOURCES))
+SOURCES := $(wildcard *.m *.c */*.m */*.c)
+PRESRC := $(addprefix build/preprocessed/,$(SOURCES))
 #OBJECTS:=$(addprefix build/objects/,$(addsuffix .o,$(SOURCES)))
-OBJECTS:=$(subst build/preprocessed,build/objects,$(addsuffix .o,$(PRESRC)))
+OBJECTS := $(subst build/preprocessed,build/objects,$(addsuffix .o,$(PRESRC)))
 
 all: $(PUBLISH_TARGET)
 
@@ -63,12 +64,13 @@ $(PRESRC): build/preprocessed/%: % Localizations/*.po Localizations/*.sh
 #$(OBJECTS): build/objects/%.o: %
 $(OBJECTS): build/objects/%.o: build/preprocessed/%
 	@mkdir -p $(@D)
+	echo $(CC) $(CFLAGS) -I.$(subst build/preprocessed,,$(dir $<)) -c $< -o $@
 	$(CC) $(CFLAGS) -I.$(subst build/preprocessed,,$(dir $<)) -c $< -o $@
 
 build/Payload/Battman.app/Battman: $(OBJECTS) ../Battman.entitlements
 	@mkdir -p $(@D)
 	$(CC) $(LDFLAGS) $(filter %.o,$^) -o $@
-	$(CODESIGN) -S../Battman.entitlements $@
+	$(CODESIGN)../Battman.entitlements $@
 build/Payload/Battman.app/Info.plist: Info.plist
 	$(SED) 's/\$$(DEVELOPMENT_LANGUAGE)/en/;s/\$$(EXECUTABLE_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_IDENTIFIER)/ct.battman/;s/\$$(PRODUCT_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/' Info.plist > build/Payload/Battman.app/Info.plist
 build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist

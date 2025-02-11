@@ -105,7 +105,7 @@ NSTimeInterval reload_interval = 5.0;
         } else if (ip.row == 8) {
             cell.textLabel.text = _("Temperature");
             cell.detailTextLabel.text =
-                [NSString stringWithFormat:@"%f °C", get_temperature()];
+                [NSString stringWithFormat:@"%0.2f °C", get_temperature()];
             return cell;
         } else if (ip.row == 9) {
             cell.textLabel.text = _("Average Current");

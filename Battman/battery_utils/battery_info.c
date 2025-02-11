@@ -12,11 +12,12 @@
 #include <CoreFoundation/CFString.h>
 
 #ifndef _ID_
+// TODO:
 #define _ID_(x) (x)
 #endif
 
 #if 0
-#warning TODO: IOKit/ps is not reliable, migrate to other impl
+#warning TODO: IOKit/ps is not that reliable, migrate to other impl if possible
 #if __has_include(<IOKit/ps/IOPowerSources.h>)
 #include <IOKit/ps/IOPowerSources.h>
 #else

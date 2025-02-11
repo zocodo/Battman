@@ -195,7 +195,7 @@ int get_fan_status(void) {
 
 float get_temperature(void) {
     IOReturn result = kIOReturnSuccess;
-    float retval;
+    uint16_t retval = 0;
 
     if (gConn == 0)
         result = smc_open();
@@ -203,14 +203,32 @@ float get_temperature(void) {
     if (result != kIOReturnSuccess)
         return -1;
 
-    /* TB*T(flt), but normally they are same */
-    result = smc_read('TB0T', &retval);
-    if (result != kIOReturnSuccess)
-        result = smc_read('B0AT', &retval);
+    result = smc_read('B0AT', &retval);
     if (result != kIOReturnSuccess)
         return -1;
 
-    return retval;
+    return (float)retval * 0.01f;
+}
+
+float *get_temperature_per_batt(void) {
+    IOReturn result = kIOReturnSuccess;
+    float retval = 0;
+
+    int num = battery_num();
+
+    float *batts = malloc(sizeof(float) * num);
+    /* TB*T(flt), but normally they are same */
+    for (int i = 0; i < num; i++) {
+        result = smc_read('TB\0T' | ((0x30 + i) << 0x8), &retval);
+        if (result != kIOReturnSuccess) {
+            /* In design, you should able to get temps of all your batts */
+            free(batts);
+            return NULL;
+        }
+        batts[i] = retval;
+    }
+
+    return batts;
 }
 
 int get_time_to_empty(void) {
@@ -402,7 +420,9 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     /* BQD1(ui16): DOD0 */
     (void)smc_read('BQD1', &gauge->DOD0);
     
-    /* TODO: BDD1(ui16): PresentDOD */
+    /* TODO: BDD1(ui8/ui16): PresentDOD */
+    /* ui8 (%), ui16 (mAh) */
+    // (void)smc_read('BDD1', &gauge->PresentDOD);
 
     /* B0DC(ui16): DesignCapacity */
     (void)smc_read('B0DC', &gauge->DesignCapacity);

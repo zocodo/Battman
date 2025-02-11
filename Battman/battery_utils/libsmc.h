@@ -103,6 +103,7 @@ typedef struct gas_gauge {
     int16_t TrueRemainingCapacity;  /* mAh */
     int16_t PassedCharge;           /* mAh */
     uint16_t DOD0;                  /* mAh */
+    uint16_t PresentDOD;            /* mAh */
     uint16_t DesignCapacity;        /* mAh */
     int16_t IMAX;                   /* ? */
     uint16_t NCC;                   /* mAh ? */
@@ -139,5 +140,6 @@ int battery_num(void);
 bool get_gas_gauge(gas_gauge_t *gauge);
 typedef unsigned int mach_port_t;
 charging_state_t is_charging(mach_port_t family, device_info_t *info);
+float *get_temperature_per_batt(void);
 
 #endif

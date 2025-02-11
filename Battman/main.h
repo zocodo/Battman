@@ -23,21 +23,30 @@
 #undef _
 #endif
 
+#ifndef USE_GETTEXT
 #ifndef _
-#define _(x) (@x)
+// TODO:
+#define _(x) [NSString stringWithCString:x encoding:NSUTF8StringEncoding]
+#endif
+#else
+#define _(x) cond_localize(x)
 #endif
 
 #ifndef _ID_
 #define _ID_(x) (x)
 #endif
 
-#ifndef BATTMAN_INTL
-#define BATTMAN_INTL "battman"
+#ifndef BATTMAN_TEXTDOMAIN
+#define BATTMAN_TEXTDOMAIN "battman"
 #endif
 
 __BEGIN_DECLS
 
+#ifndef USE_GETTEXT
 NSString *cond_localize(int localize_id);
+#else
+NSString *cond_localize(const char *str);
+#endif
 
 __END_DECLS
 
