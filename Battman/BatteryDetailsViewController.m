@@ -50,6 +50,8 @@ NSTimeInterval reload_interval = 5.0;
             @[_("Chemistry ID"),            @"%@",     [NSString stringWithFormat:@"0x%.8X", gauge.ChemID]],
             @[_("Flags"),                   @"%@",     [NSString stringWithFormat:@"0x%.4X", gauge.Flags]]
         ];
+        if(buf)
+        	free(buf);
         gas_gauge_row = [basic_gas mutableCopy];
 
         /* Not every device sets this, only show when do */
