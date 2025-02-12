@@ -453,20 +453,24 @@ int battery_num(void) {
 
 bool battery_serial(char **serial) {
     IOReturn result = kIOReturnSuccess;
-    char retval[21];
+    char *retval=malloc(21);
 
     if (gConn == 0)
         result = smc_open();
 
-    if (result != kIOReturnSuccess)
+    if (result != kIOReturnSuccess) {
+        free(retval);
         return false;
+    }
     
     /* BMSN(ch8*) Battery Serial */
     result = smc_read('BMSN', &retval);
-    if (result != kIOReturnSuccess)
+    if (result != kIOReturnSuccess) {
+    	free(retval);
         return false;
+    }
 
-    *serial = strdup(retval);
+    *serial = retval;
     return true;
 }
 
