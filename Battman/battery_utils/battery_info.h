@@ -66,6 +66,7 @@ void bi_node_change_content_value(struct battery_info_node *node, int identifier
                                   uint32_t value);
 void bi_node_change_content_value_float(struct battery_info_node *node, int identifier,
                                         float value);
+void bi_node_set_hidden(struct battery_info_node *node, int identifier, bool hidden);
 char *bi_node_ensure_string(struct battery_info_node *node, int identifier, uint64_t length);
 void battery_info_update(struct battery_info_node *head, bool inDetail);
 struct battery_info_node *battery_info_init(void);

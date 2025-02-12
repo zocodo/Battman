@@ -186,6 +186,10 @@ NSTimeInterval reload_interval = 5.0;
     			cell.hidden=YES;
     			return cell;
     		}
+    		if((i->content&(1<<5))==1<<5) {
+    			cell.hidden=YES;
+    			return cell;
+    		}
     		// ^ I think this is more efficient than going through all items
     		cell.textLabel.text=_(i->description);
     		NSString *final_str;
@@ -229,6 +233,8 @@ NSTimeInterval reload_interval = 5.0;
 		struct battery_info_node *i=batteryInfo+indexPath.row;
     		if((i->content&BIN_DETAILS_SHARED)==BIN_DETAILS_SHARED||
     			(i->content&&!((i->content&BIN_IS_SPECIAL)==BIN_IS_SPECIAL))) {
+    			if(i->content&(1<<5))
+    				return 0;
     			return [super tableView:tv heightForRowAtIndexPath:indexPath];
     		}else{
     			return 0;
