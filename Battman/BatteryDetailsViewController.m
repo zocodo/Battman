@@ -29,7 +29,7 @@ NSTimeInterval reload_interval = 5.0;
         get_capacity(&b_remaining_capacity, &b_full_charge_capacity, &b_designed_capacity);
         get_gas_gauge(&gauge);
 
-        char *buf;
+        char buf[24];
         NSArray *basic_gas = @[
             @[_("Full Charge Capacity"),    @"%@ mAh", @(b_full_charge_capacity)],
             @[_("Designed Capacity"),       @"%@ mAh", @(b_designed_capacity)],
@@ -46,12 +46,10 @@ NSTimeInterval reload_interval = 5.0;
             @[_("Cycle Count"),             @"%@",     @(gauge.CycleCount)],
             @[_("State Of Charge"),         @"%@%%",   @(gauge.StateOfCharge)],
             @[_("Resistance Scale"),        @"%@",     @(gauge.ResScale)],
-            @[_("Battery Serial"),          @"%@",     (battery_serial(&buf) ? [NSString stringWithCString:buf encoding:NSUTF8StringEncoding] : _("None"))],
+            @[_("Battery Serial"),          @"%@",     (battery_serial(buf) ? [NSString stringWithCString:buf encoding:NSUTF8StringEncoding] : _("None"))],
             @[_("Chemistry ID"),            @"%@",     [NSString stringWithFormat:@"0x%.8X", gauge.ChemID]],
             @[_("Flags"),                   @"%@",     [NSString stringWithFormat:@"0x%.4X", gauge.Flags]]
         ];
-        if(buf)
-        	free(buf);
         gas_gauge_row = [basic_gas mutableCopy];
 
         /* Not every device sets this, only show when do */

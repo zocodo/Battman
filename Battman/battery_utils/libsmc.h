@@ -141,6 +141,6 @@ bool get_gas_gauge(gas_gauge_t *gauge);
 typedef unsigned int mach_port_t;
 charging_state_t is_charging(mach_port_t family, device_info_t *info);
 float *get_temperature_per_batt(void);
-bool battery_serial(char **serial);
+bool battery_serial(char *serial);
 
 #endif
