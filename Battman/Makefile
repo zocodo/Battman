@@ -1,13 +1,6 @@
 .PHONY: all publish_mounted_site publish_local_site publish_none
 
 SED = sed
-ifneq ($(shell which gsed),)
-SED = gsed
-endif
-
-ifneq ($(shell $(SED) --version | grep -q GNU && echo 1),1)
-$(error Need GNU sed!)
-endif
 
 IPHONEOS_DEPLOYMENT_TARGET := 13.0
 
@@ -24,7 +17,7 @@ THEOS := ~/theos
 ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/clang && echo exists), exists)
 CC = ${THEOS}/toolchain/linux/iphone/bin/clang
 CFLAGS += -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
-LDFLAGS = -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
+LDFLAGS += -isysroot $(SDKROOT)
 else ifneq ($(shell which xcrun),)
 CC = xcrun -sdk iphoneos cc
 else
@@ -64,7 +57,6 @@ $(PRESRC): build/preprocessed/%: % Localizations/*.po Localizations/*.sh
 #$(OBJECTS): build/objects/%.o: %
 $(OBJECTS): build/objects/%.o: build/preprocessed/%
 	@mkdir -p $(@D)
-	echo $(CC) $(CFLAGS) -I.$(subst build/preprocessed,,$(dir $<)) -c $< -o $@
 	$(CC) $(CFLAGS) -I.$(subst build/preprocessed,,$(dir $<)) -c $< -o $@
 
 build/Payload/Battman.app/Battman: $(OBJECTS) ../Battman.entitlements

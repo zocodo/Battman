@@ -1,13 +1,6 @@
 #! /bin/bash
 
 SED=sed
-if [[ $(command -v gsed 2>&1 > /dev/null) == 0 ]]; then
-  SED=gsed
-fi
-if [[ ! $(${SED} --version 2>&1 > /dev/null) ]]; then
-  echo "Need GNU sed!"
-  exit 1
-fi
 
 msgids=`${SED} -n 's/msgid "\(.\+\)"/\1/p' Localizations/base.pot`
 locale_files=`ls Localizations/*.po`

@@ -19,6 +19,7 @@
 #include <CoreFoundation/CFBase.h>
 #include <CoreFoundation/CFString.h>
 #include <string.h>
+#include <stdlib.h>
 #if __has_include(<mach/mach.h>)
 #include <mach/mach.h>
 #else
