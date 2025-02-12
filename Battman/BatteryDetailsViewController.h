@@ -1,13 +1,9 @@
 #pragma once
 #import <UIKit/UIKit.h>
-#include "battery_utils/libsmc.h"
+#include "battery_utils/battery_info.h"
 
 @interface BatteryDetailsViewController : UITableViewController {
-    /* Even they comes from same source with gauge, they need extra calculations */
-    uint16_t b_full_charge_capacity;
-    uint16_t b_remaining_capacity;
-    uint16_t b_designed_capacity;
-
-    gas_gauge_t gauge;
+	struct battery_info_node *batteryInfo;
 }
+- (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi;
 @end

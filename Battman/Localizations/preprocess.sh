@@ -9,7 +9,7 @@ val=`cat $1`
 
 lid=1
 while read i; do
-	val=`${SED} "s/_ID_(\"$i\")/(const char *)$lid/g;s/_(\"$i\")/cond_localize($lid)/g;s/\\([,({: 	]\\)_(\\([^\"]\\+\\))/\\1cond_localize((int)(unsigned long long)\\2)/g" <<<$val`
+	val=`${SED} "s/_ID_(\"$i\")/(const char *)$lid/g;s/_(\"$i\")/cond_localize($lid)/g;s/\\([=,({: 	]\\)_(\\([^\"]\\+\\))/\\1cond_localize((int)(unsigned long long)\\2)/g" <<<$val`
 	lid=$((lid+1))
 done<<<"$msgids"
 if [ "$1" == "main.m" ]; then

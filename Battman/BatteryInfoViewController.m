@@ -16,8 +16,9 @@
     tabbarItem.image = [UIImage systemImageNamed:@"battery.100"];
     tabbarItem.tag = 0;
     self.tabBarItem = tabbarItem;
+    batteryInfo=battery_info_init();
     return
-        [super initWithStyle:UITableViewStyleGrouped]; // or grouped if desired
+        [super initWithStyle:UITableViewStyleGrouped];
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
@@ -46,7 +47,7 @@
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == 0)
         [self.navigationController
-            pushViewController:[BatteryDetailsViewController new]
+            pushViewController:[[BatteryDetailsViewController alloc] initWithBatteryInfo:batteryInfo]
                       animated:YES];
     [tv deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -57,7 +58,7 @@
         BatteryInfoTableViewCell *cell = [[BatteryInfoTableViewCell alloc]
             initWithFrame:CGRectMake(0, 0, 1000, 100)];
 
-        cell.batteryInfo = battery_info_init();
+        cell.batteryInfo = batteryInfo;
         // battery_info_update shall be called within cell impl.
         [cell updateBatteryInfo];
         return cell;
@@ -76,6 +77,15 @@
         return [super tableView:tv heightForRowAtIndexPath:indexPath];
         // return 30;
     }
+}
+
+- (void)dealloc {
+	for(struct battery_info_node *i=batteryInfo;i->description;i++) {
+		if(i->content&&!(i->content&BIN_IS_SPECIAL)) {
+			free((void*)i->content);
+		}
+	}
+	free(batteryInfo);
 }
 
 @end

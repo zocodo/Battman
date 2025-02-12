@@ -31,7 +31,7 @@
 - (void)updateBatteryInfo {
     NSString *final_str = @"";
     // TODO: Arabian? We need Arabian hackers to fix this code
-    for (struct battery_info_node *i = _batteryInfo; i != NULL; i = i->next) {
+    for (struct battery_info_node *i = _batteryInfo; i->description != NULL; i++) {
         if (i->content & BIN_IS_SPECIAL) {
             uint32_t value = i->content >> 32;
             float *fvptr = (float *)&value;
@@ -61,27 +61,10 @@
                 final_str =
                     [NSString stringWithFormat:@"%@ %@", final_str, unit_str];
             }
-        } else {
-            final_str = [NSString stringWithFormat:@"%@\n%@: %s", final_str,
-                                                   _(i->description),
-                                                   (char *)i->content];
         }
+        // Only show in details if is string
     }
     _batteryLabel.text = [final_str substringFromIndex:1];
-}
-
-- (void)dealloc {
-    for (struct battery_info_node *i = _batteryInfo; i != NULL; /*i=i->next*/) {
-        if (i->content > 1024 && (i->content & 1) == 0) {
-            free((void *)i->content);
-        }
-        void *cur = i;
-        i = i->next;
-        free(cur);
-    }
-#if !__has_feature(objc_arc)
-    [super dealloc];
-#endif
 }
 
 @end

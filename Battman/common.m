@@ -11,6 +11,7 @@ extern UIWindow *gWindow;
 #include "common.h"
 #include "intlextern.h"
 #include "gtkextern.h"
+#include "battery_utils/battery_info.h"
 
 /* Consider make this a standalone header */
 #define SYM_EXIST(...) check_ptr(__VA_ARGS__)
