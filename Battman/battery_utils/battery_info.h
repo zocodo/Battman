@@ -11,12 +11,14 @@ STRING:
 SPECIAL:
 | Bit   | Value
 | 0     | isSpecial
-| 1     | isHidden
+| 1     | isHidden / skipSection
 | 2     | isBoolean
 | 3     | affectsBatteryView
 | 4     | isFloat (may be elimated in future)
 | 5     | isForeground / isHiddenInDetails
-| 6:12  | unit (7 bit localization)
+| 6:12  | unit (7 bit localization) / sectionSeparator if ==0x7f
+| 13    | newSection
+| 14    | newSectionIsHidden
 | 30    | inDetails
 | 31    | hasUnit
 | 32:63 | value (32-bit)
@@ -33,6 +35,8 @@ SPECIAL:
 #define BIN_IS_BACKGROUND           (0 | BIN_IS_FLOAT | BIN_AFFECTS_BATTERY_CELL)
 #define BIN_IS_HIDDEN               (1 << 1)
 #define BIN_UNIT_BITMASK            (((1 << 7) - 1) << 6)
+#define BIN_SECTION			(1<<13)
+#define BIN_SECTION_HIDDEN		(1<<14)
 // ^ Use >>6 when retrieving, max 3 bytes
 #define BIN_DETAILS_SHARED          (1 << 30 | BIN_IS_SPECIAL)
 #define BIN_IN_DETAILS              (1 << 30 | BIN_IS_HIDDEN | BIN_IS_SPECIAL)

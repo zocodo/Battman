@@ -128,7 +128,7 @@ const char *bin_unit_strings[]={
 };
 
 struct battery_info_node main_battery_template[] = {
-    {_ID_("Health"), BIN_IS_BACKGROUND | BIN_UNIT_PERCENT},
+    {_ID_("Health"), BIN_IS_BACKGROUND | BIN_UNIT_PERCENT | BIN_SECTION},
     {_ID_("SoC"), BIN_IS_FLOAT | BIN_UNIT_PERCENT},
     {_ID_("Temperature"),
      BIN_IS_FLOAT | BIN_UNIT_DEGREE_C | BIN_DETAILS_SHARED},
