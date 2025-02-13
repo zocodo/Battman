@@ -16,19 +16,23 @@ NSTimeInterval reload_interval = 5.0;
 
 - (void)viewDidLoad {
     /* We knows too less to listen on SMC events */
-    (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval target:self selector:@selector(updateTableView) userInfo:nil repeats:YES];
+    (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval
+                                           target:self
+                                         selector:@selector(updateTableView)
+                                         userInfo:nil
+                                          repeats:YES];
 }
 
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
-	self=[super initWithStyle:UITableViewStyleGrouped];
-	self.tableView.allowsSelection = NO;
-	battery_info_update(bi, true);
-	batteryInfo=bi;
-	return self;
+    self = [super initWithStyle:UITableViewStyleGrouped];
+    self.tableView.allowsSelection = NO;
+    battery_info_update(bi, true);
+    batteryInfo = bi;
+    return self;
 }
 
 - (void)updateTableView {
-	battery_info_update(batteryInfo, true);
+    battery_info_update(batteryInfo, true);
 #if 0
     /* Gas Gauge Section */
     {
@@ -136,32 +140,36 @@ NSTimeInterval reload_interval = 5.0;
     return @"This is a Title yeah";
 }
 
-- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+- (void)tableView:(UITableView *)tableView
+    willDisplayHeaderView:(UIView *)view
+               forSection:(NSInteger)section {
+    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
+    header.textLabel.text = @[ _("Gas Gauge"), _("Adapter Details") ][section];
+}
+
+- (NSString *)tableView:(UITableView *)tableView
+    titleForFooterInSection:(NSInteger)section {
     if (section == 0) {
-       // NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
-        //NSString *explaination_IT = (gauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
-       // NSString *explaination_Sim = (gauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
-       // return [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
+        gas_gauge_t gauge;
+        get_gas_gauge(&gauge);
+        /* Don't remove this, otherwise users will blame us */
+        NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
+        NSString *explaination_IT = (gauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
+        NSString *explaination_Sim = (gauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
+        return [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
     }
     return nil;
 }
 
-- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section
-{
-    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-
-    //header.textLabel.text = sections[section][0];
-}
-
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-	if(section==0) {
-		int rows=0;
-		for(struct battery_info_node *i=batteryInfo;i->description;i++) {
-			rows++;
-		}
-		return rows;
-	}
-	return 0;
+    if (section == 0) {
+        int rows = 0;
+        for (struct battery_info_node *i = batteryInfo; i->description; i++) {
+            rows++;
+        }
+        return rows;
+    }
+    return 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
@@ -176,71 +184,71 @@ NSTimeInterval reload_interval = 5.0;
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1
                                       reuseIdentifier:@"battmanbdvccl"];
     }
+    NSString *final_str;
     /* FIXME: This shall be automatically refreshed without reloading */
-	if(ip.section==0) {
-    		struct battery_info_node *i=batteryInfo+ip.row;
-    		if((i->content&BIN_DETAILS_SHARED)==BIN_DETAILS_SHARED||
-    			(i->content&&!((i->content&BIN_IS_SPECIAL)==BIN_IS_SPECIAL))) {
-    			cell.hidden=NO;
-    		}else{
-    			cell.hidden=YES;
-    			return cell;
-    		}
-    		if((i->content&(1<<5))==1<<5) {
-    			cell.hidden=YES;
-    			return cell;
-    		}
-    		// ^ I think this is more efficient than going through all items
-    		cell.textLabel.text=_(i->description);
-    		NSString *final_str;
-    		if ((i->content & BIN_IS_SPECIAL)==BIN_IS_SPECIAL) {
-		    uint32_t value = i->content >> 32;
-		    float *fvptr = (float *)&value;
-		    float fvalue = *fvptr;
+    if (ip.section == 0) {
+        struct battery_info_node *i = batteryInfo + ip.row;
+        if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
+            (i->content &&
+             !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
+            cell.hidden = NO;
+        } else {
+            cell.hidden = YES;
+            return cell;
+        }
+        if (((i->content & 1) == 1) && (i->content & (1 << 5)) == (1 << 5)) {
+            cell.hidden = YES;
+            return cell;
+        }
+        // ^ I think this is more efficient than going through all items
+        cell.textLabel.text = _(i->description);
+        if ((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL) {
+            uint32_t value = i->content >> 32;
+            float *fvptr = (float *)&value;
+            float fvalue = *fvptr;
 
-		    if ((i->content & BIN_IS_BOOLEAN) == BIN_IS_BOOLEAN) {
-		        if(value) {
-		        	final_str=@"True";
-		        }else{
-		        	final_str=@"False";
-		        }
-		    } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
-		        final_str =
-		            [NSString stringWithFormat:@"%0.2f", fvalue];
-		    }else{
-		    	final_str=[NSString stringWithFormat:@"%d", value];
-		    }
-		    if (i->content & BIN_HAS_UNIT) {
-		        uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;
-		        NSString *unit_str =
-		            [[NSString alloc] initWithBytes:(char *)&unit
-		                                     length:4
-		                                   encoding:NSUTF8StringEncoding];
-		        final_str =
-		            [NSString stringWithFormat:@"%@ %@", final_str, unit_str];
-		    }
-		}else{
-			final_str=[NSString stringWithUTF8String:(const char *)i->content];
-		}
-    		cell.detailTextLabel.text=final_str;
-    		return cell;
-	}
+            if ((i->content & BIN_IS_BOOLEAN) == BIN_IS_BOOLEAN) {
+                if (value) {
+                    final_str = @"True";
+                } else {
+                    final_str = @"False";
+                }
+            } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
+                final_str = [NSString stringWithFormat:@"%0.2f", fvalue];
+            } else {
+                final_str = [NSString stringWithFormat:@"%d", value];
+            }
+            if (i->content & BIN_HAS_UNIT) {
+                uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;
+                final_str = [NSString
+                    stringWithFormat:@"%@ %@", final_str, _((char *)&unit)];
+            }
+        } else {
+            // FIXME: Only localize what needed to localize
+            final_str = _((const char *)i->content);
+        }
+
+        cell.detailTextLabel.text = final_str;
+        return cell;
+    }
     return nil;
 }
 
+// FIXME: Setting height 0 is not the correct way to hide a row!
 - (CGFloat)tableView:(id)tv heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	if(indexPath.section==0) {
-		struct battery_info_node *i=batteryInfo+indexPath.row;
-    		if((i->content&BIN_DETAILS_SHARED)==BIN_DETAILS_SHARED||
-    			(i->content&&!((i->content&BIN_IS_SPECIAL)==BIN_IS_SPECIAL))) {
-    			if(i->content&(1<<5))
-    				return 0;
-    			return [super tableView:tv heightForRowAtIndexPath:indexPath];
-    		}else{
-    			return 0;
-    		}
-	}
-	return [super tableView:tv heightForRowAtIndexPath:indexPath];
+    if (indexPath.section == 0) {
+        struct battery_info_node *i = batteryInfo + indexPath.row;
+        if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
+            (i->content &&
+             !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
+            if (((i->content & 1) == 1) && (i->content & (1 << 5)))
+                return 0;
+            return [super tableView:tv heightForRowAtIndexPath:indexPath];
+        } else {
+            return 0;
+        }
+    }
+    return [super tableView:tv heightForRowAtIndexPath:indexPath];
 }
 
 @end

@@ -14,5 +14,7 @@ OLDFL[sdk=iphonesimulator*] = -Wl,-sectcreate,__TEXT,__entitlements,$(PROJECT_DI
 
 OLDFL[sdk=iphoneos*] =
 
+NO_WARN_CFLAGS = -Wno-multichar
+
 // We do post-build codesigning
 CODE_SIGNING_ALLOWED = NO

@@ -16,7 +16,7 @@
     tabbarItem.image = [UIImage systemImageNamed:@"battery.100"];
     tabbarItem.tag = 0;
     self.tabBarItem = tabbarItem;
-    batteryInfo=battery_info_init();
+    batteryInfo = battery_info_init();
     return
         [super initWithStyle:UITableViewStyleGrouped];
 }

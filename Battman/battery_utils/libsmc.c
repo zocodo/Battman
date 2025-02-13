@@ -54,6 +54,7 @@ extern void NSLog(CFStringRef, ...);
 
 static io_service_t gConn = 0;
 
+__attribute__((constructor))
 static IOReturn smc_open(void) {
     IOReturn result;
     mach_port_t masterPort;
@@ -144,7 +145,7 @@ __attribute__((destructor)) void smc_close(void) {
 /* TODO: Return arrays */
 int get_fan_status(void) {
     IOReturn result = kIOReturnSuccess;
-    uint8_t fan_num;
+    uint8_t fan_num = 0;
     int i;
 
     if (gConn == 0)
@@ -214,7 +215,7 @@ float *get_temperature_per_batt(void) {
 
 int get_time_to_empty(void) {
     IOReturn result = kIOReturnSuccess;
-    uint16_t retval;
+    uint16_t retval = 0;
 
     if (gConn == 0)
         result = smc_open();
@@ -313,6 +314,7 @@ bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
     if (num == -1) num = 1;
 
     uint16_t B0RM, B0FC, B0DC;
+    B0RM = B0FC = B0DC = 0;
 
     /* B0RM(ui16) RemainingCapacity (mAh) */
     IOReturn result = smc_read('B0RM', &B0RM);
@@ -350,6 +352,9 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
 
     if (result != kIOReturnSuccess)
         return false;
+
+    // Zero before use
+    memset(gauge, 0, sizeof(gas_gauge_t));
 
     /* TODO: Continue shorten those code */
 
@@ -460,10 +465,14 @@ bool battery_serial(char *serial) {
     if (result != kIOReturnSuccess)
         return false;
     
+    /* Guard */
+    char retval[21];
     /* BMSN(ch8*) Battery Serial */
-    result = smc_read('BMSN', serial);
+    result = smc_read('BMSN', retval);
     if (result != kIOReturnSuccess)
         return false;
+
+    strcpy(serial, retval);
 
     return true;
 }
@@ -513,7 +522,7 @@ bool battery_serial(char *serial) {
 charging_state_t is_charging(mach_port_t family, device_info_t *info) {
     IOReturn result = kIOReturnSuccess;
     SMCKey key;
-    int8_t charging;
+    int8_t charging = 0;
     bool ret = false;
     
 
