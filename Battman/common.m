@@ -333,15 +333,20 @@ bool show_alert(const char *title, const char *message, const char *button) {
 #if TARGET_OS_IPHONE
     /* Alert using system UIAlert */
     if (@available(iOS 9.0, *)) {
+        /* dynamically allocated char* cannot survive under dispatch block */
+        NSString *nstitle = [NSString stringWithUTF8String:title];
+        NSString *nsmessage = [NSString stringWithUTF8String:message];
+        NSString *nsbutton = [NSString stringWithUTF8String:button];
         // Use UIAlertController if iOS 10 or later
+        // FIXME: Sometimes not displaying passed chars
         dispatch_async(dispatch_get_main_queue(), ^{
             UIWindowScene *scene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] anyObject];
             UIWindow *keyWindow = scene.windows.firstObject;
             
             UIViewController *topController = find_top_controller(keyWindow.rootViewController);
-            
-            UIAlertController *alert = [UIAlertController alertControllerWithTitle:[NSString stringWithUTF8String:title] message:[NSString stringWithUTF8String:message] preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *action = [UIAlertAction actionWithTitle:[NSString stringWithUTF8String:button] style:UIAlertActionStyleDefault handler:nil];
+
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:nstitle message:nsmessage preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:nsbutton style:UIAlertActionStyleDefault handler:nil];
             [alert addAction:action];
             
             if (topController.presentedViewController) {

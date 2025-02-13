@@ -4,7 +4,7 @@
 
 // TODO: Function for advanced users to call SMC themselves.
 // or add them to tracklist
-
+NSArray *sections;
 // TODO: Config
 NSTimeInterval reload_interval = 5.0;
 
@@ -25,7 +25,7 @@ NSTimeInterval reload_interval = 5.0;
 
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
     self = [super initWithStyle:UITableViewStyleGrouped];
-    self.tableView.allowsSelection = NO;
+    self.tableView.allowsSelection = YES;
     battery_info_update(bi, true);
     batteryInfo = bi;
     return self;
@@ -125,13 +125,16 @@ NSTimeInterval reload_interval = 5.0;
     ]];
     if (IOPSAdapter != nil) [sections addObject:@[_("Adapter Details"), adapter_row]];
 #endif
+    sections = [NSMutableArray arrayWithArray:@[_("Gas Gauge")]];
+    if (
     [self.tableView reloadData];
 }
 
 - (instancetype)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
-    self.tableView.allowsSelection = NO;
+    self.tableView.allowsSelection = YES;
     [self updateTableView];
+
     return self;
 }
 
@@ -140,9 +143,7 @@ NSTimeInterval reload_interval = 5.0;
     return @"This is a Title yeah";
 }
 
-- (void)tableView:(UITableView *)tableView
-    willDisplayHeaderView:(UIView *)view
-               forSection:(NSInteger)section {
+- (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
     UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
     header.textLabel.text = @[ _("Gas Gauge"), _("Adapter Details") ][section];
 }
@@ -173,7 +174,7 @@ NSTimeInterval reload_interval = 5.0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
-    return 1;
+    return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv
@@ -184,6 +185,9 @@ NSTimeInterval reload_interval = 5.0;
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1
                                       reuseIdentifier:@"battmanbdvccl"];
     }
+    UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+    [cell addGestureRecognizer:longPressRecognizer];
+
     NSString *final_str;
     /* FIXME: This shall be automatically refreshed without reloading */
     if (ip.section == 0) {
@@ -209,9 +213,9 @@ NSTimeInterval reload_interval = 5.0;
 
             if ((i->content & BIN_IS_BOOLEAN) == BIN_IS_BOOLEAN) {
                 if (value) {
-                    final_str = @"True";
+                    final_str = _("True");
                 } else {
-                    final_str = @"False";
+                    final_str = _("False");
                 }
             } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
                 final_str = [NSString stringWithFormat:@"%0.2f", fvalue];
@@ -249,6 +253,17 @@ NSTimeInterval reload_interval = 5.0;
         }
     }
     return [super tableView:tv heightForRowAtIndexPath:indexPath];
+}
+
+- (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
+    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
+        UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
+        // We need better impl like PSTableCell's copy
+        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
+        [pasteboard setString:cell.detailTextLabel.text];
+        
+        show_alert([_("Copied!") UTF8String], [cell.detailTextLabel.text UTF8String], [_("OK") UTF8String]);
+    }
 }
 
 @end

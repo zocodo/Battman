@@ -96,6 +96,7 @@ NSString *cond_localize(const char *str) {
 #undef _
 #define _(x) cond_localize(x)
             DBGLOG(@"gettext_ptr(%s) = %s", str, gettext_ptr(str));
+            show_alert("OK", "OK", "OK");
         } else {
             show_alert("Warning", "Failed to load Gettext, defaulting to English", "OK");
         }

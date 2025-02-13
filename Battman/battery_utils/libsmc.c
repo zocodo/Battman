@@ -567,6 +567,7 @@ charging_state_t is_charging(mach_port_t family, device_info_t *info) {
     
     /* Not every charger sets those, no return on err */
     if (info != NULL) {
+        info->port = charging;
         /* D?if(ch8*) USB Port ? Firmware version */
         key = 'D\0if' | ((0x30 + charging) << 0x10);
         result = smc_read(key, info->firmware);
@@ -602,9 +603,62 @@ charging_state_t is_charging(mach_port_t family, device_info_t *info) {
         result = smc_read(key, info->serial);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Serial: %s"), charging, info->serial);
+
+        /* CHI?(ui32) USB Port ? PMUConfiguration */
+        key = 'CHI\0' | ((0x30 + charging) << 0x0);
+        result = smc_read(key, &info->PMUConfiguration);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, PMUConfiguration: 0x%X"), charging, info->PMUConfiguration);
+
+        /* D?IR(ui16) USB Port ? Current */
+        key = 'D\0IR' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, &info->current);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Current: 0x%X"), charging, info->current);
+
+        /* D?VR(ui16) USB Port ? Voltage */
+        key = 'D\0IV' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, &info->voltage);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Voltage: %u"), charging, info->voltage);
+        
+        /* D?PM(hex_) USB Port ? Capabilities */
+        key = 'D\0PM' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, info->hvc_menu);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Capabilities: 0x%X"), charging, info->hvc_menu);
+
+        /* D?PI(si8 ) USB Port ? Capability Index */
+        key = 'D\0PI' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, &info->hvc_index);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Index: %d"), charging, info->hvc_index);
     }
 
     return ret;
+}
+
+/* Sadly we still have to get hvc_menu from IOPS, since Macs has no D?PM */
+hvc_menu_t *hvc_menu_parse(uint8_t *input) {
+    /* Only get 28 bytes */
+    uint8_t bytes[28];
+    memcpy(bytes, input, 28);
+
+    static hvc_menu_t menu[7];
+    memset(menu, 0, sizeof(menu));
+
+    int valid_id = 0;
+    int f = 0;
+    for (int i = 0; i < 7; i++) {
+      f = i * 4;
+      if (bytes[f] || bytes[f + 1] || bytes[f + 2] || bytes[f + 3]) {
+        menu[valid_id].voltage = bytes[f + 1] << 8 | bytes[f];
+        menu[valid_id].current = bytes[f + 3] << 8 | bytes[f + 2];
+        valid_id++;
+      }
+    }
+
+    return menu;
 }
 
 /* Notes on some guessed keys

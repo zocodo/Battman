@@ -115,13 +115,25 @@ typedef struct gas_gauge {
 } gas_gauge_t;
 
 typedef struct device_info {
+    int8_t port;
     char firmware[12];
     char hardware[12];
     char adapter[32];
     char vendor[32];
     char name[32];
     char serial[32];
+    char description[32];
+    uint32_t PMUConfiguration;
+    uint16_t current;
+    uint16_t voltage;
+    uint8_t hvc_menu[28]; /* hex_[28], 4 bit each hvc, max 7 hvc */
+    int8_t hvc_index;
 } device_info_t;
+
+typedef struct hvc_menu {
+    uint16_t current;
+    uint16_t voltage;
+} hvc_menu_t;
 
 typedef enum {
     kIsCharging,    /* Charging */
@@ -142,5 +154,6 @@ typedef unsigned int mach_port_t;
 charging_state_t is_charging(mach_port_t family, device_info_t *info);
 float *get_temperature_per_batt(void);
 bool battery_serial(char *serial);
+hvc_menu_t *hvc_menu_parse(uint8_t *input);
 
 #endif
