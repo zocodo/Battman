@@ -116,6 +116,17 @@ NSString *registeredStrings[] = {
 };
 #endif
 
+const char *bin_unit_strings[]={
+	_ID_("℃"),
+	_ID_("%"),
+	_ID_("mA"),
+	_ID_("mAh"),
+	_ID_("mV"),
+	_ID_("mW"),
+	_ID_("min"),
+	_ID_("h")
+};
+
 struct battery_info_node main_battery_template[] = {
     {_ID_("Health"), BIN_IS_BACKGROUND | BIN_UNIT_PERCENT},
     {_ID_("SoC"), BIN_IS_FLOAT | BIN_UNIT_PERCENT},

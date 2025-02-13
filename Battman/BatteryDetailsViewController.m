@@ -43,15 +43,10 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             }
             if (i->content & BIN_HAS_UNIT) {
                 uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;
-		NSString *unit_str =
-			[[NSString alloc] initWithBytes:(char *)&unit
-						length:4
-						encoding:NSUTF8StringEncoding];
                 final_str = [NSString
-                    stringWithFormat:@"%@ %@", final_str, unit_str];
+                    stringWithFormat:@"%@ %@", final_str, _(bin_unit_strings[unit])];
             }
         } else {
-            // FIXME: Only localize what needed to be localized
             final_str = [NSString stringWithUTF8String:(const char *)i->content];
         }
 
@@ -77,9 +72,18 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
     self = [super initWithStyle:UITableViewStyleGrouped];
-    self.tableView.allowsSelection = YES;
+    self.tableView.allowsSelection = NO; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
     batteryInfo = bi;
+         gas_gauge_t gauge;
+        get_gas_gauge(&gauge);
+        // TODO: No get_gas_gauge in this VC
+        /* Don't remove this, otherwise users will blame us */
+        NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
+        NSString *explaination_IT = (gauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
+        NSString *explaination_Sim = (gauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
+        gasGaugeDisclaimer= [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
+    
     return self;
 }
 
@@ -202,15 +206,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 - (NSString *)tableView:(UITableView *)tableView
     titleForFooterInSection:(NSInteger)section {
     if (section == 0) {
-        gas_gauge_t gauge;
-        get_gas_gauge(&gauge);
-        // TODO: No get_gas_gauge in this VC
-        /* Don't remove this, otherwise users will blame us */
-        NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
-        NSString *explaination_IT = (gauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
-        NSString *explaination_Sim = (gauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
-        return [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
-    }
+    	return gasGaugeDisclaimer;
+   }
     return nil;
 }
 

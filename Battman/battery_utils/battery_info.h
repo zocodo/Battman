@@ -15,8 +15,8 @@ SPECIAL:
 | 2     | isBoolean
 | 3     | affectsBatteryView
 | 4     | isFloat (may be elimated in future)
-| 5     | isForeground
-| 6:29  | unit (UTF-8, 3 bytes max, little endian)
+| 5     | isForeground / isHiddenInDetails
+| 6:12  | unit (7 bit localization)
 | 30    | inDetails
 | 31    | hasUnit
 | 32:63 | value (32-bit)
@@ -32,7 +32,7 @@ SPECIAL:
 #define BIN_IS_FOREGROUND           (1 << 5 | BIN_IS_FLOAT | BIN_AFFECTS_BATTERY_CELL)
 #define BIN_IS_BACKGROUND           (0 | BIN_IS_FLOAT | BIN_AFFECTS_BATTERY_CELL)
 #define BIN_IS_HIDDEN               (1 << 1)
-#define BIN_UNIT_BITMASK            (((1 << 24) - 1) << 6)
+#define BIN_UNIT_BITMASK            (((1 << 7) - 1) << 6)
 // ^ Use >>6 when retrieving, max 3 bytes
 #define BIN_DETAILS_SHARED          (1 << 30 | BIN_IS_SPECIAL)
 #define BIN_IN_DETAILS              (1 << 30 | BIN_IS_HIDDEN | BIN_IS_SPECIAL)
@@ -40,25 +40,33 @@ SPECIAL:
 #define BIN_VALUE_BIT_MASK          (((uint64_t)-1) << 32)
 #define BIN_BITS_BIT_MASK           ((1L << 32) - 1)
 
-#define BIN_UNIT_DEGREE_C           (0x8384e2 << 6 | BIN_HAS_UNIT)
+/*#define BIN_UNIT_DEGREE_C           (0x8384e2 << 6 | BIN_HAS_UNIT)
 #define BIN_UNIT_PERCENT            (0x25 << 6 | BIN_HAS_UNIT)
 #define BIN_UNIT_MAMP               (0x416d << 6 | BIN_HAS_UNIT)
 #define BIN_UNIT_MAH                (0x68416d << 6 | BIN_HAS_UNIT)
 #define BIN_UNIT_MVOLT              (0x566d << 6 | BIN_HAS_UNIT)
 #define BIN_UNIT_MWATT              (0x576d << 6 | BIN_HAS_UNIT)
 #define BIN_UNIT_MIN                (0x6e696d << 6 | BIN_HAS_UNIT)
-#define BIN_UNIT_HOUR               (0x7248 << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_HOUR               (0x7248 << 6 | BIN_HAS_UNIT)*/
+
+#define BIN_UNIT_DEGREE_C           (0 << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_PERCENT            (1 << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MAMP               (2 << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MAH                (3 << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MVOLT              (4 << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MWATT              (5 << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MIN                (6 << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_HOUR               (7 << 6 | BIN_HAS_UNIT)
 
 // max 3 bytes unit, conversion:
 // e.g. degreeC is e2 84 83 in utf8,
 // convert it to little endian, 0x8384e2, and put in the bitmask.
 
-#if 0
-/* This is not compiled, but needed for Gettext PO template generation */
-NSString *unit_strings[] = {
-    _("Min"),
-};
+#ifndef _ID_
+#define _ID_(x) (x)
 #endif
+
+extern const char *bin_unit_strings[];
 
 struct battery_info_node {
     const char *description; // NONNULL

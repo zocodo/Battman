@@ -5,6 +5,7 @@
 @interface BatteryDetailsViewController : UITableViewController {
 	struct battery_info_node *batteryInfo;
 	unsigned char pendingLoadOffsets[64];
+	NSString *gasGaugeDisclaimer;
 }
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi;
 @end

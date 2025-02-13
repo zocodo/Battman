@@ -34,7 +34,9 @@ CFStringRef localization_arr[]={
 #endif
 
 #ifndef USE_GETTEXT
-NSString *cond_localize(int localize_id) {
+NSString *cond_localize(unsigned long long localize_id) {
+	if(localize_id>10000)
+		return [NSString stringWithUTF8String:(const char *)localize_id];
 	int preferred_language=0; // current: 0=eng 1=cn
 	// ^^ TODO: Make it dynamically modifyable
 	// Also TODO: detect locale

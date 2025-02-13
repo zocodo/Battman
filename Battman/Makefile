@@ -1,4 +1,4 @@
-.PHONY: all publish_mounted_site publish_local_site publish_none
+.PHONY: all publish_mounted_site publish_local_site publish_none clean
 
 SED = sed
 
@@ -83,4 +83,6 @@ publish_local_site: /var/www/html/files/battman \
 	@echo Install at: ${LOCAL_IP}
 publish_none: build/Battman.ipa
 	@echo Not publishing.
+clean:
+	rm -rf build/
 

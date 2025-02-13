@@ -54,10 +54,7 @@
             }
             if (i->content & BIN_HAS_UNIT) {
                 uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;
-                NSString *unit_str =
-                    [[NSString alloc] initWithBytes:(char *)&unit
-                                             length:4
-                                           encoding:NSUTF8StringEncoding];
+                NSString *unit_str =_(bin_unit_strings[unit]);
                 final_str =
                     [NSString stringWithFormat:@"%@ %@", final_str, unit_str];
             }

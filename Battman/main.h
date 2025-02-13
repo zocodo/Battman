@@ -43,7 +43,7 @@
 __BEGIN_DECLS
 
 #ifndef USE_GETTEXT
-NSString *cond_localize(int localize_id);
+NSString *cond_localize(unsigned long long localize_id);
 #else
 NSString *cond_localize(const char *str);
 #endif
