@@ -41,13 +41,14 @@ SPECIAL:
 #define BIN_BITS_BIT_MASK           ((1L << 32) - 1)
 
 #define BIN_UNIT_DEGREE_C           (0x8384e2 << 6 | BIN_HAS_UNIT)
-#define BIN_UNIT_PERCENT            ('%' << 6 | BIN_HAS_UNIT)
-#define BIN_UNIT_MAMP               ('Am' << 6 | BIN_HAS_UNIT)
-#define BIN_UNIT_MAH                ('hAm' << 6 | BIN_HAS_UNIT)
-#define BIN_UNIT_MVOLT              ('Vm' << 6 | BIN_HAS_UNIT)
-#define BIN_UNIT_MWATT              ('Wm' << 6 | BIN_HAS_UNIT)
-#define BIN_UNIT_MIN                ('niM' << 6 | BIN_HAS_UNIT)
-#define BIN_UNIT_HOUR               ('rH' << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_PERCENT            (0x25 << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MAMP               (0x416d << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MAH                (0x68416d << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MVOLT              (0x566d << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MWATT              (0x576d << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_MIN                (0x6e696d << 6 | BIN_HAS_UNIT)
+#define BIN_UNIT_HOUR               (0x7248 << 6 | BIN_HAS_UNIT)
+
 // max 3 bytes unit, conversion:
 // e.g. degreeC is e2 84 83 in utf8,
 // convert it to little endian, 0x8384e2, and put in the bitmask.

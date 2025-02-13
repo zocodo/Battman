@@ -8,6 +8,58 @@ NSArray *sections;
 // TODO: Config
 NSTimeInterval reload_interval = 5.0;
 
+
+void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
+	// PLEASE ENSURE no hidden cell is here when calling
+        /*if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
+            (i->content &&
+             !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
+            cell.hidden = NO;
+        } else {
+            cell.hidden = YES;
+            return cell;
+        }
+        if (((i->content & 1) == 1) && (i->content & (1 << 5)) == (1 << 5)) {
+            cell.hidden = YES;
+            return cell;
+        }*/
+        NSString *final_str;
+        cell.textLabel.text = _(i->description);
+        if ((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL) {
+            uint32_t value = i->content >> 32;
+            float *fvptr = (float *)&value;
+            float fvalue = *fvptr;
+
+            if ((i->content & BIN_IS_BOOLEAN) == BIN_IS_BOOLEAN) {
+                if (value) {
+                    final_str = _("True");
+                } else {
+                    final_str = _("False");
+                }
+            } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
+                final_str = [NSString stringWithFormat:@"%0.2f", fvalue];
+            } else {
+                final_str = [NSString stringWithFormat:@"%d", value];
+            }
+            if (i->content & BIN_HAS_UNIT) {
+                uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;
+		NSString *unit_str =
+			[[NSString alloc] initWithBytes:(char *)&unit
+						length:4
+						encoding:NSUTF8StringEncoding];
+                final_str = [NSString
+                    stringWithFormat:@"%@ %@", final_str, unit_str];
+            }
+        } else {
+            // FIXME: Only localize what needed to be localized
+            final_str = [NSString stringWithUTF8String:(const char *)i->content];
+        }
+
+        cell.detailTextLabel.text = final_str;
+        return;
+}
+
+
 @implementation BatteryDetailsViewController
 
 - (NSString *)title {
@@ -126,7 +178,6 @@ NSTimeInterval reload_interval = 5.0;
     if (IOPSAdapter != nil) [sections addObject:@[_("Adapter Details"), adapter_row]];
 #endif
     sections = [NSMutableArray arrayWithArray:@[_("Gas Gauge")]];
-    if (
     [self.tableView reloadData];
 }
 
@@ -153,6 +204,7 @@ NSTimeInterval reload_interval = 5.0;
     if (section == 0) {
         gas_gauge_t gauge;
         get_gas_gauge(&gauge);
+        // TODO: No get_gas_gauge in this VC
         /* Don't remove this, otherwise users will blame us */
         NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
         NSString *explaination_IT = (gauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
@@ -163,14 +215,21 @@ NSTimeInterval reload_interval = 5.0;
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-    if (section == 0) {
-        int rows = 0;
-        for (struct battery_info_node *i = batteryInfo; i->description; i++) {
-            rows++;
-        }
-        return rows;
-    }
-    return 0;
+	if (section == 0) {
+		int rows = 0;
+		for (struct battery_info_node *i = batteryInfo; i->description; i++) {
+			if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
+				(i->content && !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
+				if((i->content&(1<<5))!=1<<5) {
+					pendingLoadOffsets[rows]=(unsigned char)((i-batteryInfo)-rows);
+					rows++;
+				}
+			}
+		}
+		pendingLoadOffsets[rows]=255;
+		return rows;
+	}
+	return 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
@@ -188,71 +247,11 @@ NSTimeInterval reload_interval = 5.0;
     UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [cell addGestureRecognizer:longPressRecognizer];
 
-    NSString *final_str;
-    /* FIXME: This shall be automatically refreshed without reloading */
-    if (ip.section == 0) {
-        struct battery_info_node *i = batteryInfo + ip.row;
-        if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
-            (i->content &&
-             !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
-            cell.hidden = NO;
-        } else {
-            cell.hidden = YES;
-            return cell;
-        }
-        if (((i->content & 1) == 1) && (i->content & (1 << 5)) == (1 << 5)) {
-            cell.hidden = YES;
-            return cell;
-        }
-        // ^ I think this is more efficient than going through all items
-        cell.textLabel.text = _(i->description);
-        if ((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL) {
-            uint32_t value = i->content >> 32;
-            float *fvptr = (float *)&value;
-            float fvalue = *fvptr;
-
-            if ((i->content & BIN_IS_BOOLEAN) == BIN_IS_BOOLEAN) {
-                if (value) {
-                    final_str = _("True");
-                } else {
-                    final_str = _("False");
-                }
-            } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
-                final_str = [NSString stringWithFormat:@"%0.2f", fvalue];
-            } else {
-                final_str = [NSString stringWithFormat:@"%d", value];
-            }
-            if (i->content & BIN_HAS_UNIT) {
-                uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;
-                final_str = [NSString
-                    stringWithFormat:@"%@ %@", final_str, _((char *)&unit)];
-            }
-        } else {
-            // FIXME: Only localize what needed to localize
-            final_str = _((const char *)i->content);
-        }
-
-        cell.detailTextLabel.text = final_str;
-        return cell;
+    if(ip.section==0) {
+    	equipDetailCell(cell, batteryInfo+ip.row+pendingLoadOffsets[ip.row]);
+    	return cell;
     }
     return nil;
-}
-
-// FIXME: Setting height 0 is not the correct way to hide a row!
-- (CGFloat)tableView:(id)tv heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == 0) {
-        struct battery_info_node *i = batteryInfo + indexPath.row;
-        if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
-            (i->content &&
-             !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
-            if (((i->content & 1) == 1) && (i->content & (1 << 5)))
-                return 0;
-            return [super tableView:tv heightForRowAtIndexPath:indexPath];
-        } else {
-            return 0;
-        }
-    }
-    return [super tableView:tv heightForRowAtIndexPath:indexPath];
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
