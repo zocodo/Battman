@@ -7,6 +7,26 @@
 STRING:
 | Bit   | Value
 | 0     | isString (=0)
+| 0:30  | stringBufferOffset
+| 31    | beginFlag
+SPECIAL:
+| Bit   | Value
+| 1     | isHidden / skipSection
+| 2     | isBoolean
+| 3     | affectsBatteryView
+| 4     | isFloat
+| 5     | isForeground / isHiddenInDetails
+| 6:12  | unit (7 bit localization) / sectionSeparator if ==0x7f
+| 13    | newSection
+| 14    | inDetails
+| 15    | hasUnit
+| 16:31 | 16-bit value
+*/
+
+/* ->content structure:
+STRING:
+| Bit   | Value
+| 0     | isString (=0)
 | 0:63  | strPointer (char *, guaranteed &1==0)
 SPECIAL:
 | Bit   | Value
@@ -37,12 +57,10 @@ SPECIAL:
 #define BIN_UNIT_BITMASK            (((1 << 7) - 1) << 6)
 #define BIN_SECTION			(1<<13)
 #define BIN_SECTION_HIDDEN		(1<<14)
-// ^ Use >>6 when retrieving, max 3 bytes
-#define BIN_DETAILS_SHARED          (1 << 30 | BIN_IS_SPECIAL)
-#define BIN_IN_DETAILS              (1 << 30 | BIN_IS_HIDDEN | BIN_IS_SPECIAL)
-#define BIN_HAS_UNIT                (1L << 31)
-#define BIN_VALUE_BIT_MASK          (((uint64_t)-1) << 32)
-#define BIN_BITS_BIT_MASK           ((1L << 32) - 1)
+// ^ Use >>6 when retrieving, max 7 bits
+#define BIN_DETAILS_SHARED          (1 << 14 | BIN_IS_SPECIAL)
+#define BIN_IN_DETAILS              (1 << 14 | BIN_IS_HIDDEN | BIN_IS_SPECIAL)
+#define BIN_HAS_UNIT                (1L << 15)
 
 /*#define BIN_UNIT_DEGREE_C           (0x8384e2 << 6 | BIN_HAS_UNIT)
 #define BIN_UNIT_PERCENT            (0x25 << 6 | BIN_HAS_UNIT)
@@ -71,10 +89,11 @@ SPECIAL:
 #endif
 
 extern const char *bin_unit_strings[];
+extern void *bin_sbrk_beacon;
 
 struct battery_info_node {
     const char *description; // NONNULL
-    uint64_t content;
+    uint32_t content;
 };
 
 struct battery_info_node *bi_construct_array(void);
@@ -83,12 +102,14 @@ bool bi_find_next(struct battery_info_node **v, int identifier);
 // This function modifies the value without changing the
 // definition bits.
 void bi_node_change_content_value(struct battery_info_node *node,
-                                  int identifier, uint32_t value);
+                                  int identifier, uint16_t value);
+float bi_node_load_float(struct battery_info_node *node);
 void bi_node_change_content_value_float(struct battery_info_node *node,
                                         int identifier, float value);
 void bi_node_set_hidden(struct battery_info_node *node, int identifier,
                         bool hidden);
 char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
                             uint64_t length);
+char *bi_node_get_string(struct battery_info_node *node);
 void battery_info_update(struct battery_info_node *head, bool inDetail);
 struct battery_info_node *battery_info_init(void);

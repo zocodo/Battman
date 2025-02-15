@@ -26,9 +26,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         NSString *final_str;
         cell.textLabel.text = _(i->description);
         if ((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL) {
-            uint32_t value = i->content >> 32;
-            float *fvptr = (float *)&value;
-            float fvalue = *fvptr;
+            int16_t value = i->content >> 16;
 
             if ((i->content & BIN_IS_BOOLEAN) == BIN_IS_BOOLEAN) {
                 if (value) {
@@ -37,7 +35,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
                     final_str = _("False");
                 }
             } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
-                final_str = [NSString stringWithFormat:@"%0.2f", fvalue];
+                final_str = [NSString stringWithFormat:@"%0.2f", bi_node_load_float(i)];
             } else {
                 final_str = [NSString stringWithFormat:@"%d", value];
             }
@@ -47,7 +45,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
                     stringWithFormat:@"%@ %@", final_str, _(bin_unit_strings[unit])];
             }
         } else {
-            final_str = [NSString stringWithUTF8String:(const char *)i->content];
+            final_str = [NSString stringWithUTF8String:bi_node_get_string(i)];
         }
 
         cell.detailTextLabel.text = final_str;
@@ -217,7 +215,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 		for (struct battery_info_node *i = batteryInfo; i->description; i++) {
 			if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
 				(i->content && !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
-				if((i->content&(1<<5))!=1<<5) {
+				if((i->content&1)!=1||(i->content&(1<<5))!=1<<5) {
 					pendingLoadOffsets[rows]=(unsigned char)((i-batteryInfo)-rows);
 					rows++;
 				}

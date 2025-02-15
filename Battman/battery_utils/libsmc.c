@@ -466,13 +466,12 @@ bool battery_serial(char *serial) {
         return false;
     
     /* Guard */
-    char retval[21];
+    //char retval[21];
+    // Don't need guard, serial would be meaningless if failed
     /* BMSN(ch8*) Battery Serial */
-    result = smc_read('BMSN', retval);
+    result = smc_read('BMSN', serial);
     if (result != kIOReturnSuccess)
         return false;
-
-    strcpy(serial, retval);
 
     return true;
 }

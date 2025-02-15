@@ -82,7 +82,7 @@
 - (void)dealloc {
 	for(struct battery_info_node *i=batteryInfo;i->description;i++) {
 		if(i->content&&!(i->content&BIN_IS_SPECIAL)) {
-			free((void*)i->content);
+			free(bi_node_get_string(i));
 		}
 	}
 	free(batteryInfo);

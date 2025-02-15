@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "../battery_utils/libsmc.h"
+
 @implementation BatteryInfoTableViewCell
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -33,13 +35,11 @@
     // TODO: Arabian? We need Arabian hackers to fix this code
     for (struct battery_info_node *i = _batteryInfo; i->description != NULL; i++) {
         if (i->content & BIN_IS_SPECIAL) {
-            uint32_t value = i->content >> 32;
-            float *fvptr = (float *)&value;
-            float fvalue = *fvptr;
+        	uint32_t value=i->content>>16;
             if ((i->content & BIN_IS_FOREGROUND) == BIN_IS_FOREGROUND) {
-                [_batteryCell updateForegroundPercentage:fvalue];
+                [_batteryCell updateForegroundPercentage:bi_node_load_float(i)];
             } else if ((i->content & BIN_IS_BACKGROUND) == BIN_IS_BACKGROUND) {
-                [_batteryCell updateBackgroundPercentage:fvalue];
+                [_batteryCell updateBackgroundPercentage:bi_node_load_float(i)];
             }
             if (i->content & BIN_IS_HIDDEN)
                 continue;
@@ -50,7 +50,7 @@
             } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
                 final_str =
                     [NSString stringWithFormat:@"%@\n%@: %0.2f", final_str,
-                                               _(i->description), fvalue];
+                                               _(i->description), bi_node_load_float(i)];
             }
             if (i->content & BIN_HAS_UNIT) {
                 uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;

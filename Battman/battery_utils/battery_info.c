@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <CoreFoundation/CFArray.h>
 #include <CoreFoundation/CFBase.h>
@@ -102,10 +103,6 @@ typedef enum {
     ID_BI_BATTERY_ASOC
 } id_bi_t;
 
-// Templates:
-// They are arrays, not linked lists
-// They are here for generating linked lists.
-
 #if 0
 /* This is not compiled, but needed for Gettext PO template generation */
 NSString *registeredStrings[] = {
@@ -168,9 +165,9 @@ struct battery_info_node *bi_construct_array(void) {
 }
 
 void bi_node_change_content_value(struct battery_info_node *node,
-                                  int identifier, unsigned int value) {
+                                  int identifier, unsigned short value) {
     node += identifier;
-    uint32_t *sects = (uint32_t *)&node->content;
+    uint16_t *sects = (uint16_t *)&node->content;
     sects[1] = value;
 }
 
@@ -178,9 +175,26 @@ void bi_node_change_content_value_float(struct battery_info_node *node,
                                         int identifier, float value) {
     node += identifier;
     assert((node->content & BIN_IS_FLOAT) == BIN_IS_FLOAT);
-    float *sects = (float *)&node->content;
-    sects[1] = value;
+    uint32_t* vptr=(uint32_t*)&value;
+    uint32_t vr=*vptr;
+    node->content=(
+	(vr&(0b11<<30))|
+	(vr&(((1<<4)-1)<<23))<<3|
+	(vr&(((1<<10)-1)<<13))<<3
+    )|(node->content&((1<<16)-1));
     // overwrite higher bits;
+}
+
+float bi_node_load_float(struct battery_info_node *node) {
+	float ret;
+	uint32_t *vptr=(uint32_t*)&ret;
+	uint32_t vr=node->content;
+	*vptr=(
+		(vr&(0b11<<30))|
+		(vr&(((1<<4)-1)<<26))>>3|
+		(vr&(((1<<10)-1)<<16))>>3
+	);
+	return ret;
 }
 
 void bi_node_set_hidden(struct battery_info_node *node, int identifier,
@@ -199,8 +213,12 @@ char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
     node += identifier;
     assert(!(node->content & BIN_IS_SPECIAL));
     if (!node->content)
-        node->content = (uint64_t)malloc(length);
-    return (char *)node->content;
+        node->content = (uint32_t)(((uint64_t)malloc(length))>>3);
+    return bi_node_get_string(node);
+}
+
+char *bi_node_get_string(struct battery_info_node *node) {
+	return (char *)(((uint64_t)node->content)<<3);
 }
 
 struct battery_info_node *battery_info_init() {
@@ -216,11 +234,11 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 
     /* Health = 100.0f * FullChargeCapacity (mAh) / DesignCapacity (mAh) */
     bi_node_change_content_value_float(head, ID_BI_BATTERY_HEALTH,
-                                       100.0f * full_cap / design_cap);
+                                       100.0f * (float)full_cap / (float)design_cap);
 
     /* SoC = 100.0f * RemainCapacity (mAh) / FullChargeCapacity (mAh) */
     bi_node_change_content_value_float(head, ID_BI_BATTERY_SOC,
-                                       100.0f * remain_cap / full_cap);
+                                       100.0f * (float)remain_cap / (float)full_cap);
 
     /* In Celsius, if you don't use Celsius, go learn it or PR to support your
      * unit */
@@ -265,7 +283,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
         }
         /* We can't make sure if someone's battery have any serial */
         if (!battery_serial(bi_node_ensure_string(head, 19, 21))) {
-            sprintf(bi_node_ensure_string(head, 19, 4), "%s", "None");
+            sprintf(bi_node_ensure_string(head, 19, 4), "None");
         }
         sprintf(bi_node_ensure_string(head, 20, 12), "0x%.8X", gauge.ChemID);
         sprintf(bi_node_ensure_string(head, 21, 8), "0x%.4X", gauge.Flags);
