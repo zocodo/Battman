@@ -142,6 +142,10 @@ typedef enum {
     kIsUnavail,     /* Error Occured */
 } charging_state_t;
 
+__BEGIN_DECLS
+
+extern gas_gauge_t gGauge;
+
 int get_fan_status(void);
 float get_temperature(void);
 int get_time_to_empty(void);
@@ -151,9 +155,11 @@ bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design);
 int battery_num(void);
 bool get_gas_gauge(gas_gauge_t *gauge);
 typedef unsigned int mach_port_t;
-charging_state_t is_charging(mach_port_t family, device_info_t *info);
+charging_state_t is_charging(mach_port_t *family, device_info_t *info);
 float *get_temperature_per_batt(void);
 bool battery_serial(char *serial);
 hvc_menu_t *hvc_menu_parse(uint8_t *input);
+
+__END_DECLS
 
 #endif

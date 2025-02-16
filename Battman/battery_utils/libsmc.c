@@ -53,6 +53,7 @@ kern_return_t IOServiceClose(io_service_t);
 extern void NSLog(CFStringRef, ...);
 
 static io_service_t gConn = 0;
+gas_gauge_t gGauge = {0};
 
 __attribute__((constructor))
 static IOReturn smc_open(void) {
@@ -464,10 +465,7 @@ bool battery_serial(char *serial) {
 
     if (result != kIOReturnSuccess)
         return false;
-    
-    /* Guard */
-    //char retval[21];
-    // Don't need guard, serial would be meaningless if failed
+
     /* BMSN(ch8*) Battery Serial */
     result = smc_read('BMSN', serial);
     if (result != kIOReturnSuccess)
@@ -518,7 +516,7 @@ bool battery_serial(char *serial) {
  kIOPSFamilyCodeExternal4                   -536723452    E0024004
  kIOPSFamilyCodeExternal5                   -536723451    E0024005
  */
-charging_state_t is_charging(mach_port_t family, device_info_t *info) {
+charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
     IOReturn result = kIOReturnSuccess;
     SMCKey key;
     int8_t charging = 0;
@@ -559,11 +557,13 @@ charging_state_t is_charging(mach_port_t family, device_info_t *info) {
         ret = kIsCharging;
 
     /* kIOPSPowerAdapterFamily */
-    key = 'D\0FC' | ((0x30 + charging) << 0x10);
-    result = smc_read(key, &family);
-    if (result == kIOReturnSuccess)
-        DBGLOG(CFSTR("Port: %d, Family Code: %X"), charging, family);
-    
+    if (family != NULL) {
+        key = 'D\0FC' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, family);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Family Code: %X"), charging, family);
+    }
+
     /* Not every charger sets those, no return on err */
     if (info != NULL) {
         info->port = charging;

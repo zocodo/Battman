@@ -88,6 +88,8 @@ SPECIAL:
 #define _ID_(x) (x)
 #endif
 
+__BEGIN_DECLS
+
 extern const char *bin_unit_strings[];
 extern void *bin_sbrk_beacon;
 
@@ -113,3 +115,5 @@ char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
 char *bi_node_get_string(struct battery_info_node *node);
 void battery_info_update(struct battery_info_node *head, bool inDetail);
 struct battery_info_node *battery_info_init(void);
+
+__END_DECLS

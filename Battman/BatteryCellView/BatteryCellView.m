@@ -16,6 +16,7 @@ extern bool show_alert(char *, char*,char*);
 	batteryView.layer.cornerRadius = 30;
 	batteryView.layer.masksToBounds = YES;
 	batteryView.backgroundColor=[UIColor secondarySystemFillColor];
+    // TODO: Handle the scene if battery not present
 	// Battery Animation -- Start
     {
 		/* True Remaining */

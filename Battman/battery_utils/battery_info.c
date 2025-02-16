@@ -254,17 +254,16 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
                                        100.0f * remain_cap / design_cap);
 
     if (inDetail) {
-        gas_gauge_t gauge;
-        get_gas_gauge(&gauge);
+        get_gas_gauge(&gGauge);
         bi_node_change_content_value(head, 5, full_cap);
         bi_node_change_content_value(head, 6, design_cap);
         bi_node_change_content_value(head, 7, remain_cap);
-        bi_node_change_content_value(head, 8, gauge.Qmax * battery_num());
-        bi_node_change_content_value(head, 9, gauge.DOD0);
-        bi_node_change_content_value(head, 10, gauge.PassedCharge);
-        bi_node_change_content_value(head, 11, gauge.Voltage);
-        bi_node_change_content_value(head, 12, gauge.AverageCurrent);
-        bi_node_change_content_value(head, 13, gauge.AveragePower);
+        bi_node_change_content_value(head, 8, gGauge.Qmax * battery_num());
+        bi_node_change_content_value(head, 9, gGauge.DOD0);
+        bi_node_change_content_value(head, 10, gGauge.PassedCharge);
+        bi_node_change_content_value(head, 11, gGauge.Voltage);
+        bi_node_change_content_value(head, 12, gGauge.AverageCurrent);
+        bi_node_change_content_value(head, 13, gGauge.AveragePower);
         bi_node_change_content_value(head, 14, battery_num());
         int timeToEmpty = get_time_to_empty();
         if (timeToEmpty) {
@@ -273,10 +272,10 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
         } else {
             bi_node_set_hidden(head, 15, true);
         }
-        bi_node_change_content_value(head, 16, gauge.CycleCount);
-        bi_node_change_content_value(head, 17, gauge.StateOfCharge);
-        if (gauge.ResScale) {
-            bi_node_change_content_value(head, 18, gauge.ResScale);
+        bi_node_change_content_value(head, 16, gGauge.CycleCount);
+        bi_node_change_content_value(head, 17, gGauge.StateOfCharge);
+        if (gGauge.ResScale) {
+            bi_node_change_content_value(head, 18, gGauge.ResScale);
             bi_node_set_hidden(head, 18, false);
         } else {
             bi_node_set_hidden(head, 18, true);
@@ -285,43 +284,43 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
         if (!battery_serial(bi_node_ensure_string(head, 19, 21))) {
             sprintf(bi_node_ensure_string(head, 19, 4), "None");
         }
-        sprintf(bi_node_ensure_string(head, 20, 12), "0x%.8X", gauge.ChemID);
-        sprintf(bi_node_ensure_string(head, 21, 8), "0x%.4X", gauge.Flags);
-        if (gauge.TrueRemainingCapacity) {
-            bi_node_change_content_value(head, 22, gauge.TrueRemainingCapacity);
+        sprintf(bi_node_ensure_string(head, 20, 12), "0x%.8X", gGauge.ChemID);
+        sprintf(bi_node_ensure_string(head, 21, 8), "0x%.4X", gGauge.Flags);
+        if (gGauge.TrueRemainingCapacity) {
+            bi_node_change_content_value(head, 22, gGauge.TrueRemainingCapacity);
             bi_node_set_hidden(head, 22, false);
         } else {
             bi_node_set_hidden(head, 22, true);
         }
-        if (gauge.OCV_Current) {
-            bi_node_change_content_value(head, 23, gauge.OCV_Current);
+        if (gGauge.OCV_Current) {
+            bi_node_change_content_value(head, 23, gGauge.OCV_Current);
             bi_node_set_hidden(head, 23, false);
         } else {
             bi_node_set_hidden(head, 23, true);
         }
-        if (gauge.OCV_Voltage) {
-            bi_node_change_content_value(head, 24, gauge.OCV_Voltage);
+        if (gGauge.OCV_Voltage) {
+            bi_node_change_content_value(head, 24, gGauge.OCV_Voltage);
             bi_node_set_hidden(head, 24, false);
         } else {
             bi_node_set_hidden(head, 24, true);
         }
-        if (gauge.IMAX) {
-            bi_node_change_content_value(head, 25, gauge.IMAX);
+        if (gGauge.IMAX) {
+            bi_node_change_content_value(head, 25, gGauge.IMAX);
             bi_node_set_hidden(head, 25, false);
         } else {
             bi_node_set_hidden(head, 25, true);
         }
-        if (gauge.IMAX2) {
-            bi_node_change_content_value(head, 26, gauge.IMAX2);
+        if (gGauge.IMAX2) {
+            bi_node_change_content_value(head, 26, gGauge.IMAX2);
             bi_node_set_hidden(head, 26, false);
         } else {
             bi_node_set_hidden(head, 26, true);
         }
 
-        if (gauge.ITMiscStatus) {
+        if (gGauge.ITMiscStatus) {
             sprintf(bi_node_ensure_string(head, 27, 8), "0x%.4X",
-                    gauge.ITMiscStatus);
-            bi_node_change_content_value(head, 28, gauge.SimRate);
+                    gGauge.ITMiscStatus);
+            bi_node_change_content_value(head, 28, gGauge.SimRate);
             bi_node_set_hidden(head, 28, false);
         } else {
             bi_node_set_hidden(head, 28, true);

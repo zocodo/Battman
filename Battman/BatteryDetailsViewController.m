@@ -59,7 +59,12 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     return _("Internal Battery");
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [self updateTableView];
+}
+
 - (void)viewDidLoad {
+//    [self updateTableView]; // Why SIGABRT here?
     /* We knows too less to listen on SMC events */
     (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval
                                            target:self
@@ -73,14 +78,11 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     self.tableView.allowsSelection = NO; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
     batteryInfo = bi;
-         gas_gauge_t gauge;
-        get_gas_gauge(&gauge);
-        // TODO: No get_gas_gauge in this VC
         /* Don't remove this, otherwise users will blame us */
         NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
-        NSString *explaination_IT = (gauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
-        NSString *explaination_Sim = (gauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
-        gasGaugeDisclaimer= [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
+        NSString *explaination_IT = (gGauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
+        NSString *explaination_Sim = (gGauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
+        gasGaugeDisclaimer = [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
     
     return self;
 }
@@ -179,10 +181,20 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     ]];
     if (IOPSAdapter != nil) [sections addObject:@[_("Adapter Details"), adapter_row]];
 #endif
+    /* Dynasects */
+    /* TODO: Handle the scene that if battery not present */
+#if !__has_feature(objc_arc)
+    [sections dealloc];
+#endif
     sections = [NSMutableArray arrayWithArray:@[_("Gas Gauge")]];
+    /* TODO: */
+    // if (is_charging(NULL, NULL))
+    //     sections = [NSMutableArray addObject:@[_("Adapter Details")]];
     [self.tableView reloadData];
 }
 
+#if 0
+// Init was not executed somehow
 - (instancetype)init {
     self = [super initWithStyle:UITableViewStyleGrouped];
     self.tableView.allowsSelection = YES;
@@ -190,6 +202,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 
     return self;
 }
+#endif
 
 - (NSString *)tableView:(id)tv titleForHeaderInSection:(NSInteger)section {
     // Doesn't matter, it will be changed by willDisplayHeaderView
@@ -198,14 +211,14 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
     UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-    header.textLabel.text = @[ _("Gas Gauge"), _("Adapter Details") ][section];
+    header.textLabel.text = sections[section];
 }
 
 - (NSString *)tableView:(UITableView *)tableView
     titleForFooterInSection:(NSInteger)section {
     if (section == 0) {
     	return gasGaugeDisclaimer;
-   }
+    }
     return nil;
 }
 
@@ -228,7 +241,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
-    return 2;
+    return sections.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv
@@ -242,8 +255,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [cell addGestureRecognizer:longPressRecognizer];
 
-    if(ip.section==0) {
-    	equipDetailCell(cell, batteryInfo+ip.row+pendingLoadOffsets[ip.row]);
+    if (ip.section == 0) {
+    	equipDetailCell(cell, batteryInfo + ip.row + pendingLoadOffsets[ip.row]);
     	return cell;
     }
     return nil;
