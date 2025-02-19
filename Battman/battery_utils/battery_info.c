@@ -23,7 +23,8 @@
 
 // Add IDs to the end, MUST match the struct template.
 typedef enum {
-    ID_BI_BATTERY_HEALTH = 0,
+    ID_BI_BATTERY_NAME = 0,
+    ID_BI_BATTERY_HEALTH,
     ID_BI_BATTERY_SOC,
     ID_BI_BATTERY_TEMP,
     ID_BI_BATTERY_CHARGING,
@@ -42,6 +43,7 @@ const char *bin_unit_strings[]={
 };
 
 struct battery_info_node main_battery_template[] = {
+    {_ID_("Battery Name"), 0},
     {_ID_("Health"), BIN_IS_BACKGROUND | BIN_UNIT_PERCENT | BIN_SECTION},
     {_ID_("SoC"), BIN_IS_FLOAT | BIN_UNIT_PERCENT},
     {_ID_("Temperature"),
@@ -185,75 +187,85 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 
     if (inDetail) {
         get_gas_gauge(&gGauge);
-        bi_node_change_content_value(head, 5, full_cap);
-        bi_node_change_content_value(head, 6, design_cap);
-        bi_node_change_content_value(head, 7, remain_cap);
-        bi_node_change_content_value(head, 8, gGauge.Qmax * battery_num());
-        bi_node_change_content_value(head, 9, gGauge.DOD0);
-        bi_node_change_content_value(head, 10, gGauge.PassedCharge);
-        bi_node_change_content_value(head, 11, gGauge.Voltage);
-        bi_node_change_content_value(head, 12, gGauge.AverageCurrent);
-        bi_node_change_content_value(head, 13, gGauge.AveragePower);
-        bi_node_change_content_value(head, 14, battery_num());
-        int timeToEmpty = get_time_to_empty();
-        if (timeToEmpty) {
-            bi_node_set_hidden(head, 15, false);
-            bi_node_change_content_value(head, 15, get_time_to_empty());
-        } else {
-            bi_node_set_hidden(head, 15, true);
+        if (strlen(gGauge.DeviceName) != 0) {
+            sprintf(bi_node_ensure_string(head, ID_BI_BATTERY_NAME, 32), "%s", gGauge.DeviceName);
         }
-        bi_node_change_content_value(head, 16, gGauge.CycleCount);
-        bi_node_change_content_value(head, 17, gGauge.StateOfCharge);
-        if (gGauge.ResScale) {
-            bi_node_change_content_value(head, 18, gGauge.ResScale);
-            bi_node_set_hidden(head, 18, false);
+        /* TODO: This id design sucks and bringing difficulties on maintainance,
+                I want something just like:
+                extern int insert_item(char *label, ...);
+                insert_item("Battery Name", gGauge.DeviceName);
+                insert_item("ChemID", "0x%.8X", gGauge.ChemID);
+         */
+        bi_node_change_content_value(head, 6, full_cap);
+        bi_node_change_content_value(head, 7, design_cap);
+        bi_node_change_content_value(head, 8, remain_cap);
+        bi_node_change_content_value(head, 9, gGauge.Qmax * battery_num());
+        bi_node_change_content_value(head, 10, gGauge.DOD0);
+        bi_node_change_content_value(head, 11, gGauge.PassedCharge);
+        bi_node_change_content_value(head, 12, gGauge.Voltage);
+        bi_node_change_content_value(head, 13, gGauge.AverageCurrent);
+        bi_node_change_content_value(head, 14, gGauge.AveragePower);
+        bi_node_change_content_value(head, 15, battery_num());
+        /* FIXME: TTE shall display "Never" when -1 */
+        int timeToEmpty = get_time_to_empty();
+        if (timeToEmpty && timeToEmpty != -1) {
+            bi_node_set_hidden(head, 16, false);
+            bi_node_change_content_value(head, 16, timeToEmpty);
         } else {
-            bi_node_set_hidden(head, 18, true);
+            bi_node_set_hidden(head, 16, true);
+        }
+        bi_node_change_content_value(head, 17, gGauge.CycleCount);
+        bi_node_change_content_value(head, 18, gGauge.StateOfCharge);
+        if (gGauge.ResScale) {
+            bi_node_change_content_value(head, 19, gGauge.ResScale);
+            bi_node_set_hidden(head, 19, false);
+        } else {
+            bi_node_set_hidden(head, 19, true);
         }
         /* We can't make sure if someone's battery have any serial */
-        if (!battery_serial(bi_node_ensure_string(head, 19, 21))) {
-            sprintf(bi_node_ensure_string(head, 19, 4), "None");
+        if (!battery_serial(bi_node_ensure_string(head, 20, 21))) {
+            sprintf(bi_node_ensure_string(head, 20, 4), "None");
         }
-        sprintf(bi_node_ensure_string(head, 20, 12), "0x%.8X", gGauge.ChemID);
-        sprintf(bi_node_ensure_string(head, 21, 8), "0x%.4X", gGauge.Flags);
+        sprintf(bi_node_ensure_string(head, 21, 12), "0x%.8X", gGauge.ChemID);
+        sprintf(bi_node_ensure_string(head, 22, 8), "0x%.4X", gGauge.Flags);
         if (gGauge.TrueRemainingCapacity) {
-            bi_node_change_content_value(head, 22, gGauge.TrueRemainingCapacity);
-            bi_node_set_hidden(head, 22, false);
-        } else {
-            bi_node_set_hidden(head, 22, true);
-        }
-        if (gGauge.OCV_Current) {
-            bi_node_change_content_value(head, 23, gGauge.OCV_Current);
+            bi_node_change_content_value(head, 23, gGauge.TrueRemainingCapacity);
             bi_node_set_hidden(head, 23, false);
         } else {
             bi_node_set_hidden(head, 23, true);
         }
-        if (gGauge.OCV_Voltage) {
-            bi_node_change_content_value(head, 24, gGauge.OCV_Voltage);
+        if (gGauge.OCV_Current) {
+            bi_node_change_content_value(head, 24, gGauge.OCV_Current);
             bi_node_set_hidden(head, 24, false);
         } else {
             bi_node_set_hidden(head, 24, true);
         }
-        if (gGauge.IMAX) {
-            bi_node_change_content_value(head, 25, gGauge.IMAX);
+        if (gGauge.OCV_Voltage) {
+            bi_node_change_content_value(head, 25, gGauge.OCV_Voltage);
             bi_node_set_hidden(head, 25, false);
         } else {
             bi_node_set_hidden(head, 25, true);
         }
-        if (gGauge.IMAX2) {
-            bi_node_change_content_value(head, 26, gGauge.IMAX2);
+        if (gGauge.IMAX) {
+            bi_node_change_content_value(head, 26, gGauge.IMAX);
             bi_node_set_hidden(head, 26, false);
         } else {
             bi_node_set_hidden(head, 26, true);
         }
+        if (gGauge.IMAX2) {
+            bi_node_change_content_value(head, 27, gGauge.IMAX2);
+            bi_node_set_hidden(head, 27, false);
+        } else {
+            bi_node_set_hidden(head, 27, true);
+        }
 
         if (gGauge.ITMiscStatus) {
-            sprintf(bi_node_ensure_string(head, 27, 8), "0x%.4X",
+            sprintf(bi_node_ensure_string(head, 28, 8), "0x%.4X",
                     gGauge.ITMiscStatus);
-            bi_node_change_content_value(head, 28, gGauge.SimRate);
-            bi_node_set_hidden(head, 28, false);
+            bi_node_change_content_value(head, 29, gGauge.SimRate);
+            bi_node_set_hidden(head, 29, false);
         } else {
-            bi_node_set_hidden(head, 28, true);
+            bi_node_set_hidden(head, 29, true);
         }
     }
 }
