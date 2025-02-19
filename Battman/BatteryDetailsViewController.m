@@ -7,7 +7,7 @@
 NSArray *sections;
 // TODO: Config
 NSTimeInterval reload_interval = 5.0;
-
+BOOL configured_autorefresh = NO;
 
 void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 	// PLEASE ENSURE no hidden cell is here when calling
@@ -66,11 +66,16 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 - (void)viewDidLoad {
 //    [self updateTableView]; // Why SIGABRT here?
     /* We knows too less to listen on SMC events */
-    (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval
-                                           target:self
-                                         selector:@selector(updateTableView)
-                                         userInfo:nil
-                                          repeats:YES];
+    if (configured_autorefresh) {
+        (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval
+                                               target:self
+                                             selector:@selector(updateTableView)
+                                             userInfo:nil
+                                              repeats:YES];
+    }
+    UIRefreshControl *puller = [[UIRefreshControl alloc] init];
+    [puller addTarget:self action:@selector(updateTableView) forControlEvents:UIControlEventValueChanged];
+    self.refreshControl = puller;
 }
 
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
@@ -79,6 +84,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     battery_info_update(bi, true);
     batteryInfo = bi;
         /* Don't remove this, otherwise users will blame us */
+        /* TODO: Identify other Gas Gauging system */
         NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
         NSString *explaination_IT = (gGauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
         NSString *explaination_Sim = (gGauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
@@ -88,109 +94,20 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 }
 
 - (void)updateTableView {
+    [self.refreshControl beginRefreshing];
     battery_info_update(batteryInfo, true);
-#if 0
-    /* Gas Gauge Section */
-    {
-        get_capacity(&b_remaining_capacity, &b_full_charge_capacity, &b_designed_capacity);
-        get_gas_gauge(&gauge);
 
-        char buf[24];
-        NSArray *basic_gas = @[
-            @[_("Full Charge Capacity"),    @"%@ mAh", @(b_full_charge_capacity)],
-            @[_("Designed Capacity"),       @"%@ mAh", @(b_designed_capacity)],
-            @[_("Remaining Capacity"),      @"%@ mAh", @(b_remaining_capacity)],
-            @[_("Qmax"),                    @"%@ mAh", @(gauge.Qmax * battery_num())],
-            @[_("Depth of Discharge"),      @"%@ mAh", @(gauge.DOD0)],
-            @[_("Passed Charge"),           @"%@ mAh", @(gauge.PassedCharge)],
-            @[_("Voltage"),                 @"%@ mV",  @(gauge.Voltage)],
-            @[_("Temperature"),             @"%@ °C",  @(get_temperature())],
-            @[_("Average Current"),         @"%@ mA",  @(gauge.AverageCurrent)],
-            @[_("Average Power"),           @"%@ mW",  @(gauge.AveragePower)],
-            @[_("Battery Count"),           @"%@",     @(battery_num())],
-            @[_("Time To Empty"),           @"%@",     (get_time_to_empty() == -1) ? _("Never") : [NSString stringWithFormat:@"%d %@", get_time_to_empty(), _("Minutes")]],
-            @[_("Cycle Count"),             @"%@",     @(gauge.CycleCount)],
-            @[_("State Of Charge"),         @"%@%%",   @(gauge.StateOfCharge)],
-            @[_("Resistance Scale"),        @"%@",     @(gauge.ResScale)],
-            @[_("Battery Serial"),          @"%@",     (battery_serial(buf) ? [NSString stringWithCString:buf encoding:NSUTF8StringEncoding] : _("None"))],
-            @[_("Chemistry ID"),            @"%@",     [NSString stringWithFormat:@"0x%.8X", gauge.ChemID]],
-            @[_("Flags"),                   @"%@",     [NSString stringWithFormat:@"0x%.4X", gauge.Flags]]
-        ];
-        gas_gauge_row = [basic_gas mutableCopy];
-
-        /* Not every device sets this, only show when do */
-        if (gauge.TrueRemainingCapacity != 0) {
-            /* After Remaining Capacity */
-            [gas_gauge_row insertObject:@[_("True Remaining Capacity"), @"%d mAh", @(gauge.TrueRemainingCapacity * battery_num())] atIndex:3];
-        }
-        /* OCV parameters only set when OCV */
-        if (gauge.OCV_Current != 0) {
-            [gas_gauge_row addObject:@[_("OCV Current"), @"%d mA", @(gauge.OCV_Current)]];
-        }
-        if (gauge.OCV_Voltage != 0) {
-            [gas_gauge_row addObject:@[_("OCV Voltage"), @"%d mV", @(gauge.OCV_Voltage)]];
-        }
-        /* IMAX and IMAX2 not always set */
-        if (gauge.IMAX != 0) {
-            [gas_gauge_row addObject:@[_("Peak Current"), @"%d mA", @(gauge.IMAX)]];
-        }
-        if (gauge.IMAX2 != 0) {
-            [gas_gauge_row addObject:@[_("Peak Current 2"), @"%d mA", @(gauge.IMAX2)]];
-        }
-        /* IT not always exist (at least not on Macs) */
-        if (gauge.ITMiscStatus != 0) {
-            [gas_gauge_row addObject:@[_("IT Misc Status"), @"%@", [NSString stringWithFormat:@"0x%.4X", gauge.ITMiscStatus]]];
-        }
-        if (gauge.SimRate != 0) {
-            [gas_gauge_row addObject:@[_("Simulation Rate"), @"%@ Hr", @(gauge.SimRate)]];
-        }
-        /* ResScale also IT, consider add it too */
-    }
-
-    /* Adapter Details Section */
-    /* TODO: Get this directly from AppleSMC via is_charging, not IOPS */
-    /* Simulator won't be able to get this thing */
-    extern CFDictionaryRef IOPSCopyExternalPowerAdapterDetails(void); // Avoid include
-    NSDictionary *IOPSAdapter = (__bridge NSDictionary *)IOPSCopyExternalPowerAdapterDetails();
-    if (IOPSAdapter != nil) {
-        NSArray *basic_adap = @[
-            @[_("Adapter Name"),     @"%@",    [IOPSAdapter valueForKey:@"Name"]],
-            @[_("Adapter Serial"),   @"%@",    [IOPSAdapter valueForKey:@"SerialString"]],
-            @[_("Manufacturer"),     @"%@",    [IOPSAdapter valueForKey:@"Manufacturer"]],
-            @[_("Description"),      @"%@",    [IOPSAdapter valueForKey:@"Description"]],
-            @[_("Adapter ID"),       @"%@",    [IOPSAdapter valueForKey:@"AdapterID"]],
-            @[_("Hardware Version"), @"%@",    [IOPSAdapter valueForKey:@"HwVersion"]],
-            @[_("Firmware Version"), @"%@",    [IOPSAdapter valueForKey:@"FwVersion"]],
-            @[_("Family Code"),      @"%@",    [IOPSAdapter valueForKey:@"FamilyCode"]],
-            @[_("Is Wireless"),      @"%@",    [IOPSAdapter valueForKey:@"IsWireless"]],
-            @[_("Watts"),            @"%@ W",  [IOPSAdapter valueForKey:@"Watts"]],
-            @[_("Current"),          @"%@ mA", [IOPSAdapter valueForKey:@"Current"]],
-            @[_("Voltage"),          @"%@ mV", [IOPSAdapter valueForKey:@"Voltage"]],
-            @[_("Adapter Model"),    @"%@",    [IOPSAdapter valueForKey:@"Model"]],
-            /* TODO: Parse PMUConfiguration */
-            @[_("PMU Config Flags"), @"%@",    [IOPSAdapter valueForKey:@"PMUConfiguration"]]
-
-            // UsbHvcMenu => D?PM
-            // UsbHvcHvcIndex => D?PI
-        ];
-        adapter_row = [basic_adap mutableCopy];
-    }
-
-    sections = [NSMutableArray arrayWithArray:@[
-        @[_("Gas Gauge"), gas_gauge_row]
-    ]];
-    if (IOPSAdapter != nil) [sections addObject:@[_("Adapter Details"), adapter_row]];
-#endif
     /* Dynasects */
     /* TODO: Handle the scene that if battery not present */
 #if !__has_feature(objc_arc)
     [sections dealloc];
 #endif
-    sections = [NSMutableArray arrayWithArray:@[_("Gas Gauge")]];
+    sections = [NSMutableArray arrayWithArray:@[_("Gas Gauge (Basic)")]];
     /* TODO: */
     // if (is_charging(NULL, NULL))
     //     sections = [NSMutableArray addObject:@[_("Adapter Details")]];
     [self.tableView reloadData];
+    [self.refreshControl endRefreshing];
 }
 
 #if 0
@@ -228,8 +145,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 		for (struct battery_info_node *i = batteryInfo; i->description; i++) {
 			if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
 				(i->content && !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
-				if((i->content&1)!=1||(i->content&(1<<5))!=1<<5) {
-					pendingLoadOffsets[rows]=(unsigned char)((i-batteryInfo)-rows);
+				if((i->content & 1) != 1 || (i->content & (1 << 5)) != 1 << 5) {
+					pendingLoadOffsets[rows] = (unsigned char)((i - batteryInfo) - rows);
 					rows++;
 				}
 			}

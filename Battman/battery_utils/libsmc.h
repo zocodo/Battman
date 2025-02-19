@@ -112,6 +112,10 @@ typedef struct gas_gauge {
     int16_t IMAX2;                  /* mA */
     uint32_t ChemID;                /* hex_[4] */
     int16_t SimRate;                /* Hr */
+
+    /* Extensions */
+    char DeviceName[32];
+    uint16_t DailyMaxSoc;           /* % */
 } gas_gauge_t;
 
 typedef struct device_info {
@@ -129,6 +133,109 @@ typedef struct device_info {
     uint8_t hvc_menu[28]; /* hex_[28], 4 bit each hvc, max 7 hvc */
     int8_t hvc_index;
 } device_info_t;
+
+typedef struct cell_info {
+    uint16_t Voltage;       /* BC?V */
+    uint16_t Qmax;          /* BQX? */
+    uint16_t DOD0;          /* BQD? */
+    uint16_t PresentDOD;    /* BDD? */
+    uint16_t WoM;           /* BMW? */
+    uint8_t RaTableRaw[32]; /* B0R? */
+} cell_info_t;
+
+typedef struct lifetime_data {
+    uint8_t ArrayA[32];                         /* BL0A */
+    uint8_t ArrayB[32];                         /* BL0B */
+    uint8_t CycleCountLastQmax;                 /* BLCC (Embedded Only) */
+    uint16_t FlashWriteCount;                   /* BLCF (Conditional) */
+    int16_t HighAverageCurrentLastRun;          /* BLCH (Conditional) */
+    int16_t LowAverageCurrentLastRun;           /* BLCL (Conditional) */
+    uint16_t ResistanceUpdatedDisabledCount;    /* BLCR (Conditional) */
+    int16_t MinDeltaVoltage;                    /* BLDM (Conditional) */
+    int16_t MaxDeltaVoltage;                    /* BLDX (Conditional) */
+    int16_t MinFCC;                             /* BLFM (Conditional) */
+    int16_t MaxFCC;                             /* BLFX (Conditional) */
+    int16_t MaxChargeCurrent;                   /* BLIC */
+    int16_t MaxDishargeCurrent;                 /* BLID */
+    int16_t MinPackVoltage;                     /* BLPM */
+    int16_t MaxPackVoltage;                     /* BLPX */
+    int16_t MaxOverChargedCapacity;             /* BLQC (Conditional) */
+    int16_t MaxOverDischargedCapacity;          /* BLQD (Conditional) */
+    int16_t MinQmax;                            /* BLQM (Conditional) */
+    int16_t MaxQmax;                            /* BLQX (Conditional) */
+    uint16_t MinRa08;                           /* BLRM (Conditional) */
+    uint16_t MaxRa08;                           /* BLRX (Conditional) */
+    int8_t AverageTemperature;                  /* BLTA */
+    int16_t MinTemperature;                     /* BLTM */
+    uint32_t TotalOperatingTime;                /* BLTO */
+    int32_t TemperatureSamples;                 /* BLTS */
+    int16_t MaxTemperature;                     /* BLTX */
+    uint8_t RdisCnt;                            /* BLCR (Conditional) */
+    int16_t NCCMin;                             /* BLNM (Conditional) */
+    int16_t NCCMax;                             /* BLNX (Conditional) */
+    uint16_t MinRa8;                            /* BLRO (Conditional) */
+    uint16_t MaxRa8;                            /* BLRN (Conditional) */
+    uint8_t ResetCnt;                           /* BLRC (Conditional) */
+    uint16_t QmaxUpdSucCnt;                     /* BLQN (Conditional) */
+    uint16_t QmaxUpdFailCnt;                    /* BLQO (Conditional) */
+    uint32_t TimeAtHighSoc[10];                 /* BLTP (Min 16, Max 40) */
+} lifetime_data_t;
+
+typedef struct shutdown_data {
+    uint8_t UiSoc;                      /* UBUI */
+    int16_t Temperature;                /* UBAT */
+    uint16_t Voltage;                   /* UBAV */
+    uint16_t PrevVoltage;               /* UBPV */
+    uint16_t NominalChargeCapacity;     /* UBNC */
+    uint16_t PrevNominalChargeCapacity; /* UBPN */
+    uint16_t FullChargeCapacity;        /* UBFC */
+    uint16_t PrevFullChargeCapacity;    /* UBPF */
+    uint16_t RemainingCapacity;         /* UBPM */
+    uint16_t PrevRemainingCapacity;     /* UBPR */
+    int16_t AverageCurrent;             /* UBAC */
+    int16_t PrevAverageCurrent;         /* UBPI */
+    uint16_t RSS;                       /* UBSS */
+    uint16_t DOD0;                      /* UBD0 */
+    int16_t PresentDOD;                 /* UBDD */
+    int16_t PassedCharge;               /* UBPC */
+    uint16_t CycleCount;                /* UBCT */
+    int16_t ResScale;                   /* UBRS */
+    uint8_t CycleCountLastQmax;         /* UBCC */
+    uint16_t MaxRa08;                   /* UBRX */
+    uint8_t TimeAbove95;                /* UBTP */
+    uint8_t RaTableRaw[32];             /* UBRA */
+    int16_t MaxDischargeCurrent;        /* UBID */
+    int16_t Qstart;                     /* UBQS */
+    uint8_t DLog[64];                   /* UBDL */
+    uint8_t UnexpectedRestart;          /* UPOR */
+    uint64_t RestartTimestamp;          /* UB0T */
+    uint8_t DataError;                  /* UPOF */
+} shutdown_data_t;
+
+typedef struct carrier_mode {
+    uint32_t status;        /* CHTE */
+    uint32_t high_voltage;  /* CHTU */
+    uint32_t low_voltage;   /* CHTL */
+} carrier_mode_t;
+
+typedef struct kiosk_mode {
+    uint8_t mode;               /* CHKM */
+    uint16_t FullVoltage;       /* CHKL */
+    uint32_t HighSocSecs;       /* CHKO */
+    uint8_t HighSocDays;        /* CHKP */
+    uint8_t LastHighSocHours;   /* CHKV */
+} kiosk_mode_t;
+
+typedef struct charger_data {
+    uint32_t ChargingCurrent;           /* CHBI */
+    uint32_t ChargingVoltage;           /* CHBV */
+    uint16_t ChargerVacVoltageLimit;    /* BVVL */
+    uint64_t NotChargingReason;         /* BNCR / CHNC */
+    uint8_t ChargerStatus[64];          /* CHSL */
+    uint32_t ChargerId;                 /* CH0D */
+} charger_data_t;
+
+
 
 typedef struct hvc_menu {
     uint16_t current;

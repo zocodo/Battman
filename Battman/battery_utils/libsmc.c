@@ -125,7 +125,7 @@ static IOReturn smc_read(UInt32 key, void *bytes) {
 
     inputStruct.param.keyInfo.dataSize = keyInfo.dataSize;
     inputStruct.param.data8 = kSMCReadKey;
-
+    
     memset(&outputStruct, 0, sizeof(outputStruct));
     result = smc_call(kSMCHandleYPCEvent, &inputStruct, &outputStruct);
     if (result != kIOReturnSuccess) {
@@ -435,6 +435,15 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     /* B0SR(si16): SimRate */
     (void)smc_read('B0SR', &gauge->SimRate);
 
+    /* Extensions */
+
+    /* BMDN(ch8*)[32]: DeviceName (MacBooks Only) */
+    (void)smc_read('BMDN', &gauge->DeviceName);
+
+    /* BMSC(ui16): DailyMaxSoc */
+    (void)smc_read('BMSC', &gauge->DailyMaxSoc);
+
+    
     return true;
 }
 
@@ -449,12 +458,16 @@ int battery_num(void) {
     if (result != kIOReturnSuccess)
         return -1;
     
-    /* BNCB(si8) Number of Chargable Batteries (Guessed) */
+    /* BNCB(si8) Number of Battery Cells */
     result = smc_read('BNCB', &count);
     if (result != kIOReturnSuccess)
         return -1;
     
     return (int)count;
+}
+
+bool get_cells(cell_info_t cells) {
+    return true;
 }
 
 bool battery_serial(char *serial) {

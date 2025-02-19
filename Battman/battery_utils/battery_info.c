@@ -18,79 +18,6 @@
 #define _ID_(x) (x)
 #endif
 
-#if 0
-#warning TODO: IOKit/ps is not that reliable, migrate to other impl if possible
-#if __has_include(<IOKit/ps/IOPowerSources.h>)
-#include <IOKit/ps/IOPowerSources.h>
-#else
-CFArrayRef IOPSCopyPowerSourcesList(CFTypeRef blob);
-CFDictionaryRef IOPSGetPowerSourceDescription(CFTypeRef blob, CFTypeRef ps);
-#endif
-
-#if __has_include(<IOKit/ps/IOPowerSourcesPrivate.h>)
-#include <IOKit/ps/IOPowerSourcesPrivate.h>
-#else
-CFTypeRef IOPSCopyPowerSourcesByType(int type);
-
-enum {
-    kIOPSSourceAll = 0,
-    kIOPSSourceInternal,
-    kIOPSSourceUPS,
-    kIOPSSourceInternalAndUPS,
-    kIOPSSourceForAccessories
-};
-#endif
-
-#if __has_include(<IOKit/ps/IOPSKeys.h>)
-#include <IOKit/ps/IOPSKeys.h>
-#else
-/* Implemented Keys (Documented) */
-#define kIOPSIsPresentKey "Is Present"
-#define kIOPSIsChargedKey "Is Charged" // Only appears when charged
-#define kIOPSIsFinishingChargeKey "Is Finishing Charge"
-#define kIOPSPowerSourceStateKey "Power Source State"
-#define kIOPSMaxCapacityKey "Max Capacity"
-#define kIOPSCurrentCapacityKey "Current Capacity"
-#define kIOPSIsChargingKey "Is Charging"
-#define kIOPSHardwareSerialNumberKey "Hardware Serial Number"
-#define kIOPSTransportTypeKey "Transport Type"
-#define kIOPSTimeToEmptyKey "Time to Empty"
-#define kIOPSNameKey "Name"
-#define kIOPSTypeKey "Type"
-#define kIOPSPowerSourceIDKey "Power Source ID"
-
-/* Implemented Keys (Real device only) */
-
-/* Implemented Keys (Simulator / Mac only) */
-#define kIOPSBatteryHealthKey "BatteryHealth"
-#define kIOPSCurrentKey "Current"
-#define kIOPSBatteryHealthConditionKey "BatteryHealthCondition"
-
-/* Unimplemented Keys */
-#define kIOPSDesignCapacityKey "DesignCapacity"
-#define kIOPSTemperatureKey "Temperature"
-
-#define kIOPSInternalBatteryType "InternalBattery"
-#endif
-
-#if __has_include(<IOKit/ps/IOPSKeysPrivate.h>)
-#include <IOKit/ps/IOPSKeysPrivate.h>
-#else
-/* Implemented Keys */
-#define kIOPSBatteryProvidesTimeRemainingKey "Battery Provides Time Remaining"
-#define kIOPSOptimizedBatteryChargingEngagedKey                                \
-    "Optimized Battery Charging Engaged"
-
-/* Implemented Keys (Real device only) */
-#define kIOPSRawExternalConnectivityKey "Raw External Connected"
-#define kIOPSShowChargingUIKey "Show Charging UI"
-#define kIOPSPlayChargingChimeKey "Play Charging Chime"
-
-/* Implemented Keys (Simulator / Mac only) */
-#define kIOPSDesignCycleCountKey "DesignCycleCount"
-#endif
-#endif
-
 // Internal IDs:
 // They are intended to be here, not in headers
 
@@ -103,16 +30,6 @@ typedef enum {
     ID_BI_BATTERY_ASOC
 } id_bi_t;
 
-#if 0
-/* This is not compiled, but needed for Gettext PO template generation */
-NSString *registeredStrings[] = {
-    _("Health"),        /* Battery Health */
-    _("SoC"),           /* State of Charge */
-    _("Temperature"),   /* Temperature */
-    _("Charging"),      /* Charging */
-};
-#endif
-
 const char *bin_unit_strings[]={
 	_ID_("℃"),
 	_ID_("%"),
@@ -121,7 +38,7 @@ const char *bin_unit_strings[]={
 	_ID_("mV"),
 	_ID_("mW"),
 	_ID_("min"),
-	_ID_("h")
+	_ID_("Hr") // Do not modify, thats how Texas Instruments documented
 };
 
 struct battery_info_node main_battery_template[] = {
@@ -175,25 +92,26 @@ void bi_node_change_content_value_float(struct battery_info_node *node,
                                         int identifier, float value) {
     node += identifier;
     assert((node->content & BIN_IS_FLOAT) == BIN_IS_FLOAT);
-    uint32_t* vptr=(uint32_t*)&value;
-    uint32_t vr=*vptr;
-    node->content=(
-	(vr&(0b11<<30))|
-	(vr&(((1<<4)-1)<<23))<<3|
-	(vr&(((1<<10)-1)<<13))<<3
-    )|(node->content&((1<<16)-1));
+    uint32_t* vptr = (uint32_t *)&value;
+    uint32_t vr = *vptr;
+    // TODO: No magic numbers!
+    node->content = (
+                     (vr & ((uint64_t)0b11 << 30)) |
+                     (vr & (((1 << 4) - 1) << 23)) << 3 |
+                     (vr & (((1 << 10) - 1) << 13)) << 3
+    ) | (node->content & ((1 << 16) - 1));
     // overwrite higher bits;
 }
 
 float bi_node_load_float(struct battery_info_node *node) {
 	float ret;
-	uint32_t *vptr=(uint32_t*)&ret;
-	uint32_t vr=node->content;
-	*vptr=(
-		(vr&(0b11<<30))|
-		(vr&(((1<<4)-1)<<26))>>3|
-		(vr&(((1<<10)-1)<<16))>>3
-	);
+	uint32_t *vptr = (uint32_t *)&ret;
+	uint32_t vr = node->content;
+	*vptr = (
+             (vr & ((uint64_t)0b11 << 30)) |
+             (vr & (((1 << 4) - 1) << 26)) >> 3 |
+             (vr & (((1 << 10) - 1) << 16)) >> 3
+    );
 	return ret;
 }
 
@@ -208,17 +126,29 @@ void bi_node_set_hidden(struct battery_info_node *node, int identifier,
     }
 }
 
+#include <mach/mach.h>
+
 char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
                             uint64_t length) {
     node += identifier;
     assert(!(node->content & BIN_IS_SPECIAL));
-    if (!node->content)
-        node->content = (uint32_t)(((uint64_t)malloc(length))>>3);
+
+    if (!node->content) {
+        void *allocen;
+        // Use vm_allocate to prevent possible unexpected heap allocation (it crashes in current data structure)
+        int result = vm_allocate(mach_task_self(), (vm_address_t *)&allocen, length, VM_FLAGS_ANYWHERE);
+        if (result != KERN_SUCCESS) {
+            // Fallback to malloc
+            allocen = malloc(length);
+        }
+        node->content = (uint32_t)(((uint64_t)allocen) >> 3);
+        // FIXME: Where we put vm_deallocate/free?
+    }
     return bi_node_get_string(node);
 }
 
 char *bi_node_get_string(struct battery_info_node *node) {
-	return (char *)(((uint64_t)node->content)<<3);
+	return (char *)(((uint64_t)node->content) << 3);
 }
 
 struct battery_info_node *battery_info_init() {
