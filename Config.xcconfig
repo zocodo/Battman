@@ -12,7 +12,7 @@
 
 OLDFL[sdk=iphonesimulator*] = -Wl,-sectcreate,__TEXT,__entitlements,$(PROJECT_DIR)/Battman.entitlements
 
-OLDFL[sdk=iphoneos*] =
+OLDFL[sdk=iphoneos*] = -Wl,-weak_framework,$(PROJECT_DIR)/libintl.tbd
 
 NO_WARN_CFLAGS = -Wno-multichar
 

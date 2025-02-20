@@ -1,0 +1,49 @@
+--- !tapi-tbd
+tbd-version:           4
+targets:               [ arm64-ios, arm64e-ios ]
+uuids:
+  - target: arm64-ios
+    value: 'D2182152-6881-3EE3-AF7D-3512D89A11C4'
+  - target: arm64e-ios
+    value: 'D2182152-6881-3EE3-AF7D-3512D89A11C5'
+install-name:          "/usr/lib/libintl.8.dylib"
+current-version:       1
+compatibility-version: 1
+exports:
+  - targets:              [ arm64-ios, arm64e-ios ]
+    symbols:              [ __nl_expand_alias, __nl_msg_cat_cntr,
+                            _bind_textdomain_codeset, _bindtextdomain, _dcgettext,
+                            _dcngettext, _dgettext, _dngettext, _gettext,
+                            _gl_get_setlocale_null_lock, _intlVersionNumber,
+                            _intlVersionString, _libintl_bind_textdomain_codeset,
+                            _libintl_bindtextdomain, _libintl_dcgettext,
+                            _libintl_dcngettext, _libintl_dgettext,
+                            _libintl_dngettext, _libintl_gettext,
+                            _libintl_newlocale, _libintl_ngettext,
+                            _libintl_set_relocation_prefix, _libintl_setlocale,
+                            _libintl_textdomain, _libintl_version, _ngettext,
+                            _textdomain ]
+undefineds:
+  - targets:              [ arm64-ios ]
+    symbols:              [ _CFArrayGetCount, _CFArrayGetValueAtIndex,
+                            _CFGetTypeID, _CFLocaleCopyPreferredLanguages,
+                            _CFPreferencesCopyAppValue, _CFRelease,
+                            _CFStringGetCString, _CFStringGetTypeID,
+                            ___CFConstantStringClassReference, ____mb_cur_max_l,
+                            ___error, ___memcpy_chk, ___stack_chk_fail,
+                            ___stack_chk_guard, ___stderrp, ___stpcpy_chk,
+                            ___strcpy_chk, _abort, _calloc, _close, _fclose,
+                            _fopen$DARWIN_EXTSN, _fprintf, _fputs, _free, _freelocale,
+                            _fstat, _getcwd, _getegid, _getenv, _geteuid, _getgid, _getuid,
+                            _iconv, _iconv_open, _isalnum, _isalpha, _isdigit, _isspace,
+                            _kCFPreferencesCurrentApplication, _malloc, _memcmp,
+                            _memcpy, _newlocale, _nl_langinfo, _open,
+                            _pthread_cond_broadcast, _pthread_cond_destroy,
+                            _pthread_cond_init, _pthread_cond_signal,
+                            _pthread_cond_wait, _pthread_mutex_destroy,
+                            _pthread_mutex_init, _pthread_mutex_lock,
+                            _pthread_mutex_unlock, _putc, _querylocale, _read,
+                            _realloc, _setlocale, _strchr, _strcmp, _strcspn, _strdup,
+                            _strlen, _strncmp, _strrchr, _strstr, _strtoul, _tfind,
+                            _tolower, _tsearch, _uselocale, dyld_stub_binder ]
+...
