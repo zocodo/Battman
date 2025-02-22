@@ -64,7 +64,6 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 }
 
 - (void)viewDidLoad {
-//    [self updateTableView]; // Why SIGABRT here?
     /* We knows too less to listen on SMC events */
     if (configured_autorefresh) {
         (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval
@@ -109,17 +108,6 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     [self.tableView reloadData];
     [self.refreshControl endRefreshing];
 }
-
-#if 0
-// Init was not executed somehow
-- (instancetype)init {
-    self = [super initWithStyle:UITableViewStyleGrouped];
-    self.tableView.allowsSelection = YES;
-    [self updateTableView];
-
-    return self;
-}
-#endif
 
 - (NSString *)tableView:(id)tv titleForHeaderInSection:(NSInteger)section {
     // Doesn't matter, it will be changed by willDisplayHeaderView
