@@ -6,7 +6,7 @@ uuids:
     value: 'D2182152-6881-3EE3-AF7D-3512D89A11C4'
   - target: arm64e-ios
     value: 'D2182152-6881-3EE3-AF7D-3512D89A11C5'
-install-name:          "/usr/lib/libintl.8.dylib"
+install-name:          "/var/jb/usr/lib/libintl.8.dylib"
 current-version:       13
 compatibility-version: 13
 exports:

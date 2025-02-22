@@ -6,9 +6,9 @@ uuids:
     value: 'D2182152-6881-3EE3-AF7D-3512D89A11C4'
   - target: arm64e-ios
     value: 'D2182152-6881-3EE3-AF7D-3512D89A11C5'
-install-name:          "/usr/lib/libintl.8.dylib"
-current-version:       13
-compatibility-version: 13
+install-name:          "@rpath/intl.framework/intl"
+current-version:       1
+compatibility-version: 1
 exports:
   - targets:              [ arm64-ios, arm64e-ios ]
     symbols:              [ __nl_expand_alias, __nl_msg_cat_cntr,
