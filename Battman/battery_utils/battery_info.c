@@ -136,7 +136,8 @@ char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
     assert(!(node->content & BIN_IS_SPECIAL));
 
     if (!node->content) {
-        void *allocen;
+        void *allocen=(void*)0x10000000;
+        // ^ Preferred addr
         // Use vm_allocate to prevent possible unexpected heap allocation (it crashes in current data structure)
         // TODO: get rid of hardcoded length
         int result = vm_allocate(mach_task_self(), (vm_address_t *)&allocen, 256, VM_FLAGS_ANYWHERE);
