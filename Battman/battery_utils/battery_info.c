@@ -23,12 +23,12 @@
 
 // Add IDs to the end, MUST match the struct template.
 typedef enum {
-    ID_BI_BATTERY_NAME = 0,
-    ID_BI_BATTERY_HEALTH,
+    ID_BI_BATTERY_HEALTH = 0,
     ID_BI_BATTERY_SOC,
     ID_BI_BATTERY_TEMP,
     ID_BI_BATTERY_CHARGING,
-    ID_BI_BATTERY_ASOC
+    ID_BI_BATTERY_ASOC,
+    ID_BI_BATTERY_NAME,
 } id_bi_t;
 
 const char *bin_unit_strings[]={
@@ -43,13 +43,13 @@ const char *bin_unit_strings[]={
 };
 
 struct battery_info_node main_battery_template[] = {
-    {_ID_("Battery Name"), 0},
     {_ID_("Health"), BIN_IS_BACKGROUND | BIN_UNIT_PERCENT | BIN_SECTION},
     {_ID_("SoC"), BIN_IS_FLOAT | BIN_UNIT_PERCENT},
     {_ID_("Temperature"),
      BIN_IS_FLOAT | BIN_UNIT_DEGREE_C | BIN_DETAILS_SHARED},
     {_ID_("Charging"), BIN_IS_BOOLEAN},
     {"ASoC(Hidden)", BIN_IS_FOREGROUND | BIN_IS_HIDDEN},
+    {_ID_("Battery Name"), 0},
     {_ID_("Full Charge Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
     {_ID_("Designed Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
     {_ID_("Remaining Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
@@ -212,8 +212,19 @@ static char *_impl_set_item(struct battery_info_node **head, const char *desc, u
 #define BI_SET_ITEM(name, value) _impl_set_item(head_arr, name, (uint64_t)(value), (float)(value), 0)
 #define BI_ENSURE_STR(name) _impl_set_item(head_arr, name, 0, 0, 2)
 #define BI_FORMAT_ITEM(name, ...) sprintf(_impl_set_item(head_arr, name, 0, 0, 2), __VA_ARGS__)
-#define BI_SET_ITEM_IF(cond, name, value) if(cond){BI_SET_ITEM(name,value);_impl_set_item(head_arr, name, 0, 0, 1);}else{_impl_set_item(head_arr, name, 1, 0, 1);}
-#define BI_FORMAT_ITEM_IF(cond, name, ...) if(cond){BI_FORMAT_ITEM(name,__VA_ARGS__);}else{_impl_set_item(head_arr, name, 1, 0, 1);}
+#define BI_SET_ITEM_IF(cond, name, value)       \
+    if (cond) {                                 \
+        BI_SET_ITEM(name, value);               \
+        _impl_set_item(head_arr, name, 0, 0, 1);\
+    } else {                                    \
+        _impl_set_item(head_arr, name, 1, 0, 1);\
+    }
+#define BI_FORMAT_ITEM_IF(cond, name, ...)      \
+    if (cond) {                                 \
+        BI_FORMAT_ITEM(name, __VA_ARGS__);      \
+    } else {                                    \
+        _impl_set_item(head_arr, name, 1, 0, 1);\
+    }
 
 void battery_info_update(struct battery_info_node *head, bool inDetail) {
     uint16_t remain_cap, full_cap, design_cap;
@@ -232,9 +243,8 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 	BI_SET_ITEM("ASoC(Hidden)", 100.0f * remain_cap / design_cap);
 	if (inDetail) {
 		get_gas_gauge(&gGauge);
-		BI_FORMAT_ITEM_IF(*gGauge.DeviceName,
-					_ID_("Battery Name"),
-					"%s", gGauge.DeviceName);
+		BI_FORMAT_ITEM_IF(strlen(gGauge.DeviceName),
+					_ID_("Battery Name"), "%s", gGauge.DeviceName);
 		BI_SET_ITEM(_ID_("Full Charge Capacity"), full_cap);
 		BI_SET_ITEM(_ID_("Designed Capacity"), design_cap);
 		BI_SET_ITEM(_ID_("Remaining Capacity"), remain_cap);
