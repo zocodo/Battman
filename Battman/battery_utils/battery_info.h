@@ -7,8 +7,7 @@
 STRING:
 | Bit   | Value
 | 0     | isString (=0)
-| 0:30  | stringBufferOffset
-| 31    | beginFlag
+| 0:31  | stringBufferOffset
 SPECIAL:
 | Bit   | Value
 | 1     | isHidden / skipSection
@@ -113,6 +112,7 @@ void bi_node_set_hidden(struct battery_info_node *node, int identifier,
 char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
                             uint64_t length);
 char *bi_node_get_string(struct battery_info_node *node);
+void bi_node_free_string(struct battery_info_node *node);
 void battery_info_update(struct battery_info_node *head, bool inDetail);
 struct battery_info_node *battery_info_init(void);
 

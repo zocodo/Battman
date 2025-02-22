@@ -33,7 +33,7 @@ typedef enum {
 
 const char *bin_unit_strings[]={
 	_ID_("℃"),
-	_ID_("%"),
+	"%",
 	_ID_("mA"),
 	_ID_("mAh"),
 	_ID_("mV"),
@@ -138,19 +138,24 @@ char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
     if (!node->content) {
         void *allocen;
         // Use vm_allocate to prevent possible unexpected heap allocation (it crashes in current data structure)
-        int result = vm_allocate(mach_task_self(), (vm_address_t *)&allocen, length, VM_FLAGS_ANYWHERE);
+        // TODO: get rid of hardcoded length
+        int result = vm_allocate(mach_task_self(), (vm_address_t *)&allocen, 256, VM_FLAGS_ANYWHERE);
         if (result != KERN_SUCCESS) {
             // Fallback to malloc
-            allocen = malloc(length);
+            //allocen = malloc(length);
+            allocen=nil;
         }
         node->content = (uint32_t)(((uint64_t)allocen) >> 3);
-        // FIXME: Where we put vm_deallocate/free?
     }
     return bi_node_get_string(node);
 }
 
 char *bi_node_get_string(struct battery_info_node *node) {
 	return (char *)(((uint64_t)node->content) << 3);
+}
+
+void bi_node_free_string(struct battery_info_node *node) {
+	vm_deallocate(mach_task_self(), (vm_address_t)bi_node_get_string(node), 256);
 }
 
 struct battery_info_node *battery_info_init() {
