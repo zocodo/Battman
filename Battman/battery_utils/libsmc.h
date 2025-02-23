@@ -116,6 +116,7 @@ typedef struct gas_gauge {
     /* Extensions */
     char DeviceName[32];
     uint16_t DailyMaxSoc;           /* % */
+    uint16_t DailyMinSoc;           /* % */
 } gas_gauge_t;
 
 typedef struct device_info {

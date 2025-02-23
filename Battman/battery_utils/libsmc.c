@@ -443,6 +443,8 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     /* BMSC(ui16): DailyMaxSoc */
     (void)smc_read('BMSC', &gauge->DailyMaxSoc);
 
+    /* BNSC(ui16): DailyMinSoc */
+    (void)smc_read('BNSC', &gauge->DailyMinSoc);
     
     return true;
 }

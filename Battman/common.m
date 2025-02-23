@@ -239,7 +239,7 @@ bool libintl_available(void)
                 libintl_handle = dlopen(libintl_paths[i], RTLD_LAZY);
                 if (libintl_handle) break;
             }
-            DBGLOG(@"Using libintl: %s", libintl_paths[i]);
+            DBGALT("Using libintl: %s", libintl_paths[i], "OK");
         }
 
         if (libintl_handle) {

@@ -35,12 +35,12 @@ CFStringRef localization_arr[]={
 
 #ifndef USE_GETTEXT
 NSString *cond_localize(unsigned long long localize_id) {
-	if(localize_id>10000)
+	if (localize_id > 10000)
 		return [NSString stringWithUTF8String:(const char *)localize_id];
-	int preferred_language=0; // current: 0=eng 1=cn
+	int preferred_language = 0; // current: 0=eng 1=cn
 	// ^^ TODO: Make it dynamically modifyable
 	// Also TODO: detect locale
-	return (__bridge NSString *)localization_arr[LOCALIZATION_COUNT*preferred_language+localize_id-1];
+	return (__bridge NSString *)localization_arr[LOCALIZATION_COUNT * preferred_language + localize_id - 1];
 }
 #else
 /* Use gettext i18n for App & CLI consistency */
@@ -63,7 +63,7 @@ NSString *cond_localize(const char *str) {
                this is a workaround to force it read correct language */
             char *lang = preferred_language();
             setlocale(LC_ALL, lang);
-            free(lang);
+            setenv("LANG", lang, 1);
 
             char mainBundle[PATH_MAX];
             uint32_t size = sizeof(mainBundle);
@@ -98,7 +98,8 @@ NSString *cond_localize(const char *str) {
 #undef _
 #define _(x) cond_localize(x)
             DBGLOG(@"gettext_ptr(%s) = %s", str, gettext_ptr(str));
-            show_alert("OK", "OK", "OK");
+            DBGALT(lang, locale_name, "OK");
+            free(lang);
         } else {
             show_alert("Warning", "Failed to load Gettext, defaulting to English", "OK");
         }
@@ -108,7 +109,42 @@ NSString *cond_localize(const char *str) {
 }
 #endif
 
+#ifdef DEBUG
+NSMutableAttributedString *redirectedOutput;
+#endif
+
 int main(int argc, char * argv[]) {
+#if DEBUG
+    redirectedOutput = [[NSMutableAttributedString alloc] init];
+    // Create a pipe for redirecting output
+    static int pipe_fd[2];
+    pipe(pipe_fd);
+
+    // Save the original stdout and stderr file descriptors
+    int __unused original_stdout = dup(STDOUT_FILENO);
+    int __unused original_stderr = dup(STDERR_FILENO);
+
+    // Redirect stdout and stderr to the pipe
+    dup2(pipe_fd[1], STDOUT_FILENO);
+    dup2(pipe_fd[1], STDERR_FILENO);
+
+    // Create a new dispatch queue to read from the pipe
+    dispatch_queue_t queue = dispatch_queue_create("outputRedirectQueue", NULL);
+    dispatch_async(queue, ^{
+        char buffer[1024];
+        ssize_t bytesRead;
+
+        while ((bytesRead = read(pipe_fd[0], buffer, sizeof(buffer))) > 0) {
+            // Append output to NSMutableAttributedString
+            NSString *output = [[NSString alloc] initWithBytes:buffer length:bytesRead encoding:NSUTF8StringEncoding];
+            NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:output];
+            [redirectedOutput appendAttributedString:attrString];
+        }
+    });
+
+    // Close the write end of the pipe
+    close(pipe_fd[1]);
+#endif
     // sleep(10);
     /* UIApplicationMain/NSApplicationMain only works when App launched with NSBundle */
     /* FIXME: NSBundle still exists if with Info.plist, we need better detection */

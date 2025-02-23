@@ -23,12 +23,12 @@
 
 // Add IDs to the end, MUST match the struct template.
 typedef enum {
-    ID_BI_BATTERY_HEALTH = 0,
+    ID_BI_BATTERY_NAME = 0,
+    ID_BI_BATTERY_HEALTH,
     ID_BI_BATTERY_SOC,
     ID_BI_BATTERY_TEMP,
     ID_BI_BATTERY_CHARGING,
     ID_BI_BATTERY_ASOC,
-    ID_BI_BATTERY_NAME,
 } id_bi_t;
 
 const char *bin_unit_strings[]={
@@ -43,13 +43,13 @@ const char *bin_unit_strings[]={
 };
 
 struct battery_info_node main_battery_template[] = {
+    {_ID_("Battery Name"), 0},
     {_ID_("Health"), BIN_IS_BACKGROUND | BIN_UNIT_PERCENT | BIN_SECTION},
     {_ID_("SoC"), BIN_IS_FLOAT | BIN_UNIT_PERCENT},
     {_ID_("Temperature"),
      BIN_IS_FLOAT | BIN_UNIT_DEGREE_C | BIN_DETAILS_SHARED},
     {_ID_("Charging"), BIN_IS_BOOLEAN},
     {"ASoC(Hidden)", BIN_IS_FOREGROUND | BIN_IS_HIDDEN},
-    {_ID_("Battery Name"), 0},
     {_ID_("Full Charge Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
     {_ID_("Designed Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
     {_ID_("Remaining Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
@@ -136,7 +136,7 @@ char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
     assert(!(node->content & BIN_IS_SPECIAL));
 
     if (!node->content) {
-        void *allocen=(void*)0x10000000;
+        void *allocen = (void*)0x10000000;
         // ^ Preferred addr
         // Use vm_allocate to prevent possible unexpected heap allocation (it crashes in current data structure)
         // TODO: get rid of hardcoded length
@@ -144,7 +144,7 @@ char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
         if (result != KERN_SUCCESS) {
             // Fallback to malloc
             //allocen = malloc(length);
-            allocen=nil;
+            allocen = nil;
         }
         node->content = (uint32_t)(((uint64_t)allocen) >> 3);
     }
@@ -169,17 +169,17 @@ struct battery_info_node *battery_info_init() {
 }
 
 static int _impl_set_item_find_item(struct battery_info_node **head, const char *desc) {
-	if(!desc)
+	if (!desc)
 		return 0;
-	for(struct battery_info_node *i=*head;i->description;i++) {
-		if(i->description==desc) {
-			*head=i;
+	for (struct battery_info_node *i = *head; i->description; i++) {
+		if (i->description == desc) {
+			*head = i;
 			return 1;
 		}
 	}
-	for(struct battery_info_node *i=(*head)-1;i!=head[1];i--) {
-		if(i->description==desc) {
-			*head=i;
+	for (struct battery_info_node *i = (*head) - 1; i != head[1] - 1; i--) {
+		if (i->description == desc) {
+			*head = i;
 			return 1;
 		}
 	}

@@ -15,8 +15,10 @@
 
 #ifdef DEBUG
 #define DBGLOG(...) NSLog(__VA_ARGS__)
+#define DBGALT(x, y, z) show_alert(x, y, z)
 #else
 #define DBGLOG(...)
+#define DBGALT(x, y, z)
 #endif
 
 __BEGIN_DECLS

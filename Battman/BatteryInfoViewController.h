@@ -5,5 +5,4 @@
 {
 	struct battery_info_node *batteryInfo;
 }
-
 @end
