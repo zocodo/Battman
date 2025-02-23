@@ -74,6 +74,8 @@ struct battery_info_node main_battery_template[] = {
     {_ID_("Peak Current 2"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
     {_ID_("IT Misc Status"), 0},
     {_ID_("Simulation Rate"), BIN_UNIT_HOUR | BIN_IN_DETAILS},
+    {_ID_("Daily Max SoC"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
+    {_ID_("Daily Min SoC"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
     {NULL} // DO NOT DELETE
 };
 
@@ -238,7 +240,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 	// No Imperial units here
 	BI_SET_ITEM(_ID_("Temperature"), get_temperature());
 	// // TODO: Charging Type Display {"Battery Power", "AC Power", "UPS Power"}
-	BI_SET_ITEM(_ID_("Charging"), (get_time_to_empty() == 0));
+	BI_SET_ITEM(_ID_("Charging"), (is_charging(NULL, NULL) == kIsCharging));
 	/* ASoC = 100.0f * RemainCapacity (mAh) / DesignCapacity (mAh) */
 	BI_SET_ITEM("ASoC(Hidden)", 100.0f * remain_cap / design_cap);
 	if (inDetail) {
@@ -280,6 +282,8 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 					gGauge.ITMiscStatus);
 		BI_SET_ITEM_IF(gGauge.SimRate, _ID_("Simulation Rate"),
 				gGauge.SimRate);
+        BI_SET_ITEM_IF(gGauge.DailyMaxSoc, _ID_("Daily Max SoC"), gGauge.DailyMaxSoc);
+        BI_SET_ITEM_IF(gGauge.DailyMinSoc, _ID_("Daily Min SoC"), gGauge.DailyMinSoc);
         /* TODO: This id design sucks and bringing difficulties on maintainance,
                 I want something just like:
                 extern int insert_item(char *label, ...);

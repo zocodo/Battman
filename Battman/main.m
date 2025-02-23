@@ -63,7 +63,7 @@ NSString *cond_localize(const char *str) {
                this is a workaround to force it read correct language */
             char *lang = preferred_language();
             setlocale(LC_ALL, lang);
-            setenv("LANG", lang, 1);
+            //setenv("LANG", lang, 1);
 
             char mainBundle[PATH_MAX];
             uint32_t size = sizeof(mainBundle);
@@ -120,8 +120,6 @@ int main(int argc, char * argv[]) {
     char *tty = ttyname(0);
     if (tty) {
         show_alert("Current TTY", tty, "OK");
-        NSLog(@"%@", [AppDelegate class]);
-        NSLog(@"%@", [UIScreen mainScreen]);
     } else {
         redirectedOutput = [[NSMutableAttributedString alloc] init];
         // Create a pipe for redirecting output
