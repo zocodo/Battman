@@ -77,6 +77,8 @@ NSString *cond_localize(const char *str) {
                     DBGLOG(@"i18n base dir: %s", bindbase);
                     char *dom = textdomain_ptr(BATTMAN_TEXTDOMAIN);
                     DBGLOG(@"textdomain: %s", dom);
+                    char *enc = bind_textdomain_codeset_ptr(BATTMAN_TEXTDOMAIN, "UTF-8");
+                    DBGLOG(@"codeset: %s", enc);
                     use_libintl = true;
                 } else {
                     show_alert("Error", "Failed to get i18n base", "Cancel");
@@ -115,40 +117,47 @@ NSMutableAttributedString *redirectedOutput;
 
 int main(int argc, char * argv[]) {
 #if DEBUG
-    redirectedOutput = [[NSMutableAttributedString alloc] init];
-    // Create a pipe for redirecting output
-    static int pipe_fd[2];
-    pipe(pipe_fd);
+    char *tty = ttyname(0);
+    if (tty) {
+        show_alert("Current TTY", tty, "OK");
+        NSLog(@"%@", [AppDelegate class]);
+        NSLog(@"%@", [UIScreen mainScreen]);
+    } else {
+        redirectedOutput = [[NSMutableAttributedString alloc] init];
+        // Create a pipe for redirecting output
+        static int pipe_fd[2];
+        pipe(pipe_fd);
 
-    // Save the original stdout and stderr file descriptors
-    int __unused original_stdout = dup(STDOUT_FILENO);
-    int __unused original_stderr = dup(STDERR_FILENO);
+        // Save the original stdout and stderr file descriptors
+        int __unused original_stdout = dup(STDOUT_FILENO);
+        int __unused original_stderr = dup(STDERR_FILENO);
 
-    // Redirect stdout and stderr to the pipe
-    dup2(pipe_fd[1], STDOUT_FILENO);
-    dup2(pipe_fd[1], STDERR_FILENO);
+        // Redirect stdout and stderr to the pipe
+        dup2(pipe_fd[1], STDOUT_FILENO);
+        dup2(pipe_fd[1], STDERR_FILENO);
 
-    // Create a new dispatch queue to read from the pipe
-    dispatch_queue_t queue = dispatch_queue_create("outputRedirectQueue", NULL);
-    dispatch_async(queue, ^{
-        char buffer[1024];
-        ssize_t bytesRead;
+        // Create a new dispatch queue to read from the pipe
+        dispatch_queue_t queue = dispatch_queue_create("outputRedirectQueue", NULL);
+        dispatch_async(queue, ^{
+            char buffer[1024];
+            ssize_t bytesRead;
 
-        while ((bytesRead = read(pipe_fd[0], buffer, sizeof(buffer))) > 0) {
-            // Append output to NSMutableAttributedString
-            NSString *output = [[NSString alloc] initWithBytes:buffer length:bytesRead encoding:NSUTF8StringEncoding];
-            NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:output];
-            [redirectedOutput appendAttributedString:attrString];
-        }
-    });
+            while ((bytesRead = read(pipe_fd[0], buffer, sizeof(buffer))) > 0) {
+                // Append output to NSMutableAttributedString
+                NSString *output = [[NSString alloc] initWithBytes:buffer length:bytesRead encoding:NSUTF8StringEncoding];
+                NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:output];
+                [redirectedOutput appendAttributedString:attrString];
+            }
+        });
 
-    // Close the write end of the pipe
-    close(pipe_fd[1]);
+        // Close the write end of the pipe
+        close(pipe_fd[1]);
+    }
 #endif
     // sleep(10);
     /* UIApplicationMain/NSApplicationMain only works when App launched with NSBundle */
     /* FIXME: NSBundle still exists if with Info.plist, we need better detection */
-    if ([NSBundle mainBundle]) {
+    if ([NSBundle mainBundle] && getenv("XPC_SERVICE_NAME")) {
 #if TARGET_OS_IPHONE
         NSString * appDelegateClassName;
         @autoreleasepool {

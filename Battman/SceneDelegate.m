@@ -30,15 +30,6 @@ UIWindow *gWindow;
 
 	[self.window makeKeyAndVisible];
 	gWindow = self.window;
-
-    extern UIViewController* find_top_controller(UIViewController *root);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindowScene *scene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] anyObject];
-        UIWindow *keyWindow = scene.windows.firstObject;
-        
-        UIViewController *topController = find_top_controller(keyWindow.rootViewController);
-        NSLog(@"%@", topController);
-    });
 }
 
 

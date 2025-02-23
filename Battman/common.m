@@ -24,6 +24,7 @@ extern UIWindow *gWindow;
 typeof(gettext) *gettext_ptr;
 typeof(textdomain) *textdomain_ptr;
 typeof(bindtextdomain) *bindtextdomain_ptr;
+typeof(bind_textdomain_codeset) *bind_textdomain_codeset_ptr;
 
 typeof(gtk_dialog_get_type) *gtk_dialog_get_type_ptr;
 typeof(gtk_message_dialog_new) *gtk_message_dialog_new_ptr;
@@ -208,14 +209,16 @@ bool libintl_available(void)
     
     if (PTR_TYPE_DLSYM(NULL, gettext) &&
     	PTR_TYPE_DLSYM(NULL, bindtextdomain) &&
-    	PTR_TYPE_DLSYM(NULL, textdomain)) {
+    	PTR_TYPE_DLSYM(NULL, textdomain) &&
+        PTR_TYPE_DLSYM(NULL, bind_textdomain_codeset)) {
     	avail=true;
-        DBGLOG(@"Avail as direct: %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr);
+        DBGLOG(@"Avail as direct: %p %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr, bind_textdomain_codeset_ptr);
     } else if (PTR_TYPE_NAME_DLSYM(NULL, gettext, libintl_gettext) &&
                PTR_TYPE_NAME_DLSYM(NULL, bindtextdomain, libintl_bindtextdomain) &&
-               PTR_TYPE_NAME_DLSYM(NULL, textdomain, libintl_textdomain)) {
+               PTR_TYPE_NAME_DLSYM(NULL, textdomain, libintl_textdomain) &&
+               PTR_TYPE_NAME_DLSYM(NULL, bind_textdomain_codeset, libintl_bind_textdomain_codeset)) {
     	avail=true;
-        DBGLOG(@"Avail as direct (libintl_*): %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr);
+        DBGLOG(@"Avail as direct (libintl_*): %p %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr, bind_textdomain_codeset_ptr);
     }
 
     /*if (SYM_EXIST(gettext, bindtextdomain, textdomain)) {
@@ -245,13 +248,15 @@ bool libintl_available(void)
         if (libintl_handle) {
             if (PTR_TYPE_DLSYM(libintl_handle, gettext) &&
                 PTR_TYPE_DLSYM(libintl_handle, bindtextdomain) &&
-                PTR_TYPE_DLSYM(libintl_handle, textdomain)) {
+                PTR_TYPE_DLSYM(libintl_handle, textdomain) &&
+                PTR_TYPE_DLSYM(libintl_handle, bind_textdomain_codeset)) {
                 avail = true;
-                DBGLOG(@"Avail as dlsym: %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr);
+                DBGLOG(@"Avail as dlsym: %p %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr, bind_textdomain_codeset_ptr);
             } else if (PTR_TYPE_NAME_DLSYM(libintl_handle, gettext, libintl_gettext) &&
                        PTR_TYPE_NAME_DLSYM(libintl_handle, bindtextdomain, libintl_bindtextdomain) &&
-                       PTR_TYPE_NAME_DLSYM(libintl_handle, textdomain, libintl_textdomain)) {
-                DBGLOG(@"Avail as dlsym (libintl_*): %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr);
+                       PTR_TYPE_NAME_DLSYM(libintl_handle, textdomain, libintl_textdomain) &&
+                       PTR_TYPE_NAME_DLSYM(libintl_handle, bind_textdomain_codeset, libintl_bind_textdomain_codeset)) {
+                DBGLOG(@"Avail as dlsym (libintl_*): %p %p %p %p", gettext_ptr, bindtextdomain_ptr, textdomain_ptr, bind_textdomain_codeset_ptr);
                 avail = true;
             }
         }
