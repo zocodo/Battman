@@ -116,7 +116,8 @@ NSMutableAttributedString *redirectedOutput;
 #endif
 
 int main(int argc, char * argv[]) {
-#if DEBUG
+#if defined(DEBUG) && !TARGET_OS_SIMULATOR
+    // Redirecting is not needed for Simulator
     char *tty = ttyname(0);
     if (tty) {
         show_alert("Current TTY", tty, "OK");
@@ -151,6 +152,8 @@ int main(int argc, char * argv[]) {
         // Close the write end of the pipe
         close(pipe_fd[1]);
     }
+#elif TARGET_OS_SIMULATOR
+    redirectedOutput = [[NSMutableAttributedString alloc] initWithString:_("stdio logs not redirected in Simulator build, please check stdio in Xcode console output instead.")];
 #endif
     // sleep(10);
     /* UIApplicationMain/NSApplicationMain only works when App launched with NSBundle */

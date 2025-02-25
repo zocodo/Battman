@@ -117,6 +117,7 @@ typedef struct gas_gauge {
     char DeviceName[32];
     uint16_t DailyMaxSoc;           /* % */
     uint16_t DailyMinSoc;           /* % */
+    uint16_t DesignCycleCount;
 } gas_gauge_t;
 
 typedef struct device_info {
@@ -236,19 +237,32 @@ typedef struct charger_data {
     uint32_t ChargerId;                 /* CH0D */
 } charger_data_t;
 
-
-
 typedef struct hvc_menu {
     uint16_t current;
     uint16_t voltage;
 } hvc_menu_t;
 
 typedef enum {
-    kIsCharging,    /* Charging */
-    kIsNotCharging, /* Not charging */
-    kIsPausing,     /* AC connected, not charging */
-    kIsUnavail,     /* Error Occured */
+    kIsUnavail = -1,    /* Error Occured */
+    kIsNotCharging = 0, /* Not charging */
+    kIsCharging,        /* Charging */
+    kIsPausing,         /* AC connected, not charging */
 } charging_state_t;
+
+typedef enum {
+    kIsPresent = 1, /* Capable */
+    kIsDetected,    /* Detected */
+} wireless_state_t;
+
+typedef struct iktara_fw {
+    bool Charging;              /* (WAFS & 0xF000000) == 0xE000000 */
+    bool Connected;             /* (WAFS >> 0x0B) & 1 */
+    bool FieldPresent;          /* (WAFS >> 0x0A) & 1 */
+    bool AppFWRunning;          /* (WAFS >> 0x09) & 1 */
+    uint16_t ExceptionState;    /* (WAFS & 0x3F) */
+    bool OvpTriggered;          /* (WAFS >> 0x1D) & 1 */
+    bool LpmActive;             /* (WAFS >> 0x1C) & 1 */
+} iktara_fw_t;
 
 __BEGIN_DECLS
 
@@ -267,6 +281,7 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info);
 float *get_temperature_per_batt(void);
 bool battery_serial(char *serial);
 hvc_menu_t *hvc_menu_parse(uint8_t *input);
+char *get_adapter_family_desc(mach_port_t family);
 
 __END_DECLS
 

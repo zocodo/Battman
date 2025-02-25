@@ -4,6 +4,8 @@
 #include "battery_utils/battery_utils.h"
 #include "common.h"
 
+// TODO: UI Refreshing
+
 static NSMutableArray *sections_batteryinfo;
 
 @implementation BatteryInfoViewController

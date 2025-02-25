@@ -47,6 +47,36 @@ kern_return_t IOConnectCallStructMethod(mach_port_t, uint32_t, const void *,
                                         size_t, void *, size_t *);
 kern_return_t IOServiceClose(io_service_t);
 #endif
+#if __has_include(<IOKit/pwr_mgt/IOPM.h>)
+#include <IOKit/pwr_mgt/IOPM.h>
+#else
+enum {
+    kIOPSFamilyCodeDisconnected = 0,
+    kIOPSFamilyCodeUnsupported  = E00002C7,
+
+    kIOPSFamilyCodeFirewire     = E0008000,
+
+    kIOPSFamilyCodeUSBHost      = E0004000,
+    kIOPSFamilyCodeUSBHostSuspended,
+    kIOPSFamilyCodeUSBDevice,
+    kIOPSFamilyCodeUSBAdapter,
+    kIOPSFamilyCodeUSBChargingPortDedicated,
+    kIOPSFamilyCodeUSBChargingPortDownstream,
+    kIOPSFamilyCodeUSBChargingPort,
+    kIOPSFamilyCodeUSBUnknown,
+    kIOPSFamilyCodeUSBCBrick,
+    kIOPSFamilyCodeUSBCTypeC,
+    kIOPSFamilyCodeUSBCPD,
+    kIOPSFamilyCodeAC           = E0024000,
+    kIOPSFamilyCodeExternal,
+    kIOPSFamilyCodeExternal2,
+    kIOPSFamilyCodeExternal3,
+    kIOPSFamilyCodeExternal4,
+    kIOPSFamilyCodeExternal5,
+    kIOPSFamilyCodeExternal6,
+    kIOPSFamilyCodeExternal7
+};
+#endif
 
 #define DBGLOG(...) NSLog(__VA_ARGS__)
 
@@ -440,6 +470,9 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     /* BMDN(ch8*)[32]: DeviceName (MacBooks Only) */
     (void)smc_read('BMDN', &gauge->DeviceName);
 
+    /* B0CU(ui16): DesignCycleCount (MacBooks Only) */
+    (void)smc_read('B0CU', &gauge->DesignCycleCount);
+
     /* BMSC(ui16): DailyMaxSoc */
     (void)smc_read('BMSC', &gauge->DailyMaxSoc);
 
@@ -508,41 +541,52 @@ bool battery_serial(char *serial) {
  HwVersion => D?ih
  Manufacturer => D?im
 */
-/*
- === kIOPSPowerAdapterFamilyKey ===         Decimal       Hex
- kIOPSFamilyCodeDisconnected                0             0
- kIOPSFamilyCodeUnsupported                 -536870201    E00002C7
- kIOPSFamilyCodeFirewire                    -536838144    E0008000
- kIOPSFamilyCodeUSBHost                     -536854528    E0004000
- kIOPSFamilyCodeUSBHostSuspended            -536854527    E0004001
- kIOPSFamilyCodeUSBDevice                   -536854526    E0004002
- kIOPSFamilyCodeUSBAdapter                  -536854525    E0004003
- kIOPSFamilyCodeUSBChargingPortDedicated    -536854524    E0004004
- kIOPSFamilyCodeUSBChargingPortDownstream   -536854523    E0004005
- kIOPSFamilyCodeUSBChargingPort             -536854522    E0004006
- kIOPSFamilyCodeUSBUnknown                  -536854521    E0004007
- kIOPSFamilyCodeUSBCBrick                   -536854520    E0004008
- kIOPSFamilyCodeUSBCTypeC                   -536854519    E0004009
- kIOPSFamilyCodeUSBCPD                      -536854518    E000400A
- kIOPSFamilyCodeAC                          -536723456    E0024000
- kIOPSFamilyCodeExternal                    -536723455    E0024001
- kIOPSFamilyCodeExternal2                   -536723454    E0024002
- kIOPSFamilyCodeExternal3                   -536723453    E0024003
- kIOPSFamilyCodeExternal4                   -536723452    E0024004
- kIOPSFamilyCodeExternal5                   -536723451    E0024005
- */
+/* Stub macro for PO generation, actual localization shall be done by callers */
+#ifdef _
+#undef _
+#endif
+#define _(x) x
+char *get_adapter_family_desc(mach_port_t family) {
+    switch (family) {
+        case kIOPSFamilyCodeDisconnected:               return _("Disconnected");
+        case kIOPSFamilyCodeUnsupported:                return _("Unsupported");
+        case kIOPSFamilyCodeFirewire:                   return _("Firewire");
+        case kIOPSFamilyCodeUSBHost:                    return _("USB Host");
+        case kIOPSFamilyCodeUSBHostSuspended:           return _("Suspended USB Host");
+        case kIOPSFamilyCodeUSBDevice:                  return _("USB Device");
+        case kIOPSFamilyCodeUSBAdapter:                 return _("Adapter");
+        case kIOPSFamilyCodeUSBChargingPortDedicated:   return _("Dedicated USB Charging Port");
+        case kIOPSFamilyCodeUSBChargingPortDownstream:  return _("Downstream USB Charging Port");
+        case kIOPSFamilyCodeUSBChargingPort:            return _("USB Charging Port");
+        case kIOPSFamilyCodeUSBUnknown:                 return _("Unknown USB");
+        case kIOPSFamilyCodeUSBCBrick:                  return _("USB-C Brick");
+        case kIOPSFamilyCodeUSBCTypeC:                  return _("USB-C Type-C");
+        case kIOPSFamilyCodeUSBCPD:                     return _("USB-C PD");
+        case kIOPSFamilyCodeAC:                         return _("AC Power");
+        case kIOPSFamilyCodeExternal:                   return _("Externel Power 1");
+        case kIOPSFamilyCodeExternal2:                  return _("Externel Power 2");
+        case kIOPSFamilyCodeExternal3:                  return _("Externel Power 3");
+        case kIOPSFamilyCodeExternal4:                  return _("Externel Power 4");
+        case kIOPSFamilyCodeExternal5:                  return _("Externel Power 5");
+        case kIOPSFamilyCodeExternal6:                  return _("Externel Power 6");
+        case kIOPSFamilyCodeExternal7:                  return _("Externel Power 7");
+    }
+    return _("Unknown");
+}
+#undef _
+
 charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
     IOReturn result = kIOReturnSuccess;
     SMCKey key;
     int8_t charging = 0;
-    bool ret = false;
+    charging_state_t ret = kIsUnavail;
     
 
     if (gConn == 0)
         result = smc_open();
 
     if (result != kIOReturnSuccess)
-        return kIsUnavail;
+        return ret;
     
     /* AC-W(si8) Known cases */
     /* -1: No Adapter (M Chip) */
@@ -552,10 +596,12 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
     /* Consider use 'D*AP' for mobile devices (AppleSMCCharger::_checkConnection) */
     result = smc_read('AC-W', &charging);
     if (result != kIOReturnSuccess)
-        return kIsUnavail;
+        return ret;
 
     if (!charging || charging == -1)
-        return kIsUnavail;
+        return kIsNotCharging;
+
+    ret = kIsCharging;
 
 #if TARGET_OS_OSX || TARGET_OS_SIMULATOR
     uint16_t time_to_full;
@@ -565,11 +611,9 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
         return kIsUnavail;
 
     /* Not charging, but Adapter attached */
-    if (time_to_full == 65535)
+    if (time_to_full == (uint16_t)65535)
         ret = kIsPausing;
-    else
 #endif
-        ret = kIsCharging;
 
     /* kIOPSPowerAdapterFamily */
     if (family != NULL) {
@@ -581,6 +625,8 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
 
     /* Not every charger sets those, no return on err */
     if (info != NULL) {
+        /* Zero before use */
+        memset(info, 0, sizeof(device_info_t));
         info->port = charging;
         /* D?if(ch8*) USB Port ? Firmware version */
         key = 'D\0if' | ((0x30 + charging) << 0x10);
@@ -618,6 +664,12 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Serial: %s"), charging, info->serial);
 
+        /* D?DE(ch8*) USB Port ? Description */
+        key = 'D\0DE' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, &info->description);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Description: 0x%X"), charging, info->description);
+
         /* CHI?(ui32) USB Port ? PMUConfiguration */
         key = 'CHI\0' | ((0x30 + charging) << 0x0);
         result = smc_read(key, &info->PMUConfiguration);
@@ -631,7 +683,7 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
             DBGLOG(CFSTR("Port: %d, Current: 0x%X"), charging, info->current);
 
         /* D?VR(ui16) USB Port ? Voltage */
-        key = 'D\0IV' | ((0x30 + charging) << 0x10);
+        key = 'D\0VR' | ((0x30 + charging) << 0x10);
         result = smc_read(key, &info->voltage);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Voltage: %u"), charging, info->voltage);
@@ -673,6 +725,56 @@ hvc_menu_t *hvc_menu_parse(uint8_t *input) {
     }
 
     return menu;
+}
+
+#pragma Iktara Wireless
+
+wireless_state_t wireless_charging_detect(void) {
+    IOReturn result = kIOReturnSuccess;
+    uint32_t st = 0;
+
+    if (gConn == 0)
+        result = smc_open();
+
+    if (result != kIOReturnSuccess)
+        return false;
+
+    /* VBUS(ui32) Wireless Bus */
+    result = smc_read('VBUS', &st);
+    if (result != kIOReturnSuccess)
+        return false;
+
+    return (st & 0xFE);
+}
+
+bool get_iktara_fw_stat(iktara_fw_t *fw) {
+    IOReturn result = kIOReturnSuccess;
+    uint64_t st = 0;
+
+    if (gConn == 0)
+        result = smc_open();
+
+    if (result != kIOReturnSuccess)
+        return false;
+    
+    /* WAFS(hex_) Iktara Firmware Status */
+    result = smc_read('WAFS', &st);
+    if (result != kIOReturnSuccess)
+        return false;
+
+    if (fw != NULL) {
+        memset(fw, 0, sizeof(iktara_fw_t));
+
+        fw->Charging = (st & 0xF000000) == 0xE000000;
+        fw->Connected = (st >> 0x0B) & 1;
+        fw->FieldPresent = (st >> 0x0A) & 1;
+        fw->AppFWRunning = (st >> 0x09) & 1;
+        fw->ExceptionState = (st & 0x3F);
+        fw->OvpTriggered = (st >> 0x1D) & 1;
+        fw->LpmActive = (st >> 0x1C) & 1;
+    }
+
+    return true;
 }
 
 /* Notes on some guessed keys

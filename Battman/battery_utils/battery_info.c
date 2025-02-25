@@ -62,6 +62,7 @@ struct battery_info_node main_battery_template[] = {
     {_ID_("Battery Count"), BIN_IN_DETAILS},
     {_ID_("Time To Empty"), BIN_UNIT_MIN | BIN_IN_DETAILS},
     {_ID_("Cycle Count"), BIN_IN_DETAILS},
+    {_ID_("Designed Cycle Count"), BIN_IN_DETAILS},
     {_ID_("State Of Charge"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
     {_ID_("Resistance Scale"), BIN_IN_DETAILS},
     {_ID_("Battery Serial"), 0},
@@ -259,8 +260,9 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 		BI_SET_ITEM(_ID_("Battery Count"), battery_num());
 		/* FIXME: TTE shall display "Never" when -1 */
 		int timeToEmpty = get_time_to_empty();
-		BI_SET_ITEM_IF(timeToEmpty>0, _ID_("Time To Empty"), timeToEmpty);
+		BI_SET_ITEM_IF(timeToEmpty > 0, _ID_("Time To Empty"), timeToEmpty);
 		BI_SET_ITEM(_ID_("Cycle Count"), gGauge.CycleCount);
+        BI_SET_ITEM_IF(gGauge.DesignCycleCount, _ID_("Designed Cycle Count"), gGauge.DesignCycleCount)
 		BI_SET_ITEM(_ID_("State Of Charge"), gGauge.StateOfCharge);
 		BI_SET_ITEM_IF(gGauge.ResScale, 
 				_ID_("Resistance Scale"), gGauge.ResScale);

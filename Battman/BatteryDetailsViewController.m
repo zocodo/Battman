@@ -4,10 +4,15 @@
 
 // TODO: Function for advanced users to call SMC themselves.
 // or add them to tracklist
-NSArray *sections;
+static NSMutableArray *sections_detail;
 // TODO: Config
 NSTimeInterval reload_interval = 5.0;
 BOOL configured_autorefresh = NO;
+
+/* Adapter Details */
+static mach_port_t adapter_family;
+static device_info_t adapter_info;
+static NSMutableArray *adapter_cells;
 
 void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 	// PLEASE ENSURE no hidden cell is here when calling
@@ -82,13 +87,17 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     self.tableView.allowsSelection = NO; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
     batteryInfo = bi;
-        /* Don't remove this, otherwise users will blame us */
-        /* TODO: Identify other Gas Gauging system */
-        NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
-        NSString *explaination_IT = (gGauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
-        NSString *explaination_Sim = (gGauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
-        gasGaugeDisclaimer = [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
-    
+    /* Don't remove this, otherwise users will blame us */
+    /* TODO: Identify other Gas Gauging system */
+    NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
+    NSString *explaination_IT = (gGauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
+    NSString *explaination_Sim = (gGauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
+    gasGaugeDisclaimer = [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
+
+    NSString *adap_disclaimer = _("All adapter information is dynamically retrieved from the hardware of the currently connected adapter. If any of the data is missing, it may indicate that the connected adapter is not providing the relevant information, or there may be a hardware issue with the adapter.");
+    NSString *explaination_Ext = ((adapter_family & 0x20000) && (adapter_family & 0x7)) ? [NSString stringWithFormat:@"\n\n%@", _("\"External Power\" may indicates the connected adapter is a wireless charger.")] : @"";
+
+    adapterDisclaimer = [NSString stringWithFormat:@"%@%@", adap_disclaimer, explaination_Ext];
     return self;
 }
 
@@ -99,12 +108,43 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     /* Dynasects */
     /* TODO: Handle the scene that if battery not present */
 #if !__has_feature(objc_arc)
-    [sections dealloc];
+    if (sections_detail) [sections_detail dealloc];
+    if (adapter_cells) [adapter_cells dealloc];
 #endif
-    sections = [NSMutableArray arrayWithArray:@[_("Gas Gauge (Basic)")]];
-    /* TODO: */
-    // if (is_charging(NULL, NULL))
-    //     sections = [NSMutableArray addObject:@[_("Adapter Details")]];
+    sections_detail = [NSMutableArray arrayWithArray:@[_("Gas Gauge (Basic)")]];
+    charging_state_t charging_stat = is_charging(&adapter_family, &adapter_info);
+    if (charging_stat > 0) {
+        DBGLOG(@"charging_stat: %d", charging_stat);
+        [sections_detail addObject:_("Adapter Details")];
+
+        char *adapter_family_str = NULL;
+        if (adapter_family) {
+            adapter_family_str = get_adapter_family_desc(adapter_family);
+            show_alert("Family", adapter_family_str, "OK");
+        }
+
+        adapter_cells = [[NSMutableArray alloc] init];
+        [adapter_cells addObjectsFromArray:@[
+            @[_("Port"),           [NSString stringWithFormat:@"%d", adapter_info.port]],
+            @[_("Type"),           [NSString stringWithFormat:@"%s (%.8X)", adapter_family_str, adapter_family]],
+            @[_("Status"),         (charging_stat == kIsPausing) ? _("Not Charging") : _("Charging")],
+            /* TODO: Parse NotChargingReason Bits */
+            @[_("Current"),        [NSString stringWithFormat:@"%u %@", adapter_info.current, _("mA")]],
+            @[_("Voltage"),        [NSString stringWithFormat:@"%u %@", adapter_info.voltage, _("mV")]],
+            @[_("Name"),           [NSString stringWithUTF8String:adapter_info.name]],
+            @[_("Manufacturer"),   [NSString stringWithUTF8String:adapter_info.vendor]],
+            @[_("Model"),          [NSString stringWithUTF8String:adapter_info.adapter]],
+            @[_("Firmware"),       [NSString stringWithUTF8String:adapter_info.firmware]],
+            @[_("Hardware"),       [NSString stringWithUTF8String:adapter_info.hardware]],
+            @[_("Description"),    [NSString stringWithUTF8String:adapter_info.description]],
+            @[_("Serial"),         [NSString stringWithUTF8String:adapter_info.serial]],
+            /* TODO: Parse PMU Configuration Bits */
+            @[_("PMUConfiguration"), [NSString stringWithFormat:@"0x%.4X", adapter_info.PMUConfiguration]],
+            /* TODO: Hvc */
+        ]];
+    }
+    /* TODO: Gas Gauge (Advanced) */
+
     [self.tableView reloadData];
     [self.refreshControl endRefreshing];
 }
@@ -116,13 +156,16 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
     UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-    header.textLabel.text = sections[section];
+    header.textLabel.text = sections_detail[section];
 }
 
 - (NSString *)tableView:(UITableView *)tableView
     titleForFooterInSection:(NSInteger)section {
     if (section == 0) {
     	return gasGaugeDisclaimer;
+    }
+    if (section == [sections_detail indexOfObject:_("Adapter Details")]) {
+        return adapterDisclaimer;
     }
     return nil;
 }
@@ -139,14 +182,17 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 				}
 			}
 		}
-		pendingLoadOffsets[rows]=255;
+		pendingLoadOffsets[rows] = 255;
 		return rows;
 	}
+    if (section == [sections_detail indexOfObject:_("Adapter Details")]) {
+        return adapter_cells.count;
+    }
 	return 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
-    return sections.count;
+    return sections_detail.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv
@@ -163,6 +209,14 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     if (ip.section == 0) {
     	equipDetailCell(cell, batteryInfo + ip.row + pendingLoadOffsets[ip.row]);
     	return cell;
+    }
+
+    // Consider make this an adapter_info.c?
+    if (ip.section == [sections_detail indexOfObject:_("Adapter Details")]) {
+        NSArray *adapter_cell = adapter_cells[ip.row];
+        cell.textLabel.text = adapter_cell[0];
+        cell.detailTextLabel.text = adapter_cell[1];
+        return cell;
     }
     return nil;
 }
