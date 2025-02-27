@@ -274,7 +274,7 @@ int get_time_to_empty(void);
 int estimate_time_to_full(void);
 float get_battery_health(float *design_cap, float *full_cap);
 bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design);
-int battery_num(void);
+int batt_cell_num(void);
 bool get_gas_gauge(gas_gauge_t *gauge);
 typedef unsigned int mach_port_t;
 charging_state_t is_charging(mach_port_t *family, device_info_t *info);

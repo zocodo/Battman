@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Battman 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-25 18:44+0800\n"
+"POT-Creation-Date: 2025-02-27 18:48+0800\n"
 "PO-Revision-Date: 2025-01-27 17:32+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -98,154 +98,238 @@ msgstr ""
 msgid "Battman CLI not implemented yet."
 msgstr "Battman CLI not implemented yet."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:38
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:50
 msgid "True"
 msgstr "True"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:40
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:52
 msgid "False"
 msgstr "False"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:64
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:76
 msgid "Internal Battery"
 msgstr "Internal Battery"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:92
-msgid ""
-"All Gas Gauge metrics are dynamically retrieved from the onboard sensor "
-"array in real time. Should anomalies be detected in specific readings, this "
-"may indicate the presence of unauthorized components or require diagnostics "
-"through Apple Authorised Service Provider."
-msgstr ""
-"All Gas Gauge metrics are dynamically retrieved from the onboard sensor "
-"array in real time. Should anomalies be detected in specific readings, this "
-"may indicate the presence of unauthorized components or require diagnostics "
-"through Apple Authorised Service Provider."
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:93
-msgid ""
-"The \"IT Misc Status\" field refers to the miscellaneous data returned by "
-"battery Impedance Track™ Gas Gauge IC."
-msgstr ""
-"The \"IT Misc Status\" field refers to the miscellaneous data returned by "
-"battery Impedance Track™ Gas Gauge IC."
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:94
-msgid ""
-"The \"Simulation Rate\" field refers to the rate of battery performing "
-"Impedance Track™ simulations."
-msgstr ""
-"The \"Simulation Rate\" field refers to the rate of battery performing "
-"Impedance Track™ simulations."
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:97
-msgid ""
-"All adapter information is dynamically retrieved from the hardware of the "
-"currently connected adapter. If any of the data is missing, it may indicate "
-"that the connected adapter is not providing the relevant information, or "
-"there may be a hardware issue with the adapter."
-msgstr ""
-"All adapter information is dynamically retrieved from the hardware of the "
-"currently connected adapter. If any of the data is missing, it may indicate "
-"that the connected adapter is not providing the relevant information, or "
-"there may be a hardware issue with the adapter."
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:98
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:46
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:250
+msgid "Device Name"
+msgstr "Device Name"
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:98
 msgid ""
+"This indicates the name of the current Gas Gauge IC used by the installed "
+"battery."
+msgstr ""
+"This indicates the name of the current Gas Gauge IC used by the installed "
+"battery."
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:99
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:57
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:255
+msgid "Depth of Discharge"
+msgstr "Depth of Discharge"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:99
+msgid ""
+"Current chemical depth of discharge (DOD₀). The gas gauge updates "
+"information on the DOD₀ based on open-circuit voltage (OCV) readings when in "
+"a relaxed state."
+msgstr ""
+"Current chemical depth of discharge (DOD₀). The gas gauge updates "
+"information on the DOD₀ based on open-circuit voltage (OCV) readings when in "
+"a relaxed state."
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:100
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:69
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:272
+msgid "Chemistry ID"
+msgstr "Chemistry ID"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:100
+msgid ""
+"Chemistry unique identifier (ChemID) assigned to each battery in Texas "
+"Instruments' database. It ensures accurate calculations and predictions."
+msgstr ""
+"Chemistry unique identifier (ChemID) assigned to each battery in Texas "
+"Instruments' database. It ensures accurate calculations and predictions."
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:101
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:58
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:256
+msgid "Passed Charge"
+msgstr "Passed Charge"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:101
+msgid ""
+"The cumulative capacity of the current charging or discharging cycle. It is "
+"reset to zero with each DOD₀ update."
+msgstr ""
+"The cumulative capacity of the current charging or discharging cycle. It is "
+"reset to zero with each DOD₀ update."
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:102
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:76
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:283
+msgid "IT Misc Status"
+msgstr "IT Misc Status"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:102
+msgid ""
+"This field refers to the miscellaneous data returned by battery Impedance "
+"Track™ Gas Gauge IC."
+msgstr ""
+"This field refers to the miscellaneous data returned by battery Impedance "
+"Track™ Gas Gauge IC."
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:103
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:70
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:273
+msgid "Flags"
+msgstr "Flags"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:103
+msgid ""
+"The status information provided by the battery Gas Gauge IC, which may "
+"include the battery's operational modes, capabilities, or status codes. The "
+"format may vary depending on the Gas Gauge IC model."
+msgstr ""
+"The status information provided by the battery Gas Gauge IC, which may "
+"include the battery's operational modes, capabilities, or status codes. The "
+"format may vary depending on the Gas Gauge IC model."
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:104
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:77
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:285
+msgid "Simulation Rate"
+msgstr "Simulation Rate"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:104
+msgid ""
+"This field refers to the rate of Gas Gauge performing Impedance Track™ "
+"simulations."
+msgstr ""
+"This field refers to the rate of Gas Gauge performing Impedance Track™ "
+"simulations."
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:116
+msgid ""
+"All adapter information is dynamically retrieved from the hardware of the "
+"currently connected adapter. If any of the data is missing, it may indicate "
+"that the connected adapter is not providing the relevant information, or "
+"there may be a hardware issue with the adapter."
+msgstr ""
+"All adapter information is dynamically retrieved from the hardware of the "
+"currently connected adapter. If any of the data is missing, it may indicate "
+"that the connected adapter is not providing the relevant information, or "
+"there may be a hardware issue with the adapter."
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:117
+msgid ""
 "\"External Power\" may indicates the connected adapter is a wireless charger."
 msgstr ""
 "\"External Power\" may indicates the connected adapter is a wireless charger."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:114
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:133
 msgid "Gas Gauge (Basic)"
 msgstr "Gas Gauge (Basic)"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:118
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:166
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:187
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:214
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:137
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:194
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:215
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:242
 msgid "Adapter Details"
 msgstr "Adapter Details"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:128
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:146
 msgid "Port"
 msgstr "Port"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:129
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:147
 msgid "Type"
 msgstr "Type"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:130
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:148
 msgid "Status"
 msgstr "Status"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:130
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:148
 msgid "Not Charging"
 msgstr "Not Charging"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:130
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:148
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:51
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:244
 msgid "Charging"
 msgstr "Charging"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:131
-msgid "Current"
-msgstr "Current"
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:150
+msgid "Current Rating"
+msgstr "Current Rating"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:131
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:150
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:37
 msgid "mA"
 msgstr "mA"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:132
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:59
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:257
-msgid "Voltage"
-msgstr "Voltage"
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:151
+msgid "Voltage Rating"
+msgstr "Voltage Rating"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:132
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:151
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:39
 msgid "mV"
 msgstr "mV"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:133
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:152
 msgid "Name"
 msgstr "Name"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:134
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:153
 msgid "Manufacturer"
 msgstr "Manufacturer"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:135
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:154
 msgid "Model"
 msgstr "Model"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:136
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:155
 msgid "Firmware"
 msgstr "Firmware"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:137
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:156
 msgid "Hardware"
 msgstr "Hardware"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:138
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:157
 msgid "Description"
 msgstr "Description"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:139
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:158
 msgid "Serial"
 msgstr "Serial"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:141
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:160
 msgid "PMUConfiguration"
 msgstr "PMUConfiguration"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:230
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:192
+msgid ""
+"All Gas Gauge metrics are dynamically retrieved from the onboard sensor "
+"array in real time. Should anomalies be detected in specific readings, this "
+"may indicate the presence of unauthorized components or require diagnostics "
+"through Apple Authorised Service Provider."
+msgstr ""
+"All Gas Gauge metrics are dynamically retrieved from the onboard sensor "
+"array in real time. Should anomalies be detected in specific readings, this "
+"may indicate the presence of unauthorized components or require diagnostics "
+"through Apple Authorised Service Provider."
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:258
 msgid "Copied!"
 msgstr "Copied!"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:230
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:258
 msgid "OK"
 msgstr "OK"
 
@@ -361,11 +445,6 @@ msgstr "min"
 msgid "Hr"
 msgstr "Hr"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:46
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:250
-msgid "Battery Name"
-msgstr "Battery Name"
-
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:47
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:238
 msgid "Health"
@@ -401,15 +480,10 @@ msgstr "Remaining Capacity"
 msgid "Qmax"
 msgstr "Qmax"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:57
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:255
-msgid "Depth of Discharge"
-msgstr "Depth of Discharge"
-
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:58
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:256
-msgid "Passed Charge"
-msgstr "Passed Charge"
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:59
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:257
+msgid "Voltage"
+msgstr "Voltage"
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:60
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:258
@@ -423,8 +497,8 @@ msgstr "Average Power"
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:62
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:260
-msgid "Battery Count"
-msgstr "Battery Count"
+msgid "Cell Count"
+msgstr "Cell Count"
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:63
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:263
@@ -457,16 +531,6 @@ msgstr "Resistance Scale"
 msgid "Battery Serial"
 msgstr "Battery Serial"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:69
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:272
-msgid "Chemistry ID"
-msgstr "Chemistry ID"
-
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:70
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:273
-msgid "Flags"
-msgstr "Flags"
-
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:71
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:275
 msgid "True Remaining Capacity"
@@ -492,16 +556,6 @@ msgstr "Peak Current"
 msgid "Peak Current 2"
 msgstr "Peak Current 2"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:76
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:283
-msgid "IT Misc Status"
-msgstr "IT Misc Status"
-
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:77
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:285
-msgid "Simulation Rate"
-msgstr "Simulation Rate"
-
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:78
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:287
 msgid "Daily Max SoC"
@@ -511,3 +565,20 @@ msgstr "Daily Max SoC"
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:288
 msgid "Daily Min SoC"
 msgstr "Daily Min SoC"
+
+#~ msgid ""
+#~ "The \"IT Misc Status\" field refers to the miscellaneous data returned by "
+#~ "battery Impedance Track™ Gas Gauge IC."
+#~ msgstr ""
+#~ "The \"IT Misc Status\" field refers to the miscellaneous data returned by "
+#~ "battery Impedance Track™ Gas Gauge IC."
+
+#~ msgid ""
+#~ "The \"Simulation Rate\" field refers to the rate of battery performing "
+#~ "Impedance Track™ simulations."
+#~ msgstr ""
+#~ "The \"Simulation Rate\" field refers to the rate of battery performing "
+#~ "Impedance Track™ simulations."
+
+#~ msgid "Current"
+#~ msgstr "Current"

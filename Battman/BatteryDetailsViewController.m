@@ -1,6 +1,7 @@
 #import "BatteryDetailsViewController.h"
 #include "battery_utils/libsmc.h"
 #include "common.h"
+#include "intlextern.h"
 
 // TODO: Function for advanced users to call SMC themselves.
 // or add them to tracklist
@@ -14,47 +15,58 @@ static mach_port_t adapter_family;
 static device_info_t adapter_info;
 static NSMutableArray *adapter_cells;
 
+/* Desc */
+static NSArray *descarr;
+
 void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
-	// PLEASE ENSURE no hidden cell is here when calling
-        /*if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
-            (i->content &&
-             !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
-            cell.hidden = NO;
-        } else {
-            cell.hidden = YES;
-            return cell;
-        }
-        if (((i->content & 1) == 1) && (i->content & (1 << 5)) == (1 << 5)) {
-            cell.hidden = YES;
-            return cell;
-        }*/
-        NSString *final_str;
-        cell.textLabel.text = _(i->description);
-        if ((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL) {
-            int16_t value = i->content >> 16;
+    // PLEASE ENSURE no hidden cell is here when calling
+    /*if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
+        (i->content &&
+        !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
+        cell.hidden = NO;
+    } else {
+        cell.hidden = YES;
+        return cell;
+    }
+    if (((i->content & 1) == 1) && (i->content & (1 << 5)) == (1 << 5)) {
+        cell.hidden = YES;
+        return cell;
+    }*/
+    NSString *final_str;
+    cell.textLabel.text = _(i->description);
+    /* Consider add a "Accessory" section in data struct */
+    if ([descarr indexOfObject:cell.textLabel.text] != NSNotFound) {
+        DBGLOG(@"Accessory %@, Index %lu", cell.textLabel.text, [descarr indexOfObject:cell.textLabel.text]);
+        cell.accessoryType = UITableViewCellAccessoryDetailButton;
+    } else {
+        cell.accessoryType = UITableViewCellAccessoryNone;
+    }
 
-            if ((i->content & BIN_IS_BOOLEAN) == BIN_IS_BOOLEAN) {
-                if (value) {
-                    final_str = _("True");
-                } else {
-                    final_str = _("False");
-                }
-            } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
-                final_str = [NSString stringWithFormat:@"%0.2f", bi_node_load_float(i)];
+    if ((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL) {
+        int16_t value = i->content >> 16;
+        
+        if ((i->content & BIN_IS_BOOLEAN) == BIN_IS_BOOLEAN) {
+            if (value) {
+                final_str = _("True");
             } else {
-                final_str = [NSString stringWithFormat:@"%d", value];
+                final_str = _("False");
             }
-            if (i->content & BIN_HAS_UNIT) {
-                uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;
-                final_str = [NSString
-                    stringWithFormat:@"%@ %@", final_str, _(bin_unit_strings[unit])];
-            }
+        } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
+            final_str = [NSString stringWithFormat:@"%0.2f", bi_node_load_float(i)];
         } else {
-            final_str = [NSString stringWithUTF8String:bi_node_get_string(i)];
+            final_str = [NSString stringWithFormat:@"%d", value];
         }
+        if (i->content & BIN_HAS_UNIT) {
+            uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;
+            final_str = [NSString
+                stringWithFormat:@"%@ %@", final_str, _(bin_unit_strings[unit])];
+        }
+    } else {
+        final_str = [NSString stringWithUTF8String:bi_node_get_string(i)];
+    }
 
-        cell.detailTextLabel.text = final_str;
-        return;
+    cell.detailTextLabel.text = final_str;
+    return;
 }
 
 
@@ -80,6 +92,17 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     UIRefreshControl *puller = [[UIRefreshControl alloc] init];
     [puller addTarget:self action:@selector(updateTableView) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = puller;
+
+    /* Consider add a "Accessory" section in data struct */
+    descarr = @[
+        _("Device Name"), _("This indicates the name of the current Gas Gauge IC used by the installed battery."),
+        _("Depth of Discharge"), _("Current chemical depth of discharge (DOD₀). The gas gauge updates information on the DOD₀ based on open-circuit voltage (OCV) readings when in a relaxed state."),
+        _("Chemistry ID"), _("Chemistry unique identifier (ChemID) assigned to each battery in Texas Instruments' database. It ensures accurate calculations and predictions."),
+        _("Passed Charge"), _("The cumulative capacity of the current charging or discharging cycle. It is reset to zero with each DOD₀ update."),
+        _("IT Misc Status"), _("This field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC."),
+        _("Flags"), _("The status information provided by the battery Gas Gauge IC, which may include the battery's operational modes, capabilities, or status codes. The format may vary depending on the Gas Gauge IC model."),
+        _("Simulation Rate"), _("This field refers to the rate of Gas Gauge performing Impedance Track™ simulations."),
+    ];
 }
 
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
@@ -89,10 +112,6 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     batteryInfo = bi;
     /* Don't remove this, otherwise users will blame us */
     /* TODO: Identify other Gas Gauging system */
-    NSString *gauge_disclaimer = _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
-    NSString *explaination_IT = (gGauge.ITMiscStatus != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"IT Misc Status\" field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.")] : @"";
-    NSString *explaination_Sim = (gGauge.SimRate != 0) ? [NSString stringWithFormat:@"\n\n%@", _("The \"Simulation Rate\" field refers to the rate of battery performing Impedance Track™ simulations.")] : @"";
-    gasGaugeDisclaimer = [NSString stringWithFormat:@"%@%@%@", gauge_disclaimer, explaination_IT, explaination_Sim];
 
     NSString *adap_disclaimer = _("All adapter information is dynamically retrieved from the hardware of the currently connected adapter. If any of the data is missing, it may indicate that the connected adapter is not providing the relevant information, or there may be a hardware issue with the adapter.");
     NSString *explaination_Ext = ((adapter_family & 0x20000) && (adapter_family & 0x7)) ? [NSString stringWithFormat:@"\n\n%@", _("\"External Power\" may indicates the connected adapter is a wireless charger.")] : @"";
@@ -120,7 +139,6 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         char *adapter_family_str = NULL;
         if (adapter_family) {
             adapter_family_str = get_adapter_family_desc(adapter_family);
-            show_alert("Family", adapter_family_str, "OK");
         }
 
         adapter_cells = [[NSMutableArray alloc] init];
@@ -129,8 +147,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             @[_("Type"),           [NSString stringWithFormat:@"%s (%.8X)", adapter_family_str, adapter_family]],
             @[_("Status"),         (charging_stat == kIsPausing) ? _("Not Charging") : _("Charging")],
             /* TODO: Parse NotChargingReason Bits */
-            @[_("Current"),        [NSString stringWithFormat:@"%u %@", adapter_info.current, _("mA")]],
-            @[_("Voltage"),        [NSString stringWithFormat:@"%u %@", adapter_info.voltage, _("mV")]],
+            @[_("Current Rating"), [NSString stringWithFormat:@"%u %@", adapter_info.current, _("mA")]],
+            @[_("Voltage Rating"), [NSString stringWithFormat:@"%u %@", adapter_info.voltage, _("mV")]],
             @[_("Name"),           [NSString stringWithUTF8String:adapter_info.name]],
             @[_("Manufacturer"),   [NSString stringWithUTF8String:adapter_info.vendor]],
             @[_("Model"),          [NSString stringWithUTF8String:adapter_info.adapter]],
@@ -149,6 +167,15 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     [self.refreshControl endRefreshing];
 }
 
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+
+    NSUInteger index = [descarr indexOfObject:cell.textLabel.text];
+    if (index != NSNotFound)
+        show_alert([cell.textLabel.text UTF8String], [[descarr objectAtIndex:(index + 1)] UTF8String], _C("OK"));
+    DBGLOG(@"Accessory Pressed, %@", cell.textLabel.text);
+}
+
 - (NSString *)tableView:(id)tv titleForHeaderInSection:(NSInteger)section {
     // Doesn't matter, it will be changed by willDisplayHeaderView
     return @"This is a Title yeah";
@@ -162,7 +189,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 - (NSString *)tableView:(UITableView *)tableView
     titleForFooterInSection:(NSInteger)section {
     if (section == 0) {
-    	return gasGaugeDisclaimer;
+        return _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
     }
     if (section == [sections_detail indexOfObject:_("Adapter Details")]) {
         return adapterDisclaimer;
@@ -197,11 +224,11 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 
 - (UITableViewCell *)tableView:(UITableView *)tv
          cellForRowAtIndexPath:(NSIndexPath *)ip {
-    UITableViewCell *cell =
-        [tv dequeueReusableCellWithIdentifier:@"battmanbdvccl"];
+    /* Use different identifier to avoid wrong location of Accessory */
+    NSString *cell_id = [sections_detail objectAtIndex:ip.section];
+    UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:cell_id];
     if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1
-                                      reuseIdentifier:@"battmanbdvccl"];
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
     }
     UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [cell addGestureRecognizer:longPressRecognizer];
@@ -228,7 +255,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
         [pasteboard setString:cell.detailTextLabel.text];
         
-        show_alert([_("Copied!") UTF8String], [cell.detailTextLabel.text UTF8String], [_("OK") UTF8String]);
+        show_alert(_C("Copied!"), [cell.detailTextLabel.text UTF8String], _C("OK"));
     }
 }
 

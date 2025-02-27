@@ -227,7 +227,7 @@ float *get_temperature_per_batt(void) {
     IOReturn result = kIOReturnSuccess;
     float retval = 0;
 
-    int num = battery_num();
+    int num = batt_cell_num();
 
     float *batts = malloc(sizeof(float) * num);
     /* TB*T(flt), but normally they are same */
@@ -341,7 +341,7 @@ bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
             return false;
     }
 
-    int num = battery_num();
+    int num = batt_cell_num();
     if (num == -1) num = 1;
 
     uint16_t B0RM, B0FC, B0DC;
@@ -483,7 +483,7 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
 }
 
 /* -1: Unknown */
-int battery_num(void) {
+int batt_cell_num(void) {
     IOReturn result = kIOReturnSuccess;
     int8_t count = 0;
 

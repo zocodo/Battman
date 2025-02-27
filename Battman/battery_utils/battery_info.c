@@ -43,7 +43,7 @@ const char *bin_unit_strings[]={
 };
 
 struct battery_info_node main_battery_template[] = {
-    {_ID_("Battery Name"), 0},
+    {_ID_("Device Name"), 0},
     {_ID_("Health"), BIN_IS_BACKGROUND | BIN_UNIT_PERCENT | BIN_SECTION},
     {_ID_("SoC"), BIN_IS_FLOAT | BIN_UNIT_PERCENT},
     {_ID_("Temperature"),
@@ -59,7 +59,7 @@ struct battery_info_node main_battery_template[] = {
     {_ID_("Voltage"), BIN_UNIT_MVOLT | BIN_IN_DETAILS},
     {_ID_("Average Current"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
     {_ID_("Average Power"), BIN_UNIT_MWATT | BIN_IN_DETAILS},
-    {_ID_("Battery Count"), BIN_IN_DETAILS},
+    {_ID_("Cell Count"), BIN_IN_DETAILS},
     {_ID_("Time To Empty"), BIN_UNIT_MIN | BIN_IN_DETAILS},
     {_ID_("Cycle Count"), BIN_IN_DETAILS},
     {_ID_("Designed Cycle Count"), BIN_IN_DETAILS},
@@ -247,17 +247,17 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 	if (inDetail) {
 		get_gas_gauge(&gGauge);
 		BI_FORMAT_ITEM_IF(strlen(gGauge.DeviceName),
-					_ID_("Battery Name"), "%s", gGauge.DeviceName);
+					_ID_("Device Name"), "%s", gGauge.DeviceName);
 		BI_SET_ITEM(_ID_("Full Charge Capacity"), full_cap);
 		BI_SET_ITEM(_ID_("Designed Capacity"), design_cap);
 		BI_SET_ITEM(_ID_("Remaining Capacity"), remain_cap);
-		BI_SET_ITEM(_ID_("Qmax"), gGauge.Qmax * battery_num());
+		BI_SET_ITEM(_ID_("Qmax"), gGauge.Qmax * batt_cell_num());
 		BI_SET_ITEM(_ID_("Depth of Discharge"), gGauge.DOD0);
 		BI_SET_ITEM(_ID_("Passed Charge"), gGauge.PassedCharge);
 		BI_SET_ITEM(_ID_("Voltage"), gGauge.Voltage);
 		BI_SET_ITEM(_ID_("Average Current"), gGauge.AverageCurrent);
 		BI_SET_ITEM(_ID_("Average Power"), gGauge.AveragePower);
-		BI_SET_ITEM(_ID_("Battery Count"), battery_num());
+		BI_SET_ITEM(_ID_("Cell Count"), batt_cell_num());
 		/* FIXME: TTE shall display "Never" when -1 */
 		int timeToEmpty = get_time_to_empty();
 		BI_SET_ITEM_IF(timeToEmpty > 0, _ID_("Time To Empty"), timeToEmpty);
@@ -270,6 +270,9 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 			BI_FORMAT_ITEM(_ID_("Battery Serial"), "None");
 		}
 		BI_FORMAT_ITEM(_ID_("Chemistry ID"), "0x%.8X", gGauge.ChemID);
+
+        /* Confirmed Flags format */
+        /* bq20z45*: Battery Status (0x16): https://www.ti.com/lit/er/sluu313a/sluu313a.pdf */
 		BI_FORMAT_ITEM(_ID_("Flags"), "0x%.4X", gGauge.Flags);
 		BI_SET_ITEM_IF(gGauge.TrueRemainingCapacity,
 				_ID_("True Remaining Capacity"),
