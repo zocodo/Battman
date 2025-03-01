@@ -676,13 +676,17 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, PMUConfiguration: 0x%X"), charging, info->PMUConfiguration);
 
-        /* D?IR(ui16) USB Port ? Current */
+        /* Mobile Only:
+         1: Wired Charger
+         2: Wireless Charger
+         */
+        /* D?IR(ui16) USB Port ? Charger current rating */
         key = 'D\0IR' | ((0x30 + charging) << 0x10);
         result = smc_read(key, &info->current);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Current: 0x%X"), charging, info->current);
 
-        /* D?VR(ui16) USB Port ? Voltage */
+        /* D?VR(ui16) USB Port ? Charger voltage rating */
         key = 'D\0VR' | ((0x30 + charging) << 0x10);
         result = smc_read(key, &info->voltage);
         if (result == kIOReturnSuccess)
@@ -702,6 +706,10 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
     }
 
     return ret;
+}
+
+bool get_power_state(power_state_t *power) {
+    return true;
 }
 
 /* Sadly we still have to get hvc_menu from IOPS, since Macs has no D?PM */
@@ -729,6 +737,13 @@ hvc_menu_t *hvc_menu_parse(uint8_t *input) {
 
 #pragma Iktara Wireless
 
+/* Known charger Keys:
+ VQ0u(ioft)[8]: VBUS Voltage (V)
+ IQ0u(ioft)[8]: IBUS Current (A)
+ D?ID(flag): IOAM Inflow Inhibit
+ CHIE(hex_)[1]: Inflow Inhibit
+ 
+ */
 wireless_state_t wireless_charging_detect(void) {
     IOReturn result = kIOReturnSuccess;
     uint32_t st = 0;
@@ -739,7 +754,7 @@ wireless_state_t wireless_charging_detect(void) {
     if (result != kIOReturnSuccess)
         return false;
 
-    /* VBUS(ui32) Wireless Bus */
+    /* VBUS(ui32) Voltage Bus */
     result = smc_read('VBUS', &st);
     if (result != kIOReturnSuccess)
         return false;
@@ -826,8 +841,6 @@ bool get_iktara_fw_stat(iktara_fw_t *fw) {
     CH0I(ui8 ): Battery Connected State 1 << 0
     CH0J(ui8 ): Battery Connected State 1 << 1
     CH0K(ui8 ): Battery Connected State 1 << 2
- 
-    VBUS(ui32): SMC Detect Status
 
     MBSE(hex_): Sleep-Wake related
     MBSW(hex_): Sleep-Wake related

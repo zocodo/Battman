@@ -132,6 +132,7 @@ typedef struct device_info {
     uint32_t PMUConfiguration;
     uint16_t current;
     uint16_t voltage;
+    /* HVC (High Voltage Charging) */
     uint8_t hvc_menu[28]; /* hex_[28], 4 bit each hvc, max 7 hvc */
     int8_t hvc_index;
 } device_info_t;
@@ -248,6 +249,11 @@ typedef enum {
     kIsCharging,        /* Charging */
     kIsPausing,         /* AC connected, not charging */
 } charging_state_t;
+
+typedef struct power_state {
+    float AdapterPower;
+    float SystemPower;
+} power_state_t;
 
 typedef enum {
     kIsPresent = 1, /* Capable */

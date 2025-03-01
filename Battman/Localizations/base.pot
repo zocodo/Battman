@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Battman 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-27 18:48+0800\n"
+"POT-Creation-Date: 2025-03-01 19:11+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -96,11 +96,11 @@ msgstr ""
 msgid "Battman CLI not implemented yet."
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:50
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:51
 msgid "True"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:52
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:53
 msgid "False"
 msgstr ""
 
@@ -159,7 +159,7 @@ msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:102
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:76
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:283
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:286
 msgid "IT Misc Status"
 msgstr ""
 
@@ -171,7 +171,7 @@ msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:103
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:70
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:273
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:276
 msgid "Flags"
 msgstr ""
 
@@ -184,7 +184,7 @@ msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:104
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:77
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:285
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:288
 msgid "Simulation Rate"
 msgstr ""
 
@@ -194,103 +194,145 @@ msgid ""
 "simulations."
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:116
-msgid ""
-"All adapter information is dynamically retrieved from the hardware of the "
-"currently connected adapter. If any of the data is missing, it may indicate "
-"that the connected adapter is not providing the relevant information, or "
-"there may be a hardware issue with the adapter."
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:107
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:154
+msgid "Port"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:117
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:107
+msgid ""
+"Port of currently connectd adapter. On macOS, this is the USB port that the "
+"adapter currently attached."
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:108
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:155
+msgid "Type"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:108
+msgid ""
+"This field refers to the Family Code (kIOPSPowerAdapterFamilyKey) of "
+"currently connected power adapter."
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:109
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:158
+msgid "Current Rating"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:109
+msgid ""
+"Current rating of connected power source, this does not indicates the real-"
+"time passing current."
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:110
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:159
+msgid "Voltage Rating"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:110
+msgid ""
+"Voltage rating of connected power source, this does not indicates the real-"
+"time passing voltage."
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:111
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:168
+msgid "PMUConfiguration"
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:111
+msgid ""
+"Private field used by Apple PMU. Sadly I don't know how to parse this yet. "
+"Contributing welcomed."
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:123
+msgid ""
+"All adapter information is dynamically retrieved from the hardware of the "
+"currently connected adapter (or cable if you are using Lightning ports). If "
+"any of the data is missing, it may indicate that the power source is not "
+"providing the relevant information, or there may be a hardware issue with "
+"the power source."
+msgstr ""
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:124
 msgid ""
 "\"External Power\" may indicates the connected adapter is a wireless charger."
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:133
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:140
 msgid "Gas Gauge (Basic)"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:137
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:194
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:215
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:242
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:145
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:186
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:210
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:231
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:258
 msgid "Adapter Details"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:146
-msgid "Port"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:147
-msgid "Type"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:148
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:156
 msgid "Status"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:148
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:156
 msgid "Not Charging"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:148
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:156
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:51
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:244
 msgid "Charging"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:150
-msgid "Current Rating"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:150
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:158
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:37
 msgid "mA"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:151
-msgid "Voltage Rating"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:151
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:159
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:39
 msgid "mV"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:152
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:160
 msgid "Name"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:153
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:161
 msgid "Manufacturer"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:154
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:162
 msgid "Model"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:155
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:163
 msgid "Firmware"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:156
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:164
 msgid "Hardware"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:157
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:165
 msgid "Description"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:158
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:166
 msgid "Serial"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:160
-msgid "PMUConfiguration"
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:191
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:284
+msgid "OK"
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:192
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:208
 msgid ""
 "All Gas Gauge metrics are dynamically retrieved from the onboard sensor "
 "array in real time. Should anomalies be detected in specific readings, this "
@@ -298,12 +340,8 @@ msgid ""
 "through Apple Authorised Service Provider."
 msgstr ""
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:258
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:284
 msgid "Copied!"
-msgstr ""
-
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:258
-msgid "OK"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:551
@@ -505,36 +543,36 @@ msgid "Battery Serial"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:71
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:275
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:278
 msgid "True Remaining Capacity"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:72
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:277
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:280
 msgid "OCV Current"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:73
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:279
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:282
 msgid "OCV Voltage"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:74
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:281
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:284
 msgid "Peak Current"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:75
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:282
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:285
 msgid "Peak Current 2"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:78
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:287
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:290
 msgid "Daily Max SoC"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:79
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:288
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:291
 msgid "Daily Min SoC"
 msgstr ""

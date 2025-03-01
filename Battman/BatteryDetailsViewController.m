@@ -16,7 +16,8 @@ static device_info_t adapter_info;
 static NSMutableArray *adapter_cells;
 
 /* Desc */
-static NSArray *descarr;
+static NSArray *desc_batt;
+static NSArray *desc_adap;
 
 void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     // PLEASE ENSURE no hidden cell is here when calling
@@ -35,8 +36,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     NSString *final_str;
     cell.textLabel.text = _(i->description);
     /* Consider add a "Accessory" section in data struct */
-    if ([descarr indexOfObject:cell.textLabel.text] != NSNotFound) {
-        DBGLOG(@"Accessory %@, Index %lu", cell.textLabel.text, [descarr indexOfObject:cell.textLabel.text]);
+    if ([desc_batt indexOfObject:cell.textLabel.text] != NSNotFound) {
+        DBGLOG(@"Accessory %@, Index %lu", cell.textLabel.text, [desc_batt indexOfObject:cell.textLabel.text]);
         cell.accessoryType = UITableViewCellAccessoryDetailButton;
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
@@ -69,7 +70,6 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     return;
 }
 
-
 @implementation BatteryDetailsViewController
 
 - (NSString *)title {
@@ -94,7 +94,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     self.refreshControl = puller;
 
     /* Consider add a "Accessory" section in data struct */
-    descarr = @[
+    desc_batt = @[
         _("Device Name"), _("This indicates the name of the current Gas Gauge IC used by the installed battery."),
         _("Depth of Discharge"), _("Current chemical depth of discharge (DOD₀). The gas gauge updates information on the DOD₀ based on open-circuit voltage (OCV) readings when in a relaxed state."),
         _("Chemistry ID"), _("Chemistry unique identifier (ChemID) assigned to each battery in Texas Instruments' database. It ensures accurate calculations and predictions."),
@@ -103,17 +103,24 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         _("Flags"), _("The status information provided by the battery Gas Gauge IC, which may include the battery's operational modes, capabilities, or status codes. The format may vary depending on the Gas Gauge IC model."),
         _("Simulation Rate"), _("This field refers to the rate of Gas Gauge performing Impedance Track™ simulations."),
     ];
+    desc_adap = @[
+        _("Port"), _("Port of currently connectd adapter. On macOS, this is the USB port that the adapter currently attached."),
+        _("Type"), _("This field refers to the Family Code (kIOPSPowerAdapterFamilyKey) of currently connected power adapter."),
+        _("Current Rating"), _("Current rating of connected power source, this does not indicates the real-time passing current."),
+        _("Voltage Rating"), _("Voltage rating of connected power source, this does not indicates the real-time passing voltage."),
+        _("PMUConfiguration"), _("Private field used by Apple PMU. Sadly I don't know how to parse this yet. Contributing welcomed.")
+    ];
 }
 
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
     self = [super initWithStyle:UITableViewStyleGrouped];
-    self.tableView.allowsSelection = NO; // for now no ops specified it will just be stuck
+    self.tableView.allowsSelection = YES; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
     batteryInfo = bi;
     /* Don't remove this, otherwise users will blame us */
     /* TODO: Identify other Gas Gauging system */
 
-    NSString *adap_disclaimer = _("All adapter information is dynamically retrieved from the hardware of the currently connected adapter. If any of the data is missing, it may indicate that the connected adapter is not providing the relevant information, or there may be a hardware issue with the adapter.");
+    NSString *adap_disclaimer = _("All adapter information is dynamically retrieved from the hardware of the currently connected adapter (or cable if you are using Lightning ports). If any of the data is missing, it may indicate that the power source is not providing the relevant information, or there may be a hardware issue with the power source.");
     NSString *explaination_Ext = ((adapter_family & 0x20000) && (adapter_family & 0x7)) ? [NSString stringWithFormat:@"\n\n%@", _("\"External Power\" may indicates the connected adapter is a wireless charger.")] : @"";
 
     adapterDisclaimer = [NSString stringWithFormat:@"%@%@", adap_disclaimer, explaination_Ext];
@@ -132,7 +139,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 #endif
     sections_detail = [NSMutableArray arrayWithArray:@[_("Gas Gauge (Basic)")]];
     charging_state_t charging_stat = is_charging(&adapter_family, &adapter_info);
-    if (charging_stat > 0) {
+
+    if (charging_stat > 0 ) {
         DBGLOG(@"charging_stat: %d", charging_stat);
         [sections_detail addObject:_("Adapter Details")];
 
@@ -144,7 +152,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         adapter_cells = [[NSMutableArray alloc] init];
         [adapter_cells addObjectsFromArray:@[
             @[_("Port"),           [NSString stringWithFormat:@"%d", adapter_info.port]],
-            @[_("Type"),           [NSString stringWithFormat:@"%s (%.8X)", adapter_family_str, adapter_family]],
+            @[_("Type"),           [NSString stringWithFormat:@"%@ (%.8X)", _(adapter_family_str), adapter_family]],
             @[_("Status"),         (charging_stat == kIsPausing) ? _("Not Charging") : _("Charging")],
             /* TODO: Parse NotChargingReason Bits */
             @[_("Current Rating"), [NSString stringWithFormat:@"%u %@", adapter_info.current, _("mA")]],
@@ -160,6 +168,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             @[_("PMUConfiguration"), [NSString stringWithFormat:@"0x%.4X", adapter_info.PMUConfiguration]],
             /* TODO: Hvc */
         ]];
+        //if (true)
+        //    [adapter_cells addObject:@[_("HVC Table"), @""]];
     }
     /* TODO: Gas Gauge (Advanced) */
 
@@ -170,9 +180,15 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 
-    NSUInteger index = [descarr indexOfObject:cell.textLabel.text];
+    NSArray *target_desc;
+    if (indexPath.section == 0)
+        target_desc = desc_batt;
+    if (indexPath.section == [sections_detail indexOfObject:_("Adapter Details")])
+        target_desc = desc_adap;
+
+    NSUInteger index = [target_desc indexOfObject:cell.textLabel.text];
     if (index != NSNotFound)
-        show_alert([cell.textLabel.text UTF8String], [[descarr objectAtIndex:(index + 1)] UTF8String], _C("OK"));
+        show_alert([cell.textLabel.text UTF8String], [[target_desc objectAtIndex:(index + 1)] UTF8String], _C("OK"));
     DBGLOG(@"Accessory Pressed, %@", cell.textLabel.text);
 }
 
@@ -243,9 +259,19 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         NSArray *adapter_cell = adapter_cells[ip.row];
         cell.textLabel.text = adapter_cell[0];
         cell.detailTextLabel.text = adapter_cell[1];
+        if ([desc_adap indexOfObject:cell.textLabel.text] != NSNotFound) {
+            DBGLOG(@"Accessory %@, Index %lu", cell.textLabel.text, [desc_adap indexOfObject:cell.textLabel.text]);
+            cell.accessoryType = UITableViewCellAccessoryDetailButton;
+        } else {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
         return cell;
     }
     return nil;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
