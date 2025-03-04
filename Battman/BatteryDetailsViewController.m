@@ -2,6 +2,7 @@
 #include "battery_utils/libsmc.h"
 #include "common.h"
 #include "intlextern.h"
+#import "SegmentedViewCell.h"
 
 // TODO: Function for advanced users to call SMC themselves.
 // or add them to tracklist
@@ -13,6 +14,7 @@ BOOL configured_autorefresh = NO;
 /* Adapter Details */
 static mach_port_t adapter_family;
 static device_info_t adapter_info;
+static charger_data_t adapter_data;
 static NSMutableArray *adapter_cells;
 
 /* Desc */
@@ -110,6 +112,10 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         _("Voltage Rating"), _("Voltage rating of connected power source, this does not indicates the real-time passing voltage."),
         _("PMUConfiguration"), _("Private field used by Apple PMU. Sadly I don't know how to parse this yet. Contributing welcomed.")
     ];
+
+    [self.tableView registerClass:[SegmentedViewCell class] forCellReuseIdentifier:@"HVC"];
+    self.tableView.estimatedRowHeight = 100;
+    self.tableView.rowHeight = UITableViewAutomaticDimension;
 }
 
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
@@ -140,7 +146,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     sections_detail = [NSMutableArray arrayWithArray:@[_("Gas Gauge (Basic)")]];
     charging_state_t charging_stat = is_charging(&adapter_family, &adapter_info);
 
-    if (charging_stat > 0 ) {
+    if (charging_stat > 0) {
         DBGLOG(@"charging_stat: %d", charging_stat);
         [sections_detail addObject:_("Adapter Details")];
 
@@ -148,6 +154,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         if (adapter_family) {
             adapter_family_str = get_adapter_family_desc(adapter_family);
         }
+        (void)get_charger_data(&adapter_data);
 
         adapter_cells = [[NSMutableArray alloc] init];
         [adapter_cells addObjectsFromArray:@[
@@ -167,9 +174,11 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             /* TODO: Parse PMU Configuration Bits */
             @[_("PMUConfiguration"), [NSString stringWithFormat:@"0x%.4X", adapter_info.PMUConfiguration]],
             /* TODO: Hvc */
+            @[_("HVC Mode"),       @""], /* Special type, content controlled later */
         ]];
-        //if (true)
-        //    [adapter_cells addObject:@[_("HVC Table"), @""]];
+        if (charging_stat == kIsPausing) {
+            [adapter_cells insertObject:@[_("Not Charging Reason"), [NSString stringWithUTF8String:not_charging_reason_str(adapter_data.NotChargingReason)]] atIndex:3];
+        }
     }
     /* TODO: Gas Gauge (Advanced) */
 
@@ -264,6 +273,15 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             cell.accessoryType = UITableViewCellAccessoryDetailButton;
         } else {
             cell.accessoryType = UITableViewCellAccessoryNone;
+        }
+        /* HVC Mode special handler */
+        if ([cell.textLabel.text isEqualToString:_("HVC Mode")]) {
+            SegmentedViewCell *cell_seg = [tv dequeueReusableCellWithIdentifier:@"HVC"];
+            if (!cell_seg) cell_seg = [[SegmentedViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"HVC"];
+            cell_seg.accessoryType = UITableViewCellAccessoryDetailButton;
+            cell_seg.titleLabel.text = cell.textLabel.text;
+            cell_seg.detailLabel.text = @"2";
+            return cell_seg;
         }
         return cell;
     }

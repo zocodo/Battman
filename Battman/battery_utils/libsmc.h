@@ -230,12 +230,15 @@ typedef struct kiosk_mode {
 } kiosk_mode_t;
 
 typedef struct charger_data {
+    uint32_t ChargerConfiguration;      /* CHAS */
     uint32_t ChargingCurrent;           /* CHBI */
     uint32_t ChargingVoltage;           /* CHBV */
     uint16_t ChargerVacVoltageLimit;    /* BVVL */
     uint64_t NotChargingReason;         /* BNCR / CHNC */
     uint8_t ChargerStatus[64];          /* CHSL */
     uint32_t ChargerId;                 /* CH0D */
+    uint8_t ChargerCapable;             /* CHCC */
+    uint8_t ChargerExist;               /* CHCE */
 } charger_data_t;
 
 typedef struct hvc_menu {
@@ -288,6 +291,8 @@ float *get_temperature_per_batt(void);
 bool battery_serial(char *serial);
 hvc_menu_t *hvc_menu_parse(uint8_t *input);
 char *get_adapter_family_desc(mach_port_t family);
+bool get_charger_data(charger_data_t *data);
+char *not_charging_reason_str(uint64_t code);
 
 __END_DECLS
 

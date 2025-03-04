@@ -69,6 +69,7 @@
 		687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743442D4F6C7800375A2C /* BatteryInfoTableViewCell.m */; };
 		68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */ = {isa = PBXBuildFile; fileRef = 68A3EAF62D5204D2003381DF /* battery_info.c */; };
 		68A3EAFD2D5204EA003381DF /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A3EAFC2D5204EA003381DF /* IOKit.framework */; };
+		68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */; };
 		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
 
@@ -121,6 +122,10 @@
 		68A3EAF62D5204D2003381DF /* battery_info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = battery_info.c; sourceTree = "<group>"; };
 		68A3EAF72D5204D2003381DF /* battery_info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = battery_info.h; sourceTree = "<group>"; };
 		68A3EAFC2D5204EA003381DF /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SegmentedViewCell.m; sourceTree = "<group>"; };
+		68D6DEBF2D745DCB00E129A0 /* SegmentedViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SegmentedViewCell.h; sourceTree = "<group>"; };
+		68D6DEC02D77071300E129A0 /* not_charging_reason.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = not_charging_reason.h; sourceTree = "<group>"; };
+		68D6DEC12D770B9F00E129A0 /* kiosk_mode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kiosk_mode.h; sourceTree = "<group>"; };
 		68DCA5582D3BBC6A004D0104 /* Battman.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Battman.storyboard; sourceTree = "<group>"; };
 		68DCA5602D3D0AC5004D0104 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		68DCA5A82D3F9338004D0104 /* common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
@@ -201,6 +206,8 @@
 				68DCA5AB2D3F9A10004D0104 /* gtkextern.h */,
 				68DCA5AD2D3F9BFD004D0104 /* glibextern.h */,
 				68DCA5AE2D3FA4DA004D0104 /* intlextern.h */,
+				68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */,
+				68D6DEBF2D745DCB00E129A0 /* SegmentedViewCell.h */,
 			);
 			path = Battman;
 			sourceTree = "<group>";
@@ -231,6 +238,8 @@
 				68171A2F2D5221C400DD4224 /* libsmc.c */,
 				68E938992D58980B00223285 /* iokit_connection.h */,
 				68E9389A2D58980B00223285 /* iokit_connection.c */,
+				68D6DEC02D77071300E129A0 /* not_charging_reason.h */,
+				68D6DEC12D770B9F00E129A0 /* kiosk_mode.h */,
 			);
 			path = battery_utils;
 			sourceTree = "<group>";
@@ -451,6 +460,7 @@
 				687743372D4E08AD00375A2C /* BatteryInfoViewController.m in Sources */,
 				687743472D4F6C7800375A2C /* SPWaterProgressIndicatorView.m in Sources */,
 				686AECD52D3B93CD0059ECD0 /* main.m in Sources */,
+				68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */,
 				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
 				686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */,
 				68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */,

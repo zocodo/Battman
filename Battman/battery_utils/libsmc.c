@@ -546,6 +546,94 @@ bool battery_serial(char *serial) {
 #undef _
 #endif
 #define _(x) x
+#include "not_charging_reason.h"
+#define addreason(reason, x) if (code & reason) sprintf(subreason, "%s\n", x);
+char *not_charging_reason_str(uint64_t code) {
+    static char reason[1024];
+    char subreason[1024];
+
+    if (code == BATTERY_CHARGING_ENABLE_EVENT) return _("None");
+
+    addreason(NOT_CHARGING_REASON_FULLY_CHARGED, _("Fully Charged"));
+    addreason(NOT_CHARGING_REASON_TEMP_BELOW_MIN_STOP_CHARGING, _("Low Temperature Stopped"));
+    addreason(NOT_CHARGING_REASON_TEMP_ABOVE_MAX_STOP_CHARGING, _("High Temperature Stopped"));
+    addreason(NOT_CHARGING_REASON_TEMP_BELOW_MIN_START_CHARGING, _("Low Temperature"))
+    addreason(NOT_CHARGING_REASON_TEMP_ABOVE_MAX_START_CHARGING, _("High Temperature"));
+
+    addreason(NOT_CHARGING_REASON_BATTERY_NOT_PRESENT, _("Battery Not Present"));
+    addreason(NOT_CHARGING_REASON_VBUS_NOT_PRESENT, _("VBUS Not Present"));
+
+    addreason(NOT_CHARGING_REASON_INHIBIT_INFLOW_BATTERY_NOT_PRESENT, _("Inhibit Inflow Battery Not Present"));
+    addreason(NOT_CHARGING_REASON_CHARGER_COMMUNICATION_FAILED, _("Charger Communication Failed"));
+    addreason(NOT_CHARGING_REASON_INHIBIT_INFLOW, _("Inhibit Inflow"));
+
+    addreason(NOT_CHARGING_REASON_IOAM, _("IOAM"));
+    addreason(NOT_CHARGING_REASON_KIOSK_MODE, _("Kiosk Mode"));
+    addreason(NOT_CHARGING_REASON_COREMOTION, _("CoreMotion"));
+    addreason(NOT_CHARGING_REASON_USBPD, _("USB-PD Connecting")); // This is not 'not charging' ig
+    
+    addreason(NOT_CHARGING_REASON_FIELDDIAGS, _("Field Diagnostics"));
+
+    addreason(NOT_CHARGING_REASON_INHIBIT_CLIENT_ADAPTER, _("Inhibit Client Adapter"));
+
+    // Internal setbatt tool controlled
+    addreason(NOT_CHARGING_REASON_SETBATT, _("setbatt"));
+    // System controlled
+    addreason(NOT_CHARGING_REASON_PREDICTIVECHARGING, _("Predictive Charging"));
+    // What is that? Wireless inductive? I need a MagSafe charger to check this.
+    addreason(NOT_CHARGING_REASON_INDUCTIVE, _("Inductive"));
+    // Gas Gauge FW Update (HOW?)
+    addreason(NOT_CHARGING_REASON_GG_FW_UPDATE, _("Gas Gauge FW Updating"));
+
+    addreason(NOT_CHARGING_REASON_HIGH_SOC_HIGH_TEMP_STOP_CHARGING, _("High SoC, High Temperature Stopped"));
+
+    addreason(NOT_CHARGING_REASON_IBAT_MINFAULT, _("Current Too Low")); // What is minfault?
+
+    addreason(NOT_CHARGING_REASON_CHARGE_TIMER_EXPIRED, _("Charger Wachdog Timeout"));
+
+    // Carrier mode testing
+    addreason(NOT_CHARGING_REASON_CARRIER_TEST, _("Carrier Test"));
+
+    /* This is conflicting with NOT_CHARGING_REASON_TEMP_ABOVE_MAX_START_CHARGING, why?
+    if (code & 0x10) sprintf(subreason, "%s", _("Charger Timeout"));
+    if (code & 0x20) sprintf(subreason, "%s", _("Charger Wachdog Timeout"));
+     */
+
+    /* This is all possible reasons I could know yet
+     * NotChargingReason is complex bit, not just constants, I didn't find more useful
+     * informations about parsing it.
+     * Contributing welcomed.
+     */
+    if (strlen(subreason) > 0) {
+        sprintf(reason, "%s\n(0x%llX)", subreason, code);
+    } else {
+        sprintf(reason, "(0x%llx)", code);
+    }
+
+    return reason;
+}
+char *charger_status_str(uint8_t code[64]) {
+    static char status[1024];
+    char *byte2stat = NULL;
+
+    if (code[0] == 0x00) return _("None");
+
+    // code[0]: Charger Type I guess, each device has different 1st byte
+    // MacBook Pro (13-inch, M1, 2020), Has always 0x8A set
+    if (code[0] == 0x8A) {
+        switch (code[1]) {
+            case 0x6C: byte2stat = _("Connecting");
+            // 0xB0
+            case 0xB4: byte2stat = _("Fully Charged");
+            case 0xB8: byte2stat = _("Stopped");
+            case 0xD0: byte2stat = _("Disconnected");
+            case 0xD4: byte2stat = _("Connected");
+            case 0xD8: byte2stat = _("Charging");
+        }
+    }
+    return status;
+}
+
 char *get_adapter_family_desc(mach_port_t family) {
     switch (family) {
         case kIOPSFamilyCodeDisconnected:               return _("Disconnected");
@@ -692,20 +780,77 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Voltage: %u"), charging, info->voltage);
         
-        /* D?PM(hex_) USB Port ? Capabilities */
+        /* D?PM(hex_) USB Port ? Power Modes */
         key = 'D\0PM' | ((0x30 + charging) << 0x10);
         result = smc_read(key, info->hvc_menu);
         if (result == kIOReturnSuccess)
-            DBGLOG(CFSTR("Port: %d, Capabilities: 0x%X"), charging, info->hvc_menu);
+            DBGLOG(CFSTR("Port: %d, Modes: 0x%X"), charging, info->hvc_menu);
 
-        /* D?PI(si8 ) USB Port ? Capability Index */
+        /* D?PI(si8 ) USB Port ? Mode Index */
         key = 'D\0PI' | ((0x30 + charging) << 0x10);
         result = smc_read(key, &info->hvc_index);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Index: %d"), charging, info->hvc_index);
+
+        /* Other info */
     }
 
     return ret;
+}
+
+// This is different with device_info_t which returned by is_charging()
+bool get_charger_data(charger_data_t *data) {
+    IOReturn result = kIOReturnSuccess;
+
+    // No matter if charging or not, get data anyway
+    memset(data, 0, sizeof(charger_data_t));
+
+    /* CHCE(ui8 ) Charger Exist */
+    result = smc_read('CHCE', &data->ChargerExist);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Charger Exist: %u"), &data->ChargerExist);
+
+    /* CHCC(ui8 ) Charger Capable */
+    result = smc_read('CHCC', &data->ChargerCapable);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Charger Capable: %u"), &data->ChargerCapable);
+
+    /* CHBI(ui32) Charging Current */
+    result = smc_read('CHBI', &data->ChargingCurrent);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Charging Current: %u"), &data->ChargingCurrent);
+
+    /* CHBV(ui32) Charging Voltage */
+    result = smc_read('CHBV', &data->ChargingVoltage);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Charging Voltage: %u"), &data->ChargingVoltage);
+
+    /* BVVL(ui16) Charger Vac Voltage Limit */
+    result = smc_read('BVVL', &data->ChargerVacVoltageLimit);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Charger Vac Voltage Limit: %u"), &data->ChargerVacVoltageLimit);
+
+    /* CHNC(hex_)[8] Not Charging Reason */
+    result = smc_read('CHNC', &data->NotChargingReason);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Not Charging Reason: 0x%X"), &data->NotChargingReason);
+
+    /* CHSL(hex_)[8] Charger Status ([64] on mobile devices) */
+    result = smc_read('CHSL', &data->ChargerStatus);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Charger Status: 0x%X"), &data->ChargerStatus);
+
+    /* CH0D(hex_)[4] Charger ID */
+    result = smc_read('CH0D', &data->ChargerId);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Charger ID: 0x%X"), &data->ChargerId);
+
+    /* CHAS(ui32) Charger Configuration */
+    result = smc_read('CHAS', &data->ChargerConfiguration);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Charger Configuration: 0x%X"), &data->ChargerConfiguration);
+    
+    return (data->ChargerExist & 1) != 0;
 }
 
 bool get_power_state(power_state_t *power) {
