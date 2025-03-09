@@ -677,7 +677,7 @@ char *not_charging_reason_str(uint64_t code) {
      * Contributing welcomed.
      */
     if (strlen(subreason) > 0) {
-        sprintf(reason, "%s%s(0x%llX)", subreason + 1, (gen == 4) ? "\n" : " ", code);
+        sprintf(reason, "%s%s(0x%llX)", subreason + (gen == 4), (gen == 4) ? "\n" : " ", code);
     } else {
         sprintf(reason, "(0x%llx)", code);
     }
@@ -959,7 +959,7 @@ hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size) {
       }
     }
 
-    *size = valid_id + 1;
+    *size = valid_id;
 
     return menu;
 }

@@ -173,11 +173,10 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             @[_("Compatibility"),       [NSString stringWithFormat:@"%@: %@\n%@: %@", _("Exist"), (adapter_data.ChargerExist == 1) ? _("True") : _("False"), _("Capable"), (adapter_data.ChargerCapable == 1) ? _("True") : _("False")]],
             @[_("Type"),                [NSString stringWithFormat:@"%@ (%.8X)", _(adapter_family_str), adapter_family]],
             @[_("Status"),              (charging_stat == kIsPausing || adapter_data.NotChargingReason != 0) ? _("Not Charging") : _("Charging")],
-            /* TODO: Parse NotChargingReason Bits */
             @[_("Current Rating"),      [NSString stringWithFormat:@"%u %@", adapter_info.current, _("mA")]],
             @[_("Voltage Rating"),      [NSString stringWithFormat:@"%u %@", adapter_info.voltage, _("mV")]],
             @[_("Charging Current"),    [NSString stringWithFormat:@"%u %@", adapter_data.ChargingCurrent, _("mA")]],
-            @[_("Charging Voltage"),    [NSString stringWithFormat:@"%u %@", adapter_data.ChargingVoltage, _("mA")]],
+            @[_("Charging Voltage"),    [NSString stringWithFormat:@"%u %@", adapter_data.ChargingVoltage, _("mV")]],
             @[_("Charger ID"),          [NSString stringWithFormat:@"0x%.4X", adapter_data.ChargerId]],
             @[_("Model Name"),          [NSString stringWithUTF8String:adapter_info.name]],
             @[_("Manufacturer"),        [NSString stringWithUTF8String:adapter_info.vendor]],
@@ -199,7 +198,6 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             /* TODO: Parse PMU Configuration Bits */
             @[_("PMUConfiguration"),    [NSString stringWithFormat:@"0x%.4X", adapter_info.PMUConfiguration]],
             @[_("ChargerConfiguration"),[NSString stringWithFormat:@"0x%.4X", adapter_data.ChargerConfiguration]],
-            /* TODO: Hvc */
             @[_("HVC Mode"),            @""], /* Special type, content controlled later */
         ]];
         if (adapter_data.NotChargingReason != 0) {
