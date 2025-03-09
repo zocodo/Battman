@@ -31,8 +31,8 @@
         self.detailLabel.textAlignment = cell.detailTextLabel.textAlignment;
         [self.contentView addSubview:self.detailLabel];
         
-        // Initialize segmented control with sample segments
-        self.segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"1", @"2"]];
+        // Initialize segmented control with sample segment
+        self.segmentedControl = [[UISegmentedControl alloc] initWithItems:@[@"0"]];
         self.segmentedControl.translatesAutoresizingMaskIntoConstraints = NO;
         [self.contentView addSubview:self.segmentedControl];
 
@@ -47,8 +47,8 @@
         self.subDetailLabel.textAlignment = cell.detailTextLabel.textAlignment;
         [self.contentView addSubview:self.subDetailLabel];
 
-        self.subDetailLabel.text = @"514 mA";
-        self.subTitleLabel.text = @"114 mV";
+        self.subDetailLabel.text = @"0 mA";
+        self.subTitleLabel.text = @"0 mV";
         
         // Setup Auto Layout constraints
         [NSLayoutConstraint activateConstraints:@[
@@ -75,7 +75,7 @@
             [self.subDetailLabel.leadingAnchor constraintEqualToAnchor:self.textLabel.leadingAnchor],
             [self.subDetailLabel.trailingAnchor constraintEqualToAnchor:self.contentView.trailingAnchor constant:-16],
             // Bottom
-            [self.subDetailLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-8],
+            [self.subDetailLabel.bottomAnchor constraintEqualToAnchor:self.contentView.bottomAnchor constant:-12],
         ]];
     }
     return self;

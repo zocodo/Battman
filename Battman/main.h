@@ -11,7 +11,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
+#ifdef __OBJC__
 #include <Foundation/Foundation.h>
+#endif
 
 #if __has_include(<SoftLinking/WeakLinking.h>)
 #include <SoftLinking/WeakLinking.h>
@@ -40,6 +42,7 @@
 #define BATTMAN_TEXTDOMAIN "battman"
 #endif
 
+#ifdef __OBJC__
 __BEGIN_DECLS
 
 #ifndef USE_GETTEXT
@@ -49,5 +52,6 @@ NSString *cond_localize(const char *str);
 #endif
 
 __END_DECLS
+#endif
 
 #endif /* main_h */

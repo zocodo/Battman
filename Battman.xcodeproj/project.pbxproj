@@ -56,6 +56,8 @@
 /* Begin PBXBuildFile section */
 		68171A302D5221C400DD4224 /* libsmc.c in Sources */ = {isa = PBXBuildFile; fileRef = 68171A2F2D5221C400DD4224 /* libsmc.c */; };
 		68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */; };
+		6834254B2D7C4F560070CE6F /* iokit_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 68E9389A2D58980B00223285 /* iokit_connection.c */; };
+		683425502D7D6A240070CE6F /* MultilineViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6834254F2D7D6A240070CE6F /* MultilineViewCell.m */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; };
 		686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC32D3B93CB0059ECD0 /* AppDelegate.m */; };
 		686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */; };
@@ -95,6 +97,8 @@
 		68171A2F2D5221C400DD4224 /* libsmc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libsmc.c; sourceTree = "<group>"; };
 		68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatteryDetailsViewController.m; sourceTree = "<group>"; };
 		68171A362D534E6B00DD4224 /* BatteryDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryDetailsViewController.h; sourceTree = "<group>"; };
+		6834254F2D7D6A240070CE6F /* MultilineViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultilineViewCell.m; sourceTree = "<group>"; };
+		683425512D7D6A380070CE6F /* MultilineViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultilineViewCell.h; sourceTree = "<group>"; };
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		686AECC22D3B93CB0059ECD0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		686AECC32D3B93CB0059ECD0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -208,6 +212,8 @@
 				68DCA5AE2D3FA4DA004D0104 /* intlextern.h */,
 				68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */,
 				68D6DEBF2D745DCB00E129A0 /* SegmentedViewCell.h */,
+				6834254F2D7D6A240070CE6F /* MultilineViewCell.m */,
+				683425512D7D6A380070CE6F /* MultilineViewCell.h */,
 			);
 			path = Battman;
 			sourceTree = "<group>";
@@ -262,6 +268,7 @@
 			buildConfigurationList = 686AECD82D3B93CD0059ECD0 /* Build configuration list for PBXNativeTarget "Battman" */;
 			buildPhases = (
 				686AECBB2D3B93CB0059ECD0 /* Sources */,
+				683425522D7D8AA00070CE6F /* Git Commit Hash */,
 				686AECBC2D3B93CB0059ECD0 /* Frameworks */,
 				686AECBD2D3B93CB0059ECD0 /* Resources */,
 				68171A2A2D520AB400DD4224 /* ShellScript */,
@@ -370,6 +377,24 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e -x\n\nPATH=/opt/homebrew/bin:$PATH\n\nif [ ${PLATFORM_NAME} == \"iphoneos\" ]; then\n  ldid -S${PROJECT_DIR}/Battman.entitlements ${CODESIGNING_FOLDER_PATH}/Battman\nfi\n";
 		};
+		683425522D7D8AA00070CE6F /* Git Commit Hash */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Git Commit Hash";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "COMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${INFOPLIST_FILE}\"\n";
+		};
 		687742AF2D437EEA00375A2C /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -453,6 +478,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6834254B2D7C4F560070CE6F /* iokit_connection.c in Sources */,
 				687743462D4F6C7800375A2C /* BatteryCellView.m in Sources */,
 				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
 				686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */,
@@ -460,6 +486,7 @@
 				687743372D4E08AD00375A2C /* BatteryInfoViewController.m in Sources */,
 				687743472D4F6C7800375A2C /* SPWaterProgressIndicatorView.m in Sources */,
 				686AECD52D3B93CD0059ECD0 /* main.m in Sources */,
+				683425502D7D6A240070CE6F /* MultilineViewCell.m in Sources */,
 				68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */,
 				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
 				686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */,

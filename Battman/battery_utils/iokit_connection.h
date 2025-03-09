@@ -8,22 +8,14 @@
 #ifndef iokit_connection_h
 #define iokit_connection_h
 
+#include "libsmc.h"
 #include <stdio.h>
+#include <CoreFoundation/CoreFoundation.h>
 
 /* IOThunderboltController Power State */
 #define kThunderboltPMSleepState 0
 #define kThunderboltPMPauseState 1
 #define kThunderboltPMWakeState  2
-
-/* Known NotChargingReason */
-/*
- 0: None
- NotChargingReason & 0x10: ChargerTimeout
- NotChargingReason & 0x20: ChargerWatchdogTimeout
- 0x80: Not Connected (Refer to Charger Status)
- 0x2000: Connecting
- 0x400001: Fully Charged
- */
 
 /* Known ChargerStatus */
 /*
@@ -35,5 +27,11 @@
  0xD8: Charging
  0xB8: Stopped
  */
- 
+
+__BEGIN_DECLS
+
+hvc_menu_t *convert_hvc(CFDictionaryRef dict, size_t *size, int8_t *index);
+
+__END_DECLS
+
 #endif /* iokit_connection_h */

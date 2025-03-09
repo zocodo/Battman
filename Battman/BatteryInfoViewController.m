@@ -20,7 +20,13 @@ static NSMutableArray *sections_batteryinfo;
     // Copyright text
     UILabel *copyright;
     copyright = [[UILabel alloc] init];
-    copyright.text = _("2025 Ⓒ Torrekie <me@torrekie.dev>");
+    NSString *me = _("2025 Ⓒ Torrekie <me@torrekie.dev>");
+#ifdef DEBUG
+    copyright.text = [NSString stringWithFormat:@"%@\n%@\n%s %s %@\n%@", me, _("Debug Build"), __DATE__, __TIME__, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GIT_COMMIT_HASH"], _("Redistribution Prohibited")];
+    copyright.numberOfLines = 0;
+#else
+    copyright.text = me;
+#endif
     copyright.font = [UIFont systemFontOfSize:12];
     copyright.textAlignment = NSTextAlignmentCenter;
     copyright.textColor = [UIColor grayColor];

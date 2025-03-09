@@ -221,6 +221,7 @@ typedef struct carrier_mode {
     uint32_t low_voltage;   /* CHTL */
 } carrier_mode_t;
 
+/* This is not "Single App Mode", possibly enabled on Demo devices but cannot verify */
 typedef struct kiosk_mode {
     uint8_t mode;               /* CHKM */
     uint16_t FullVoltage;       /* CHKL */
@@ -289,7 +290,7 @@ typedef unsigned int mach_port_t;
 charging_state_t is_charging(mach_port_t *family, device_info_t *info);
 float *get_temperature_per_batt(void);
 bool battery_serial(char *serial);
-hvc_menu_t *hvc_menu_parse(uint8_t *input);
+hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size);
 char *get_adapter_family_desc(mach_port_t family);
 bool get_charger_data(charger_data_t *data);
 char *not_charging_reason_str(uint64_t code);
