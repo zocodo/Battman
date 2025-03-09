@@ -15,6 +15,15 @@ Strayers' modern battery manager for their good old iOS devices.
 - [x] Show as much as power informations than IOPS & PowerManagement provided
 - [x] Identifying your power adapters, wireless chargers, or even your MagSafe accessories
 
+### Only Battman Can Do
+
+What other battery utils made for iOS hasn’t done
+(As of 9th Sun Mar 2025 UTC+0)
+- [x] Complete NotChargingReason decoding (see [not_charging_reason.h](Battman/battery_utils/not_charging_reason.h))
+- [x] Texas Intruments Impedance Track™ information retrieving
+- [x] Real-time charging current/voltage reading
+- [x] Running perfectly when in Xcode Simulator
+
 ### Requirements
 
 - Jailbroken or install with TrollStore
@@ -29,6 +38,7 @@ Strayers' modern battery manager for their good old iOS devices.
 - [ ] Charge limit
 - [ ] Wireless integration
 - [ ] App rate limit
+- [ ] Jetsam control
 - [ ] Fan control
 
 ### License
@@ -37,4 +47,4 @@ MIT for now, may become non-free later.
 
 ## Disclaimer
 
-DO NOT USE AT PRODUCTION, NO WARRANTY GURARANTEED, USE AT YOUR OWN RISK.
+DO NOT USE FOR PRODUCTION, NO WARRANTY GURARANTEED, USE AT YOUR OWN RISK.
