@@ -32,6 +32,21 @@ What other battery utils made for iOS hasn’t done
 - Gettext libintl (Optional, for localizations)
 - GTK+ 3 (Optional, for running under GTK+ based WM)
 
+### Download
+
+I don't provide prebuilts at current stage, Battman is still not as completed as how I thought. If you really desired to use Battman, build by yourself or contact me for a prebuilt package.
+
+```bash
+# On macOS, install Xcode and directly build in it
+# On Linux or BSD, make sure a LLVM cross toolchain and iPhoneOS.sdk is prepared, modify Battman/Makefile if needed
+# On iOS, when you using Torrekie/Comdartiwerk as bootstrap
+apt install git odcctools bash clang make sed grep ld64 ldid libintl-dev iphoneos.sdk
+git clone https://https://github.com/Torrekie/Battman
+cd Battman
+make -C Battman all
+# Produced Battman.ipa will under $(CWD)/Battman/build/Battman.ipa
+```
+
 ### TODO
 - [ ] Run as CLI
 - [ ] Run as daemon
@@ -43,7 +58,7 @@ What other battery utils made for iOS hasn’t done
 
 ### License
 
-MIT for now, may become non-free later.
+MIT for now, may become non-free later, you won't blame me if I want to make living with this right?
 
 ## Disclaimer
 
