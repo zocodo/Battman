@@ -14,6 +14,7 @@ NSTimeInterval reload_interval = 5.0;
 BOOL configured_autorefresh = NO;
 
 /* Adapter Details */
+static charging_state_t charging_stat;
 static mach_port_t adapter_family;
 static device_info_t adapter_info;
 static charger_data_t adapter_data;
@@ -111,6 +112,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         _("Flags"), _("The status information provided by the battery Gas Gauge IC, which may include the battery's operational modes, capabilities, or status codes. The format may vary depending on the Gas Gauge IC model."),
         _("Simulation Rate"), _("This field refers to the rate of Gas Gauge performing Impedance Track™ simulations."),
     ];
+
     desc_adap = @[
         _("Port"), _("Port of currently connectd adapter. On macOS, this is the USB port that the adapter currently attached."),
         _("Type"), _("This field refers to the Family Code (kIOPSPowerAdapterFamilyKey) of currently connected power adapter."),
@@ -133,13 +135,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     self.tableView.allowsSelection = YES; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
     batteryInfo = bi;
-    /* Don't remove this, otherwise users will blame us */
-    /* TODO: Identify other Gas Gauging system */
+    charging_stat = is_charging(&adapter_family, &adapter_info);
 
-    NSString *adap_disclaimer = _("All adapter information is dynamically retrieved from the hardware of the currently connected adapter (or cable if you are using Lightning ports). If any of the data is missing, it may indicate that the power source is not providing the relevant information, or there may be a hardware issue with the power source.");
-    NSString *explaination_Ext = ((adapter_family & 0x20000) && (adapter_family & 0x7)) ? [NSString stringWithFormat:@"\n\n%@", _("\"External Power\" indicator may suggest that the connected adapter is a wireless charger. Most information may not be displayed because wireless chargers are handled differently by the hardware.")] : @"";
-
-    adapterDisclaimer = [NSString stringWithFormat:@"%@%@", adap_disclaimer, explaination_Ext];
     return self;
 }
 
@@ -154,7 +151,6 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     if (adapter_cells) [adapter_cells dealloc];
 #endif
     sections_detail = [NSMutableArray arrayWithArray:@[_("Gas Gauge (Basic)")]];
-    charging_state_t charging_stat = is_charging(&adapter_family, &adapter_info);
 
     if (charging_stat > 0) {
         DBGLOG(@"charging_stat: %d", charging_stat);
@@ -170,7 +166,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         [adapter_cells addObjectsFromArray:@[
             @[_("Port"),                [NSString stringWithFormat:@"%d", adapter_info.port]],
             // This is terrible
-            @[_("Compatibility"),       [NSString stringWithFormat:@"%@: %@\n%@: %@", _("Exist"), (adapter_data.ChargerExist == 1) ? _("True") : _("False"), _("Capable"), (adapter_data.ChargerCapable == 1) ? _("True") : _("False")]],
+            @[_("Compatibility"),       [NSString stringWithFormat:@"%@: %@\n%@: %@", _("Socket Connected"), (adapter_data.ChargerExist == 1) ? _("True") : _("False"), _("Charger Capable"), (adapter_data.ChargerCapable == 1) ? _("True") : _("False")]],
             @[_("Type"),                [NSString stringWithFormat:@"%@ (%.8X)", _(adapter_family_str), adapter_family]],
             @[_("Status"),              (charging_stat == kIsPausing || adapter_data.NotChargingReason != 0) ? _("Not Charging") : _("Charging")],
             @[_("Current Rating"),      [NSString stringWithFormat:@"%u %@", adapter_info.current, _("mA")]],
@@ -220,8 +216,16 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         target_desc = desc_adap;
 
     NSUInteger index = [target_desc indexOfObject:cell.textLabel.text];
-    if (index != NSNotFound)
-        show_alert([cell.textLabel.text UTF8String], [[target_desc objectAtIndex:(index + 1)] UTF8String], _C("OK"));
+    if (index != NSNotFound) {
+        /* Special case: External */
+        if ([cell.textLabel.text isEqualToString:_("Type")]) {
+            NSString *finalstr = [target_desc objectAtIndex:(index + 1)];
+            NSString *explaination_Ext = ((adapter_family & 0x20000) && (adapter_family & 0x7)) ? [NSString stringWithFormat:@"\n\n%@", _("\"External Power\" indicator may suggest that the connected adapter is a wireless charger. Most information may not be displayed because wireless chargers are handled differently by the hardware.")] : @"";
+            show_alert([cell.textLabel.text UTF8String], [[NSString stringWithFormat:@"%@%@", finalstr, explaination_Ext] UTF8String], _C("OK"));
+        } else {
+            show_alert([cell.textLabel.text UTF8String], [[target_desc objectAtIndex:(index + 1)] UTF8String], _C("OK"));
+        }
+    }
     DBGLOG(@"Accessory Pressed, %@", cell.textLabel.text);
 }
 
@@ -237,11 +241,13 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 
 - (NSString *)tableView:(UITableView *)tableView
     titleForFooterInSection:(NSInteger)section {
+    /* Don't remove this, otherwise users will blame us */
+    /* TODO: Identify other Gas Gauging system */
     if (section == 0) {
         return _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
     }
     if (section == [sections_detail indexOfObject:_("Adapter Details")]) {
-        return adapterDisclaimer;
+        return _("All adapter information is dynamically retrieved from the hardware of the currently connected adapter (or cable if you are using Lightning ports). If any of the data is missing, it may indicate that the power source is not providing the relevant information, or there may be a hardware issue with the power source.");
     }
     return nil;
 }
@@ -306,6 +312,13 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         if ([cell.textLabel.text isEqualToString:_("HVC Mode")]) {
             /* Parse HVC Modes if have any */
             if (adapter_info.hvc_menu[27] != 0xFF) {
+#ifdef DEBUG
+                NSString *bits = [[NSString alloc] init];
+                for (int i = 0; i < 27; i++) {
+                    [bits stringByAppendingFormat:@"%x ", adapter_info.hvc_menu[i]];
+                }
+                DBGLOG(@"HVC Menu Bits: %@", bits);
+#endif
                 hvc_menu = hvc_menu_parse(adapter_info.hvc_menu, &hvc_menu_size);
                 hvc_index = adapter_info.hvc_index;
                 hvc_soft = false;

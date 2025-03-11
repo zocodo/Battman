@@ -375,7 +375,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e -x\n\nPATH=/opt/homebrew/bin:$PATH\n\nif [ ${PLATFORM_NAME} == \"iphoneos\" ]; then\n  ldid -S${PROJECT_DIR}/Battman.entitlements ${CODESIGNING_FOLDER_PATH}/Battman\nfi\n";
+			shellScript = "set -e -x\n\nPATH=/opt/homebrew/bin:$PATH\n\nif [ ${PLATFORM_NAME} == \"iphoneos\" ]; then\n  ldid -S${PROJECT_DIR}/Battman.entitlements ${CODESIGNING_FOLDER_PATH}/Battman\nfi\n\ngit restore \"${INFOPLIST_FILE}\" || true\n";
 		};
 		683425522D7D8AA00070CE6F /* Git Commit Hash */ = {
 			isa = PBXShellScriptBuildPhase;

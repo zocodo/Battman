@@ -322,6 +322,30 @@ UIViewController* find_top_controller(UIViewController *root)
 /* Alert for multiple scene */
 /* TODO: Check if program running under SSH */
 bool show_alert(const char *title, const char *message, const char *button) {
+    /* Please avoid using this, my knowledge does not support me to make it working well */
+    /* The original design is something like getchar(), execute only after button pressed
+        show_alert("Notice", "Will open URL", "OK");
+        open_url(url);
+       but waiting for button eventually led to UI freeze.
+     */
+    /* The alternative way is the following show_alert_async(), which use like:
+        show_alert_async("Notice", "Will open URL", "OK", ^(bool result) {
+            open_url(url);
+        });
+     */
+    __block BOOL result = false;
+    __block BOOL done = NO;
+
+    // Call the asynchronous alert.
+    show_alert_async(title, message, button, ^(bool res) {
+        result = res;
+        done = YES;
+    });
+
+    return result;
+}
+
+void show_alert_async(const char *title, const char *message, const char *button, void (^completion)(bool result)) {
     DBGLOG(@"show_alert called: [%s], [%s], [%s]", title, message, button);
 
     /* Alert in GTK+ if under Xfce / GNOME */
@@ -333,7 +357,7 @@ bool show_alert(const char *title, const char *message, const char *button) {
         
         int response = gtk_dialog_run_ptr(GTK_DIALOG(dialog));
         gtk_widget_destroy_ptr(dialog);
-        return response == GTK_RESPONSE_CANCEL;
+        if (completion) completion(response == GTK_RESPONSE_CANCEL);
     }
 #if TARGET_OS_IPHONE
     /* Alert using system UIAlert */
@@ -351,7 +375,9 @@ bool show_alert(const char *title, const char *message, const char *button) {
             UIViewController *topController = find_top_controller(keyWindow.rootViewController);
 
             UIAlertController *alert = [UIAlertController alertControllerWithTitle:nstitle message:nsmessage preferredStyle:UIAlertControllerStyleAlert];
-            UIAlertAction *action = [UIAlertAction actionWithTitle:nsbutton style:UIAlertActionStyleDefault handler:nil];
+            UIAlertAction *action = [UIAlertAction actionWithTitle:nsbutton style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                if (completion) completion(true);
+            }];
             [alert addAction:action];
             
             if (topController.presentedViewController) {
@@ -360,7 +386,6 @@ bool show_alert(const char *title, const char *message, const char *button) {
                 [topController presentViewController:alert animated:YES completion:nil];
             }
         });
-        return true;
     } else {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -373,7 +398,7 @@ bool show_alert(const char *title, const char *message, const char *button) {
                                               otherButtonTitles:@"OK", nil];
         [alert show];
         /* TODO: check button */
-        return true;
+        if (completion) completion(true);
 #pragma clang diagnostic pop
     }
 #elif TARGET_OS_OSX
@@ -383,6 +408,42 @@ bool show_alert(const char *title, const char *message, const char *button) {
     [alert addButtonWithTitle:[NSString stringWithUTF8String:button]];
     [alert runModal];
     /* TODO: check button */
-    return true;
+    if (completion) completion(true);
 #endif
+}
+
+void app_exit(void) {
+    if (is_carbon()) {
+#if TARGET_OS_IOS
+        /* Play an animation that back to homescreen, then exit app by sceneDidEnterBackground: */
+        extern UIApplication *UIApp;
+        extern BOOL graceful;
+        graceful = YES;
+        [[UIControl new] sendAction:@selector(suspend) to:UIApp forEvent:nil];
+#endif
+#if TARGET_OS_OSX
+        /* OSX specific App exit logic (why not just exit(0)?) */
+        @autoreleasepool {
+            id<NSApplicationDelegate> delegate = [NSApp delegate];
+            if (delegate && [delegate respondsToSelector:@selector(applicationShouldTerminate:)]) {
+                NSApplicationTerminateReply reply = [delegate applicationShouldTerminate:app];
+                if (reply == NSTerminateCancel) {
+                    return false;
+                }
+            }
+            [app terminate:nil];
+        }
+#endif
+    } else {
+        // TODO: CLI & X11 logic
+    }
+
+    // Fallback to C exit
+    exit(0);
+}
+
+/* UIApplicationMain/NSApplicationMain only works when App launched with NSBundle */
+/* FIXME: NSBundle still exists if with Info.plist, we need a better detection */
+bool is_carbon(void) {
+    return ([NSBundle mainBundle] && getenv("XPC_SERVICE_NAME"));
 }

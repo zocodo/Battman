@@ -16,6 +16,7 @@
  */
 
 #include "libsmc.h"
+#include "intlextern.h"
 #include <CoreFoundation/CFBase.h>
 #include <CoreFoundation/CFString.h>
 #include <string.h>
@@ -78,8 +79,17 @@ enum {
 };
 #endif
 
+#ifdef DEBUG
+#define DBGALT(x, y, z) show_alert(x, y, z)
 #define DBGLOG(...) NSLog(__VA_ARGS__)
+#else
+#define DBGALT(x, y, z)
+#define DBGLOG(...)
+#endif
 
+extern bool show_alert(char *, char *, char *);
+extern void show_alert_async(char *, char *, char *, void (^)(bool));
+extern void app_exit(void);
 extern void NSLog(CFStringRef, ...);
 
 static io_service_t gConn = 0;
@@ -96,10 +106,16 @@ static IOReturn smc_open(void) {
         return 1;
     }
 
-    service =
-        IOServiceGetMatchingService(masterPort, IOServiceMatching("AppleSMC"));
+    service = IOServiceGetMatchingService(masterPort, IOServiceMatching("AppleSMC"));
     result = IOServiceOpen(service, mach_task_self(), 0, &gConn);
     if (result != kIOReturnSuccess) {
+        static dispatch_once_t token;
+        dispatch_once(&token, ^{
+            /* TODO: Check entitlements and explicitly warn which we loss */
+            show_alert_async(_C("AppleSMC Open Failed"), _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"), _C("OK"), ^(bool res) {
+                app_exit();
+            });
+        });
         DBGLOG(CFSTR("IOServiceOpen() failed (%d)"), result);
         return result;
     }
@@ -547,10 +563,6 @@ bool battery_serial(char *serial) {
  Manufacturer => D?im
 */
 /* Stub macro for PO generation, actual localization shall be done by callers */
-#ifdef _
-#undef _
-#endif
-#include "intlextern.h"
 #include "not_charging_reason.h"
 #define addreason(reason, x) if (code & reason) sprintf(subreason, "%s\n%s", subreason, x);
 #define setreason(x) sprintf(subreason, "%s", x);

@@ -156,9 +156,7 @@ int main(int argc, char * argv[]) {
     redirectedOutput = [[NSMutableAttributedString alloc] initWithString:_("stdio logs not redirected in Simulator build, please check stdio in Xcode console output instead.")];
 #endif
     // sleep(10);
-    /* UIApplicationMain/NSApplicationMain only works when App launched with NSBundle */
-    /* FIXME: NSBundle still exists if with Info.plist, we need better detection */
-    if ([NSBundle mainBundle] && getenv("XPC_SERVICE_NAME")) {
+    if (is_carbon()) {
 #if TARGET_OS_IPHONE
         NSString * appDelegateClassName;
         @autoreleasepool {

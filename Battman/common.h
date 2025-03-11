@@ -24,10 +24,14 @@
 __BEGIN_DECLS
 
 bool show_alert(const char *title, const char *message, const char *cancel_button_title);
+void show_alert_async(const char *title, const char *message, const char *button, void (^completion)(bool result));
 
 char *preferred_language(void);
 bool libintl_available(void);
 bool gtk_available(void);
+
+void app_exit(void);
+bool is_carbon(void);
 
 __END_DECLS
 

@@ -24,7 +24,7 @@ hvc_menu_t *convert_hvc(CFDictionaryRef dict, size_t *size, int8_t *index) {
         CFNumberGetValue(usbHvcHvcIndex, kCFNumberSInt8Type, index);
     }
 
-    if (size == 0) return NULL;
+    if (*size == 0 || !usbHvcMenu) return NULL;
 
     CFIndex count = CFArrayGetCount(usbHvcMenu);
     *size = (size_t)count;

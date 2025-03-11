@@ -13,7 +13,12 @@
 
 @end
 
+@interface UIApplication ()
+- (void)terminateWithSuccess;
+@end
+
 UIWindow *gWindow;
+BOOL graceful;
 
 @implementation SceneDelegate
 
@@ -63,6 +68,10 @@ UIWindow *gWindow;
     // Called as the scene transitions from the foreground to the background.
     // Use this method to save data, release shared resources, and store enough scene-specific state information
     // to restore the scene back to its current state.
+    if (graceful == YES) {
+        extern UIApplication *UIApp;
+        [UIApp terminateWithSuccess];
+    }
 }
 
 
