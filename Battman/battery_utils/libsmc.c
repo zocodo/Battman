@@ -95,29 +95,34 @@ extern void NSLog(CFStringRef, ...);
 static io_service_t gConn = 0;
 gas_gauge_t gGauge = {0};
 
-__attribute__((constructor))
 static IOReturn smc_open(void) {
     IOReturn result;
     mach_port_t masterPort;
     io_service_t service;
+    char *fail_title = NULL;
 
     if (IOMasterPort(MACH_PORT_NULL, &masterPort) != kIOReturnSuccess) {
         DBGLOG(CFSTR("IOMasterPort() failed"));
-        return 1;
+        fail_title = _C("IOMainPort Open Failed");
+        goto fail;
     }
 
     service = IOServiceGetMatchingService(masterPort, IOServiceMatching("AppleSMC"));
     result = IOServiceOpen(service, mach_task_self(), 0, &gConn);
     if (result != kIOReturnSuccess) {
         /* TODO: Check entitlements and explicitly warn which we loss */
-        show_alert_async(_C("AppleSMC Open Failed"), _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"), _C("OK"), ^(bool res) {
-            app_exit();
-        });
+        fail_title = _C("AppleSMC Open Failed");
         DBGLOG(CFSTR("IOServiceOpen() failed (%d)"), result);
-        return result;
+        goto fail;
     }
 
     return kIOReturnSuccess;
+
+fail:
+    show_alert_async(fail_title, _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"), _C("OK"), ^(bool res) {
+        app_exit();
+    });
+    return kIOReturnError;
 }
 
 static IOReturn smc_call(int index, SMCParamStruct *inputStruct,
