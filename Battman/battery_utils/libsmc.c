@@ -109,12 +109,9 @@ static IOReturn smc_open(void) {
     service = IOServiceGetMatchingService(masterPort, IOServiceMatching("AppleSMC"));
     result = IOServiceOpen(service, mach_task_self(), 0, &gConn);
     if (result != kIOReturnSuccess) {
-        static dispatch_once_t token;
-        dispatch_once(&token, ^{
-            /* TODO: Check entitlements and explicitly warn which we loss */
-            show_alert_async(_C("AppleSMC Open Failed"), _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"), _C("OK"), ^(bool res) {
-                app_exit();
-            });
+        /* TODO: Check entitlements and explicitly warn which we loss */
+        show_alert_async(_C("AppleSMC Open Failed"), _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"), _C("OK"), ^(bool res) {
+            app_exit();
         });
         DBGLOG(CFSTR("IOServiceOpen() failed (%d)"), result);
         return result;
