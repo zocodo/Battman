@@ -46,13 +46,14 @@ struct battery_info_node main_battery_template[] = {
     {_ID_("Device Name"), 0},
     {_ID_("Health"), BIN_IS_BACKGROUND | BIN_UNIT_PERCENT | BIN_SECTION},
     {_ID_("SoC"), BIN_IS_FLOAT | BIN_UNIT_PERCENT},
-    {_ID_("Temperature"),
+    {_ID_("Average Temperature"),
      BIN_IS_FLOAT | BIN_UNIT_DEGREE_C | BIN_DETAILS_SHARED},
     {_ID_("Charging"), BIN_IS_BOOLEAN},
     {"ASoC(Hidden)", BIN_IS_FOREGROUND | BIN_IS_HIDDEN},
     {_ID_("Full Charge Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
     {_ID_("Designed Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
     {_ID_("Remaining Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
+    {_ID_("Battery Uptime"), BIN_UNIT_MIN | BIN_IN_DETAILS},
     {_ID_("Qmax"), BIN_UNIT_MAH | BIN_IN_DETAILS},
     {_ID_("Depth of Discharge"), BIN_UNIT_MAH | BIN_IN_DETAILS},
     {_ID_("Passed Charge"), BIN_UNIT_MAH | BIN_IN_DETAILS},
@@ -64,6 +65,7 @@ struct battery_info_node main_battery_template[] = {
     {_ID_("Cycle Count"), BIN_IN_DETAILS},
     {_ID_("Designed Cycle Count"), BIN_IN_DETAILS},
     {_ID_("State Of Charge"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
+    {_ID_("State Of Charge (UI)"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
     {_ID_("Resistance Scale"), BIN_IN_DETAILS},
     {_ID_("Battery Serial"), 0},
     {_ID_("Chemistry ID"), 0},
@@ -239,7 +241,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 	/* SoC = 100.0f * RemainCapacity (mAh) / FullChargeCapacity (mAh) */
 	BI_SET_ITEM(_ID_("SoC"), 100.0f * (float)remain_cap / (float)full_cap);
 	// No Imperial units here
-	BI_SET_ITEM(_ID_("Temperature"), get_temperature());
+	BI_SET_ITEM(_ID_("Average Temperature"), get_temperature());
 	// // TODO: Charging Type Display {"Battery Power", "AC Power", "UPS Power"}
 	BI_SET_ITEM(_ID_("Charging"), (is_charging(NULL, NULL) == kIsCharging));
 	/* ASoC = 100.0f * RemainCapacity (mAh) / DesignCapacity (mAh) */
@@ -251,6 +253,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 		BI_SET_ITEM(_ID_("Full Charge Capacity"), full_cap);
 		BI_SET_ITEM(_ID_("Designed Capacity"), design_cap);
 		BI_SET_ITEM(_ID_("Remaining Capacity"), remain_cap);
+        BI_SET_ITEM(_ID_("Battery Uptime"), gGauge.bmsUpTime / 60);
 		BI_SET_ITEM(_ID_("Qmax"), gGauge.Qmax * batt_cell_num());
 		BI_SET_ITEM(_ID_("Depth of Discharge"), gGauge.DOD0);
 		BI_SET_ITEM(_ID_("Passed Charge"), gGauge.PassedCharge);
@@ -264,6 +267,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 		BI_SET_ITEM(_ID_("Cycle Count"), gGauge.CycleCount);
         BI_SET_ITEM_IF(gGauge.DesignCycleCount, _ID_("Designed Cycle Count"), gGauge.DesignCycleCount)
 		BI_SET_ITEM(_ID_("State Of Charge"), gGauge.StateOfCharge);
+        BI_SET_ITEM(_ID_("State Of Charge (UI)"), gGauge.UISoC);
 		BI_SET_ITEM_IF(gGauge.ResScale, 
 				_ID_("Resistance Scale"), gGauge.ResScale);
 		if(!battery_serial(BI_ENSURE_STR(_ID_("Battery Serial")))) {

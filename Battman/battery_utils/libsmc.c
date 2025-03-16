@@ -191,6 +191,18 @@ static IOReturn smc_read(UInt32 key, void *bytes) {
     return kIOReturnSuccess;
 }
 
+static float ioft2flt(void *bytes) {
+    uint64_t res = 0;
+    uint8_t *x = (uint8_t *)bytes;
+
+    /* ioft has size 8 */
+    for (uint32_t i = 0; i < 8; i++) {
+        res |= (uint64_t)x[i] << (8 * i);
+    }
+
+    return (float)res / 65536.0f;
+}
+
 __attribute__((destructor)) void smc_close(void) {
     if (gConn != 0)
         IOServiceClose(gConn);
@@ -229,6 +241,13 @@ int get_fan_status(void) {
     return 0;
 }
 
+#pragma Temperatures
+
+/* Known keys:
+ TP?d(ioft): PMU tdev ?
+ 
+ */
+
 float get_temperature(void) {
     IOReturn result = kIOReturnSuccess;
     uint16_t retval = 0;
@@ -246,25 +265,40 @@ float get_temperature(void) {
     return (float)retval * 0.01f;
 }
 
-float *get_temperature_per_batt(void) {
+float *get_temperature_per_cells(void) {
     IOReturn result = kIOReturnSuccess;
     float retval = 0;
+    uint8_t ioftret[8];
 
     int num = batt_cell_num();
 
-    float *batts = malloc(sizeof(float) * num);
-    /* TB*T(flt), but normally they are same */
+    float *cells = malloc(sizeof(float) * num);
+    /* TB?T(flt ): Cell ? real-time temperature */
     for (int i = 0; i < num; i++) {
         result = smc_read('TB\0T' | ((0x30 + i) << 0x8), &retval);
         if (result != kIOReturnSuccess) {
             /* In design, you should able to get temps of all your batts */
-            free(batts);
-            return NULL;
+            break;
         }
-        batts[i] = retval;
+        cells[i] = retval;
     }
 
-    return batts;
+    /* TB*T may not exist on mobile devices */
+    if (result != kIOReturnSuccess) {
+        /* TG?B(ioft): Cell ? existance & real-time temperature */
+        for (int i = 0; i < num; i++) {
+            memset(ioftret, 0, sizeof(ioftret));
+            result = smc_read('TG\0B' | ((0x30 + i) << 0x8), &ioftret);
+            if (result != kIOReturnSuccess) {
+                /* In design, you should able to get temps of all your batts */
+                free(cells);
+                return NULL;
+            }
+            cells[i] = ioft2flt(ioftret);
+        }
+    }
+
+    return cells;
 }
 
 int get_time_to_empty(void) {
@@ -501,6 +535,12 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
 
     /* BNSC(ui16): DailyMinSoc */
     (void)smc_read('BNSC', &gauge->DailyMinSoc);
+
+    /* BUIC(ui8 ): UI Displayed SoC */
+    (void)smc_read('BUIC', &gauge->UISoC);
+
+    /* BUPT(hex_)[8]: BMS Uptime */
+    (void)smc_read('BUPT', &gauge->bmsUpTime);
     
     return true;
 }

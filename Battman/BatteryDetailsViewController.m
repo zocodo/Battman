@@ -105,6 +105,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     /* Consider add a "Accessory" section in data struct */
     desc_batt = @[
         _("Device Name"), _("This indicates the name of the current Gas Gauge IC used by the installed battery."),
+        _("State Of Charge (UI)"), _("The \"Battery Percentage\" displayed exactly on your status bar. This is the SoC that Apple wants to tell you."),
+        _("Battery Uptime"), _("The length of time the Battery Management System (BMS) has been up."),
         _("Depth of Discharge"), _("Current chemical depth of discharge (DOD₀). The gas gauge updates information on the DOD₀ based on open-circuit voltage (OCV) readings when in a relaxed state."),
         _("Chemistry ID"), _("Chemistry unique identifier (ChemID) assigned to each battery in Texas Instruments' database. It ensures accurate calculations and predictions."),
         _("Passed Charge"), _("The cumulative capacity of the current charging or discharging cycle. It is reset to zero with each DOD₀ update."),
@@ -143,6 +145,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 - (void)updateTableView {
     [self.refreshControl beginRefreshing];
     battery_info_update(batteryInfo, true);
+    charging_stat = is_charging(&adapter_family, &adapter_info);
 
     /* Dynasects */
     /* TODO: Handle the scene that if battery not present */

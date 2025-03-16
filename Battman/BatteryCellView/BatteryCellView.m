@@ -11,11 +11,11 @@ extern bool show_alert(char *, char*,char*);
 }
 
 - (instancetype)initWithFrame:(CGRect)frame foregroundPercentage:(float)percent backgroundPercentage:(float)bpercent {
-	self=[super initWithFrame:frame];
+	self = [super initWithFrame:frame];
 	UIView *batteryView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
 	batteryView.layer.cornerRadius = 30;
 	batteryView.layer.masksToBounds = YES;
-	batteryView.backgroundColor=[UIColor secondarySystemFillColor];
+	batteryView.backgroundColor = [UIColor secondarySystemFillColor];
     // TODO: Handle the scene if battery not present
 	// Battery Animation -- Start
     {

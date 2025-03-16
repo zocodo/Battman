@@ -1,7 +1,9 @@
 #import "BatteryInfoViewController.h"
 #import "BatteryCellView/BatteryInfoTableViewCell.h"
+#import "BatteryCellView/TemperatureInfoTableViewCell.h"
 #import "BatteryDetailsViewController.h"
 #include "battery_utils/battery_utils.h"
+
 #include "common.h"
 
 // TODO: UI Refreshing
@@ -42,7 +44,7 @@ static NSMutableArray *sections_batteryinfo;
     self.tabBarItem = tabbarItem;
     batteryInfo = battery_info_init();
 
-    sections_batteryinfo = [[NSMutableArray alloc] initWithArray:@[_("Battery Info"), _("Manage")]];
+    sections_batteryinfo = [[NSMutableArray alloc] initWithArray:@[_("Battery Info"), _("Hardware Temperatures"), _("Manage")]];
     
     return [super initWithStyle:UITableViewStyleGrouped];
 }
@@ -83,6 +85,9 @@ static NSMutableArray *sections_batteryinfo;
         // battery_info_update shall be called within cell impl.
         [cell updateBatteryInfo];
         return cell;
+    } else if (indexPath.section == [sections_batteryinfo indexOfObject:_("Hardware Temperatures")]) {
+        TemperatureInfoTableViewCell *cell = [[TemperatureInfoTableViewCell alloc] initWithFrame:CGRectMake(0, 0, 1000, 100)];
+        return cell;
     } else if (indexPath.section == [sections_batteryinfo indexOfObject:_("Manage")]) {
         UITableViewCell *cell = [UITableViewCell new];
         cell.textLabel.text = _("Charging Limit");
@@ -95,6 +100,8 @@ static NSMutableArray *sections_batteryinfo;
 
 - (CGFloat)tableView:(id)tv heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == [sections_batteryinfo indexOfObject:_("Battery Info")] && indexPath.row == 0) {
+        return 130;
+    } else if (indexPath.section == [sections_batteryinfo indexOfObject:_("Hardware Temperatures")] && indexPath.row == 0) {
         return 130;
     } else {
         return [super tableView:tv heightForRowAtIndexPath:indexPath];

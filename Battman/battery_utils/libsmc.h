@@ -118,6 +118,8 @@ typedef struct gas_gauge {
     uint16_t DailyMaxSoc;           /* % */
     uint16_t DailyMinSoc;           /* % */
     uint16_t DesignCycleCount;
+    uint8_t UISoC;                  /* % */
+    uint64_t bmsUpTime;             /* sec */
 } gas_gauge_t;
 
 typedef struct device_info {
@@ -259,6 +261,16 @@ typedef struct power_state {
     float SystemPower;
 } power_state_t;
 
+typedef struct board_info {
+    uint8_t Generation;         /* RGEN */
+    char EmbeddedOSVersion[16]; /* RESV */
+    uint64_t ChipEcid;          /* RECI */
+    uint32_t ChipRev;           /* RCRV */
+    uint32_t ChipId;            /* RCID */
+    uint32_t BoardRev;          /* RBRV */
+    uint32_t BoardId;           /* RBID */
+} board_info_t;
+
 typedef enum {
     kIsPresent = 1, /* Capable */
     kIsDetected,    /* Detected */
@@ -288,7 +300,7 @@ int batt_cell_num(void);
 bool get_gas_gauge(gas_gauge_t *gauge);
 typedef unsigned int mach_port_t;
 charging_state_t is_charging(mach_port_t *family, device_info_t *info);
-float *get_temperature_per_batt(void);
+float *get_temperature_per_cells(void);
 bool battery_serial(char *serial);
 hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size);
 char *get_adapter_family_desc(mach_port_t family);

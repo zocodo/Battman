@@ -71,6 +71,8 @@
 		687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743442D4F6C7800375A2C /* BatteryInfoTableViewCell.m */; };
 		68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */ = {isa = PBXBuildFile; fileRef = 68A3EAF62D5204D2003381DF /* battery_info.c */; };
 		68A3EAFD2D5204EA003381DF /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A3EAFC2D5204EA003381DF /* IOKit.framework */; };
+		68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2D2D85606000919BC2 /* GradientArcView.m */; };
+		68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */; };
 		68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */; };
 		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
@@ -126,6 +128,10 @@
 		68A3EAF62D5204D2003381DF /* battery_info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = battery_info.c; sourceTree = "<group>"; };
 		68A3EAF72D5204D2003381DF /* battery_info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = battery_info.h; sourceTree = "<group>"; };
 		68A3EAFC2D5204EA003381DF /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
+		68B5FF292D85602100919BC2 /* GradientArcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GradientArcView.h; path = BatteryCellView/GradientArcView.h; sourceTree = "<group>"; };
+		68B5FF2D2D85606000919BC2 /* GradientArcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GradientArcView.m; path = BatteryCellView/GradientArcView.m; sourceTree = "<group>"; };
+		68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TemperatureInfoTableViewCell.m; path = BatteryCellView/TemperatureInfoTableViewCell.m; sourceTree = "<group>"; };
+		68B5FF312D85619B00919BC2 /* TemperatureInfoTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TemperatureInfoTableViewCell.h; path = BatteryCellView/TemperatureInfoTableViewCell.h; sourceTree = "<group>"; };
 		68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SegmentedViewCell.m; sourceTree = "<group>"; };
 		68D6DEBF2D745DCB00E129A0 /* SegmentedViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SegmentedViewCell.h; sourceTree = "<group>"; };
 		68D6DEC02D77071300E129A0 /* not_charging_reason.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = not_charging_reason.h; sourceTree = "<group>"; };
@@ -187,6 +193,10 @@
 				687743412D4F6C7800375A2C /* BatteryCellView.m */,
 				687743402D4F6C7800375A2C /* BatteryInfoTableViewCell.h */,
 				687743442D4F6C7800375A2C /* BatteryInfoTableViewCell.m */,
+				68B5FF312D85619B00919BC2 /* TemperatureInfoTableViewCell.h */,
+				68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */,
+				68B5FF292D85602100919BC2 /* GradientArcView.h */,
+				68B5FF2D2D85606000919BC2 /* GradientArcView.m */,
 				687743452D4F6C7800375A2C /* SPWaterProgressIndicatorView.h */,
 				687743422D4F6C7800375A2C /* SPWaterProgressIndicatorView.m */,
 				687743332D4E08AD00375A2C /* BatteryInfoViewController.h */,
@@ -486,9 +496,11 @@
 				687743372D4E08AD00375A2C /* BatteryInfoViewController.m in Sources */,
 				687743472D4F6C7800375A2C /* SPWaterProgressIndicatorView.m in Sources */,
 				686AECD52D3B93CD0059ECD0 /* main.m in Sources */,
+				68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */,
 				683425502D7D6A240070CE6F /* MultilineViewCell.m in Sources */,
 				68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */,
 				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
+				68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */,
 				686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */,
 				68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */,
 				687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */,
