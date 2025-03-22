@@ -133,7 +133,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 }
 
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
-    self = [super initWithStyle:UITableViewStyleGrouped];
+    self = [super initWithStyle:UITableViewStyleInsetGrouped];
     self.tableView.allowsSelection = YES; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
     batteryInfo = bi;
@@ -169,7 +169,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         [adapter_cells addObjectsFromArray:@[
             @[_("Port"),                [NSString stringWithFormat:@"%d", adapter_info.port]],
             // This is terrible
-            @[_("Compatibility"),       [NSString stringWithFormat:@"%@: %@\n%@: %@", _("Socket Connected"), (adapter_data.ChargerExist == 1) ? _("True") : _("False"), _("Charger Capable"), (adapter_data.ChargerCapable == 1) ? _("True") : _("False")]],
+            @[_("Compatibility"),       [NSString stringWithFormat:@"%@: %@\n%@: %@", _("External Connected"), (adapter_data.ChargerExist == 1) ? _("True") : _("False"), _("Charger Capable"), (adapter_data.ChargerCapable == 1) ? _("True") : _("False")]],
             @[_("Type"),                [NSString stringWithFormat:@"%@ (%.8X)", _(adapter_family_str), adapter_family]],
             @[_("Status"),              (charging_stat == kIsPausing || adapter_data.NotChargingReason != 0) ? _("Not Charging") : _("Charging")],
             @[_("Current Rating"),      [NSString stringWithFormat:@"%u %@", adapter_info.current, _("mA")]],

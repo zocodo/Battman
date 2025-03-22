@@ -208,6 +208,21 @@ __attribute__((destructor)) void smc_close(void) {
         IOServiceClose(gConn);
 }
 
+/* Fan Control Keys:
+ F?Dc(flt ) PercentPWM
+ F?Md(ui8 ) Mode
+ F?Ac(flt ) CurrentSpeed
+ F?Mn(flt ) MinSpeed
+ F?Mx(flt ) MaxSpeed
+ F?St(ui8 ) Stat?
+ F?Tg(flt ) TargetAccess
+ FBAD(hex_)[4] BadFanFlags
+ FNum(ui8 ) NumFans
+ FOFC(ui32) fanInOffStateCnt
+ FOff(ui8 ) fanOffModeEnabled
+ FRmn(ui16) fanRampRateIgnore
+ FRmp(ui16) fanRampLimited
+ */
 /* TODO: Return arrays */
 int get_fan_status(void) {
     IOReturn result = kIOReturnSuccess;
@@ -539,8 +554,21 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     /* BUIC(ui8 ): UI Displayed SoC */
     (void)smc_read('BUIC', &gauge->UISoC);
 
+    /* B0SC(si8 ): Chemical SoC */
+    (void)smc_read('B0SC', &gauge->ChemicalSoC);
+
     /* BUPT(hex_)[8]: BMS Uptime */
     (void)smc_read('BUPT', &gauge->bmsUpTime);
+    
+    /* B0FD BattData */
+    /* BROS MinDOD? */
+    /* B0TI */
+    /* B0ET */
+    /* BCHT ChargingTable */
+    /* BVVP PermanentVacVoltageLimit */
+    /* BVVM TerminationVoltage */
+    /* BCBL */
+    /* B0FU ForceUISoC */
     
     return true;
 }
@@ -812,7 +840,11 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
     /* 0: No Adapter (A Chip) */
     /* 1: Adapter at USB Port 1 */
     /* 2: Adapter at USB Port 2 */
-    /* Consider use 'D*AP' for mobile devices (AppleSMCCharger::_checkConnection) */
+    /* Consider use 'D*AP' (Adapter Power State) for mobile devices (AppleSMCCharger::_checkConnection) */
+    /* Mobile Only:
+     1: Wired Charger
+     2: Wireless Charger
+     */
     result = smc_read('AC-W', &charging);
     if (result != kIOReturnSuccess)
         return ret;
@@ -896,10 +928,6 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, PMUConfiguration: 0x%X"), charging, info->PMUConfiguration);
 
-        /* Mobile Only:
-         1: Wired Charger
-         2: Wireless Charger
-         */
         /* D?IR(ui16) USB Port ? Charger current rating */
         key = 'D\0IR' | ((0x30 + charging) << 0x10);
         result = smc_read(key, &info->current);
@@ -912,7 +940,7 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Voltage: %u"), charging, info->voltage);
         
-        /* D?PM(hex_) USB Port ? Power Modes */
+        /* D?PM(hex_) USB Port ? HVC Power Modes */
         key = 'D\0PM' | ((0x30 + charging) << 0x10);
         memset(info->hvc_menu, 0, sizeof(info->hvc_menu));
         result = smc_read(key, info->hvc_menu);
@@ -929,6 +957,20 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
             DBGLOG(CFSTR("Port: %d, Index: %d"), charging, info->hvc_index);
 
         /* Other info */
+        /* D?AR(ui32) Ampere Rating (Mobile Only) */
+        /* D?BD(ui32) AdapterID */
+        /* D?DB(hex_) debounce */
+        /* D?ER(?) */
+        /* D?ID(flag) IOAM Inflow Inhibit (Mobile Only) */
+        /* D?IG(flag) Ignored (Mobile Only) */
+        /* D?NO(ui8 ) Select power source (write only) (Mobile Only) */
+        /* D?PT(ui8 ) Adapter Type */
+        /* D?SD(flag) SourceID (Mobile Only) */
+        /* D?SM(ui32) Socket Model (Mobile Only) */
+        /* D1SP(ui8 ) HVC Notification (Mobile Only) */
+        /* D?SR(ui16) HVC Request Ready (Mobile Only) */
+        /* D?SX(ui8 ) HVC Interrupt Action (Mobile Only) */
+        /* D?UD(ui32) sharedSource (Mobile Only) */
     }
 
     return ret;
@@ -940,16 +982,19 @@ bool get_charger_data(charger_data_t *data) {
 
     // No matter if charging or not, get data anyway
     memset(data, 0, sizeof(charger_data_t));
+    
+    /* CHCC(ui8 ) Charger Capable / Charger External Charge Capable */
+    result = smc_read('CHCC', &data->ChargerCapable);
+    if (result == kIOReturnSuccess)
+        DBGLOG(CFSTR("Charger Capable: %u"), &data->ChargerCapable);
 
-    /* CHCE(ui8 ) Charger Exist */
+    /* CHCE(ui8 ) Charger Exist / Charger External Connected */
     result = smc_read('CHCE', &data->ChargerExist);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charger Exist: %u"), &data->ChargerExist);
 
-    /* CHCC(ui8 ) Charger Capable */
-    result = smc_read('CHCC', &data->ChargerCapable);
-    if (result == kIOReturnSuccess)
-        DBGLOG(CFSTR("Charger Capable: %u"), &data->ChargerCapable);
+    /* CHCF(hex_)[1] Charger Flags / Charger External Connected */
+    /* CHCR(ui8 ) */
 
     /* CHBI(ui32) Charging Current */
     result = smc_read('CHBI', &data->ChargingCurrent);
@@ -965,6 +1010,9 @@ bool get_charger_data(charger_data_t *data) {
     result = smc_read('BVVL', &data->ChargerVacVoltageLimit);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charger Vac Voltage Limit: %u"), &data->ChargerVacVoltageLimit);
+
+    /* CHFC(ui8 ) */
+    /* CHFS(ui32) */
 
     /* CHNC(hex_)[8] Not Charging Reason */
     result = smc_read('CHNC', &data->NotChargingReason);
@@ -1023,9 +1071,8 @@ hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size) {
 /* Known charger Keys:
  VQ0u(ioft)[8]: VBUS Voltage (V)
  IQ0u(ioft)[8]: IBUS Current (A)
- D?ID(flag): IOAM Inflow Inhibit
  CHIE(hex_)[1]: Inflow Inhibit
- 
+ CHIS(ui32): Charger Input State (like D?AP)?
  */
 wireless_state_t wireless_charging_detect(void) {
     IOReturn result = kIOReturnSuccess;
@@ -1077,40 +1124,31 @@ bool get_iktara_fw_stat(iktara_fw_t *fw) {
 
 /* Notes on some guessed keys
  Mobile Only:
-    D?DB(hex_): USB Port ? debounce
-    D?AR(si32): USB Port ? Ampere
-    D?SM(ui32): USB Port ? Socket Model
-    D?NO(ui8 ): (write only, unknown)
-    D?UD(ui32): USB Port ? SourceID
-    D?SD(flag): USB Port ? sharedSource
-    D?PM(hex_): USB Port ? HVC
-    D1SX(ui8 ): High Voltage Charger Interrupt Action
-    D1SR(ui16): High Voltage Charger Request Ready
-    D1SP(ui8 ): High Voltage Charger Notification
- 
     WAFC(ui32): (write only) Smart Battery control bit (Enable: 0x10000) | (0x7: Wireless Cloak) (0x25: Charge Limit Display)
     BD0E(ui32): DiffAmp
     B0LP(ui16): Lpem Props
  
-    QQ0u(ioft): iBus accumulator
+    GBCM(ui16): GG blockdata related
+    GBRW(hex_): GG blockdata related
+    GCCM(ui16): GG control related
+    GCOP(ui16): GG control related
+    GCRW(hex_): GG control related
+    GRAD(ui8 ): GG reg related
+    GRRD(ui16): GG reg related
+    
  
+    QQ0u(ioft): iBus accumulator
  
  All:
     AC-N(ui8 ): Adapter count
-    AC-W(si8 ): Active Adapter Index
- 
-    D?FC(ui32): USB Port ? Family Code (kIOPSPowerAdapterFamilyKey)
-    D?IR(si32): USB Port ? input Current
-    D?VR(si32): USB Port ? input Voltage
-    D?BD(ui32): USB Port ? AdapterID
-    D?DE(ch8*): USB Port ? Description
-    D?PT(ui8 ): USB Port ? Adapter Type
  
     B0Ti(ui32): Charge Limit Rate Index
-    
 
-    CHSC(ui8 ): Charger Status
+    CHSC(ui8 ): Charger Charging?
+    CHSE(ui8 ): Charger End-of-charge
+    CHST(ui8 ): Charger Terminated?
     CHPS(ui32): selected powerpath
+    CHPP(ui32): powerpath priority
     CHA?(ui32): Powerpath ?
     CHHV(ui64): (write only) USB Input High Voltage
     CHI?(ui32): USB Port ? Input Current Limit / PMUConfiguration
@@ -1124,18 +1162,59 @@ bool get_iktara_fw_stat(iktara_fw_t *fw) {
     CH0I(ui8 ): Battery Connected State 1 << 0
     CH0J(ui8 ): Battery Connected State 1 << 1
     CH0K(ui8 ): Battery Connected State 1 << 2
+ 
+    CIBL(ui32): IBatt target limit
 
-    MBSE(hex_): Sleep-Wake related
-    MBSW(hex_): Sleep-Wake related
+    MBSE(hex_): MachineStateEmbedded
+    MBSW(hex_): PmuWakeEvents
+    MBSe(hex_): MachineStateEvents
+    MST3(ui32): ui32TmTestCase
+    MST6(ui64): ui64TmTestCase
+    MSTC(ui16): ui16TmTestCase
+    MSTD(ui16): ui16TmTestCase2
+    MTKN(ui32): ui8Tokens
+ 
+    NESN(hex_): ApcReceiveNotification
+    NTAP(flag): ApcNotifyOK
  
     UPOF(hex_): Shutdown data error flags
     UBNC(ui16): Shutdown nominal capacity
     UB0C(ui8 ): (write only) Shutdown data (write 1 to clear)
  
  Conditional:
-    D?PI(ui8 ): USB Port ? HVC Index (Software HVC on Mac)
-
     VQ0u(ioft): VBUS Voltage
+    VP0u VQ0l VQ0B VQ0u VQDD VQHI
+ 
+    DBTE(ui8 ): SMC TGraph Mode
+    DCAL(hex_): DispRamUAccess
+    DRAM(hex_): DispRam
+ 
+    MEPG(ui8 ): SMC Power Prevent Nap
+ 
+    TQ?B(ioft): Charger B Temperature
+    TQ?d(ioft): Charger d Temperature
+    TQ?j(ioft): Charger j Temperature
+ 
+    WQ0u(ioft): Charger WQ0u Voltage
+ 
+    aDC!(ui32): RawADC
+    aDC#(ui32): ADCSensorsCount
+    aDCR(ioft):
+    aP??(ui32): ADC sensor ??
+    aPMX(ui8 ): PmuAmux (write only)
+ 
+    bHLD(ui32): Power Button Hold
+    bPHD(flag): PoweredByHoldButton
+    bRIN(ui32): ?
+    bVDN(ui32): Volume Down Button Hold
+    bVUP(ui32): Volume Up Button Hold
+ 
+    gP??(ui32): PMU GPIO keys
+
+    pmFC(hex_): PmuFeatureControl
+    rARA(ui32): PmuRailCTL
+    rARa rASO rASo
+ 
     
  */
     

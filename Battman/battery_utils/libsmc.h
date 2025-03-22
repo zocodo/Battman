@@ -119,6 +119,7 @@ typedef struct gas_gauge {
     uint16_t DailyMinSoc;           /* % */
     uint16_t DesignCycleCount;
     uint8_t UISoC;                  /* % */
+    int8_t ChemicalSoC;             /* % */
     uint64_t bmsUpTime;             /* sec */
 } gas_gauge_t;
 
@@ -221,15 +222,26 @@ typedef struct carrier_mode {
     uint32_t status;        /* CHTE */
     uint32_t high_voltage;  /* CHTU */
     uint32_t low_voltage;   /* CHTL */
+    /* CHTM */
 } carrier_mode_t;
 
 /* This is not "Single App Mode", possibly enabled on Demo devices but cannot verify */
 typedef struct kiosk_mode {
+    /* CHKD */
+    /* CHKG */
+    /* CHKH */
+    /* CHKK */
     uint8_t mode;               /* CHKM */
     uint16_t FullVoltage;       /* CHKL */
     uint32_t HighSocSecs;       /* CHKO */
     uint8_t HighSocDays;        /* CHKP */
+    /* CHKQ */
+    /* CHKR */
+    /* CHKS */
+    /* CHKT */
+    /* CHKU */
     uint8_t LastHighSocHours;   /* CHKV */
+    /* CHKW */
 } kiosk_mode_t;
 
 typedef struct charger_data {
@@ -242,6 +254,7 @@ typedef struct charger_data {
     uint32_t ChargerId;                 /* CH0D */
     uint8_t ChargerCapable;             /* CHCC */
     uint8_t ChargerExist;               /* CHCE */
+    /* Charging Limits: CHA? CHI? CHP? */
 } charger_data_t;
 
 typedef struct hvc_menu {
@@ -269,6 +282,7 @@ typedef struct board_info {
     uint32_t ChipId;            /* RCID */
     uint32_t BoardRev;          /* RBRV */
     uint32_t BoardId;           /* RBID */
+    char TargetName[8];         /* RPlt */
 } board_info_t;
 
 typedef enum {

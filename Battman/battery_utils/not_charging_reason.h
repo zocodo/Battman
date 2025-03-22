@@ -116,6 +116,10 @@ enum {
 #define NOT_CHARGING_REASON_CELL_CHECK_FAULT                    (uint64_t)0x80 << (0x30 | 0x08)
 
 #define BATTERY_CHARGING_ENABLE_EVENT                           0
+#define BATTERY_CHARGING_KIOSK_MODE_ENABLE_INHIBIT_INFLOW_EVENT 1
+#define BATTERY_CHARGING_KIOSK_MODE_ENABLE_ALLOW_INFLOW_EVENT   2
+#define BATTERY_CHARGING_KIOSK_MODE_DISABLE_EVENT               3
+
 #define DEVICE_IS_CHARGING                                      0
 
 #endif /* not_charging_reason_h */

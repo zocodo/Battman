@@ -71,6 +71,13 @@
 		687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743442D4F6C7800375A2C /* BatteryInfoTableViewCell.m */; };
 		68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */ = {isa = PBXBuildFile; fileRef = 68A3EAF62D5204D2003381DF /* battery_info.c */; };
 		68A3EAFD2D5204EA003381DF /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68A3EAFC2D5204EA003381DF /* IOKit.framework */; };
+		68AE40B82D8EB8870023D7B0 /* UberSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40AA2D8EB8870023D7B0 /* UberSegmentedControl.m */; };
+		68AE40B92D8EB8870023D7B0 /* MultiSelectSegmentedControl.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40AB2D8EB8870023D7B0 /* MultiSelectSegmentedControl.m */; };
+		68AE40BA2D8EB8870023D7B0 /* DividerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B02D8EB8870023D7B0 /* DividerView.m */; };
+		68AE40BB2D8EB8870023D7B0 /* UIView+Fill.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B12D8EB8870023D7B0 /* UIView+Fill.m */; };
+		68AE40BC2D8EB8870023D7B0 /* StackViewGestureHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B42D8EB8870023D7B0 /* StackViewGestureHandler.m */; };
+		68AE40BD2D8EB8870023D7B0 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B52D8EB8870023D7B0 /* Constants.m */; };
+		68AE40BE2D8EB8870023D7B0 /* SegmentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B62D8EB8870023D7B0 /* SegmentButton.m */; };
 		68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2D2D85606000919BC2 /* GradientArcView.m */; };
 		68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */; };
 		68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */; };
@@ -120,16 +127,31 @@
 		687743352D4E08AD00375A2C /* BatteryInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatteryInfoViewController.m; sourceTree = "<group>"; };
 		687743402D4F6C7800375A2C /* BatteryInfoTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BatteryInfoTableViewCell.h; path = BatteryCellView/BatteryInfoTableViewCell.h; sourceTree = "<group>"; };
 		687743412D4F6C7800375A2C /* BatteryCellView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BatteryCellView.m; path = BatteryCellView/BatteryCellView.m; sourceTree = "<group>"; };
-		687743422D4F6C7800375A2C /* SPWaterProgressIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SPWaterProgressIndicatorView.m; path = BatteryCellView/SPWaterProgressIndicatorView.m; sourceTree = "<group>"; };
+		687743422D4F6C7800375A2C /* SPWaterProgressIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPWaterProgressIndicatorView.m; sourceTree = "<group>"; };
 		687743432D4F6C7800375A2C /* BatteryCellView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BatteryCellView.h; path = BatteryCellView/BatteryCellView.h; sourceTree = "<group>"; };
 		687743442D4F6C7800375A2C /* BatteryInfoTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BatteryInfoTableViewCell.m; path = BatteryCellView/BatteryInfoTableViewCell.m; sourceTree = "<group>"; };
-		687743452D4F6C7800375A2C /* SPWaterProgressIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SPWaterProgressIndicatorView.h; path = BatteryCellView/SPWaterProgressIndicatorView.h; sourceTree = "<group>"; };
+		687743452D4F6C7800375A2C /* SPWaterProgressIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPWaterProgressIndicatorView.h; sourceTree = "<group>"; };
 		68A3EAF52D5204D2003381DF /* battery_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = battery_utils.h; sourceTree = "<group>"; };
 		68A3EAF62D5204D2003381DF /* battery_info.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = battery_info.c; sourceTree = "<group>"; };
 		68A3EAF72D5204D2003381DF /* battery_info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = battery_info.h; sourceTree = "<group>"; };
 		68A3EAFC2D5204EA003381DF /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
-		68B5FF292D85602100919BC2 /* GradientArcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GradientArcView.h; path = BatteryCellView/GradientArcView.h; sourceTree = "<group>"; };
-		68B5FF2D2D85606000919BC2 /* GradientArcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GradientArcView.m; path = BatteryCellView/GradientArcView.m; sourceTree = "<group>"; };
+		68AE40AA2D8EB8870023D7B0 /* UberSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UberSegmentedControl.m; sourceTree = "<group>"; };
+		68AE40AB2D8EB8870023D7B0 /* MultiSelectSegmentedControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiSelectSegmentedControl.m; sourceTree = "<group>"; };
+		68AE40AC2D8EB8870023D7B0 /* SegmentButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SegmentButton.h; sourceTree = "<group>"; };
+		68AE40AD2D8EB8870023D7B0 /* UberSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UberSegmentedControl.h; sourceTree = "<group>"; };
+		68AE40AE2D8EB8870023D7B0 /* StackViewGestureHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StackViewGestureHandler.h; sourceTree = "<group>"; };
+		68AE40AF2D8EB8870023D7B0 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		68AE40B02D8EB8870023D7B0 /* DividerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DividerView.m; sourceTree = "<group>"; };
+		68AE40B12D8EB8870023D7B0 /* UIView+Fill.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Fill.m"; sourceTree = "<group>"; };
+		68AE40B22D8EB8870023D7B0 /* DividerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DividerView.h; sourceTree = "<group>"; };
+		68AE40B32D8EB8870023D7B0 /* UIView+Fill.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Fill.h"; sourceTree = "<group>"; };
+		68AE40B42D8EB8870023D7B0 /* StackViewGestureHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StackViewGestureHandler.m; sourceTree = "<group>"; };
+		68AE40B52D8EB8870023D7B0 /* Constants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Constants.m; sourceTree = "<group>"; };
+		68AE40B62D8EB8870023D7B0 /* SegmentButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentButton.m; sourceTree = "<group>"; };
+		68AE40B72D8EB8870023D7B0 /* MultiSelectSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiSelectSegmentedControl.h; sourceTree = "<group>"; };
+		68AE40BF2D8EB9190023D7B0 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		68B5FF292D85602100919BC2 /* GradientArcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientArcView.h; sourceTree = "<group>"; };
+		68B5FF2D2D85606000919BC2 /* GradientArcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GradientArcView.m; sourceTree = "<group>"; };
 		68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TemperatureInfoTableViewCell.m; path = BatteryCellView/TemperatureInfoTableViewCell.m; sourceTree = "<group>"; };
 		68B5FF312D85619B00919BC2 /* TemperatureInfoTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TemperatureInfoTableViewCell.h; path = BatteryCellView/TemperatureInfoTableViewCell.h; sourceTree = "<group>"; };
 		68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SegmentedViewCell.m; sourceTree = "<group>"; };
@@ -186,6 +208,7 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				68AE40A42D8EB7710023D7B0 /* CustomUIElements */,
 				68171A362D534E6B00DD4224 /* BatteryDetailsViewController.h */,
 				68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */,
 				68A3EAF42D5204D2003381DF /* battery_utils */,
@@ -195,10 +218,6 @@
 				687743442D4F6C7800375A2C /* BatteryInfoTableViewCell.m */,
 				68B5FF312D85619B00919BC2 /* TemperatureInfoTableViewCell.h */,
 				68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */,
-				68B5FF292D85602100919BC2 /* GradientArcView.h */,
-				68B5FF2D2D85606000919BC2 /* GradientArcView.m */,
-				687743452D4F6C7800375A2C /* SPWaterProgressIndicatorView.h */,
-				687743422D4F6C7800375A2C /* SPWaterProgressIndicatorView.m */,
 				687743332D4E08AD00375A2C /* BatteryInfoViewController.h */,
 				687743352D4E08AD00375A2C /* BatteryInfoViewController.m */,
 				6877432F2D4E08AD00375A2C /* SettingsViewController.h */,
@@ -220,10 +239,6 @@
 				68DCA5AB2D3F9A10004D0104 /* gtkextern.h */,
 				68DCA5AD2D3F9BFD004D0104 /* glibextern.h */,
 				68DCA5AE2D3FA4DA004D0104 /* intlextern.h */,
-				68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */,
-				68D6DEBF2D745DCB00E129A0 /* SegmentedViewCell.h */,
-				6834254F2D7D6A240070CE6F /* MultilineViewCell.m */,
-				683425512D7D6A380070CE6F /* MultilineViewCell.h */,
 			);
 			path = Battman;
 			sourceTree = "<group>";
@@ -258,6 +273,44 @@
 				68D6DEC12D770B9F00E129A0 /* kiosk_mode.h */,
 			);
 			path = battery_utils;
+			sourceTree = "<group>";
+		};
+		68AE40A42D8EB7710023D7B0 /* CustomUIElements */ = {
+			isa = PBXGroup;
+			children = (
+				68AE40A92D8EB84D0023D7B0 /* UberSegmentedControl */,
+				68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */,
+				68D6DEBF2D745DCB00E129A0 /* SegmentedViewCell.h */,
+				6834254F2D7D6A240070CE6F /* MultilineViewCell.m */,
+				683425512D7D6A380070CE6F /* MultilineViewCell.h */,
+				687743452D4F6C7800375A2C /* SPWaterProgressIndicatorView.h */,
+				687743422D4F6C7800375A2C /* SPWaterProgressIndicatorView.m */,
+				68B5FF292D85602100919BC2 /* GradientArcView.h */,
+				68B5FF2D2D85606000919BC2 /* GradientArcView.m */,
+			);
+			name = CustomUIElements;
+			sourceTree = "<group>";
+		};
+		68AE40A92D8EB84D0023D7B0 /* UberSegmentedControl */ = {
+			isa = PBXGroup;
+			children = (
+				68AE40AF2D8EB8870023D7B0 /* Constants.h */,
+				68AE40B52D8EB8870023D7B0 /* Constants.m */,
+				68AE40B22D8EB8870023D7B0 /* DividerView.h */,
+				68AE40B02D8EB8870023D7B0 /* DividerView.m */,
+				68AE40B72D8EB8870023D7B0 /* MultiSelectSegmentedControl.h */,
+				68AE40AB2D8EB8870023D7B0 /* MultiSelectSegmentedControl.m */,
+				68AE40AC2D8EB8870023D7B0 /* SegmentButton.h */,
+				68AE40B62D8EB8870023D7B0 /* SegmentButton.m */,
+				68AE40AE2D8EB8870023D7B0 /* StackViewGestureHandler.h */,
+				68AE40B42D8EB8870023D7B0 /* StackViewGestureHandler.m */,
+				68AE40AD2D8EB8870023D7B0 /* UberSegmentedControl.h */,
+				68AE40AA2D8EB8870023D7B0 /* UberSegmentedControl.m */,
+				68AE40B32D8EB8870023D7B0 /* UIView+Fill.h */,
+				68AE40B12D8EB8870023D7B0 /* UIView+Fill.m */,
+				68AE40BF2D8EB9190023D7B0 /* README.md */,
+			);
+			path = UberSegmentedControl;
 			sourceTree = "<group>";
 		};
 		68DCA5B42D40EDE8004D0104 /* Localizations */ = {
@@ -489,15 +542,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				6834254B2D7C4F560070CE6F /* iokit_connection.c in Sources */,
+				68AE40BE2D8EB8870023D7B0 /* SegmentButton.m in Sources */,
 				687743462D4F6C7800375A2C /* BatteryCellView.m in Sources */,
 				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
 				686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */,
 				687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */,
+				68AE40BD2D8EB8870023D7B0 /* Constants.m in Sources */,
+				68AE40B92D8EB8870023D7B0 /* MultiSelectSegmentedControl.m in Sources */,
+				68AE40BA2D8EB8870023D7B0 /* DividerView.m in Sources */,
 				687743372D4E08AD00375A2C /* BatteryInfoViewController.m in Sources */,
 				687743472D4F6C7800375A2C /* SPWaterProgressIndicatorView.m in Sources */,
 				686AECD52D3B93CD0059ECD0 /* main.m in Sources */,
+				68AE40BC2D8EB8870023D7B0 /* StackViewGestureHandler.m in Sources */,
 				68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */,
 				683425502D7D6A240070CE6F /* MultilineViewCell.m in Sources */,
+				68AE40BB2D8EB8870023D7B0 /* UIView+Fill.m in Sources */,
+				68AE40B82D8EB8870023D7B0 /* UberSegmentedControl.m in Sources */,
 				68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */,
 				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
 				68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */,
