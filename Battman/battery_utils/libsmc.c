@@ -567,9 +567,15 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     /* BCHT ChargingTable */
     /* BVVP PermanentVacVoltageLimit */
     /* BVVM TerminationVoltage */
-    /* BCBL */
     /* B0FU ForceUISoC */
-    
+    /* BCBL */
+
+    /* BatteryCriticalFlags */
+    /* BCFB */
+    /* BCFD */
+    /* BCFT */
+    /* BCFP NeedsPrecharge */
+    /* BCFV Voltage */
     return true;
 }
 
@@ -670,7 +676,7 @@ char *not_charging_reason_str(uint64_t code) {
         addreason(NOT_CHARGING_REASON_CSM_COMMUNICATION_FAILED, _C("Sensor Communication Failed"));
 
         /* Modes */
-        addreason(NOT_CHARGING_REASON_IOAM, _C("Accessory Controlled")); // IOAccessoryManager
+        addreason(NOT_CHARGING_REASON_IOAM, _C("Accessory Connecting")); // IOAccessoryManager
         addreason(NOT_CHARGING_REASON_KIOSK_MODE, _C("Kiosk Mode")); // How?
         addreason(NOT_CHARGING_REASON_COREMOTION, _C("CoreMotion")); // How?
         addreason(NOT_CHARGING_REASON_USBPD, _C("USB-PD Connecting")); // This is not 'not charging' ig

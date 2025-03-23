@@ -127,6 +127,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     ];
 
     [self.tableView registerClass:[SegmentedViewCell class] forCellReuseIdentifier:@"HVC"];
+    [self.tableView registerClass:[SegmentedFlagViewCell class] forCellReuseIdentifier:@"FLAGS"];
     [self.tableView registerClass:[MultilineViewCell class] forCellReuseIdentifier:_("Adapter Details")];
     self.tableView.estimatedRowHeight = 100;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
@@ -292,7 +293,24 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     [cell addGestureRecognizer:longPressRecognizer];
 
     if (ip.section == 0) {
-    	equipDetailCell(cell, batteryInfo + ip.row + pendingLoadOffsets[ip.row]);
+        struct battery_info_node *pending_bi = batteryInfo + ip.row + pendingLoadOffsets[ip.row];
+        /* Flags special handler */
+        if (strcmp(pending_bi->description, "Flags") == 0) {
+            SegmentedFlagViewCell *cellf = [tv dequeueReusableCellWithIdentifier:@"FLAGS"];
+            if (!cellf) cellf = [[SegmentedFlagViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"FLAGS"];
+            cellf.textLabel.text = _(pending_bi->description);
+            cellf.detailTextLabel.text = _(bi_node_get_string(pending_bi));
+            cellf.titleLabel.text = _(pending_bi->description);
+            cellf.detailLabel.text = _(bi_node_get_string(pending_bi));
+            [cellf selectByFlags:gGauge.Flags];
+            if (strlen(gGauge.DeviceName)) {
+                [cellf setBitSetByModel:[NSString stringWithFormat:@"%s", gGauge.DeviceName]];
+            } else {
+                [cellf setBitSetByGuess];
+            }
+            return cellf;
+        }
+        equipDetailCell(cell, pending_bi);
     	return cell;
     }
 
