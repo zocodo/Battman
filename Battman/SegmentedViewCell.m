@@ -88,6 +88,45 @@
 
 @implementation SegmentedFlagViewCell
 
+#define INIT    @"✅"
+#define RSVD    @" "
+#define BATHI   @"🔋⬆️"
+#define BATLOW  @"🔋⬇️"
+#define CHG_INH @"🚫🔌"
+#define FC      @"🔋✅"
+#define FD      @"🔋❌"
+#define CHG_SUS @"⏸🔌"
+#define IMAX    @"🔌💪"
+#define CHG     @"🔌"
+#define DSG     @"⚡⬇️"
+#define SOC1    @"🔋⚠️"
+#define SOCF    @"🔋🚨"
+#define RTA     @"⏰⚠️"
+#define OTA     @"🔥⚠️"
+#define TDA     @"⚡⏹️"
+#define TCA     @"🔌⏹️"
+#define OCA     @"🔋💥"
+#define RCA     @"🔋⏳"
+#define TDD     @"🔌❓"
+#define ISD     @"💥⚡"
+#define BAT_DET @"🔋📥"
+#define CFGUPMODE @"⚙️"
+#define ITPOR   @"🔄"
+#define OCVTAKEN @"💤📏"
+#define OT      @"🌡️🔥"
+#define UT      @"🌡️❄️"
+#define OTC     @"🔌🔥"
+#define OTD     @"🔥"
+#define EEFAIL  @"💾❌"
+#define DODCorrect @"🔋🔧"
+#define HW1     @"1⃣️"
+#define HW0     @"0⃣️"
+#define EC3     @"3⃣️"
+#define EC2     @"2⃣️"
+#define EC1     @"1⃣️"
+#define EC0     @"0⃣️"
+
+
 - (void)setBitSetByGuess {
     if (gGauge.FullChargeCapacity == 0) {
         NSLog(@"setBitSetByGuess: called too early!");
@@ -133,7 +172,7 @@
         NSString *hb5, *hb4, *hb3, *hb2;
         NSString *lb6;
         /* RSVD = Reserved. */
-        hb5 = hb4 = hb3 = hb2 = lb6 = @"RSVD";
+        hb5 = hb4 = hb3 = hb2 = lb6 = RSVD;
 
         /*
          OT   = Over-Temperature condition is detected. [OT] is set when Temperature() ≥ Over Temp (default = 55°C). [OT] is cleared when Temperature() < Over Temp – Temp Hys.
@@ -143,9 +182,9 @@
          */
         if ([name containsString:@"bq27425"]) {
             /* EEFAIL = EEPROM Write Fail. True when set. This bit is set after a single EEPROM write failure. All subsequent EEPROM writes are disabled. A power-on reset or RESET subcommand is required to clear the bit to re-enable EEPROM writes. */
-            hb2 = @"EEFAIL";
+            hb2 = EEFAIL;
         }
-        [self setHighBitSet:@[@"OT", @"UT", hb5, hb4, hb3, hb2, @"FC", @"CHG"]];
+        [self setHighBitSet:@[OT, UT, hb5, hb4, hb3, hb2, FC, CHG]];
         /*
          OCVTAKEN  = Cleared on entry to relax mode and set to 1 when OCV measurement is performed in relax mode.
          ITPOR     = Indicates a POR or RESET subcommand has occurred. If set, this bit generally indicates that the RAM configuration registers have been reset to default values and the host should reload the configuration parameters using the CONFIG UPDATE mode. This bit is cleared after the SOFT_RESET subcommand is received.
@@ -157,19 +196,19 @@
          */
         if ([name containsString:@"bq27421"] || [name containsString:@"bq27426"] || [name containsString:@"bq27427"]) {
             /* DOD Correct = This indicates that DOD correction is being applied. */
-            lb6 = @"DOD Correct";
+            lb6 = DODCorrect;
         }
-        [self setLowBitSet:@[@"OCVTAKEN", lb6, @"ITPOR", @"CFGUPMODE", @"BAT_DET", @"SOC1", @"SOCF", @"DSG"]];
+        [self setLowBitSet:@[OCVTAKEN, lb6, ITPOR, CFGUPMODE, BAT_DET, SOC1, SOCF, DSG]];
     }
     /* I am sure this is not used on iPhone 12 series
      * Low Bit 7 is OCVTAKEN on iPhone 12, but bq27546 Low Bit 7 is CHG_SUS */
     else if ([name containsString:@"bq275"]) {
         NSString *hb7, *hb6, *hb2, *hb0;
         NSString *lb7, *lb6, *lb5, *lb4, *lb3;
-        hb7 = hb6 = hb2 = hb0 = lb6 = lb5 = @"RSVD";
-        lb7 = @"CHG_SUS";
-        lb4 = @"IMAX";
-        lb3 = @"CHG";
+        hb7 = hb6 = hb2 = hb0 = lb6 = lb5 = RSVD;
+        lb7 = CHG_SUS;
+        lb4 = IMAX;
+        lb3 = CHG;
         /*
          BATHI   = Battery High bit indicating a high battery voltage condition.
          BATLOW  = Battery Low bit indicating a low battery voltage condition.
@@ -182,22 +221,22 @@
              OTD = Over-Temperature in Discharge condition is detected.
              CHG = (Fast) charging allowed.
              */
-            hb7 = @"OTC";
-            hb6 = @"OTD";
-            hb0 = @"CHG";
+            hb7 = OTC;
+            hb6 = OTD;
+            hb0 = CHG;
             /*
              OCVTAKEN = Cleared on entry to RELAX mode and set to 1 when OCV measurement is performed in RELAX.
              ISD      = Internal Short is detected.
              TDD      = Tab Disconnect is detected.
              HW[1:0]  = Device Identification. Default is 1/0
              */
-            lb7 = @"OCVTAKEN";
-            lb6 = @"ISD";
-            lb5 = @"TDD";
-            lb4 = @"HW1";
-            lb3 = @"HW0";
+            lb7 = OCVTAKEN;
+            lb6 = ISD;
+            lb5 = TDD;
+            lb4 = HW1;
+            lb3 = HW0;
         }
-        [self setHighBitSet:@[hb7, hb6, @"BATHI", @"BATLOW", @"CHG_INH", hb2, @"FC", hb0]];
+        [self setHighBitSet:@[hb7, hb6, BATHI, BATLOW, CHG_INH, hb2, FC, hb0]];
         /*
          CHG_SUS = Charge Suspend indicates that temperature is < T1 Temp or > T5 Temp while charging is active. True when set.
          IMAX    = Indicates that the computed Imax() value has changed enough to signal an interrupt. True when set.
@@ -206,13 +245,13 @@
          SOCF    = State-of-Charge Threshold Final (SOCF Set %) reached. True when set.
          DSG     = Discharging detected. True when set.
          */
-        [self setLowBitSet:@[lb7, lb6, lb5, lb4, lb3, @"SOC1", @"SOCF", @"DSG"]];
+        [self setLowBitSet:@[lb7, lb6, lb5, lb4, lb3, SOC1, SOCF, DSG]];
     }
     /* Typically MacBook Pro 2020 M1 */
     /* For bq20z series, the Flags is BatteryStatus (0x16) */
     else if ([name containsString:@"bq20z"]) {
         NSString *hb5, *hb2;
-        hb5 = hb2 = @"RSVD";
+        hb5 = hb2 = RSVD;
         /*
          OCA = Over Charged Alarm
          TCA = Terminate Charge Alarm
@@ -221,7 +260,7 @@
          RCA = Remaining Capacity Alarm
          RTA = Remaining Time Alarm
          */
-        [self setHighBitSet:@[@"OCA", @"TCA", hb5, @"OTA", @"TDA", hb2, @"RCA", @"RTA"]];
+        [self setHighBitSet:@[OCA, TCA, hb5, OTA, TDA, hb2, RCA, RTA]];
         /*
          INIT = Initialization. The INIT flag is always set in normal operation.
          DSG  = Discharging
@@ -239,7 +278,7 @@
                 0,1,1,0 =        BadSize - detected an attempt to write to a function code with an incorrect data block.
                 0,1,1,1 =   UnknownError - detected an unidentifiable error.
          */
-        [self setLowBitSet:@[@"INIT", @"DSG", @"FC", @"FD", @"EC3", @"EC2", @"EC1", @"EC0"]];
+        [self setLowBitSet:@[INIT, DSG, FC, FD, EC3, EC2, EC1, EC0]];
     }
     else {
         /* Stub */
@@ -313,7 +352,7 @@
         [self.contentView addSubview:self.detailLabel];
 
         // Initialize segmented control with sample segment
-        UberSegmentedControlConfig *conf = [[UberSegmentedControlConfig alloc] initWithFont:[UIFont systemFontOfSize:6 weight:UIFontWeightRegular] tintColor:nil allowsMultipleSelection:YES];
+        UberSegmentedControlConfig *conf = [[UberSegmentedControlConfig alloc] initWithFont:[UIFont systemFontOfSize:(UIFont.smallSystemFontSize + 1) * 0.7 weight:UIFontWeightRegular] tintColor:nil allowsMultipleSelection:YES];
 
         [self setBitSetByModel:@"STUB"]; // Stub first, adjust in ref
         self.highByte = [[UberSegmentedControl alloc] initWithItems:[self highBitSet] config:conf];

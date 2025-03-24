@@ -98,7 +98,8 @@
 }
 
 + (UIEdgeInsets)segmentContentEdgeInsets {
-    return UIEdgeInsetsMake(5, 10, 5, 10);
+    // This is different from orig impl, we want larger edge
+    return UIEdgeInsetsMake(5, -10, 5, -10);
 }
 
 + (UIEdgeInsets)titleEdgeInsets {
