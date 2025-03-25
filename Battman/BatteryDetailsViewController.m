@@ -436,13 +436,31 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
+    UIPasteboard *pasteboard;
+    NSString *pending;
+
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
+        // special cases
+        if ([[cell reuseIdentifier] isEqualToString:@"HVC"]) {
+            SegmentedViewCell *cell_seg = (SegmentedViewCell *)cell;
+            pending = cell_seg.detailLabel.text;
+        }
+        if ([[cell reuseIdentifier] isEqualToString:@"FLAGS"]) {
+            SegmentedFlagViewCell *cellf = (SegmentedFlagViewCell *)cell;
+            pending = cellf.detailLabel.text;
+        }
+        if ([[cell reuseIdentifier] isEqualToString:_("Adapter Details")]) {
+            // Custom cells does not have detailTextLabel, thats how Apple desired
+            MultilineViewCell *celll = (MultilineViewCell *)cell;
+            pending = celll.detailLabel.text;
+        }
+
         // We need better impl like PSTableCell's copy
-        UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
-        [pasteboard setString:cell.detailTextLabel.text];
-        
-        show_alert(_C("Copied!"), [cell.detailTextLabel.text UTF8String], _C("OK"));
+        pasteboard = [UIPasteboard generalPasteboard];
+        [pasteboard setString:pending];
+
+        show_alert(_C("Copied!"), [pending UTF8String], _C("OK"));
     }
 }
 
