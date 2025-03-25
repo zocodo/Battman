@@ -1,0 +1,88 @@
+# Battman 电池管理器
+被抛弃者的现代电池管理器，为它们的老设备打造。
+
+## 屏幕截图
+<div style="width:20%; margin: auto;" align="middle">
+<img src="../Screenshots/Main-zh_CN.png?raw=true" alt="Battman Main Demo" width="25%" height="25%" />
+<img src="../Screenshots/Gas Gauge-zh_CN..png?raw=true" alt="Battman Gas Gauge Demo" width="25%" height="25%" />
+<img src="../Screenshots/Adapter-zh_CN..png?raw=true" alt="Battman Adapter Demo" width="25%" height="25%" />
+</div>
+
+$${\color{grey}真正优雅的软件讲究代码的艺术，而非外表的点缀。}$$
+
+<br />
+
+### 优势
+- [x] 纯粹地由Objective-C与C打造
+- [x] 明朗的UI，编写自明朗的Objective-C
+- [x] 不含**StoryBoards**，不含**额外的二进制文件**，不含**Xcode 资源库**
+- [x] 不含**肮脏的Swift和SwiftUI**
+- [x] **没有**任何的 **Swift** 或者 **SwiftUI** 被添加，它们令人不适
+- [x] 不含**CocoaPods**，不含**Swift 扩展包**，不含**外部代码包依赖**，不含**第三方框架**
+- [x] Xcode 编译？不用 Xcode 编译也可以
+- [x] 直接获取并操作硬件最深处的原始数据
+- [x] 支持 iPhone、iPad、iPod、Xcode 模拟器和 Apple 芯片的 Mac 设备（如果有人捐赠设备的话，我甚至可以支持Apple Watch和Apple TV）
+- [x] 高度适配设备电池中的德州仪器电量监测计芯片
+- [x] 比 IOPS 和 PowerManagement 提供的信息还要**多得多**
+- [x] 检测你的**电源适配器**、**无线充电器**、甚至你的 **MagSafe 配件**
+
+### 只有 Battman 能做到
+
+目前为止，其他面向iOS的电池管理工具没能做到的事情
+(截止至 9th Sun Mar 2025 UTC+0)
+- [x] 完整的 **未充电原因（NotChargingReason）** 解码，详见 [not_charging_reason.h](../Battman/battery_utils/not_charging_reason.h)
+- [x] 德州仪器 Impedance Track™ 信息的获取
+- [x] 实时充电电压/电流的读取
+- [x] 完美运行在 Xcode Simulator （其他人在他们的软件里用 IOPS，所以不行）
+
+### 前置条件
+
+- 越狱设备，或者通过TrollStore安装
+- iOS 13+ / macOS 11+（欢迎向前移植）
+- arm64（A7+ 理论上的 / M1+）
+- Gettext libintl（可选，用于本地化）
+- GTK+ 3（可选，用于运行在基于GTK+的桌面环境）
+
+### 下载
+
+当前阶段，我不提供预构建版本，因为 Battman 仍然未达到我想象中的完整。如果你真的想用 Battman，可以自己编译，或者联系我以获取一个预构建包。
+
+```bash
+# 在 macOS，安装 Xcode 并直接用其编译
+# 在 Linux 或者 BSD，确保一个 LLVM 跨平台编译工具链和 iPhoneOS.sdk 已经准备好，并且按需修改 Battman/Makefile
+# 在 iOS，当你使用 Torrekie/Comdartiwerk 作为基础套件时
+apt install git odcctools bash clang make sed grep ld64 ldid libintl-dev iphoneos.sdk
+git clone https://github.com/Torrekie/Battman
+cd Battman
+make -C Battman all
+# 生成的 Battman.ipa 将位于 $(CWD)/Battman/build/Battman.ipa
+```
+
+### 已测试设备
+- iPhone 12 系列 (D52)
+- iPad Pro 2021 第三代 (J51)
+
+如果 Battman 未能在你的设备正常工作，请提交[疑述](../../../issues/new)。
+
+### 即将实现
+- [ ] AppKit/Cocoa UI for macOS
+- [ ] GTK+/X11 UI for iOS/macOS
+- [ ] 自动识别电量计芯片
+- [ ] 可选的数据采集（用于解码当前未知的参数）
+- [ ] 高级功能（Apple 系统管理控制器/Apple 电源管理 操作界面）
+- [ ] 温度控制
+- [ ] 作为命令行程序运行
+- [ ] 作为守护进程运行
+- [ ] 充电限制
+- [ ] 无线/MagSafe 适配
+- [ ] App 能耗限制
+- [ ] Jetsam 控制
+- [ ] 风扇控制
+
+### 许可证
+
+目前为MIT，之后可能会转变为非自由协议（至少目前是MIT），你不会因为我想以此维持生计而怪罪于我，对吧？
+
+## 免责声明
+
+请勿用于生产环境，无任何保障，风险自负。
