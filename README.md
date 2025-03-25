@@ -1,6 +1,9 @@
 # Battman
 Strayers' modern battery manager for their good old iOS devices.
 
+### 🌍
+[简体中文](docs/README-zh_CN.md)
+
 ## Screenshots
 <div style="width:20%; margin: auto;" align="middle">
 <img src="Screenshots/Main.png?raw=true" alt="Battman Main Demo" width="25%" height="25%" />
@@ -21,7 +24,7 @@ $${\color{grey}True \space elegance \space in \space software \space lies \space
 - [x] NO CocoaPods, NO Swift Packages, NO external code requirements, NO 3rd-party frameworks
 - [x] Compile WITH/WITHOUT Xcode
 - [x] Obtain & Operate directly from/with your hardware with the deepest raw data
-- [x] Supporting iPhone & iPad & iPod & Xcode Simulator & Apple Silicon Macs (If someone donate devices I can even code for Apple Watches and AppleTVs)
+- [x] Supporting iPhone & iPad & iPod & Xcode Simulator & Apple Silicon Macs (If someone donate devices I can even code for Apple Watches and Apple TVs)
 - [x] Highly integrated with your battery Gas Gauge IC that manufactured by Texas Instruments
 - [x] Show as much as power informations than IOPS & PowerManagement provided
 - [x] Identifying your power adapters, wireless chargers, or even your MagSafe accessories
@@ -52,7 +55,7 @@ I don't provide prebuilts at current stage, Battman is still not as completed as
 # On Linux or BSD, make sure a LLVM cross toolchain and iPhoneOS.sdk is prepared, modify Battman/Makefile if needed
 # On iOS, when you using Torrekie/Comdartiwerk as bootstrap
 apt install git odcctools bash clang make sed grep ld64 ldid libintl-dev iphoneos.sdk
-git clone https://https://github.com/Torrekie/Battman
+git clone https://github.com/Torrekie/Battman
 cd Battman
 make -C Battman all
 # Produced Battman.ipa will under $(CWD)/Battman/build/Battman.ipa

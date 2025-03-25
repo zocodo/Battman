@@ -4,8 +4,8 @@
 ## 屏幕截图
 <div style="width:20%; margin: auto;" align="middle">
 <img src="../Screenshots/Main-zh_CN.png?raw=true" alt="Battman Main Demo" width="25%" height="25%" />
-<img src="../Screenshots/Gas Gauge-zh_CN..png?raw=true" alt="Battman Gas Gauge Demo" width="25%" height="25%" />
-<img src="../Screenshots/Adapter-zh_CN..png?raw=true" alt="Battman Adapter Demo" width="25%" height="25%" />
+<img src="../Screenshots/Gas Gauge-zh_CN.png?raw=true" alt="Battman Gas Gauge Demo" width="25%" height="25%" />
+<img src="../Screenshots/Adapter-zh_CN.png?raw=true" alt="Battman Adapter Demo" width="25%" height="25%" />
 </div>
 
 $${\color{grey}真正优雅的软件讲究代码的艺术，而非外表的点缀。}$$
@@ -85,4 +85,4 @@ make -C Battman all
 
 ## 免责声明
 
-请勿用于生产环境，无任何保障，风险自负。
+**请勿用于生产环境，无任何保障，风险自负。**
