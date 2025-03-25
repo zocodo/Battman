@@ -1,16 +1,27 @@
 # Battman
 Strayers' modern battery manager for their good old iOS devices.
 
+## Screenshots
+<div style="width:20%; margin: auto;" align="middle">
+<img src="Screenshots/Main.png?raw=true" alt="Battman Main Demo" width="25%" height="25%" />
+<img src="Screenshots/Gas Gauge.png?raw=true" alt="Battman Gas Gauge Demo" width="25%" height="25%" />
+<img src="Screenshots/Adapter.png?raw=true" alt="Battman Adapter Demo" width="25%" height="25%" />
+</div>
+
+$${\color{grey}True \space elegance \space in \space software \space lies \space in \space the \space art \space of \space its \space code \space rather \space than \space in \space superficial \space design.}$$
+
+<br />
+
 ### Advantages
 - [x] Purely constructed with Objective-C & C
 - [x] UI purely written with brilliant Objective-C codes
-- [x] NO StoryBoards, NO additional binaries
+- [x] NO StoryBoards, NO additional binaries, NO Xcode Assets
 - [x] NO nasty Swift and SwiftUI involved
 - [x] NEITHER Swift NOR SwiftUI involved, they are disgusting
-- [x] NO CocoaPods, NO Swift Packages, NO external code requirements
+- [x] NO CocoaPods, NO Swift Packages, NO external code requirements, NO 3rd-party frameworks
 - [x] Compile WITH/WITHOUT Xcode
 - [x] Obtain & Operate directly from/with your hardware with the deepest raw data
-- [x] Supporting iPhone & iPad & iPod & Xcode Simulator & Apple Silicon Macs
+- [x] Supporting iPhone & iPad & iPod & Xcode Simulator & Apple Silicon Macs (If someone donate devices I can even code for Apple Watches and AppleTVs)
 - [x] Highly integrated with your battery Gas Gauge IC that manufactured by Texas Instruments
 - [x] Show as much as power informations than IOPS & PowerManagement provided
 - [x] Identifying your power adapters, wireless chargers, or even your MagSafe accessories
@@ -22,13 +33,13 @@ What other battery utils made for iOS hasn’t done
 - [x] Complete NotChargingReason decoding (see [not_charging_reason.h](Battman/battery_utils/not_charging_reason.h))
 - [x] Texas Intruments Impedance Track™ information retrieving
 - [x] Real-time charging current/voltage reading
-- [x] Running perfectly when in Xcode Simulator
+- [x] Running perfectly when in Xcode Simulator (Other people uses IOPS in their app so not working in Sims)
 
 ### Requirements
 
 - Jailbroken or install with TrollStore
 - iOS 13+ / macOS 11+ (backports welcomed)
-- arm64 (A7+ / M1+)
+- arm64 (A7+ theoretically / M1+)
 - Gettext libintl (Optional, for localizations)
 - GTK+ 3 (Optional, for running under GTK+ based WM)
 
@@ -47,18 +58,30 @@ make -C Battman all
 # Produced Battman.ipa will under $(CWD)/Battman/build/Battman.ipa
 ```
 
+### Tested Devices
+- iPhone 12 Series (D52)
+- iPad Pro 2021 3th Gen (J51)
+
+Please file [issues](../../issues/new) if Battman not working correctly on your device
+
 ### TODO
+- [ ] AppKit/Cocoa UI for macOS
+- [ ] GTK+/X11 UI for iOS/macOS
+- [ ] Auto identify Gas Gauge IC
+- [ ] Optional data collection (For decoding currently unknown params)
+- [ ] Advanced features (AppleSMC/ApplePMGR interface)
+- [ ] Thermal control
 - [ ] Run as CLI
 - [ ] Run as daemon
 - [ ] Charge limit
-- [ ] Wireless integration
+- [ ] Wireless/MagSafe integration
 - [ ] App rate limit
 - [ ] Jetsam control
 - [ ] Fan control
 
 ### License
 
-MIT for now, may become non-free later, you won't blame me if I want to make living with this right?
+MIT for now, may become non-free later (at least MIT for now), you won't blame me if I want to make living with this right?
 
 ## Disclaimer
 
