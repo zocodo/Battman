@@ -27,6 +27,7 @@
 
 - (void)selectByFlags:(UInt32)flags;
 - (void)setBitSetByModel:(NSString * _Nonnull)name;
+- (void)setBitSetByTargetName;
 - (void)setBitSetByGuess;
 
 @end

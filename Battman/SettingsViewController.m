@@ -115,7 +115,11 @@ extern NSMutableAttributedString *redirectedOutput;
         } else if (indexPath.row == 1) {
             UITableViewCell *sourceCodeCell = [UITableViewCell new];
             sourceCodeCell.textLabel.text = _("Source Code");
-            sourceCodeCell.textLabel.textColor = [UIColor colorWithRed:0 green:0.478 blue:1 alpha:1];
+            if (@available(iOS 13.0, *)) {
+                sourceCodeCell.textLabel.textColor = [UIColor linkColor];
+            } else {
+                sourceCodeCell.textLabel.textColor = [UIColor colorWithRed:0 green:0.478 blue:1 alpha:1];
+            }
             return sourceCodeCell;
         }
     }
@@ -144,8 +148,18 @@ extern NSMutableAttributedString *redirectedOutput;
 	return [super initWithStyle:UITableViewStyleGrouped];
 }
 
+- (NSArray *)contributors {
+    /* TODO: Figure out how to NSConstantArray */
+    // Consider also localize those names?
+    NSArray *contrib = @[
+        @"Torrekie", @"https://github.com/Torrekie",
+        @"Ruphane", @"https://github.com/LNSSPsd",
+    ];
+    return contrib;
+}
+
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-	return 2;
+	return [self contributors].count / 2;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
@@ -157,25 +171,21 @@ extern NSMutableAttributedString *redirectedOutput;
 }
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	//if(indexPath.row==1) {
-	//	[[UIApplication sharedApplication] openURL:@"https://github.com/Torrekie/Battman" options:nil completionHandler:nil];
-	//}
+    UITableViewCell *cell = [tv cellForRowAtIndexPath:indexPath];
+
+    for (int i = 0; i < [self contributors].count; i = i + 2) {
+        if ([cell.textLabel.text isEqualToString:[self contributors][i]]) {
+            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[self contributors][i + 1]] options:[NSDictionary new] completionHandler:nil];
+        }
+    }
+
 	[tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	// TODO: REUSE (Too few cells to reuse for now so no need at this moment)
-    // Consider also localize those names?
-	if (indexPath.row == 0) {
-		UITableViewCell *aCell = [UITableViewCell new];
-		aCell.textLabel.text = @"Torrekie";
-		return aCell;
-	} else if (indexPath.row == 1) {
-		UITableViewCell *bCell = [UITableViewCell new];
-		bCell.textLabel.text = @"Ruphane";
-		return bCell;
-	}
-	return nil;
+    UITableViewCell *cell = [UITableViewCell new];
+    cell.textLabel.text = [self contributors][indexPath.row * 2];
+    return cell;
 }
 
 + (NSArray *)debugGetBatteryCausesLeakDoNotUseInProduction {

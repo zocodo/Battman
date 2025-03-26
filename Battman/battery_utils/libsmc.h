@@ -303,7 +303,9 @@ typedef struct iktara_fw {
 __BEGIN_DECLS
 
 extern gas_gauge_t gGauge;
+extern board_info_t gBoard;
 
+board_info_t get_board_info(void);
 int get_fan_status(void);
 float get_temperature(void);
 int get_time_to_empty(void);

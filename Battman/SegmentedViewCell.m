@@ -87,7 +87,8 @@
 #include "not_charging_reason.h"
 
 @implementation SegmentedFlagViewCell
-
+#define USE_TEXT_FLAGS
+#ifndef USE_TEXT_FLAGS
 #define INIT    @"✅"
 #define RSVD    @" "
 #define BATHI   @"🔋⬆️"
@@ -125,6 +126,45 @@
 #define EC2     @"2⃣️"
 #define EC1     @"1⃣️"
 #define EC0     @"0⃣️"
+#else
+#define INIT    @"INIT"
+#define RSVD    @"RSVD"
+#define BATHI   @"BATHI"
+#define BATLOW  @"BATHLOW"
+#define CHG_INH @"CHG_INH"
+#define FC      @"FC"
+#define FD      @"FD"
+#define CHG_SUS @"CHG_SUS"
+#define IMAX    @"IMAX"
+#define CHG     @"CHG"
+#define DSG     @"DSG"
+#define SOC1    @"SOC1"
+#define SOCF    @"SOCF"
+#define RTA     @"RTA"
+#define OTA     @"OTA"
+#define TDA     @"TDA"
+#define TCA     @"TCA"
+#define OCA     @"OCA"
+#define RCA     @"RCA"
+#define TDD     @"TDD"
+#define ISD     @"ISD"
+#define BAT_DET @"BAT_DET"
+#define CFGUPMODE @"CFGUPMODE"
+#define ITPOR   @"ITPOR"
+#define OCVTAKEN @"OCVTAKEN"
+#define OT      @"OT"
+#define UT      @"UT"
+#define OTC     @"OTC"
+#define OTD     @"OTD"
+#define EEFAIL  @"EEFAIL"
+#define DODCorrect @"DODC"
+#define HW1     @"HW1"
+#define HW0     @"HW0"
+#define EC3     @"EC3"
+#define EC2     @"EC3"
+#define EC1     @"EC1"
+#define EC0     @"EC0"
+#endif
 
 
 - (void)setBitSetByGuess {
@@ -146,10 +186,6 @@
     lb0dsg = (gGauge.Flags & 1) && !charging;
     lb7 = gGauge.Flags & 0x0080;
     
-    /* As I observed on iPhone 12, hb5 ^ hb4:2, these are all RSVD on bq274, most possibly bq275 which has BATHI/BATLOW */
-    /* Confirmed Shape: */
-    /* OT       UT BATHI BATLOW ???? ???? FC   CHG */
-    /* OCVTAKEN __ _____ ______ ____ SOC1 SOCF DSG */
     /* We already know High Bit 2 is FC, the matching one in current code is bq274/bq275 */
     if ((hb5 ^ hb4)) {
         return [self setBitSetByModel:@"bq275"];
@@ -158,6 +194,32 @@
     
     /* Fallback to bq274 */
     return [self setBitSetByModel:@"bq274"];
+}
+
+/* This should not be used when DeviceName exists */
+- (void)setBitSetByTargetName {
+    board_info_t board = get_board_info();
+    NSString *rplt_nsstr = [NSString stringWithUTF8String:board.TargetName];
+
+    // Not really bq27545, but most similar
+    /* As I observed on iPhone 12, most possibly bq275 which has BATHI/BATLOW
+     * Confirmed Shape:
+     * ________ __ BATHI BATLOW ???? ???? FC   CHG
+     * OCVTAKEN __ _____ ______ ____ SOC1 SOCF DSG */
+    NSArray *bq27545 = @[@"d52", @"d53", @"d54"]; // iPhone 12 Series
+    for (int i = 0; i < bq27545.count; i++) {
+        if ([rplt_nsstr rangeOfString:bq27545[i] options:NSCaseInsensitiveSearch].location != NSNotFound)
+            return [self setBitSetByModel:@"bq27545"];
+    }
+
+    /* iPhone X series without iPhone X */
+    NSArray *bq27546 = @[@"n84", @"star", @"lisbon", @"hangzhou", @"d32", @"d33"];
+    for (int i = 0; i < bq27546.count; i++) {
+        if ([rplt_nsstr rangeOfString:bq27546[i] options:NSCaseInsensitiveSearch].location != NSNotFound)
+            return [self setBitSetByModel:@"bq27546"];
+    }
+
+    return [self setBitSetByGuess];
 }
 
 - (void)setBitSetByModel:(NSString * _Nonnull)name {

@@ -94,6 +94,7 @@ extern void NSLog(CFStringRef, ...);
 
 static io_service_t gConn = 0;
 gas_gauge_t gGauge = {0};
+board_info_t gBoard = {0};
 
 static IOReturn smc_open(void) {
     IOReturn result;
@@ -206,6 +207,32 @@ static float ioft2flt(void *bytes) {
 __attribute__((destructor)) void smc_close(void) {
     if (gConn != 0)
         IOServiceClose(gConn);
+}
+
+board_info_t get_board_info(void) {
+    static bool retrieved = false;
+
+    /* These info are constants, only retrieve once and set gBoard */
+    if (!retrieved) {
+        /* RGEN(ui8 ) Generation */
+        (void)smc_read('RGEN', &gBoard.Generation);
+        /* RESV(ch8*)[16] EmbeddedOSVersion */
+        (void)smc_read('RESV', &gBoard.EmbeddedOSVersion);
+        /* RECI(ui64) ChipEcid */
+        (void)smc_read('RECI', &gBoard.ChipEcid);
+        /* RCRV(ui32) ChipRev */
+        (void)smc_read('RCRV', &gBoard.ChipRev);
+        /* RBRV(ui32) BoardRev */
+        (void)smc_read('RBRV', &gBoard.BoardRev);
+        /* RBID(ui32) BoardId */
+        (void)smc_read('RBID', &gBoard.BoardId);
+        /* RPlt(ch8*)[8] TargetName */
+        (void)smc_read('RPlt', &gBoard.TargetName);
+
+        retrieved = true;
+    }
+
+    return gBoard;
 }
 
 /* Fan Control Keys:

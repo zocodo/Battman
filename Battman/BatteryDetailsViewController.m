@@ -306,7 +306,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             if (strlen(gGauge.DeviceName)) {
                 [cellf setBitSetByModel:[NSString stringWithFormat:@"%s", gGauge.DeviceName]];
             } else {
-                [cellf setBitSetByGuess];
+                [cellf setBitSetByTargetName];
             }
             return cellf;
         }
