@@ -14,6 +14,12 @@ CFLAGS = -target arm64-apple-ios${IPHONEOS_DEPLOYMENT_TARGET} -target arm64-appl
 LDFLAGS = -target arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET) -target arm64-apple-darwin $(LIBS) $(FRAMEWORKS) -Wl,-dead_strip_dylibs
 THEOS := ~/theos
 
+ifeq ($(shell test -e ../.git && echo exists), exists), exists)
+COMMIT_HASH := $(shell git rev-parse --short HEAD)
+else
+COMMIT_HASH :=
+endif
+
 ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/clang && echo exists), exists)
 CC = ${THEOS}/toolchain/linux/iphone/bin/clang
 CFLAGS += -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
@@ -64,7 +70,7 @@ build/Payload/Battman.app/Battman: $(OBJECTS) ../Battman.entitlements
 	$(CC) $(LDFLAGS) $(filter %.o,$^) -o $@
 	$(CODESIGN)../Battman.entitlements $@
 build/Payload/Battman.app/Info.plist: Info.plist
-	$(SED) 's/\$$(DEVELOPMENT_LANGUAGE)/en/;s/\$$(EXECUTABLE_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_IDENTIFIER)/ct.battman/;s/\$$(PRODUCT_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/' Info.plist > build/Payload/Battman.app/Info.plist
+	$(SED) 's/\$$(DEVELOPMENT_LANGUAGE)/en/;s/\$$(EXECUTABLE_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_IDENTIFIER)/com.torrekie.Battman/;s/\$$(PRODUCT_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/;s/\$$(COMMIT_HASH)/$(COMMIT_HASH)/' Info.plist > build/Payload/Battman.app/Info.plist
 build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist
 	cd build/&&zip -r Battman.ipa ./Payload
 
@@ -85,4 +91,3 @@ publish_none: build/Battman.ipa
 	@echo Not publishing.
 clean:
 	rm -rf build/
-

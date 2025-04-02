@@ -18,3 +18,5 @@ NO_WARN_CFLAGS = -Wno-multichar
 
 // We do post-build codesigning
 CODE_SIGNING_ALLOWED = NO
+
+COMMIT_HASH = "DUMMYHASH"

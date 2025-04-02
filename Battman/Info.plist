@@ -19,8 +19,10 @@
 	<key>CFBundleVersion</key>
 	<string>1</string>
 	<key>GIT_COMMIT_HASH</key>
-	<string></string>
+	<string>$(COMMIT_HASH)</string>
 	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
@@ -40,6 +42,8 @@
 		</dict>
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
+	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchScreen</key>
 	<dict>
