@@ -35,13 +35,18 @@
     temperatureCell.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:temperatureCell];
 
+    /*
     UILabel *temperatureLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 10, 600, 100)];
     temperatureLabel.lineBreakMode = NSLineBreakByWordWrapping;
     temperatureLabel.numberOfLines = 0;
     temperatureLabel.text = @"CPU温度：11.45℃\n电池温度：14.19℃\n充电器温度：19.81℃";
     [self.contentView addSubview:temperatureLabel];
+     */
 
-    _temperatureLabel = temperatureLabel;
+    //UICollectionView *collection = [[UICollectionView alloc] initWithFrame:CGRectZero];
+    
+    
+    //_temperatureLabel = temperatureLabel;
     _temperatureCell = temperatureCell;
 
     return self;

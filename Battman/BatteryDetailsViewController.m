@@ -123,7 +123,6 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         _("Description"), _("Short description provided by Apple PMU on current power adapter Family Code. Sometimes may not set."),
         _("Not Charging Reason"), _("If this field appears in the list, it indicates that an issue has occurred or that a condition was met, causing charging to stop."),
         _("HVC Mode"), _("High Voltage Charging (HVC) Mode may accquired by your power adapter or system, all supported modes will be listed below."),
-        _("PMUConfiguration"), _("Private field used by Apple PMU. Sadly I don't know how to parse this yet. Contributing welcomed.")
     ];
 
     [self.tableView registerClass:[SegmentedViewCell class] forCellReuseIdentifier:@"HVC"];
@@ -196,8 +195,8 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             @[_("Description"),         [NSString stringWithUTF8String:adapter_info.description]],
             @[_("Serial"),              [NSString stringWithUTF8String:adapter_info.serial]],
             /* TODO: Parse PMU Configuration Bits */
-            @[_("PMUConfiguration"),    [NSString stringWithFormat:@"0x%.4X", adapter_info.PMUConfiguration]],
-            @[_("ChargerConfiguration"),[NSString stringWithFormat:@"0x%.4X", adapter_data.ChargerConfiguration]],
+            @[_("PMU Configuration"),   [NSString stringWithFormat:@"%u %@", adapter_info.PMUConfiguration, _("mA")]],
+            @[_("Charger Configuration"),[NSString stringWithFormat:@"%u %@", adapter_data.ChargerConfiguration, _("mA")]],
             @[_("HVC Mode"),            @""], /* Special type, content controlled later */
         ]];
         if (adapter_data.NotChargingReason != 0) {
