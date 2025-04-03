@@ -21,6 +21,13 @@
 #define DBGALT(x, y, z)
 #endif
 
+#define LICENSE_MIT 'MIT'
+#define LICENSE_NONFREE 'NONF'
+
+#ifndef LICENSE
+#define LICENSE LICENSE_MIT
+#endif
+
 __BEGIN_DECLS
 
 bool show_alert(const char *title, const char *message, const char *cancel_button_title);

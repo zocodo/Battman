@@ -8,6 +8,7 @@
 #import "SceneDelegate.h"
 #import "BatteryInfoViewController.h"
 #import "SettingsViewController.h"
+#import "LicenseViewController.h"
 
 @interface SceneDelegate ()
 
@@ -22,7 +23,7 @@ BOOL graceful;
 
 @implementation SceneDelegate
 
-
+// FIXME: UIScene is not for iOS 9 or earlier
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
 	self.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
 	UITabBarController *tabbar = [UITabBarController new];
@@ -31,6 +32,24 @@ BOOL graceful;
 		[[UINavigationController alloc] initWithRootViewController:[SettingsViewController new]]
 	];
 	gWindow = self.window;
+
+    // Only do this on Embedded, since apps are containered with UUID
+    // Directly reading device ID are considered immoral but able to be used both macOS and iOS
+    // We do not accept this anyway, let macOS license be at the pkg installer (if we are going to have a macOS build)
+#if TARGET_OS_IPHONE
+    // Don't worry, we only get this ID to make sure device consistency
+    NSString *containerID = [[UIDevice currentDevice] identifierForVendor].UUIDString;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *cachedID = [defaults objectForKey:@"ContainerID"];
+    
+    NSLog(@"ID: %@, Cached: %@", containerID, cachedID);
+    // If no device ID is stored, or if the current device ID doesn't match the cached one
+    if (cachedID == nil || ![containerID isEqualToString:cachedID]) {
+        LicenseViewController *vc = [[LicenseViewController alloc] init];
+        UINavigationController *licenseView = [[UINavigationController alloc] initWithRootViewController:vc];
+        gWindow.rootViewController = licenseView;
+    } else
+#endif
 	gWindow.rootViewController = tabbar;
 
 	[self.window makeKeyAndVisible];

@@ -56,6 +56,7 @@
 /* Begin PBXBuildFile section */
 		68171A302D5221C400DD4224 /* libsmc.c in Sources */ = {isa = PBXBuildFile; fileRef = 68171A2F2D5221C400DD4224 /* libsmc.c */; };
 		68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */; };
+		6833A8A32D9E7FC200B71299 /* LicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6833A8A22D9E7FC200B71299 /* LicenseViewController.m */; };
 		6834254B2D7C4F560070CE6F /* iokit_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 68E9389A2D58980B00223285 /* iokit_connection.c */; };
 		683425502D7D6A240070CE6F /* MultilineViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6834254F2D7D6A240070CE6F /* MultilineViewCell.m */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; };
@@ -106,6 +107,8 @@
 		68171A2F2D5221C400DD4224 /* libsmc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libsmc.c; sourceTree = "<group>"; };
 		68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatteryDetailsViewController.m; sourceTree = "<group>"; };
 		68171A362D534E6B00DD4224 /* BatteryDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryDetailsViewController.h; sourceTree = "<group>"; };
+		6833A8A22D9E7FC200B71299 /* LicenseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LicenseViewController.m; sourceTree = "<group>"; };
+		6833A8A42D9E7FF800B71299 /* LicenseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LicenseViewController.h; sourceTree = "<group>"; };
 		6834254F2D7D6A240070CE6F /* MultilineViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultilineViewCell.m; sourceTree = "<group>"; };
 		683425512D7D6A380070CE6F /* MultilineViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultilineViewCell.h; sourceTree = "<group>"; };
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -222,6 +225,8 @@
 				687743352D4E08AD00375A2C /* BatteryInfoViewController.m */,
 				6877432F2D4E08AD00375A2C /* SettingsViewController.h */,
 				687743342D4E08AD00375A2C /* SettingsViewController.m */,
+				6833A8A22D9E7FC200B71299 /* LicenseViewController.m */,
+				6833A8A42D9E7FF800B71299 /* LicenseViewController.h */,
 				687742B52D43837B00375A2C /* locales */,
 				68DCA5B42D40EDE8004D0104 /* Localizations */,
 				686AECC22D3B93CB0059ECD0 /* AppDelegate.h */,
@@ -562,6 +567,7 @@
 				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
 				68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */,
 				686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */,
+				6833A8A32D9E7FC200B71299 /* LicenseViewController.m in Sources */,
 				68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */,
 				687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */,
 				68171A302D5221C400DD4224 /* libsmc.c in Sources */,
