@@ -84,7 +84,7 @@ Please file [issues](../../issues/new) if Battman not working correctly on your 
 
 ### License
 
-MIT for now, may become non-free later (at least MIT for now), you won't blame me if I want to make living with this right?
+MIT for now, may become [non-free license](LICENSE/LICENSE.md) later (at least MIT for now), you won't blame me if I want to make living with this right?
 
 ## Disclaimer
 
