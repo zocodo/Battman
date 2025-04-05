@@ -1,6 +1,7 @@
 #import "LicenseViewController.h"
 #include "intlextern.h"
 #include "common.h"
+#include "license_check.h"
 
 /* Ignore UIWebView deprecation warnings for now */
 #pragma clang diagnostic push
@@ -86,12 +87,7 @@
 
 // Handle Accept
 - (void)handleAccept {
-    // if unsandboxed, the config will be located at ~/Library/Preferences/com.torrekie.Battman.plist
-    // which editable by `defaults` command
-    NSString *containerID = [[UIDevice currentDevice] identifierForVendor].UUIDString;
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:containerID forKey:@"ContainerID"];
-    [defaults synchronize];
+    save_terms_acceptance();
     show_alert_async(_C("Agreed"), _C("Reopen Battman to take effect"), _C("OK"), ^(bool ok) {
         app_exit();
     });

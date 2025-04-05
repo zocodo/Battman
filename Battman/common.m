@@ -367,7 +367,6 @@ void show_alert_async(const char *title, const char *message, const char *button
         NSString *nsmessage = [NSString stringWithUTF8String:message];
         NSString *nsbutton = [NSString stringWithUTF8String:button];
         // Use UIAlertController if iOS 10 or later
-        // FIXME: Sometimes not displaying passed chars
         dispatch_async(dispatch_get_main_queue(), ^{
             UIWindowScene *scene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] anyObject];
             UIWindow *keyWindow = scene.windows.firstObject;

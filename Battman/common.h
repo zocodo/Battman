@@ -22,6 +22,7 @@
 #endif
 
 #define LICENSE_MIT 'MIT'
+#define LICENSE_GPL 'GPL'
 #define LICENSE_NONFREE 'NONF'
 
 #ifndef LICENSE

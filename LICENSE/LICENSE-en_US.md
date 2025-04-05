@@ -11,8 +11,10 @@ Hosted at: https://github.com/Torrekie/Battman
 - **"Derivative Works"** refers to any modifications, functional enhancements, or integrations with other software based on the Software.
 - **"Official Build"** denotes any version published on the Company’s official website or GitHub repository, which is accompanied by a digital signature or hash verification.
 
-### 2. Grant of License
-The Company hereby grants, free of charge, to any person obtaining a copy of this Software and its accompanying documentation (the "Software") permission to use, reproduce, modify, and distribute copies or substantial portions of the Software solely for non-commercial purposes, subject to the following terms and conditions.
+### 2. Grant of License and Implied Consent
+- 2.1 The Company hereby grants, free of charge, to any person obtaining a copy of this Software and its accompanying documentation (the "Software") permission to use, reproduce, modify, and distribute copies or substantial portions of the Software solely for non-commercial purposes, subject to the following terms and conditions.
+- 2.2 By launching the software and accessing its main interface for the first time, the user are deemed to have fully read, understood, and irrevocably agreed to all terms of this Agreement, regardless of whether the user have actively completed the user agreement review process. Continued use of the Software shall further affirm the legal validity of this consent.
+- 2.3 Any act of bypassing, blocking, or tampering with the user agreement consent interface or related verification processes through technical means (including but not limited to reverse engineering, debugging tools, third-party plugins) shall be deemed as the user full awareness and acceptance of all terms herein. The user shall bear all consequences arising from such acts, which shall not affect the legal enforceability of this Agreement against the user.
 
 ### 3. Description of the Software and Third-Party Licenses
 - 3.1 The Software, "Battman", is a tool for interfacing with Apple device hardware data. Apple Inc. is neither affiliated with nor endorses this project.

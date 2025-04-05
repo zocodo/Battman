@@ -194,7 +194,6 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
              */
             @[_("Description"),         [NSString stringWithUTF8String:adapter_info.description]],
             @[_("Serial"),              [NSString stringWithUTF8String:adapter_info.serial]],
-            /* TODO: Parse PMU Configuration Bits */
             @[_("PMU Configuration"),   [NSString stringWithFormat:@"%u %@", adapter_info.PMUConfiguration, _("mA")]],
             @[_("Charger Configuration"),[NSString stringWithFormat:@"%u %@", adapter_data.ChargerConfiguration, _("mA")]],
             @[_("HVC Mode"),            @""], /* Special type, content controlled later */
@@ -203,6 +202,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             [adapter_cells insertObject:@[_("Not Charging Reason"), [NSString stringWithUTF8String:not_charging_reason_str(adapter_data.NotChargingReason)]] atIndex:3];
         }
     }
+    /* TODO: Secondary Adapter & Accessory Adapter */
     /* TODO: Gas Gauge (Advanced) */
 
     [self.tableView reloadData];

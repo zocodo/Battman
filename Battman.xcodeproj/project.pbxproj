@@ -57,6 +57,7 @@
 		68171A302D5221C400DD4224 /* libsmc.c in Sources */ = {isa = PBXBuildFile; fileRef = 68171A2F2D5221C400DD4224 /* libsmc.c */; };
 		68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */; };
 		6833A8A32D9E7FC200B71299 /* LicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6833A8A22D9E7FC200B71299 /* LicenseViewController.m */; };
+		6833A8A62D9FBEF100B71299 /* license_check.m in Sources */ = {isa = PBXBuildFile; fileRef = 6833A8A52D9FBEF100B71299 /* license_check.m */; };
 		6834254B2D7C4F560070CE6F /* iokit_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 68E9389A2D58980B00223285 /* iokit_connection.c */; };
 		683425502D7D6A240070CE6F /* MultilineViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6834254F2D7D6A240070CE6F /* MultilineViewCell.m */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; };
@@ -109,6 +110,8 @@
 		68171A362D534E6B00DD4224 /* BatteryDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryDetailsViewController.h; sourceTree = "<group>"; };
 		6833A8A22D9E7FC200B71299 /* LicenseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LicenseViewController.m; sourceTree = "<group>"; };
 		6833A8A42D9E7FF800B71299 /* LicenseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LicenseViewController.h; sourceTree = "<group>"; };
+		6833A8A52D9FBEF100B71299 /* license_check.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = license_check.m; sourceTree = "<group>"; };
+		6833A8A72D9FBF0000B71299 /* license_check.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = license_check.h; sourceTree = "<group>"; };
 		6834254F2D7D6A240070CE6F /* MultilineViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultilineViewCell.m; sourceTree = "<group>"; };
 		683425512D7D6A380070CE6F /* MultilineViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultilineViewCell.h; sourceTree = "<group>"; };
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -240,6 +243,8 @@
 				68DCA5582D3BBC6A004D0104 /* Battman.storyboard */,
 				68DCA5602D3D0AC5004D0104 /* main.h */,
 				68DCA5A82D3F9338004D0104 /* common.m */,
+				6833A8A72D9FBF0000B71299 /* license_check.h */,
+				6833A8A52D9FBEF100B71299 /* license_check.m */,
 				68DCA5AA2D3F935E004D0104 /* common.h */,
 				68DCA5AB2D3F9A10004D0104 /* gtkextern.h */,
 				68DCA5AD2D3F9BFD004D0104 /* glibextern.h */,
@@ -546,6 +551,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6833A8A62D9FBEF100B71299 /* license_check.m in Sources */,
 				6834254B2D7C4F560070CE6F /* iokit_connection.c in Sources */,
 				68AE40BE2D8EB8870023D7B0 /* SegmentButton.m in Sources */,
 				687743462D4F6C7800375A2C /* BatteryCellView.m in Sources */,
