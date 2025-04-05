@@ -78,7 +78,7 @@ enum {
 #define NOT_CHARGING_REASON_BATTERY_NOT_PRESENT                 (uint64_t)(1 << 0x06)
 #define NOT_CHARGING_REASON_VBUS_NOT_PRESENT                    (uint64_t)(1 << 0x07)
 
-/* High SoC & High Temperature? What kind of stat it is */
+/* Charging Inhibit when SoC and Temp at a specifc range */
 #define NOT_CHARGING_REASON_HIGH_SOC_HIGH_TEMP_STOP_CHARGING    (uint64_t)(1 << 0x08)
 #define NOT_CHARGING_REASON_CSM_COMMUNICATION_FAILED            (uint64_t)(1 << 0x09)
 

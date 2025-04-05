@@ -67,14 +67,14 @@ struct battery_info_node main_battery_template[] = {
     {_ID_("State Of Charge"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
     {_ID_("State Of Charge (UI)"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
     {_ID_("Resistance Scale"), BIN_IN_DETAILS},
-    {_ID_("Battery Serial"), 0},
+    {_ID_("Battery Serial No."), 0},
     {_ID_("Chemistry ID"), 0},
     {_ID_("Flags"), 0},
     {_ID_("True Remaining Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
     {_ID_("OCV Current"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
     {_ID_("OCV Voltage"), BIN_UNIT_MVOLT | BIN_IN_DETAILS},
-    {_ID_("Peak Current"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
-    {_ID_("Peak Current 2"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
+    {_ID_("Max Load Current"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
+    {_ID_("Max Load Current 2"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
     {_ID_("IT Misc Status"), 0},
     {_ID_("Simulation Rate"), BIN_UNIT_HOUR | BIN_IN_DETAILS},
     {_ID_("Daily Max SoC"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
@@ -270,8 +270,8 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
         BI_SET_ITEM(_ID_("State Of Charge (UI)"), gGauge.UISoC);
 		BI_SET_ITEM_IF(gGauge.ResScale, 
 				_ID_("Resistance Scale"), gGauge.ResScale);
-		if(!battery_serial(BI_ENSURE_STR(_ID_("Battery Serial")))) {
-			BI_FORMAT_ITEM(_ID_("Battery Serial"), "None");
+		if(!battery_serial(BI_ENSURE_STR(_ID_("Battery Serial No.")))) {
+			BI_FORMAT_ITEM(_ID_("Battery Serial No."), "None");
 		}
 		BI_FORMAT_ITEM(_ID_("Chemistry ID"), "0x%.8X", gGauge.ChemID);
 
@@ -285,8 +285,8 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 				gGauge.OCV_Current);
 		BI_SET_ITEM_IF(gGauge.OCV_Voltage, _ID_("OCV Voltage"),
 				gGauge.OCV_Voltage);
-		BI_SET_ITEM_IF(gGauge.IMAX, _ID_("Peak Current"), gGauge.IMAX);
-		BI_SET_ITEM_IF(gGauge.IMAX2, _ID_("Peak Current 2"), gGauge.IMAX2);
+		BI_SET_ITEM_IF(gGauge.IMAX, _ID_("Max Load Current"), gGauge.IMAX);
+		BI_SET_ITEM_IF(gGauge.IMAX2, _ID_("Max Load Current 2"), gGauge.IMAX2);
 		BI_FORMAT_ITEM_IF(gGauge.ITMiscStatus, _ID_("IT Misc Status"), "0x%.4X",
 					gGauge.ITMiscStatus);
 		BI_SET_ITEM_IF(gGauge.SimRate, _ID_("Simulation Rate"),

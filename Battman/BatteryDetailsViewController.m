@@ -193,7 +193,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
              magsafe acc: MagSafe Accessory (Typically MagSafe Battery Pack)
              */
             @[_("Description"),         [NSString stringWithUTF8String:adapter_info.description]],
-            @[_("Serial"),              [NSString stringWithUTF8String:adapter_info.serial]],
+            @[_("Serial No."),          [NSString stringWithUTF8String:adapter_info.serial]],
             @[_("PMU Configuration"),   [NSString stringWithFormat:@"%u %@", adapter_info.PMUConfiguration, _("mA")]],
             @[_("Charger Configuration"),[NSString stringWithFormat:@"%u %@", adapter_data.ChargerConfiguration, _("mA")]],
             @[_("HVC Mode"),            @""], /* Special type, content controlled later */

@@ -688,7 +688,7 @@ char *not_charging_reason_str(uint64_t code) {
         if (code == DEVICE_IS_CHARGING) return _C("None");
 
         /* Common */
-        addreason(NOT_CHARGING_REASON_FULLY_CHARGED, _C("Fully Charged"));
+        addreason(NOT_CHARGING_REASON_FULLY_CHARGED, _C("Fully Charged")); // This will be set when FC flag sets
         addreason(NOT_CHARGING_REASON_TEMP_BELOW_MIN_STOP_CHARGING, _C("Too Cold"));
         addreason(NOT_CHARGING_REASON_TEMP_ABOVE_MAX_STOP_CHARGING, _C("Too Hot"));
         addreason(NOT_CHARGING_REASON_TEMP_BELOW_MIN_START_CHARGING, _C("Too Cold To Start"))
@@ -699,7 +699,7 @@ char *not_charging_reason_str(uint64_t code) {
         addreason(NOT_CHARGING_REASON_BATTERY_NOT_PRESENT, _C("Battery Not Present"));
         addreason(NOT_CHARGING_REASON_VBUS_NOT_PRESENT, _C("VBUS Not Present"));
 
-        addreason(NOT_CHARGING_REASON_HIGH_SOC_HIGH_TEMP_STOP_CHARGING, _C("High SoC Or High Temperature Stopped"));
+        addreason(NOT_CHARGING_REASON_HIGH_SOC_HIGH_TEMP_STOP_CHARGING, _C("High SoC High Temp Stopped"));
         addreason(NOT_CHARGING_REASON_CSM_COMMUNICATION_FAILED, _C("Sensor Communication Failed"));
 
         /* Modes */
@@ -708,12 +708,12 @@ char *not_charging_reason_str(uint64_t code) {
         addreason(NOT_CHARGING_REASON_COREMOTION, _C("CoreMotion")); // How?
         addreason(NOT_CHARGING_REASON_USBPD, _C("USB-PD Connecting")); // This is not 'not charging' ig
 
-        // Internal setbatt tool controlled
+        // Internal setbatt tool controlled (not only setbatt can trigger this btw)
         addreason(NOT_CHARGING_REASON_SETBATT, _C("setbatt Controlled"));
         // System controlled
         addreason(NOT_CHARGING_REASON_PREDICTIVECHARGING, _C("Predictive Charging"));
-        // What is that? Wireless inductive? I need a MagSafe Battery to check this.
-        addreason(NOT_CHARGING_REASON_INDUCTIVE, _C("MagSafe Battery"));
+        // Inductive Charging, but I don't have such charger to trigger this
+        addreason(NOT_CHARGING_REASON_INDUCTIVE, _C("Wireless Charger Controlled"));
         // Gas Gauge FW Update (May happens with MagSafe chargers, their GG FW is updatable)
         addreason(NOT_CHARGING_REASON_GG_FW_UPDATE, _C("Gas Gauge FW Updating"));
         // Battery does not support inhibit inflow
@@ -835,7 +835,8 @@ char *get_adapter_family_desc(mach_port_t family) {
         case kIOPSFamilyCodeUSBHostSuspended:           return _("Suspended USB Host");
         case kIOPSFamilyCodeUSBDevice:                  return _("USB Device");
         case kIOPSFamilyCodeUSBAdapter:                 return _("Adapter");
-        case kIOPSFamilyCodeUSBChargingPortDedicated:   return _("Dedicated USB Charging Port");
+        // Consider display abbreviated DCP/CDP/SDP instead
+        case kIOPSFamilyCodeUSBChargingPortDedicated:   return _("Dedicated USB Charging Port"); // usb charger
         case kIOPSFamilyCodeUSBChargingPortDownstream:  return _("Downstream USB Charging Port");
         case kIOPSFamilyCodeUSBChargingPort:            return _("USB Charging Port"); // usb charger
         case kIOPSFamilyCodeUSBUnknown:                 return _("Unknown USB");
