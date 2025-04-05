@@ -30,7 +30,7 @@ msgstr "Battman 许可证"
 msgid ""
 "Battman does not use non-free license at current stage, press Agree to "
 "proceed."
-msgstr "目前 Battman 不使用非自由协议，按下”同意“以继续。"
+msgstr "目前 Battman 不使用非自由协议，按下“同意”以继续。"
 
 #: /Users/torrekie/proj/Battman/Battman/LicenseViewController.m:34
 msgid "Term of Use & Privacy Policies"

@@ -130,7 +130,7 @@
 #define INIT    @"INIT"
 #define RSVD    @"RSVD"
 #define BATHI   @"BATHI"
-#define BATLOW  @"BATHLOW"
+#define BATLOW  @"BATLOW"
 #define CHG_INH @"CHG_INH"
 #define FC      @"FC"
 #define FD      @"FD"

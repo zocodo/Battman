@@ -2,8 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>com.apple.private.security.no-container</key>
-	<false/>
+	<key>application-identifier</key>
+	<string>com.torrekie.Battman</string>
+	<key>com.apple.developer.icloud-container-identifiers</key>
+	<array>
+		<string>com.torrekie.Battman</string>
+	</array>
+	<key>com.apple.CommCenter.fine-grained</key>
+	<array>
+		<string>internal</string>
+		<string>spi</string>
+		<string>identity</string>
+	</array>
+
 	<key>platform-application</key>
 	<true/>
 	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
@@ -12,16 +23,50 @@
 	<true/>
 	<key>com.apple.security.cs.allow-dyld-environment-variables</key>
 	<true/>
-	<key>com.apple.private.iokit.batterydata</key>
+	<key>com.apple.security.exception.shared-preference.read-write</key>
+        <array>
+		<string>com.torrekie.Battman</string>
+	</array>
+
+	<!-- IOHID -->
+	<key>com.apple.private.hid.client.admin</key>
 	<true/>
-	<key>com.apple.coreduetd.batterysaver.allow</key>
+	<key>com.apple.private.hid.client.event-filter</key>
+	<true/>
+	<key>com.apple.private.hid.client.service-protected</key>
+	<true/>
+	<key>com.apple.private.hid.manager.client</key>
+	<true/>
+
+	<!-- PMGR/GG/SMC -->
+	<key>com.apple.private.gasgauge-update</key>
+	<true/>
+	<key>com.apple.private.iokit.batterydata</key>
 	<true/>
 	<key>com.apple.private.iokit.powerlogging</key>
 	<true/>
 	<key>com.apple.private.powersource-read</key>
 	<true/>
+	<key>com.apple.coreduetd.batterysaver.allow</key>
+	<true/>
 	<key>com.apple.private.applesmc.user-access</key>
 	<true/>
+	<key>com.apple.gasgauge.user-access-device</key>
+	<true/>
+
+	<!-- IOKit -->
+	<key>com.apple.system.diagnostics.iokit-properties</key>
+	<true/>
+	<key>com.apple.system.get-hardware-identifiers</key>
+	<true/>
+	<key>com.apple.security.exception.iokit-user-client-class</key>
+	<array>
+		<string>ApplePPMUserClient</string>
+		<string>RootDomainUserClient</string>
+		<string>AppleSMCClient</string>
+		<string>AppleSmartBatteryManagerUserClient</string>
+		<string>IOReportUserClient</string>
+	</array>
 	<key>com.apple.security.iokit-user-client-class</key>
 	<array>
 		<string>ApplePPMUserClient</string>
