@@ -2,13 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<!-- Use only when jailbroken (iOS15+)
-	<key>com.apple.private.skip-library-validation</key>
-	<true/>
-	-->
-	<!-- Common hacks -->
 	<key>com.apple.private.security.no-container</key>
-	<true/>
+	<false/>
 	<key>platform-application</key>
 	<true/>
 	<key>com.apple.security.cs.allow-unsigned-executable-memory</key>
@@ -17,27 +12,25 @@
 	<true/>
 	<key>com.apple.security.cs.allow-dyld-environment-variables</key>
 	<true/>
-
-	<!-- IOKit/IOPM/AppleSMC -->
 	<key>com.apple.private.iokit.batterydata</key>
 	<true/>
 	<key>com.apple.coreduetd.batterysaver.allow</key>
 	<true/>
-        <key>com.apple.private.iokit.powerlogging</key>
-        <true/>
-        <key>com.apple.private.powersource-read</key>
-        <true/>
-        <key>com.apple.private.applesmc.user-access</key>
-        <true/>
-        <key>com.apple.security.iokit-user-client-class</key>
-        <array>
-                <string>ApplePPMUserClient</string>
-                <string>RootDomainUserClient</string>
-                <string>AppleSMCClient</string>
-                <string>AppleSmartBatteryManagerUserClient</string>
-                <string>IOReportUserClient</string>
-        </array>
-        <key>com.apple.private.iokit.rootdomain-set-property</key>
-        <true/>
+	<key>com.apple.private.iokit.powerlogging</key>
+	<true/>
+	<key>com.apple.private.powersource-read</key>
+	<true/>
+	<key>com.apple.private.applesmc.user-access</key>
+	<true/>
+	<key>com.apple.security.iokit-user-client-class</key>
+	<array>
+		<string>ApplePPMUserClient</string>
+		<string>RootDomainUserClient</string>
+		<string>AppleSMCClient</string>
+		<string>AppleSmartBatteryManagerUserClient</string>
+		<string>IOReportUserClient</string>
+	</array>
+	<key>com.apple.private.iokit.rootdomain-set-property</key>
+	<true/>
 </dict>
 </plist>
