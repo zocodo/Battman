@@ -349,14 +349,15 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
     }
 #else
-    /* I'm sorry this reduces some speed, but it ensures Accessory */
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
+    UITableViewCell *cell;
 #endif
 
-    UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-    [cell addGestureRecognizer:longPressRecognizer];
-
     if (ip.section == 0) {
+        /* I'm sorry this reduces some speed, but it ensures Accessory */
+        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
+        UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+        [cell addGestureRecognizer:longPressRecognizer];
+
         struct battery_info_node *pending_bi = batteryInfo + ip.row + pendingLoadOffsets[ip.row];
         /* Flags special handler */
         if (strcmp(pending_bi->description, "Flags") == 0) {
@@ -411,6 +412,11 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
     // Consider make this an adapter_info.c?
     if (ip.section == [sections_detail indexOfObject:_("Adapter Details")]) {
+        cell = [tv dequeueReusableCellWithIdentifier:cell_id];
+        if (!cell) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
+        }
+
         NSArray *adapter_cell = adapter_cells[ip.row];
         cell.textLabel.text = adapter_cell[0];
         cell.detailTextLabel.text = adapter_cell[1];
