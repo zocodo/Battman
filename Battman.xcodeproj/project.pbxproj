@@ -58,6 +58,7 @@
 		68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */; };
 		6833A8A32D9E7FC200B71299 /* LicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6833A8A22D9E7FC200B71299 /* LicenseViewController.m */; };
 		6833A8A62D9FBEF100B71299 /* license_check.m in Sources */ = {isa = PBXBuildFile; fileRef = 6833A8A52D9FBEF100B71299 /* license_check.m */; };
+		6833A8C92DA3C6E500B71299 /* WarnAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6833A8C82DA3C6E500B71299 /* WarnAccessoryView.m */; };
 		6834254B2D7C4F560070CE6F /* iokit_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 68E9389A2D58980B00223285 /* iokit_connection.c */; };
 		683425502D7D6A240070CE6F /* MultilineViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6834254F2D7D6A240070CE6F /* MultilineViewCell.m */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; };
@@ -112,6 +113,8 @@
 		6833A8A42D9E7FF800B71299 /* LicenseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LicenseViewController.h; sourceTree = "<group>"; };
 		6833A8A52D9FBEF100B71299 /* license_check.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = license_check.m; sourceTree = "<group>"; };
 		6833A8A72D9FBF0000B71299 /* license_check.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = license_check.h; sourceTree = "<group>"; };
+		6833A8C82DA3C6E500B71299 /* WarnAccessoryView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WarnAccessoryView.m; sourceTree = "<group>"; };
+		6833A8CA2DA3C6FE00B71299 /* WarnAccessoryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WarnAccessoryView.h; sourceTree = "<group>"; };
 		6834254F2D7D6A240070CE6F /* MultilineViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultilineViewCell.m; sourceTree = "<group>"; };
 		683425512D7D6A380070CE6F /* MultilineViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultilineViewCell.h; sourceTree = "<group>"; };
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -297,6 +300,8 @@
 				687743422D4F6C7800375A2C /* SPWaterProgressIndicatorView.m */,
 				68B5FF292D85602100919BC2 /* GradientArcView.h */,
 				68B5FF2D2D85606000919BC2 /* GradientArcView.m */,
+				6833A8C82DA3C6E500B71299 /* WarnAccessoryView.m */,
+				6833A8CA2DA3C6FE00B71299 /* WarnAccessoryView.h */,
 			);
 			name = CustomUIElements;
 			sourceTree = "<group>";
@@ -563,6 +568,7 @@
 				68AE40BA2D8EB8870023D7B0 /* DividerView.m in Sources */,
 				687743372D4E08AD00375A2C /* BatteryInfoViewController.m in Sources */,
 				687743472D4F6C7800375A2C /* SPWaterProgressIndicatorView.m in Sources */,
+				6833A8C92DA3C6E500B71299 /* WarnAccessoryView.m in Sources */,
 				686AECD52D3B93CD0059ECD0 /* main.m in Sources */,
 				68AE40BC2D8EB8870023D7B0 /* StackViewGestureHandler.m in Sources */,
 				68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */,

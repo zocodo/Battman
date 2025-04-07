@@ -29,6 +29,9 @@
 #define LICENSE LICENSE_MIT
 #endif
 
+#define IOS_CONTAINER_FMT "^/private/var/mobile/Containers/Data/Application/[0-9A-Fa-f\\-]{36}$"
+#define MAC_CONTAINER_FMT "^/Users/[^/]+/Library/Containers/[^/]+/Data$"
+
 __BEGIN_DECLS
 
 bool show_alert(const char *title, const char *message, const char *cancel_button_title);
@@ -40,6 +43,8 @@ bool gtk_available(void);
 
 void app_exit(void);
 bool is_carbon(void);
+
+bool match_regex(const char *string, const char *pattern);
 
 __END_DECLS
 

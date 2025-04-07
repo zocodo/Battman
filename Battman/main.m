@@ -97,6 +97,32 @@ NSString *cond_localize(const char *str) {
             if (use_libintl && !strcmp("locale_name", locale_name)) {
                 show_alert("Error", "Unable to match existing Gettext localization, defaulting to English", "Cancel");
             }
+#if defined(ENABLE_MO_CHECK) && defined(__LITTLE_ENDIAN__)
+            else {
+                /* This is for preventing users to modify the mo file */
+                static __int128_t registered_locales[] = {
+                    0x6873696c676e45, 6e65, // English, en
+                    0x8796e6adb8e4, 0x4e435f687a, // 中文, zh_CN
+                    0,
+                };
+                int i = 0;
+                static bool is_registered = false;
+                for (i = 0; registered_locales[i] != 0; i = i + 2) {
+                    __int128_t num_str = 0;
+                    memcpy(&num_str, locale_name, strlen(locale_name));
+                    if (registered_locales[i] == num_str) {
+                        is_registered = true;
+                        break;
+                    }
+                }
+                if (is_registered) {
+                    // TODO: sha256 check
+                } else {
+                    show_alert(_("Unregistered Locale"), _("You are using a localization file which not officially provided by Battman, the translations may inaccurate."), _("OK"));
+                }
+            }
+#endif
+
 #undef _
 #define _(x) cond_localize(x)
             DBGLOG(@"gettext_ptr(%s) = %s", str, gettext_ptr(str));

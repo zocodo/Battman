@@ -88,18 +88,6 @@ static bool defaults_license_set(const char token[65]) {
     return true;
 }
 
-static bool match_regex(const char *string, const char *pattern) {
-    regex_t regex;
-    if (regcomp(&regex, pattern, REG_EXTENDED) != 0)
-        return 0;
-    int result = regexec(&regex, string, 0, NULL, 0);
-    regfree(&regex);
-    return result == 0;
-}
-
-#define IOS_CONTAINER_FMT "^/private/var/mobile/Containers/Data/Application/[0-9A-Fa-f\\-]{36}$"
-#define MAC_CONTAINER_FMT "^/Users/[^/]+/Library/Containers/[^/]+/Data$"
-
 static char *get_token_file_path(void) {
     static char path[PATH_MAX];
     const char *home = getenv("HOME");

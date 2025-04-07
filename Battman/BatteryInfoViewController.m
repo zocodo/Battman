@@ -30,6 +30,13 @@ static NSMutableArray *sections_batteryinfo;
 #else
     copyright.text = me;
 #endif
+    char *home = getenv("HOME");
+    if (match_regex(home, IOS_CONTAINER_FMT) || match_regex(home, MAC_CONTAINER_FMT)) {
+        copyright.text = [copyright.text stringByAppendingFormat:@"\n%@", _("Sandboxed")];
+    } else {
+        copyright.text = [copyright.text stringByAppendingFormat:@"\n%@", _("Unsandboxed")];
+    }
+
     copyright.font = [UIFont systemFontOfSize:12];
     copyright.textAlignment = NSTextAlignmentCenter;
     copyright.textColor = [UIColor grayColor];

@@ -8,6 +8,8 @@ extern UIWindow *gWindow;
 #include <Cocoa/Cocoa.h>
 #endif
 
+#include <regex.h>
+
 #include "common.h"
 #include "intlextern.h"
 #include "gtkextern.h"
@@ -445,4 +447,13 @@ void app_exit(void) {
 /* FIXME: NSBundle still exists if with Info.plist, we need a better detection */
 bool is_carbon(void) {
     return ([NSBundle mainBundle] && getenv("XPC_SERVICE_NAME"));
+}
+
+bool match_regex(const char *string, const char *pattern) {
+    regex_t regex;
+    if (regcomp(&regex, pattern, REG_EXTENDED) != 0)
+        return 0;
+    int result = regexec(&regex, string, 0, NULL, 0);
+    regfree(&regex);
+    return result == 0;
 }

@@ -5,6 +5,7 @@
 #include "intlextern.h"
 #import "SegmentedViewCell.h"
 #import "MultilineViewCell.h"
+#import "WarnAccessoryView.h"
 
 // TODO: Function for advanced users to call SMC themselves.
 // or add them to tracklist
@@ -27,6 +28,7 @@ static NSMutableArray *adapter_cells;
 /* Desc */
 static NSArray *desc_batt;
 static NSArray *desc_adap;
+static NSMutableArray *warns;
 
 void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     // PLEASE ENSURE no hidden cell is here when calling
@@ -77,6 +79,62 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 
     cell.detailTextLabel.text = final_str;
     return;
+}
+
+typedef enum {
+    WARN_NONE,          // OK
+    WARN_GENERAL,       // General warning
+    WARN_UNUSUAL,       // Unusual value warning
+    WARN_EXCEDDED,      // Excedded value warning
+    WARN_EMPTYVAL,      // Empty value warning
+    WARN_MAX,           // max count of warn, should always be at bottom
+} warn_condition_t;
+
+void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel, warn_condition_t (^condition)(NSString **warn)) {
+    if (!equippedCell.textLabel.text) {
+        DBGLOG(@"equipWarningCondition() called too early");
+        return;
+    }
+    if (condition == nil) return;
+    if (![equippedCell.textLabel.text isEqualToString:textLabel]) return;
+    if (warns == nil) warns = [NSMutableArray array];
+
+    UITableViewCellAccessoryType oldType = [equippedCell accessoryType];
+    NSString *warnText;
+    warn_condition_t number = condition(&warnText);
+    if (number == WARN_NONE) {
+        [equippedCell setAccessoryType:oldType];
+        [equippedCell setAccessoryView:nil];
+        return; // Do nothing when condition is normal
+    } else {
+        WarnAccessoryView *button = [WarnAccessoryView warnAccessoryView];
+        [equippedCell setAccessoryType:UITableViewCellAccessoryNone];
+        [equippedCell setAccessoryView:button];
+        equippedCell.detailTextLabel.textColor = [UIColor systemRedColor];
+        
+
+        if (warnText == nil) {
+            switch (number) {
+                case WARN_EMPTYVAL:
+                    warnText = _("No value returned from sensor, device should be checked by service technician.");
+                    break;
+                case WARN_EXCEDDED:
+                    warnText = _("Value exceeded than designed, device should be checked by service technician.");
+                    break;
+                case WARN_UNUSUAL:
+                    warnText = _("Unusual value, device should be checked by service technician.");
+                    break;
+                case WARN_GENERAL:
+                default:
+                    warnText = _("Significant abnormal data, device should be checked by service technician.");
+                    break;
+            }
+        }
+        NSString *warn_strid = [NSString stringWithFormat:@"%@_%d", textLabel, number];
+        if ([warns indexOfObject:warn_strid] == NSNotFound) {
+            [warns addObjectsFromArray:@[warn_strid, warnText]];
+        }
+    }
 }
 
 @implementation BatteryDetailsViewController
@@ -284,10 +342,17 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
          cellForRowAtIndexPath:(NSIndexPath *)ip {
     /* Use different identifier to avoid wrong location of Accessory */
     NSString *cell_id = [sections_detail objectAtIndex:ip.section];
+#if 0
+    /* Sadly, Accessory still displays wrongly when we use custom Accessory */
     UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:cell_id];
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
     }
+#else
+    /* I'm sorry this reduces some speed, but it ensures Accessory */
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
+#endif
+
     UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [cell addGestureRecognizer:longPressRecognizer];
 
@@ -309,7 +374,38 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
             }
             return cellf;
         }
+
         equipDetailCell(cell, pending_bi);
+        /* Warning conditions */
+        equipWarningCondition_b(cell, _("Remaining Capacity"), ^warn_condition_t(NSString **str){
+            warn_condition_t code = WARN_NONE;
+            uint16_t remain_cap, full_cap, design_cap;
+            get_capacity(&remain_cap, &full_cap, &design_cap);
+            if (remain_cap > full_cap) {
+                code = WARN_UNUSUAL;
+                *str = _("Unusual Remaining Capacity, A non-genuine battery component may be in use.");
+            } else if (remain_cap == 0) {
+                code = WARN_EMPTYVAL;
+                *str = _("Remaining Capacity not detected.");
+            }
+            return code;
+        });
+        equipWarningCondition_b(cell, _("Cycle Count"), ^warn_condition_t(NSString **str){
+            warn_condition_t code = WARN_NONE;
+            if (gGauge.DesignCycleCount == 0)
+                return code;
+            /* TODO: iPhone batteries does not provide DesignCycleCount, get the data from Apple */
+            if (gGauge.CycleCount > gGauge.DesignCycleCount) {
+                code = WARN_EXCEDDED;
+                *str = _("Cycle Count exceeded designed cycle count, consider replacing with a genuine battery.");
+            }
+            return code;
+        });
+        WarnAccessoryView *button = (WarnAccessoryView *)[cell accessoryView];
+        if (button != nil) {
+            [button addTarget:self action:@selector(warnTapped:) forControlEvents:UIControlEventTouchUpInside];
+        }
+        /* TODO: record 1st-read capacity data in defaults in order to observe battery problems */
     	return cell;
     }
 
@@ -413,8 +509,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     return nil;
 }
 
-- (void)hvcSegmentSelected:(UISegmentedControl *)segment
-{
+- (void)hvcSegmentSelected:(UISegmentedControl *)segment {
     UIView *view = segment;
     while (view && ![view isKindOfClass:[SegmentedViewCell class]]) {
         view = [view superview];
@@ -430,6 +525,42 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     DBGLOG(@"FIXME: hvcSegmentSelected without cell view!");
 }
 
+- (void)warnTapped:(UIButton *)button {
+    UIView *view = button;
+    while (view && ![view isKindOfClass:[UITableViewCell class]]) {
+        view = [view superview];
+    }
+    if (view) {
+        char *title = NULL;
+        UITableViewCell *cell = (UITableViewCell *)view;
+        for (int i = 0; i < WARN_MAX; i++) {
+            CFIndex index = [warns indexOfObject:[NSString stringWithFormat:@"%@_%d", cell.textLabel.text, i]];
+            if (index != NSNotFound) {
+                switch (i) {
+                    case WARN_GENERAL:
+                        title = _C("Error Data");
+                        break;
+                    case WARN_UNUSUAL:
+                        title = _C("Unusual Data");
+                        break;
+                    case WARN_EXCEDDED:
+                        title = _C("Data Too Large");
+                        break;
+                    case WARN_EMPTYVAL:
+                        title = _C("Empty Data");
+                        break;
+                    default:
+                        title = _C("Wrong Data");
+                        break;
+                }
+                const char *content = [[warns objectAtIndex:index + 1] UTF8String];
+                show_alert(title, content, _C("OK"));
+                break;
+            }
+        }
+    }
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
@@ -440,6 +571,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
 
     if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
         UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
+        pending = cell.detailTextLabel.text;
         // special cases
         if ([[cell reuseIdentifier] isEqualToString:@"HVC"]) {
             SegmentedViewCell *cell_seg = (SegmentedViewCell *)cell;
