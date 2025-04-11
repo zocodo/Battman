@@ -64,7 +64,6 @@
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; };
 		686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC32D3B93CB0059ECD0 /* AppDelegate.m */; };
 		686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */; };
-		686AECCF2D3B93CD0059ECD0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
 		687742B62D43838500375A2C /* locales in Resources */ = {isa = PBXBuildFile; fileRef = 687742B52D43837B00375A2C /* locales */; };
 		687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743342D4E08AD00375A2C /* SettingsViewController.m */; };
@@ -123,7 +122,6 @@
 		686AECC52D3B93CB0059ECD0 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
 		686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		686AECC82D3B93CB0059ECD0 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		686AECD32D3B93CD0059ECD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		686AECD42D3B93CD0059ECD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		687742B52D43837B00375A2C /* locales */ = {isa = PBXFileReference; lastKnownFileType = folder; path = locales; sourceTree = "<group>"; };
@@ -240,7 +238,6 @@
 				686AECC52D3B93CB0059ECD0 /* SceneDelegate.h */,
 				686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */,
 				686AECC82D3B93CB0059ECD0 /* ViewController.h */,
-				686AECCE2D3B93CD0059ECD0 /* Assets.xcassets */,
 				686AECD32D3B93CD0059ECD0 /* Info.plist */,
 				686AECD42D3B93CD0059ECD0 /* main.m */,
 				68DCA5582D3BBC6A004D0104 /* Battman.storyboard */,
@@ -430,7 +427,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				687742B62D43838500375A2C /* locales in Resources */,
-				686AECCF2D3B93CD0059ECD0 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -453,7 +449,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e -x\n\nPATH=/opt/homebrew/bin:$PATH\n\nif [ ${PLATFORM_NAME} == \"iphoneos\" ]; then\n  ldid -S${PROJECT_DIR}/Battman.entitlements ${CODESIGNING_FOLDER_PATH}/Battman\nfi\n\ngit restore \"${INFOPLIST_FILE}\" || true\n";
+			shellScript = "set -e -x\n\nPATH=/opt/homebrew/bin:$PATH\n\n# ldid fakesign\nif [ ${PLATFORM_NAME} == \"iphoneos\" ]; then\n  ldid -S${PROJECT_DIR}/Battman.entitlements ${CODESIGNING_FOLDER_PATH}/Battman\nfi\n\n# generate and sync icons to app root\nsh ${PROJECT_DIR}/Battman/generate_icons.sh ${PROJECT_DIR}/Battman.svg ${CODESIGNING_FOLDER_PATH}/\n\n# restore\ngit restore \"${INFOPLIST_FILE}\" || true\n";
 		};
 		683425522D7D8AA00070CE6F /* Git Commit Hash */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -471,7 +467,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "COMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${INFOPLIST_FILE}\"\n";
+			shellScript = "# Replace GIT_COMMIT_HASH in Info.plist\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${INFOPLIST_FILE}\"\n";
 		};
 		687742AF2D437EEA00375A2C /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;

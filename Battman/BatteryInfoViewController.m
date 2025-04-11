@@ -25,14 +25,19 @@ static NSMutableArray *sections_batteryinfo;
     copyright = [[UILabel alloc] init];
     NSString *me = _("2025 Ⓒ Torrekie <me@torrekie.dev>");
 #ifdef DEBUG
-    copyright.text = [NSString stringWithFormat:@"%@\n%@\n%s %s %@\n%@", me, _("Debug Build"), __DATE__, __TIME__, [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GIT_COMMIT_HASH"], _("Redistribution Prohibited")];
+    /* FIXME: GIT_COMMIT_HASH should be a macro */
+    copyright.text = [NSString stringWithFormat:@"%@\n%@ %@\n%s %s\n%@", me, _("Debug Build"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GIT_COMMIT_HASH"], __DATE__, __TIME__, _("Redistribution Prohibited")];
     copyright.numberOfLines = 0;
 #else
     copyright.text = me;
 #endif
+
+    /* FIXME: Containered is not Sandboxed, try some extra checks */
     char *home = getenv("HOME");
     if (match_regex(home, IOS_CONTAINER_FMT) || match_regex(home, MAC_CONTAINER_FMT)) {
         copyright.text = [copyright.text stringByAppendingFormat:@"\n%@", _("Sandboxed")];
+    } else if (match_regex(home, SIM_CONTAINER_FMT)) {
+        copyright.text = [copyright.text stringByAppendingFormat:@"\n%@", _("Simulator Sandboxed")];
     } else {
         copyright.text = [copyright.text stringByAppendingFormat:@"\n%@", _("Unsandboxed")];
     }

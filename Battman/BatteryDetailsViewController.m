@@ -393,8 +393,14 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         });
         equipWarningCondition_b(cell, _("Cycle Count"), ^warn_condition_t(NSString **str){
             warn_condition_t code = WARN_NONE;
-            if (gGauge.DesignCycleCount == 0)
+            if (gGauge.DesignCycleCount == 0) {
+                // according to https://www.apple.com/batteries/service-and-recycling
+                // Pre-iPhone15,3: 500, otherwise 1000
+                // Watch*,* iPad*,*: 1000
+                // iPod*,*: 400
+                // MacBook**,*: 1000
                 return code;
+            }
             /* TODO: iPhone batteries does not provide DesignCycleCount, get the data from Apple */
             if (gGauge.CycleCount > gGauge.DesignCycleCount) {
                 code = WARN_EXCEDDED;
