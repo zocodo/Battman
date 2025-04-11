@@ -6,17 +6,6 @@
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIconFiles</key>
-	<array>
-		<string>Icon</string>
-		<string>Icon-72</string>
-		<string>Icon-60</string>
-		<string>Icon-76</string>
-		<string>Icon-Small-40</string>
-		<string>Icon-Small</string>
-		<string>Icon-Small-50</string>
-		<string>Icon-83.5</string>
-	</array>
 	<key>CFBundleIcons</key>
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
@@ -25,27 +14,7 @@
 			<string>battery.100</string>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>100</string>
 				<string>1024</string>
-				<string>114</string>
-				<string>120</string>
-				<string>128</string>
-				<string>144</string>
-				<string>152</string>
-				<string>16</string>
-				<string>167</string>
-				<string>180</string>
-				<string>256</string>
-				<string>29</string>
-				<string>32</string>
-				<string>40</string>
-				<string>512</string>
-				<string>57</string>
-				<string>58</string>
-				<string>60</string>
-				<string>64</string>
-				<string>80</string>
-				<string>87</string>
 			</array>
 			<key>UIPrerenderedIcon</key>
 			<false/>

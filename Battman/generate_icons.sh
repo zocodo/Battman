@@ -87,6 +87,7 @@ echo "Using conversion tool: $CONVERTER"
 # (A) Pre‑iOS7 icon definitions
 # https://developer.apple.com/library/archive/qa/qa1686/_index.html
 #   Format: filename width
+
 PRE_ICONS="
 Icon-60.png 60
 Icon-60@2x.png 120
@@ -134,9 +135,15 @@ POST_ICONS="
 64.png 64
 "
 
+# It seems we don't need too much icon sets, iOS auto resizes for us
+LARGE_ICON="
+1024.png 1024
+"
+
 # Combine both lists uniquely.
-ALL_ICONS=$(echo "$PRE_ICONS
-$POST_ICONS" | awk '!a[$1]++')
+#ALL_ICONS=$(echo "$PRE_ICONS
+#$POST_ICONS" | awk '!a[$1]++')
+ALL_ICONS=$(echo "$LARGE_ICON" | awk '!a[$1]++')
 
 # ----------------------------------------------------------------
 # Convert SVG to PNG using the selected tool.
@@ -151,14 +158,14 @@ done
 
 # ----------------------------------------------------------------
 # Output the plist snippet for pre‑iOS7 apps.
-echo
-echo "Pre‑iOS7 CFBundleIconFiles entry (add to your Info.plist):"
-echo "<key>CFBundleIconFiles</key>"
-echo "<array>"
-for icon in Icon Icon-72 Icon-60 Icon-76 Icon-Small-40 Icon-Small Icon-Small-50 Icon-83.5; do
-  echo "    <string>$icon</string>"
-done
-echo "</array>"
+#echo
+#echo "Pre‑iOS7 CFBundleIconFiles entry (add to your Info.plist):"
+#echo "<key>CFBundleIconFiles</key>"
+#echo "<array>"
+#for icon in Icon Icon-72 Icon-60 Icon-76 Icon-Small-40 Icon-Small Icon-Small-50 Icon-83.5; do
+#  echo "    <string>$icon</string>"
+#done
+#echo "</array>"
 
 # ----------------------------------------------------------------
 # Output the plist snippet for iOS 7+ (post‑iOS7).
@@ -171,7 +178,7 @@ echo "    <dict>"
 echo "        <key>CFBundleIconFiles</key>"
 echo "        <array>"
 # List the unique post‑iOS7 icon filenames (strip the '.png') and sort them.
-for icon in $(echo "$POST_ICONS" | awk '{print $1}' | sed 's/\.png$//' | sort -u); do
+for icon in $(echo "$LARGE_ICON" | awk '{print $1}' | sed 's/\.png$//' | sort -u); do
   echo "            <string>$icon</string>"
 done
 echo "        </array>"
