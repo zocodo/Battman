@@ -7,6 +7,8 @@
 #import "MultilineViewCell.h"
 #import "WarnAccessoryView.h"
 
+#include <sys/sysctl.h>
+
 // TODO: Function for advanced users to call SMC themselves.
 // or add them to tracklist
 static NSMutableArray *sections_detail;
@@ -393,16 +395,48 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         });
         equipWarningCondition_b(cell, _("Cycle Count"), ^warn_condition_t(NSString **str){
             warn_condition_t code = WARN_NONE;
+            int count, design;
+            count = gGauge.CycleCount;
+            design = gGauge.DesignCycleCount;
+
             if (gGauge.DesignCycleCount == 0) {
                 // according to https://www.apple.com/batteries/service-and-recycling
                 // Pre-iPhone15,3: 500, otherwise 1000
                 // Watch*,* iPad*,*: 1000
                 // iPod*,*: 400
                 // MacBook**,*: 1000
-                return code;
+                // AppleTV/Watch/AudioAccessory has no battery so ignored
+                size_t size = 0;
+                char machine[256];
+                // Do not use uname()
+                if (sysctlbyname("hw.machine", NULL, &size, NULL, 0) != 0) {
+                    DBGLOG(@"sysctlbyname(hw.machine) failed");
+                    return code;
+                }
+                if (sysctlbyname("hw.machine", &machine, &size, NULL, 0) != 0) {
+                    DBGLOG(@"sysctlbyname(&machine) failed");
+                    return code;
+                }
+                if (match_regex(machine, "^(iPhone|iPad|iPod|MacBook.*)[0-9]+,[0-9]+$")) {
+                    if (strncmp(machine, "iPhone", 6) == 0) {
+                        int major = 0, minor = 0;
+                        if (sscanf(machine + 6, "%d,%d", &major, &minor) != 2) {
+                            DBGLOG(@"Unexpected iPhone model: %s", machine);
+                            return code;
+                        }
+                        if (major < 15 || (major == 15 && minor < 4)) {
+                            design = 500;
+                        } else {
+                            design = 1000;
+                        }
+                    }
+                    else if (strncmp(machine, "iPad", 4) || strncmp(machine, "Watch", 5) || strncmp(machine, "MacBook", 7)) design = 1000;
+                    else if (strncmp(machine, "iPod", 4)) design = 400;
+                }
+                if (design == 0) return code;
             }
             /* TODO: iPhone batteries does not provide DesignCycleCount, get the data from Apple */
-            if (gGauge.CycleCount > gGauge.DesignCycleCount) {
+            if (count > design) {
                 code = WARN_EXCEDDED;
                 *str = _("Cycle Count exceeded designed cycle count, consider replacing with a genuine battery.");
             }

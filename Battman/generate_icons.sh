@@ -144,6 +144,7 @@ echo "Generating icons from $SVG ..."
 echo "$ALL_ICONS" | while read -r NAME WIDTH; do
   [ -z "$NAME" ] && continue
   OUTPUT="$OUTDIR/$NAME"
+  [ -e "$OUTPUT" ] && continue
   echo "  Generating $OUTPUT (${WIDTH}×${WIDTH})..."
   convert_cmd "$WIDTH" "$WIDTH" "$SVG" "$OUTPUT"
 done
