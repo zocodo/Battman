@@ -259,7 +259,10 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
             @[_("HVC Mode"),            @""], /* Special type, content controlled later */
         ]];
         if (adapter_data.NotChargingReason != 0) {
-            [adapter_cells insertObject:@[_("Not Charging Reason"), [NSString stringWithUTF8String:not_charging_reason_str(adapter_data.NotChargingReason)]] atIndex:3];
+            [adapter_cells insertObject:@[_("Not Charging Reason"), [NSString stringWithUTF8String:not_charging_reason_str(adapter_data.NotChargingReason)]] atIndex:4];
+        }
+        if (adapter_info.port_type != 0) {
+            [adapter_cells insertObject:@[_("Port Type"), [NSString stringWithUTF8String:port_type_str(adapter_info.port_type)]] atIndex:1];
         }
     }
     /* TODO: Secondary Adapter & Accessory Adapter */

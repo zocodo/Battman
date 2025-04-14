@@ -802,6 +802,32 @@ char *not_charging_reason_str(uint64_t code) {
     return reason;
 }
 
+static char *port_types[] = {
+    _ID_("Unknown"),
+    _ID_("Virtual"),
+    _ID_("USB-C"),
+    _ID_("USB-A"),
+    _ID_("MiniDP"),
+    _ID_("FireWire800"),
+    _ID_("HDMI"),
+    _ID_("AudioJack-Mini"),
+    _ID_("Ethernet"),
+    _ID_("MagSafe"), // This is typically old MagSafe charger port on old MacBooks
+    _ID_("MagSafe2"),
+    _ID_("SD Card"),
+    _ID_("Lightning"),
+    _ID_("30-Pin"),
+    _ID_("Inductive"), // Wireless
+    _ID_("SmartConnector"),
+    _ID_("DisplayPort")
+};
+char *port_type_str(uint8_t pt) {
+    if (pt > 16) {
+        return _ID_("Undefined");
+    }
+    return port_types[pt];
+}
+
 const char *charger_status_str(uint8_t code[64]) {
     static char status[1024];
     const char *byte2stat = NULL;
@@ -988,6 +1014,12 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
             DBGLOG(CFSTR("Port: %d, Index: %d"), charging, info->hvc_index);
 
         /* Other info */
+        /* D?PT(ui8 ) Port Type */
+        key = 'D\0PT' | ((0x30 + charging) << 0x10);
+        result = smc_read(key, &info->port_type);
+        if (result == kIOReturnSuccess)
+            DBGLOG(CFSTR("Port: %d, Type: %d"), charging, info->port_type);
+
         /* D?AR(ui32) Ampere Rating (Mobile Only) */
         /* D?BD(ui32) AdapterID */
         /* D?DB(hex_) debounce */
@@ -995,9 +1027,9 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
         /* D?ID(flag) IOAM Inflow Inhibit (Mobile Only) */
         /* D?IG(flag) Ignored (Mobile Only) */
         /* D?NO(ui8 ) Select power source (write only) (Mobile Only) */
-        /* D?PT(ui8 ) Adapter Type */
         /* D?SD(flag) SourceID (Mobile Only) */
         /* D?SM(ui32) Socket Model (Mobile Only) */
+        /* D?SN(ui8 ) ? */
         /* D1SP(ui8 ) HVC Notification (Mobile Only) */
         /* D?SR(ui16) HVC Request Ready (Mobile Only) */
         /* D?SX(ui8 ) HVC Interrupt Action (Mobile Only) */
@@ -1153,9 +1185,36 @@ bool get_iktara_fw_stat(iktara_fw_t *fw) {
     return true;
 }
 
+/*
+ AY-N(ui8 ): Num Wireless ports
+ AY1A(hex_): Wireless A Array [0-4 Status?][5 AY1P][6 AY1C][7 AY1T][8 AY1S][9-10 VendorID][11-12 ProductID]
+ AY1C(ui8 ): Wireless Charging
+ AY1P(ui8 ): Wireless Present
+ AY1S(ui8 ): Wireless Curent Capacity
+ AY1T(ui8 ):
+*/
+/*
+ (<_BCPowerSourceController: 0x28235c900>) Found power source: {
+     "Accessory Category" = "Battery Case";
+     "Current Capacity" = 15;
+     "Is Charging" = 0;
+     "Is Present" = 1;
+     "Max Capacity" = 100;
+     Name = "MagSafe Battery Pack";
+     "Power Source ID" = "-1367146496";
+     "Power Source State" = "Battery Power";
+     "Product ID" = 5017;
+     "Show Charging UI" = 0;
+     "Transport Type" = "Inductive In-Band";
+     Type = "Battery Case";
+     "Vendor ID" = 1452;
+ }
+*/
+
 /* Notes on some guessed keys
  Mobile Only:
     WAFC(ui32): (write only) Smart Battery control bit (Enable: 0x10000) | (0x7: Wireless Cloak) (0x25: Charge Limit Display)
+    WADS(hex_): Inductive status
     BD0E(ui32): DiffAmp
     B0LP(ui16): Lpem Props
  

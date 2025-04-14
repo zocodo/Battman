@@ -138,6 +138,8 @@ typedef struct device_info {
     /* HVC (High Voltage Charging) */
     uint8_t hvc_menu[28]; /* hex_[28], 4 bit each hvc, max 7 hvc */
     int8_t hvc_index;
+    /* Others */
+    uint8_t port_type;
 } device_info_t;
 
 typedef struct cell_info {
@@ -322,6 +324,7 @@ hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size);
 const char *get_adapter_family_desc(mach_port_t family);
 bool get_charger_data(charger_data_t *data);
 char *not_charging_reason_str(uint64_t code);
+char *port_type_str(uint8_t pt);
 
 __END_DECLS
 
