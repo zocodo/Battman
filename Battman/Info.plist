@@ -10,14 +10,12 @@
 	<dict>
 		<key>CFBundlePrimaryIcon</key>
 		<dict>
-			<key>CFBundleSymbolName</key>
-			<string>battery.100</string>
 			<key>CFBundleIconFiles</key>
 			<array>
 				<string>1024</string>
 			</array>
 			<key>UIPrerenderedIcon</key>
-			<false/>
+			<true/>
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>

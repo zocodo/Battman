@@ -71,7 +71,9 @@ build/Payload/Battman.app/Battman: $(OBJECTS) ../Battman.entitlements
 	$(CODESIGN)../Battman.entitlements $@
 build/Payload/Battman.app/Info.plist: Info.plist
 	$(SED) 's/\$$(DEVELOPMENT_LANGUAGE)/en/;s/\$$(EXECUTABLE_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_IDENTIFIER)/com.torrekie.Battman/;s/\$$(PRODUCT_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/;s/\$$(COMMIT_HASH)/$(COMMIT_HASH)/' Info.plist > build/Payload/Battman.app/Info.plist
-build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist
+build/Payload/Battman.app/1024.png: ../Battman.svg
+	./generate_icons.sh ../Battman.svg build/Payload/Battman.app/
+build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist build/Payload/Battman.app/1024.png
 	cd build/&&zip -r Battman.ipa ./Payload
 
 %/Battman.ipa: build/Battman.ipa
