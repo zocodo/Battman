@@ -14,7 +14,7 @@ CFLAGS = -target arm64-apple-ios${IPHONEOS_DEPLOYMENT_TARGET} -target arm64-appl
 LDFLAGS = -target arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET) -target arm64-apple-darwin $(LIBS) $(FRAMEWORKS) -Wl,-dead_strip_dylibs
 THEOS := ~/theos
 
-ifeq ($(shell test -e ../.git && echo exists), exists), exists)
+ifeq ($(shell test -e ../.git && echo exists), exists)
 COMMIT_HASH := $(shell git rev-parse --short HEAD)
 else
 COMMIT_HASH :=

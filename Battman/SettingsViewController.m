@@ -138,6 +138,11 @@ extern NSMutableAttributedString *redirectedOutput;
 
 @end
 
+NSString *_contrib[]={
+	@"Torrekie", @"https://github.com/Torrekie",
+	@"Ruphane", @"https://github.com/LNSSPsd",
+};
+
 @implementation CreditViewController
 
 - (NSString *)title {
@@ -148,18 +153,8 @@ extern NSMutableAttributedString *redirectedOutput;
 	return [super initWithStyle:UITableViewStyleGrouped];
 }
 
-- (NSArray *)contributors {
-    /* TODO: Figure out how to NSConstantArray */
-    // Consider also localize those names?
-    NSArray *contrib = @[
-        @"Torrekie", @"https://github.com/Torrekie",
-        @"Ruphane", @"https://github.com/LNSSPsd",
-    ];
-    return contrib;
-}
-
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-	return [self contributors].count / 2;
+	return sizeof(_contrib) / (2*sizeof(NSString*));
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
@@ -171,20 +166,14 @@ extern NSMutableAttributedString *redirectedOutput;
 }
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tv cellForRowAtIndexPath:indexPath];
-
-    for (int i = 0; i < [self contributors].count; i = i + 2) {
-        if ([cell.textLabel.text isEqualToString:[self contributors][i]]) {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[self contributors][i + 1]] options:[NSDictionary new] completionHandler:nil];
-        }
-    }
-
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:_contrib[indexPath.row*2+1]]];
 	[tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [UITableViewCell new];
-    cell.textLabel.text = [self contributors][indexPath.row * 2];
+    cell.textLabel.text = _contrib[indexPath.row * 2];
+    cell.textLabel.textColor=[UIColor colorWithRed:0 green:0.478 blue:1 alpha:1];
     return cell;
 }
 
