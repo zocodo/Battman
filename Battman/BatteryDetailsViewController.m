@@ -362,7 +362,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
         struct battery_info_node *pending_bi = batteryInfo + ip.row + pendingLoadOffsets[ip.row];
         /* Flags special handler */
-        if (strcmp(pending_bi->description, "Flags") == 0) {
+        if (pending_bi->description==_ID_("Flags")||((uint64_t)pending_bi->description>5000&&!strcmp(pending_bi->description,"Flags"))) {
             SegmentedFlagViewCell *cellf = [tv dequeueReusableCellWithIdentifier:@"FLAGS"];
             if (!cellf) cellf = [[SegmentedFlagViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"FLAGS"];
             cellf.textLabel.text = _(pending_bi->description);

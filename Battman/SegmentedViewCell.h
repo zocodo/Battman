@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-#import "UberSegmentedControl.h"
+#import "UberSegmentedControl/UberSegmentedControl.h"
 
 @interface SegmentedViewCell : UITableViewCell
 

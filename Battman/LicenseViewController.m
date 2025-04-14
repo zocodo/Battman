@@ -31,7 +31,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.title = _("Term of Use & Privacy Policies");
+    self.title = _("Terms of Use and Privacy Policies");
     UIColor *bgColor = [UIColor whiteColor];
 
     if (@available(iOS 13.0, *)) {

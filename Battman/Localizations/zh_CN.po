@@ -33,8 +33,8 @@ msgid ""
 msgstr "目前 Battman 不使用非自由协议，按下“同意”以继续。"
 
 #: /Users/torrekie/proj/Battman/Battman/LicenseViewController.m:34
-msgid "Term of Use & Privacy Policies"
-msgstr "使用协议 & 隐私策略"
+msgid "Terms of Use and Privacy Policies"
+msgstr "使用协议 与 隐私策略"
 
 #: /Users/torrekie/proj/Battman/Battman/LicenseViewController.m:56
 msgid "Agree"

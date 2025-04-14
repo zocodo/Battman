@@ -33,7 +33,7 @@ msgid ""
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/LicenseViewController.m:34
-msgid "Term of Use & Privacy Policies"
+msgid "Terms of Use and Privacy Policies"
 msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/LicenseViewController.m:56

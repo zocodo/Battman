@@ -35,8 +35,8 @@ msgstr ""
 "proceed."
 
 #: /Users/torrekie/proj/Battman/Battman/LicenseViewController.m:34
-msgid "Term of Use & Privacy Policies"
-msgstr "Term of Use & Privacy Policies"
+msgid "Terms of Use and Privacy Policies"
+msgstr "Terms of Use and Privacy Policies"
 
 #: /Users/torrekie/proj/Battman/Battman/LicenseViewController.m:56
 msgid "Agree"

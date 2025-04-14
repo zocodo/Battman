@@ -83,8 +83,8 @@
 
 @end
 
-#include "libsmc.h"
-#include "not_charging_reason.h"
+#include "battery_utils/libsmc.h"
+#include "battery_utils/not_charging_reason.h"
 
 @implementation SegmentedFlagViewCell
 #define USE_TEXT_FLAGS

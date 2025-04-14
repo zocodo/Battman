@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-#import "SPWaterProgressIndicatorView.h"
+#import "../SPWaterProgressIndicatorView.h"
 
 @interface BatteryCellView : UIView
 {

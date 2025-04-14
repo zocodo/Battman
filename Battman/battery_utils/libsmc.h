@@ -319,7 +319,7 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info);
 float *get_temperature_per_cells(void);
 bool battery_serial(char *serial);
 hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size);
-char *get_adapter_family_desc(mach_port_t family);
+const char *get_adapter_family_desc(mach_port_t family);
 bool get_charger_data(charger_data_t *data);
 char *not_charging_reason_str(uint64_t code);
 

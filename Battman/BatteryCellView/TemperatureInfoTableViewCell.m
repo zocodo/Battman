@@ -1,5 +1,5 @@
 #import "TemperatureInfoTableViewCell.h"
-#import "GradientArcView.h"
+#import "../GradientArcView.h"
 
 @implementation TemperatureCellView
 
