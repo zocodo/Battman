@@ -23,6 +23,7 @@ $${\color{grey}True \space elegance \space in \space software \space lies \space
 - [x] NEITHER Swift NOR SwiftUI involved, they are disgusting
 - [x] NO CocoaPods, NO Swift Packages, NO external code requirements, NO 3rd-party frameworks
 - [x] Compile WITH/WITHOUT Xcode
+- [x] Builds on Linux (Yes, "you need Mac to make iOS apps" is Apple propaganda)
 - [x] Obtain & Operate directly from/with your hardware with the deepest raw data
 - [x] Supporting iPhone & iPad & iPod & Xcode Simulator & Apple Silicon Macs (If someone donate devices I can even code for Apple Watches and Apple TVs)
 - [x] Highly integrated with your battery Gas Gauge IC that manufactured by Texas Instruments

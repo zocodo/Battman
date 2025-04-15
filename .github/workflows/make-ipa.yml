@@ -1,0 +1,57 @@
+name: Make ipa
+
+on:
+  push:
+    branches: ["master"]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup Theos Dependencies
+      run: sudo apt install -y g++ fakeroot git perl zip unzip rename build-essential libtinfo5 libplist-utils brotli
+    - name: Cache theos and toolchain
+      id: cache-theos
+      uses: actions/cache@v3
+      with:
+        key: theos-cache-battman
+        path: ~/theos
+    - name: Clone theos
+      if: steps.cache-theos.outputs.cache-hit != 'true'
+      uses: actions/checkout@v4
+      with:
+        submodules: 'recursive'
+        repository: 'theos/theos'
+        path: 'theos'
+    - name: Setup theos
+      if: steps.cache-theos.outputs.cache-hit != 'true'
+      run: |
+        mv $GITHUB_WORKSPACE/theos ~/theos
+        export THEOS=~/theos
+        curl -LO https://github.com/sbingner/llvm-project/releases/latest/download/linux-ios-arm64e-clang-toolchain.tar.lzma
+        TMP=$(mktemp -d)
+        tar -xf  linux-ios-arm64e-clang-toolchain.tar.lzma -C $TMP
+        mkdir -p $THEOS/toolchain/linux/iphone
+        mv $TMP/ios-arm64e-clang-toolchain/* $THEOS/toolchain/linux/iphone/
+        rm -rf linux-ios-arm64e-clang-toolchain.tar.lzma $TMP
+        curl -LO https://github.com/theos/sdks/archive/master.zip
+        TMP=$(mktemp -d)
+        unzip -q master.zip -d $TMP
+        mv $TMP/sdks-master/*.sdk $THEOS/sdks/
+        rm -rf master.zip $TMP
+    - name: Build
+      run: |
+        cd Battman
+        make
+    - uses: actions/upload-artifact@v4
+      with:
+        name: Battman.ipa
+        path: Battman/build/Battman.ipa
+        if-no-files-found: error
+        retention-days: 1
+        compression-level: 0
+        
+        
+        
+        
+        
