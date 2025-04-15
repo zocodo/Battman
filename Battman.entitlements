@@ -29,10 +29,6 @@
 	<true/>
 	<key>com.apple.security.cs.allow-dyld-environment-variables</key>
 	<true/>
-	<key>com.apple.security.exception.shared-preference.read-write</key>
-        <array>
-		<string>com.torrekie.Battman</string>
-	</array>
 
 	<!-- IOHID -->
 	<key>com.apple.private.hid.client.admin</key>
