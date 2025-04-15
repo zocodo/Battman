@@ -166,7 +166,7 @@ NSString *_contrib[]={
 }
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:_contrib[indexPath.row*2+1]]];
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:_contrib[indexPath.row*2+1]] options:nil completionHandler:nil];
 	[tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 

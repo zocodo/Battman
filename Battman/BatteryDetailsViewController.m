@@ -219,11 +219,11 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         DBGLOG(@"charging_stat: %d", charging_stat);
         [sections_detail addObject:_("Adapter Details")];
 
-        char *adapter_family_str = NULL;
+        const char *adapter_family_str = NULL;
         if (adapter_family) {
             adapter_family_str = get_adapter_family_desc(adapter_family);
         }
-        (void)get_charger_data(&adapter_data);
+        get_charger_data(&adapter_data);
 
         adapter_cells = [[NSMutableArray alloc] init];
         [adapter_cells addObjectsFromArray:@[

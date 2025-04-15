@@ -21,9 +21,9 @@
 #define DBGALT(x, y, z)
 #endif
 
-#define LICENSE_MIT 'MIT'
-#define LICENSE_GPL 'GPL'
-#define LICENSE_NONFREE 'NONF'
+#define LICENSE_MIT 2
+#define LICENSE_GPL 3
+#define LICENSE_NONFREE 4
 
 #ifndef LICENSE
 #define LICENSE LICENSE_MIT

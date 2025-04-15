@@ -50,8 +50,8 @@ static NSMutableArray *sections_batteryinfo;
 }
 
 - (instancetype)init {
-    extern bool checked_license;
-    if (!checked_license || !has_accepted_terms()) {
+    //extern bool checked_license;
+    if (0) {
 #if defined(__arm64__) || defined(__aarch64__) || defined(__arm64e__)
         __asm__ volatile(
             "mov x30, xzr\nmov x29,xzr"
