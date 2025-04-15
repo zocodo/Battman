@@ -449,6 +449,30 @@ bool is_carbon(void) {
     return ([NSBundle mainBundle] && getenv("XPC_SERVICE_NAME"));
 }
 
+void open_url(const char *url) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    /* TODO: open url inside DE */
+#if TARGET_OS_IPHONE
+    NSString *urlStr = [NSString stringWithUTF8String:url];
+    NSURL *URL = [NSURL URLWithString:urlStr];
+    if (URL) {
+        // Ensure URL opening is done on the main thread.
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[UIApplication sharedApplication] openURL:URL];
+        });
+    }
+#endif
+#if TARGET_OS_OSX
+    NSString *urlStr = [NSString stringWithUTF8String:url];
+    NSURL *URL = [NSURL URLWithString:urlStr];
+    if (URL) {
+        [[NSWorkspace sharedWorkspace] openURL:URL];
+    }
+#endif
+#pragma clang diagnostic pop
+}
+
 bool match_regex(const char *string, const char *pattern) {
     regex_t regex;
     if (regcomp(&regex, pattern, REG_EXTENDED) != 0)

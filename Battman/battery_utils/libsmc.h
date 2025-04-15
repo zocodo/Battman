@@ -257,6 +257,7 @@ typedef struct charger_data {
     uint8_t ChargerCapable;             /* CHCC */
     uint8_t ChargerExist;               /* CHCE */
     /* Charging Limits: CHA? CHI? CHP? */
+    /* Inflow Inhibit: CH0R */
 } charger_data_t;
 
 typedef struct hvc_menu {
@@ -301,6 +302,22 @@ typedef struct iktara_fw {
     bool OvpTriggered;          /* (WAFS >> 0x1D) & 1 */
     bool LpmActive;             /* (WAFS >> 0x1C) & 1 */
 } iktara_fw_t;
+
+/* TODO: iktara_drv_t */
+
+typedef struct inductive_param {
+    uint16_t RectifierVoltage;  /* WAVR */
+    int16_t RectifierCurrent;   /* WAIR */
+    int16_t VoltageTarget;      /* WATV */
+    uint16_t PowerTarget;       /* WATP */
+    uint32_t TxPowerBudget;     /* WAPB */
+    uint32_t TxGain1;           /* WAG1 */
+    uint32_t TxGain2;           /* WAG2 */
+    uint32_t TxVersion;         /* WAVN */
+    uint32_t Frequency;         /* WARF */
+    /* WAFS -> iktara_fw_t */
+    /* WADS -> iktara_drv_t */
+} inductive_param_t;
 
 __BEGIN_DECLS
 

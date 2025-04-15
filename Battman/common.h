@@ -44,6 +44,7 @@ bool gtk_available(void);
 
 void app_exit(void);
 bool is_carbon(void);
+void open_url(const char *url);
 
 bool match_regex(const char *string, const char *pattern);
 

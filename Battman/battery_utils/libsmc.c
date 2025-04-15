@@ -38,7 +38,7 @@ typedef mach_port_t task_port_t;
 typedef int IOReturn;
 typedef int kern_return_t;
 #define kIOReturnSuccess 0
-#define kIOReturnError 1
+#define kIOReturnError 0xE00002BC
 #define MACH_PORT_NULL 0
 IOReturn IOMasterPort(mach_port_t, mach_port_t *);
 CFMutableDictionaryRef IOServiceMatching(const char *);
@@ -392,6 +392,7 @@ int estimate_time_to_full() {
         return 0;
 
     /* B0AC(si16) AverageCurrent (mA) */
+    /* TODO: B0IV(si16) InstantAmperage */
     result = smc_read('B0AC', &current);
     if (result != kIOReturnSuccess)
         return 0;

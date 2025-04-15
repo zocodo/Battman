@@ -93,7 +93,7 @@ extern NSMutableAttributedString *redirectedOutput;
         if (indexPath.row == 0) {
             [self.navigationController pushViewController:[CreditViewController new] animated:YES];
         } else if (indexPath.row == 1) {
-            [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"https://github.com/Torrekie/Battman"] options:[NSDictionary new] completionHandler:nil];
+            open_url("https://github.com/Torrekie/Battman");
         }
     }
 #ifdef DEBUG
@@ -138,7 +138,7 @@ extern NSMutableAttributedString *redirectedOutput;
 
 @end
 
-NSString *_contrib[]={
+NSString *_contrib[] = {
 	@"Torrekie", @"https://github.com/Torrekie",
 	@"Ruphane", @"https://github.com/LNSSPsd",
 };
@@ -154,7 +154,7 @@ NSString *_contrib[]={
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-	return sizeof(_contrib) / (2*sizeof(NSString*));
+	return sizeof(_contrib) / (2 * sizeof(NSString *));
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
@@ -166,14 +166,19 @@ NSString *_contrib[]={
 }
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:_contrib[indexPath.row*2+1]] options:nil completionHandler:nil];
+    open_url([_contrib[indexPath.row * 2 + 1] UTF8String]);
 	[tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 - (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [UITableViewCell new];
     cell.textLabel.text = _contrib[indexPath.row * 2];
-    cell.textLabel.textColor=[UIColor colorWithRed:0 green:0.478 blue:1 alpha:1];
+    if (@available(iOS 13.0, *)) {
+        cell.textLabel.textColor = [UIColor linkColor];
+    } else {
+        cell.textLabel.textColor = [UIColor colorWithRed:0 green:0.478 blue:1 alpha:1];
+    }
+
     return cell;
 }
 

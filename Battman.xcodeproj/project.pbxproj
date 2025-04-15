@@ -121,7 +121,6 @@
 		686AECC32D3B93CB0059ECD0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		686AECC52D3B93CB0059ECD0 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
 		686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
-		686AECC82D3B93CB0059ECD0 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
 		686AECD32D3B93CD0059ECD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		686AECD42D3B93CD0059ECD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		687742B52D43837B00375A2C /* locales */ = {isa = PBXFileReference; lastKnownFileType = folder; path = locales; sourceTree = "<group>"; };
@@ -237,7 +236,6 @@
 				686AECC32D3B93CB0059ECD0 /* AppDelegate.m */,
 				686AECC52D3B93CB0059ECD0 /* SceneDelegate.h */,
 				686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */,
-				686AECC82D3B93CB0059ECD0 /* ViewController.h */,
 				686AECD32D3B93CD0059ECD0 /* Info.plist */,
 				686AECD42D3B93CD0059ECD0 /* main.m */,
 				68DCA5582D3BBC6A004D0104 /* Battman.storyboard */,

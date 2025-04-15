@@ -262,7 +262,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
             [adapter_cells insertObject:@[_("Not Charging Reason"), [NSString stringWithUTF8String:not_charging_reason_str(adapter_data.NotChargingReason)]] atIndex:4];
         }
         if (adapter_info.port_type != 0) {
-            [adapter_cells insertObject:@[_("Port Type"), [NSString stringWithUTF8String:port_type_str(adapter_info.port_type)]] atIndex:1];
+            [adapter_cells insertObject:@[_("Port Type"), _(port_type_str(adapter_info.port_type))] atIndex:1];
         }
     }
     /* TODO: Secondary Adapter & Accessory Adapter */
@@ -365,7 +365,10 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
         struct battery_info_node *pending_bi = batteryInfo + ip.row + pendingLoadOffsets[ip.row];
         /* Flags special handler */
-        if (pending_bi->description==_ID_("Flags")||((uint64_t)pending_bi->description>5000&&!strcmp(pending_bi->description,"Flags"))) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstring-compare"
+        // _ID_ is defined as a number ID when not using Gettext
+        if (pending_bi->description == _ID_("Flags") || ((uint64_t)pending_bi->description > 5000 && !strcmp(pending_bi->description, "Flags"))) {
             SegmentedFlagViewCell *cellf = [tv dequeueReusableCellWithIdentifier:@"FLAGS"];
             if (!cellf) cellf = [[SegmentedFlagViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"FLAGS"];
             cellf.textLabel.text = _(pending_bi->description);
@@ -380,6 +383,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
             }
             return cellf;
         }
+#pragma clang diagnostic pop
 
         equipDetailCell(cell, pending_bi);
         /* Warning conditions */
