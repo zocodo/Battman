@@ -3,12 +3,25 @@
 
 @implementation TemperatureCellView
 
+/* Apple lied to us, CGColorCreateGenericRGB is already a thing
+ */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
 - (instancetype)initWithFrame:(CGRect)frame percentage:(CGFloat)percentage {
     self = [super initWithFrame:frame];
     UIView *temperatureView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
     temperatureView.layer.cornerRadius = 30;
     temperatureView.layer.masksToBounds = YES;
-    [temperatureView.layer setBorderColor:[UIColor systemGray2Color].CGColor];
+    if (@available(iOS 13.0, *)) {
+        [temperatureView.layer setBorderColor:[UIColor systemGray2Color].CGColor];
+    } else {
+        // Detect if enabled Eclipse?
+        CGColorRef __unused colorDark = CGColorCreateGenericRGB(99.0f / 255, 99.0f / 255, 102.0f / 255, 1.0f);
+        CGColorRef colorLight = CGColorCreateGenericRGB(174.0f / 255, 174.0f / 255, 178.0f / 255, 1.0f);
+        [temperatureView.layer setBorderColor:colorLight];
+        CFRelease(colorDark);
+    }
     [temperatureView.layer setBorderWidth:3];
     [temperatureView setBackgroundColor:[UIColor blackColor]];
 //    temperatureView.layer.backgroundColor = CGColorCreateGenericRGB(0.15, 0.15, 0.15, 1.0);
@@ -23,6 +36,8 @@
     [self addSubview:temperatureView];
     return self;
 }
+
+#pragma clang diagnostic pop
 
 @end
 

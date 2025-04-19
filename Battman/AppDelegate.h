@@ -13,3 +13,8 @@
 
 @end
 
+@interface AppDelegate12 : UIResponder <UIApplicationDelegate>
+
+@property (strong, nonatomic) UIWindow *window;
+
+@end

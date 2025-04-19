@@ -82,6 +82,7 @@
 		68AE40BE2D8EB8870023D7B0 /* SegmentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B62D8EB8870023D7B0 /* SegmentButton.m */; };
 		68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2D2D85606000919BC2 /* GradientArcView.m */; };
 		68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */; };
+		68CC02882DB3C57B00914051 /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 68CC02872DB3C57B00914051 /* SF-Pro-Display-Regular.otf */; };
 		68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */; };
 		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
@@ -156,15 +157,16 @@
 		68AE40B62D8EB8870023D7B0 /* SegmentButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentButton.m; sourceTree = "<group>"; };
 		68AE40B72D8EB8870023D7B0 /* MultiSelectSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiSelectSegmentedControl.h; sourceTree = "<group>"; };
 		68AE40BF2D8EB9190023D7B0 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		68B33C3F2DAF9B38008EA090 /* inductive_status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = inductive_status.h; sourceTree = "<group>"; };
 		68B5FF292D85602100919BC2 /* GradientArcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientArcView.h; sourceTree = "<group>"; };
 		68B5FF2D2D85606000919BC2 /* GradientArcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GradientArcView.m; sourceTree = "<group>"; };
 		68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TemperatureInfoTableViewCell.m; path = BatteryCellView/TemperatureInfoTableViewCell.m; sourceTree = "<group>"; };
 		68B5FF312D85619B00919BC2 /* TemperatureInfoTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TemperatureInfoTableViewCell.h; path = BatteryCellView/TemperatureInfoTableViewCell.h; sourceTree = "<group>"; };
+		68CC02872DB3C57B00914051 /* SF-Pro-Display-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SF-Pro-Display-Regular.otf"; path = "../../../wifi/20/SFSymbols.pkg/Library/Fonts/SF-Pro-Display-Regular.otf"; sourceTree = "<group>"; };
 		68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SegmentedViewCell.m; sourceTree = "<group>"; };
 		68D6DEBF2D745DCB00E129A0 /* SegmentedViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SegmentedViewCell.h; sourceTree = "<group>"; };
 		68D6DEC02D77071300E129A0 /* not_charging_reason.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = not_charging_reason.h; sourceTree = "<group>"; };
 		68D6DEC12D770B9F00E129A0 /* kiosk_mode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kiosk_mode.h; sourceTree = "<group>"; };
-		68DCA5582D3BBC6A004D0104 /* Battman.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Battman.storyboard; sourceTree = "<group>"; };
 		68DCA5602D3D0AC5004D0104 /* main.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = main.h; sourceTree = "<group>"; };
 		68DCA5A82D3F9338004D0104 /* common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = common.m; sourceTree = "<group>"; };
 		68DCA5AA2D3F935E004D0104 /* common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common.h; sourceTree = "<group>"; };
@@ -214,6 +216,7 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				68CC02872DB3C57B00914051 /* SF-Pro-Display-Regular.otf */,
 				68AE40A42D8EB7710023D7B0 /* CustomUIElements */,
 				68171A362D534E6B00DD4224 /* BatteryDetailsViewController.h */,
 				68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */,
@@ -238,7 +241,6 @@
 				686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */,
 				686AECD32D3B93CD0059ECD0 /* Info.plist */,
 				686AECD42D3B93CD0059ECD0 /* main.m */,
-				68DCA5582D3BBC6A004D0104 /* Battman.storyboard */,
 				68DCA5602D3D0AC5004D0104 /* main.h */,
 				68DCA5A82D3F9338004D0104 /* common.m */,
 				6833A8A72D9FBF0000B71299 /* license_check.h */,
@@ -279,6 +281,7 @@
 				68E9389A2D58980B00223285 /* iokit_connection.c */,
 				68D6DEC02D77071300E129A0 /* not_charging_reason.h */,
 				68D6DEC12D770B9F00E129A0 /* kiosk_mode.h */,
+				68B33C3F2DAF9B38008EA090 /* inductive_status.h */,
 			);
 			path = battery_utils;
 			sourceTree = "<group>";
@@ -423,6 +426,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				68CC02882DB3C57B00914051 /* SF-Pro-Display-Regular.otf in Resources */,
 				687742B62D43838500375A2C /* locales in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -716,7 +720,7 @@
 				INFOPLIST_FILE = Battman/Info.plist;
 				INSTALL_GROUP = "$(GROUP)";
 				INSTALL_OWNER = "$(USER)";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -750,7 +754,7 @@
 				INFOPLIST_FILE = Battman/Info.plist;
 				INSTALL_GROUP = "$(GROUP)";
 				INSTALL_OWNER = "$(USER)";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

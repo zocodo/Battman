@@ -193,7 +193,11 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 }
 
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
-    self = [super initWithStyle:UITableViewStyleInsetGrouped];
+    if (@available(iOS 13.0, *)) {
+        self = [super initWithStyle:UITableViewStyleInsetGrouped];
+    } else {
+        self = [super initWithStyle:UITableViewStyleGrouped];
+    }
     self.tableView.allowsSelection = YES; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
     batteryInfo = bi;

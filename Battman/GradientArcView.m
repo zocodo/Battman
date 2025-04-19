@@ -8,6 +8,11 @@
 #import "common.h"
 #import "GradientArcView.h"
 
+/* Apple lied to us, CGColorCreateGenericRGB is already a thing
+ */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
 @implementation GradientArcView
 
 - (instancetype)initWithFrame:(CGRect)frame {
@@ -202,3 +207,5 @@
 }
 
 @end
+
+#pragma clang diagnostic pop

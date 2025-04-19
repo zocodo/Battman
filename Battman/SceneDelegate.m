@@ -12,6 +12,12 @@
 
 #include "license_check.h"
 
+/* It is ok to keep SceneDelegate even when we targeting iOS 12,
+ * we use AppDelegate12 for iOS 12 so SceneDelegate will never be called
+ */
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
 @interface SceneDelegate ()
 
 @end
@@ -25,7 +31,7 @@ BOOL graceful;
 
 @implementation SceneDelegate
 
-// TODO: UIScene is not for iOS 9 or earlier
+// TODO: UIScene is not for iOS 12 or earlier
 - (void)scene:(UIScene *)scene willConnectToSession:(UISceneSession *)session options:(UISceneConnectionOptions *)connectionOptions {
 	self.window = [[UIWindow alloc] initWithWindowScene:(UIWindowScene *)scene];
 	UITabBarController *tabbar = [UITabBarController new];
@@ -87,3 +93,5 @@ BOOL graceful;
 
 
 @end
+
+#pragma clang diagnostic pop

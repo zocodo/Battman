@@ -184,13 +184,13 @@ int main(int argc, char * argv[]) {
     // sleep(10);
     if (is_carbon()) {
 #if TARGET_OS_IPHONE
-        NSString * appDelegateClassName;
-        @autoreleasepool {
-            // Setup code that might create autoreleased objects goes here.
-            appDelegateClassName = NSStringFromClass([AppDelegate class]);
+        /* Use different AppDelegate for iOS 12 or ealier */
+        NSString *appDelegateClassName = @"AppDelegate12";
+        if (@available(iOS 13.0, *)) {
+            appDelegateClassName = @"AppDelegate";
         }
         /* TODO: add X11 and AppKit support? */
-        return UIApplicationMain(argc, argv, nil, @"AppDelegate");
+        return UIApplicationMain(argc, argv, nil, appDelegateClassName);
 #else
         @autoreleasepool {
         }

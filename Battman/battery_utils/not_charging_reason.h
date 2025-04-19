@@ -28,7 +28,7 @@
 #define TOO_LONG                                                (uint64_t)(1 << 0x20 | 3)
 #define CHG_WD                                                  (uint64_t)(1 << 0x20 | 4)
 
-#pragma NotChargingReasonVer1 -- BNCR
+#pragma NotChargingReasonVer1 -- Gibraltar (BNCR)
 /* Known Version 1 devices:
  * J132, J137, J140, J152, J213, J214, J215, J680, J780
  */

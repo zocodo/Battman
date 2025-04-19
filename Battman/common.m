@@ -370,8 +370,13 @@ void show_alert_async(const char *title, const char *message, const char *button
         NSString *nsbutton = [NSString stringWithUTF8String:button];
         // Use UIAlertController if iOS 10 or later
         dispatch_async(dispatch_get_main_queue(), ^{
-            UIWindowScene *scene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] anyObject];
-            UIWindow *keyWindow = scene.windows.firstObject;
+            UIWindow *keyWindow;
+            if (@available(iOS 13.0, *)) {
+                UIWindowScene *scene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] anyObject];
+                keyWindow = scene.windows.firstObject;
+            } else {
+                keyWindow = [UIApplication sharedApplication].keyWindow;
+            }
             
             UIViewController *topController = find_top_controller(keyWindow.rootViewController);
 
@@ -480,4 +485,23 @@ bool match_regex(const char *string, const char *pattern) {
     int result = regexec(&regex, string, 0, NULL, 0);
     regfree(&regex);
     return result == 0;
+}
+
+// For iOS 12 or ealier, we generate image directly from 'SF-Pro-Display-Regular.otf'
+UIImage *imageForSFProGlyph(NSString *glyph, NSString *fontName, CGFloat fontSize, UIColor *tintColor) {
+    UIFont *font = [UIFont fontWithName:fontName size:fontSize]
+                   ?: [UIFont systemFontOfSize:fontSize];
+    NSDictionary *attrs = @{
+        NSFontAttributeName: font,
+        NSForegroundColorAttributeName: tintColor
+    };
+
+    CGSize sz = [glyph sizeWithAttributes:attrs];
+    UIGraphicsBeginImageContextWithOptions(sz, NO, 0);
+    [glyph drawAtPoint:CGPointZero withAttributes:attrs];
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+
+    // template so tintColor still applies if you change it later
+    return [img imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 }

@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 #if !defined(__arm64__) && !defined(__aarch64__) && !defined(__arm64e__)
-#error Current SMC implementation is arm64 only! \
+//#error Current SMC implementation is arm64 only! \
        Please file an issue if you would like to contribute!
 #endif
 

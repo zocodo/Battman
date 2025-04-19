@@ -35,9 +35,18 @@ extern NSMutableAttributedString *redirectedOutput;
     [self.view addSubview:self.textField];
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] init];
-    UIImage *export_img = [UIImage systemImageNamed:@"square.and.arrow.up"];
-    UIButton *export_button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, export_img.size.width, export_img.size.height)];
-    [export_button setBackgroundImage:export_img forState:UIControlStateNormal];
+    UIButton *export_button;
+    if (@available(iOS 13.0, *)) {
+        UIImage *export_img = [UIImage systemImageNamed:@"square.and.arrow.up"];
+        export_button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, export_img.size.width, export_img.size.height)];
+        [export_button setBackgroundImage:export_img forState:UIControlStateNormal];
+    } else {
+        export_button = [UIButton buttonWithType:UIButtonTypeSystem];
+        [export_button.titleLabel setFont:[UIFont fontWithName:@"SFProDisplay-Regular" size:22]];
+        // U+100202
+        [export_button setTitle:@"􀈂" forState:UIControlStateNormal];
+        [export_button setFrame:CGRectZero];
+    }
     [export_button addTarget:self action:@selector(DebugExportPressed)
       forControlEvents:UIControlEventTouchUpInside];
     [export_button setShowsTouchWhenHighlighted:YES];
@@ -118,7 +127,7 @@ extern NSMutableAttributedString *redirectedOutput;
             if (@available(iOS 13.0, *)) {
                 sourceCodeCell.textLabel.textColor = [UIColor linkColor];
             } else {
-                sourceCodeCell.textLabel.textColor = [UIColor colorWithRed:0 green:0.478 blue:1 alpha:1];
+                sourceCodeCell.textLabel.textColor = [UIColor colorWithRed:0 green:(122.0f / 255) blue:1 alpha:1];
             }
             return sourceCodeCell;
         }
@@ -176,7 +185,7 @@ NSString *_contrib[] = {
     if (@available(iOS 13.0, *)) {
         cell.textLabel.textColor = [UIColor linkColor];
     } else {
-        cell.textLabel.textColor = [UIColor colorWithRed:0 green:0.478 blue:1 alpha:1];
+        cell.textLabel.textColor = [UIColor colorWithRed:0 green:(122.0f / 255) blue:1 alpha:1];
     }
 
     return cell;

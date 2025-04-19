@@ -68,7 +68,12 @@ static NSMutableArray *sections_batteryinfo;
     }
     UITabBarItem *tabbarItem = [UITabBarItem new];
     tabbarItem.title = _("Battery");
-    tabbarItem.image = [UIImage systemImageNamed:@"battery.100"];
+    if (@available(iOS 13.0, *)) {
+        tabbarItem.image = [UIImage systemImageNamed:@"battery.100"];
+    } else {
+        // U+1006E8
+        tabbarItem.image = imageForSFProGlyph(@"􀛨", @"SFProDisplay-Regular", 22, [UIColor grayColor]);
+    }
     tabbarItem.tag = 0;
     self.tabBarItem = tabbarItem;
     batteryInfo = battery_info_init();
