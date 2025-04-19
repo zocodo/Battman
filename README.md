@@ -42,7 +42,7 @@ What other battery utils made for iOS hasn’t done
 ### Requirements
 
 - Jailbroken or install with TrollStore
-- iOS 13+ / macOS 11+ (backports welcomed)
+- iOS 12+ / macOS 11+ (backports welcomed)
 - arm64 (A7+ theoretically / M1+)
 - Gettext libintl (Optional, for localizations)
 - GTK+ 3 (Optional, for running under GTK+ based WM)
@@ -58,6 +58,8 @@ I don't provide prebuilts at current stage, Battman is still not as completed as
 apt install git odcctools bash clang make sed grep ld64 ldid libintl-dev iphoneos.sdk
 git clone https://github.com/Torrekie/Battman
 cd Battman
+# If Targeting iOS 12 or ealier, download SF-Pro-Display-Regular.otf somewhere, and put it under Battman/
+wget <https://LINK/OF/SF-Pro-Display-Regular.otf> -O Battman/SF-Pro-Display-Regular.otf
 make -C Battman all
 # Produced Battman.ipa will under $(CWD)/Battman/build/Battman.ipa
 ```

@@ -38,7 +38,7 @@ $${\color{grey}真正优雅的软件讲究代码的艺术，而非外表的点�
 ### 前置条件
 
 - 越狱设备，或者通过TrollStore安装
-- iOS 13+ / macOS 11+（欢迎向前移植）
+- iOS 12+ / macOS 11+（欢迎向前移植）
 - arm64（A7+ 理论上的 / M1+）
 - Gettext libintl（可选，用于本地化）
 - GTK+ 3（可选，用于运行在基于GTK+的桌面环境）
@@ -53,6 +53,8 @@ $${\color{grey}真正优雅的软件讲究代码的艺术，而非外表的点�
 # 在 iOS，当你使用 Torrekie/Comdartiwerk 作为基础套件时
 apt install git odcctools bash clang make sed grep ld64 ldid libintl-dev iphoneos.sdk
 git clone https://github.com/Torrekie/Battman
+# 如果目标 iOS 12 或更早，下载 SF-Pro-Display-Regular.otf，然后放在 Battman/
+wget <https://LINK/OF/SF-Pro-Display-Regular.otf> -O Battman/SF-Pro-Display-Regular.otf
 cd Battman
 make -C Battman all
 # 生成的 Battman.ipa 将位于 $(CWD)/Battman/build/Battman.ipa

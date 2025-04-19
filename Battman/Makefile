@@ -74,7 +74,13 @@ build/Payload/Battman.app/Info.plist: Info.plist
 build/Payload/Battman.app/1024.png: ../Battman.svg
 	./generate_icons.sh ../Battman.svg build/Payload/Battman.app/
 build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist build/Payload/Battman.app/1024.png
-	cd build/&&zip -r Battman.ipa ./Payload
+	cd build/ && zip -r Battman.ipa ./Payload
+ifeq ($(shell test $(IPHONEOS_DEPLOYMENT_TARGET) -lt 13.0; echo $$?),0)
+	# TODO: .deb process for iOS 12
+	@echo "###### WARNING ######"
+	@echo "This Makefile is generating an .ipa which not designed for your target."
+	@echo "Please repack it to .deb manually in order to work on your OS!"
+endif
 
 %/Battman.ipa: build/Battman.ipa
 	cp $< $@
