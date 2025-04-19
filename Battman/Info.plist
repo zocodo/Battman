@@ -88,5 +88,9 @@
 	<true/>
 	<key>CFBundleIconFile</key>
 	<string>Icon</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>SF-Pro-Display-Regular.otf</string>
+	</array>
 </dict>
 </plist>
