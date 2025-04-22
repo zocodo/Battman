@@ -53,7 +53,7 @@ NSString *cond_localize(const char *str);
 #endif
 
 #ifndef USE_GETTEXT
-char *cond_localize_c(unsigned long long localize_id)
+char *cond_localize_c(unsigned long long localize_id);
 #else
 char *cond_localize_c(const char *str);
 #endif
