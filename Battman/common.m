@@ -9,6 +9,7 @@ extern UIWindow *gWindow;
 #endif
 
 #include <regex.h>
+#include <sys/sysctl.h>
 
 #include "common.h"
 #include "intlextern.h"
@@ -504,4 +505,15 @@ UIImage *imageForSFProGlyph(NSString *glyph, NSString *fontName, CGFloat fontSiz
 
     // template so tintColor still applies if you change it later
     return [img imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+}
+
+// UIWebView & WKWebView broken on Rosetta Sims pre iOS 14
+int is_rosetta(void) {
+    int ret = 0;
+    size_t size = sizeof(ret);
+    if (sysctlbyname("sysctl.proc_translated", &ret, &size, NULL, 0) == -1) {
+        if (errno == ENOENT) return 0;
+        return -1;
+    }
+    return ret;
 }

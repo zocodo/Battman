@@ -8,13 +8,13 @@
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 @interface LicenseViewController ()
-@property (nonatomic, strong) UIWebView *webView;
+@property (nonatomic, strong) UIView *webView;
 @property (nonatomic, strong) UIToolbar *bottomToolbar;
 @end
 
 @implementation LicenseViewController
 
-- (NSString *)composeLocalizedLicense {
+- (NSString *)composeLocalizedLicense:(BOOL)html {
     // TODO: Non-free encryptions for License
 #if LICENSE == LICENSE_NONFREE
     NSString *locale = _("locale_name");
@@ -25,7 +25,12 @@
     return [NSString stringWithFormat:@"%s", loc_license];
 #endif
 
-    NSString *bodyStruct = [NSString stringWithFormat:@"<html><body><h1>%@</h1><p>%@</p></body></html>", _("Battman License"), _("Battman does not use non-free license at current stage, press Agree to proceed.")];
+    NSString *bodyStruct;
+    if (html) {
+        bodyStruct = [NSString stringWithFormat:@"<html><body><h1>%@</h1><p>%@</p></body></html>", _("Battman License"), _("Battman does not use non-free license at current stage, press Agree to proceed.")];
+    } else {
+        bodyStruct = [NSString stringWithFormat:@"%@\n%@", _("Battman License"), _("Battman does not use non-free license at current stage, press Agree to proceed.")];
+    }
     return bodyStruct;
 }
 
@@ -39,14 +44,20 @@
     }
     self.view.backgroundColor = bgColor;
 
-    self.webView = [[UIWebView alloc] initWithFrame:CGRectZero];
+    /* All HTML related things is broken on Rosetta Sims pre iOS 14*/
+    if ([NSProcessInfo.processInfo isOperatingSystemAtLeastVersion:(NSOperatingSystemVersion){14, 0, 0}] && !is_rosetta()) {
+        UIWebView *wv = [[UIWebView alloc] initWithFrame:CGRectZero];
+        [wv loadHTMLString:[self composeLocalizedLicense:YES] baseURL:nil];
+        self.webView = wv;
+    } else {
+        UITextView *tv = [[UITextView alloc] init];
+        [tv setEditable:NO];
+        [tv setText:[self composeLocalizedLicense:NO]];
+        self.webView = tv;
+    }
     self.webView.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.webView];
 
-    NSString *htmlString = [self composeLocalizedLicense];
-    [self.webView loadHTMLString:htmlString baseURL:nil];
-    
-    // 2. Create and add a bottom UIToolbar
     self.bottomToolbar = [[UIToolbar alloc] initWithFrame:CGRectZero];
     self.bottomToolbar.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:self.bottomToolbar];

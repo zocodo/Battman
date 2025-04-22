@@ -59,6 +59,8 @@ bool match_regex(const char *string, const char *pattern);
 UIImage *imageForSFProGlyph(NSString *glyph, NSString *fontName, CGFloat fontSize, UIColor *tintColor);
 #endif
 
+int is_rosetta(void);
+
 __END_DECLS
 
 #endif /* common_h */
