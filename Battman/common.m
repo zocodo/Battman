@@ -371,13 +371,7 @@ void show_alert_async(const char *title, const char *message, const char *button
         NSString *nsbutton = [NSString stringWithUTF8String:button];
         // Use UIAlertController if iOS 10 or later
         dispatch_async(dispatch_get_main_queue(), ^{
-            UIWindow *keyWindow;
-            if (@available(iOS 13.0, *)) {
-                UIWindowScene *scene = (UIWindowScene *)[[[UIApplication sharedApplication] connectedScenes] anyObject];
-                keyWindow = scene.windows.firstObject;
-            } else {
-                keyWindow = [UIApplication sharedApplication].keyWindow;
-            }
+            UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
             
             UIViewController *topController = find_top_controller(keyWindow.rootViewController);
 

@@ -43,8 +43,7 @@ NSString *cond_localize(unsigned long long localize_id) {
 	return (__bridge NSString *)localization_arr[LOCALIZATION_COUNT * preferred_language + localize_id - 1];
 }
 char *cond_localize_c(unsigned long long localize_id) {
-    NSString *ret = cond_localize(localize_id);
-    return [ret UTF8String];
+	return NULL;
 }
 #else
 /* Use gettext i18n for App & CLI consistency */
@@ -195,10 +194,12 @@ int main(int argc, char * argv[]) {
     // sleep(10);
     if (is_carbon()) {
 #if TARGET_OS_IPHONE
-        /* Use different AppDelegate for iOS 12 or ealier */
-        NSString *appDelegateClassName = @"AppDelegate12";
-        if (@available(iOS 13.0, *)) {
-            appDelegateClassName = @"AppDelegate";
+	extern void battman_bootstrap(char *,int);
+	battman_bootstrap("",0);
+        NSString *appDelegateClassName;
+        @autoreleasepool {
+            // Setup code that might create autoreleased objects goes here.
+            appDelegateClassName = NSStringFromClass([AppDelegate class]);
         }
         /* TODO: add X11 and AppKit support? */
         return UIApplicationMain(argc, argv, nil, appDelegateClassName);

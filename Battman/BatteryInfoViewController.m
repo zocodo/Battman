@@ -3,7 +3,6 @@
 #import "BatteryCellView/TemperatureInfoTableViewCell.h"
 #import "BatteryDetailsViewController.h"
 #include "battery_utils/battery_utils.h"
-#include "license_check.h"
 
 #include "common.h"
 
@@ -50,22 +49,6 @@ static NSMutableArray *sections_batteryinfo;
 }
 
 - (instancetype)init {
-    //extern bool checked_license;
-    if (0) {
-#if defined(__arm64__) || defined(__aarch64__) || defined(__arm64e__)
-        __asm__ volatile(
-            "mov x30, xzr\nmov x29,xzr"
-        );
-#elif defined(__x86_64__)
-        // Are we really going to support X86 in future?
-        __asm__ volatile(
-            "xor %%rbp, %%rbp\n"
-        );
-#endif
-#if LICENSE == LICENSE_NONFREE
-        /* TODO: We will need a more secure check for this */
-#endif
-    }
     UITabBarItem *tabbarItem = [UITabBarItem new];
     tabbarItem.title = _("Battery");
     if (@available(iOS 13.0, *)) {

@@ -175,7 +175,7 @@ NSString *_contrib[] = {
 }
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    open_url([_contrib[indexPath.row * 2 + 1] UTF8String]);
+	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:_contrib[indexPath.row*2+1]] options:@{} completionHandler:nil];
 	[tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -189,6 +189,16 @@ NSString *_contrib[] = {
     }
 
     return cell;
+}
+
++ (NSString *)getTHEPATH {
+	extern char *THEPATH;
+	return [NSString stringWithUTF8String:THEPATH];
+}
+
++ (NSNumber *)getTHENUM {
+	extern NSInteger THENUM;
+	return [NSNumber numberWithInteger:THENUM];
 }
 
 + (NSArray *)debugGetBatteryCausesLeakDoNotUseInProduction {

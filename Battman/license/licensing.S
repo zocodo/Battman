@@ -1,0 +1,1063 @@
+.section __TEXT,__text,regular,pure_instructions
+.build_version ios, 14, 5
+.globl _battman_bootstrap
+.p2align 2
+
+; current version only works for iOS :(
+; Licensing code and some utilities
+
+; x0: license_hash
+; TODO: hardcode license_hash
+_battman_bootstrap:
+	sub sp,sp,#64
+	cmp w1,#0
+	b.eq .battman.bootstrap.e
+	sub sp,sp,#32 ;16
+	cmp w1,#1
+	b.eq .battman.bootstrap.checkdone
+	stp x29,x30,[sp]
+	bl checktoken
+.battman.bootstrap.checkdone:
+	stp x29,x30,[sp,#64]
+	stp x19,x20,[sp,#32]
+	mov x19,x0
+	mov x20,x2
+	adrp x1,allocSel@PAGE
+	ldr x1,[x1,allocSel@PAGEOFF]
+	adrp x0,_OBJC_CLASS_$_UIWindow@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIWindow@GOTPAGEOFF]
+	bl _objc_msgSend
+	adrp x1,initWithWS@PAGE
+	ldr x1,[x1,initWithWS@PAGEOFF]
+	mov x2,x20
+	bl _objc_msgSend
+	;mov x2,x0
+	;adrp x1,sel.setWindow@PAGE
+	;ldr x1,[x1,sel.setWindow@PAGEOFF]
+	;mov x0,x19
+	mov x19,x0
+	adrp x3,_gWindow@PAGE
+	str x2,[x3,_gWindow@PAGEOFF]
+	;bl _objc_msgSend
+	adrp x1,sel.1new@PAGE
+	ldr x1,[x1,sel.1new@PAGEOFF]
+	adrp x0,_OBJC_CLASS_$_UITabBarController@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UITabBarController@GOTPAGEOFF]
+	bl _objc_msgSend
+	str x0,[sp,#24]
+	adrp x0,_OBJC_CLASS_$_BatteryInfoViewController@PAGE
+	add x0,x0,_OBJC_CLASS_$_BatteryInfoViewController@PAGEOFF
+	mov x1,sp
+	bl .createNC
+	adrp x0,_OBJC_CLASS_$_SettingsViewController@PAGE
+	add x0,x0,_OBJC_CLASS_$_SettingsViewController@PAGEOFF
+	add x1,sp,#8
+	bl .createNC
+	;adrp x0,_OBJC_CLASS_$_NSArray@GOTPAGE
+	;ldr x0,[x0,_OBJC_CLASS_$_NSArray@GOTPAGEOFF]
+	;adrp x1,.sel.arrwobjs@PAGE
+	;ldr x1,[x1,.sel.arrwobjs@PAGEOFF]
+	bl show_license
+	cmp x0,#0
+	b.eq .createNC
+	mov x0,x19
+	mov x2,sp
+	mov x3,#2
+	bl _objc_msgSend
+	adrp x1,.sel.setRootVCs@PAGE
+	ldr x1,[x1,.sel.setRootVCs@PAGEOFF]
+	mov x2,x0
+	mov x3,#0
+	ldr x0,[sp,#24]
+	bl _objc_msgSend
+	ldr x2,[sp,#24]
+	adrp x1,s.setRootVC@PAGE
+	ldr x1,[x1,s.setRootVC@PAGEOFF]
+	mov x0,x19
+	bl _objc_msgSend
+	adrp x1,sel.makeKeyAndVisible@PAGE
+	ldr x1,[x1,sel.makeKeyAndVisible@PAGEOFF]
+	mov x0,x19
+	bl _objc_msgSend
+	ldp x29,x30,[sp,#32]
+	ldp x19,x20,[sp,#64]
+	add sp,sp,#80
+	ret
+.battman.bootstrap.e:
+	stp x29,x30,[sp,#48]
+	stp x19,x20,[sp,#32]
+	;mov x20,x0
+	;adrp x0,uiresponderclass@PAGE
+	;add x0,x0,uiresponderclass@PAGEOFF
+	;bl _objc_getRequiredClass
+	;mov x20,x0
+	mov x1,#512
+	str x1,[sp]
+	mov x0,#512
+	bl _malloc
+	mov x19,x0
+	mov x1,sp
+	bl __NSGetExecutablePath
+	mov x0,x19
+	bl _strlen
+	add x1,x19,x0
+.battman.bootstrap.el:
+	sub x1,x1,#1
+	ldrb w2,[x1]
+	cmp w2,#0x2f
+	b.ne .battman.bootstrap.el
+	mov w0,#0
+	strb w0,[x1,#13]
+	movz x0,#0x696c
+	movk x0,#0x736e,LSL #32
+	cmp x19,#0
+	b.eq .battman.bootstrap.cont
+	movk x0,#0x2e65,LSL #48
+	movk x0,#0x6563,LSL #16
+	str x0,[x1,#1]
+	movz w0,#0x7468
+	movk w0,#0x6c6d,LSL #16
+	str w0,[x1,#9]
+	;cmp x19,#0
+	;b.eq .battman.bootstrap.cont
+	mov x16,#5
+	mov x2,#0
+	mov x1,#0
+	mov x0,x19
+	svc #0x80
+	b.cc .battman.bootstrap.c1
+	mov x29,x16
+	svc #0x80
+	b .battman.bootstrap.cont
+.battman.bootstrap.c1:
+	str x0,[sp]
+	mov x1,x19
+	mov x16,#189
+	svc #0x80
+	b.cs .battman.bootstrap.cont
+	ldr x1,[x19,#72]
+	adrp x9,.lfd.s@PAGE
+	str x1,[x9,.lfd.s@PAGEOFF]
+	mov x0,#0
+	mov x2,#1
+	mov x3,xzr
+	ldr x4,[sp]
+	mov x5,x3
+	mov x16,#197
+	svc #0x80
+	b.cs .battman.bootstrap.cont
+	mov x16,x19
+	mov x19,x0
+	mov x0,x16
+	bl _free
+	adrp x0,.lfd.1@PAGE
+	str x19,[x0,.lfd.1@PAGEOFF]
+	ldr x16,[sp]
+	mov x0,x16
+	mov x16,#6
+	svc #0x80
+	;adrp x9,.lfd.0@PAGE
+	;str x16,[x9,.lfd.0@PAGEOFF]
+	adrp x0,_OBJC_CLASS_$_UIResponder@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIResponder@GOTPAGEOFF]
+.battman.bootstrap.cont:
+	adrp x1,sel.class@PAGE
+	ldr x1,[x1,sel.class@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,sceneName@PAGE
+	add x1,x1,sceneName@PAGEOFF
+	mov x2,#0
+	bl _objc_allocateClassPair
+	adrp x10,TStr@PAGE
+	add x10,x10,TStr@PAGEOFF
+	str x10,[sp]
+	adrp x1,UIWindowType@PAGE
+	add x1,x1,UIWindowType@PAGEOFF
+	str x1,[sp,#8]
+	add x10,x10,#1
+	str x10,[sp,#24]
+	adrp x1,C_CStr@PAGE
+	add x1,x1,C_CStr@PAGEOFF
+	str x1,[sp,#16]
+	adrp x1,m.window@PAGE
+	add x1,x1,m.window@PAGEOFF
+	mov x2,sp
+	mov x3,#2
+	mov x19,x0
+	bl _class_addProperty
+	mov x0,x19
+	adrp x1,sel.window@PAGE
+	ldr x1,[x1,sel.window@PAGEOFF]
+	adrp x2,noParamSign@PAGE
+	add x3,x2,noParamSign@PAGEOFF
+	adrp x2,.gWindow.get@PAGE
+	add x2,x2,.gWindow.get@PAGEOFF
+	bl _class_addMethod
+	mov x0,x19
+	adrp x1,s..sceneInit@PAGE
+	ldr x1,[x1,s..sceneInit@PAGEOFF]
+	adrp x2,sceneInitSign@PAGE
+	add x3,x2,sceneInitSign@PAGEOFF
+	adrp x2,_battman_bootstrap@PAGE
+	add x2,x2,_battman_bootstrap@PAGEOFF
+	bl _class_addMethod
+	adrp x0,UISceneDelegate_str@PAGE
+	add x0,x0,UISceneDelegate_str@PAGEOFF
+	bl _objc_getProtocol
+	mov x1,x0
+	mov x0,x19
+	bl _class_addProtocol
+	mov x0,x19
+	bl _objc_registerClassPair
+	ldp x19,x20,[sp,#32]
+	ldp x29,x30,[sp,#48]
+	add sp,sp,#64
+	ret
+
+.gWindow.get:
+	adrp x0,_gWindow@PAGE
+	ldr x0,[x0,_gWindow@PAGEOFF]
+	ret
+
+checktoken:
+	;sub x30,x30,#32
+	;str x30,[sp,#64]
+	ldp x29,x30,[sp]
+	stp x29,x30,[sp,#80]
+	str x2,[sp,#72]
+	adrp x9,.lfd.1@PAGE
+	ldr x0,[x9,.lfd.1@PAGEOFF]
+	adrp x1,.lfd.s@PAGE
+	ldr x1,[x1,.lfd.s@PAGEOFF]
+	mov x2,sp
+	bl _CC_SHA256
+	b checktoken.pt
+	add x2,sp,#16
+	adrp x1,.licensing.S.end@PAGE
+	add x1,x1,.licensing.S.end@PAGEOFF
+	ldr x0,[sp,#64]
+	sub x1,x1,x0
+	str x1,[sp,#32]
+	mov x0,x1
+	bl _malloc
+	str x0,[sp,#40]
+	ldr x1,[sp,#64]
+	ldr x2,[sp,#32]
+	bl _memcpy
+	ldr x9,[sp,#40]
+	ldr x10,[sp,#32]
+	add x10,x9,x10
+	movz w1,#0x9000,LSL #16
+checktoken.ll:
+	ldr w11,[x9]
+	and w11,w11,w1
+	cmp w11,w1
+	b.ne checktoken.llna
+	str wzr,[x9]
+checktoken.llna:
+	add x9,x9,#4
+	cmp x9,x10
+	b.ne checktoken.ll
+	add x2,sp,#16
+	ldr x0,[sp,#40]
+	ldr x1,[sp,#32]
+	bl _CC_SHA256
+checktoken.pt:
+	adrp x0,_lh_arr@PAGE
+	add x0,x0,_lh_arr@PAGEOFF
+	mov x16,sp
+	add x3,sp,#32
+checktoken.a:
+	cmp x3,x16
+	b.eq checktoken.b
+	ldr x1,[x16]
+	ldr x2,[x0]
+	cmp x1,x2
+	add x16,x16,#8
+	add x0,x0,#8
+	ldr x9,[sp,#80]
+	b.eq checktoken.a
+	mov x9,x1
+checktoken.b:
+	str x9,[sp,#80]
+	ldp x29,x30,[sp,#80]
+	ldr x2,[sp,#72]
+	add sp,sp,#112
+	mov x1,#1
+	b _battman_bootstrap
+
+; x0: victim
+; x1: sel
+; x2: src
+; x3: use safeAreaLayoutGuide ?
+bindAnchors:
+	sub sp,sp,#32
+	stp x22,x23,[sp]
+	stp x29,x30,[sp,#16]
+	mov x22,x0
+	mov x23,x1
+	cmp x3,#0
+	mov x0,x2
+	b.eq bindAnchors.nosafearea
+	adrp x1,sel.salg@PAGE
+	ldr x1,[x1,sel.salg@PAGEOFF]
+	bl _objc_msgSend
+bindAnchors.nosafearea:
+	mov x1,x23
+	bl _objc_msgSend
+	mov x1,x23
+	mov x23,x0
+	mov x0,x22
+	bl _objc_msgSend
+	adrp x1,sel.ceta@PAGE
+	ldr x1,[x1,sel.ceta@PAGEOFF]
+	mov x2,x23
+	bl _objc_msgSend
+	adrp x1,sel.setActive@PAGE
+	ldr x1,[x1,sel.setActive@PAGEOFF]
+	mov x2,#1
+	bl _objc_msgSend
+	ldp x22,x23,[sp]
+	ldp x29,x30,[sp,#16]
+	add sp,sp,#32
+	ret
+
+; Block: https://clang.llvm.org/docs/Block-ABI-Apple.html
+; x0: title (must be constant)
+; x1: action addr.
+; x2: addt. ptr
+makeBarButtonItem:
+	sub sp,sp,#64
+	str x24,[sp,#40]
+	stp x29,x30,[sp,#48]
+	str x1,[sp,#16]
+	str x2,[sp,#32]
+	bl ___CFStringMakeConstantString
+	mov x24,x0
+	adrp x0,__NSConcreteStackBlock@GOTPAGE
+	ldr x0,[x0,__NSConcreteStackBlock@GOTPAGEOFF]
+	mov x1,#0x60000000
+	stp x0,x1,[sp]
+	adrp x0,"1ImpBlockDescriptor"@PAGE
+	add x0,x0,"1ImpBlockDescriptor"@PAGEOFF
+	str x0,[sp,#24]
+	mov x0,sp
+	adrp x1,sel.copy@PAGE
+	ldr x1,[x1,sel.copy@PAGEOFF]
+	bl _objc_msgSend
+	str x0,[sp]
+	adrp x1,allocSel@PAGE
+	ldr x1,[x1,allocSel@PAGEOFF]
+	adrp x0,_OBJC_CLASS_$_UIBarButtonItem@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIBarButtonItem@GOTPAGEOFF]
+	bl _objc_msgSend
+	mov x2,x24
+	mov x3,#0
+	ldr x4,[sp]
+	adrp x5,sel.invoke@PAGE
+	ldr x5,[x5,sel.invoke@PAGEOFF]
+	adrp x1,sel.initWithTSTA@PAGE
+	ldr x1,[x1,sel.initWithTSTA@PAGEOFF]
+	bl _objc_msgSend
+	ldr x24,[sp,#40]
+	ldp x29,x30,[sp,#48]
+	add sp,sp,#64
+	ret
+show_license.a:
+	sub sp,sp,#48
+	stp x29,x30,[sp,#32]
+	stp x19,x20,[sp,#16]
+	;ldr x0,[x0,#32]
+	adrp x0,_OBJC_CLASS_$_UIApplication@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIApplication@GOTPAGEOFF]
+	adrp x1,sel.sharedApp@PAGE
+	ldr x1,[x1,sel.sharedApp@PAGEOFF]
+	bl _objc_msgSend
+	str x0,[sp,#8]
+	str xzr,[sp]
+	bl show_license
+show_license.susp:
+	sub sp,sp,#32
+	stp x29,x30,[sp]
+	adrp x0,_OBJC_CLASS_$_UIApplication@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIApplication@GOTPAGEOFF]
+	adrp x1,sel.sharedApp@PAGE
+	ldr x1,[x1,sel.sharedApp@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,sel.suspend@PAGE
+	ldr x1,[x1,sel.suspend@PAGEOFF]
+	bl _objc_msgSend
+	ldp x29,x30,[sp]
+	add sp,sp,#32
+	ret
+show_license.cb.dbg:
+	; tmp dbg
+	ldr x9,[sp,#96]
+	cmp x9,#0
+	b.ne show_license.cb
+	adrp x9,_THENUM@PAGE
+	str x0,[x9,_THENUM@PAGEOFF]
+	add sp,sp,#96
+	ldp x29,x30,[sp,#16]
+	add sp,sp,#32
+	ret
+show_license.cb:
+	ldr x0,[sp,#32]
+	bl _free
+show_license.pcb:
+	adrp x0,_OBJC_CLASS_$_UIViewController@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIViewController@GOTPAGEOFF]
+	add x1,sp,xzr
+	bl .createNC
+	mov x20,x0
+	adrp x1,sel.navItem@PAGE
+	ldr x1,[x1,sel.navItem@PAGEOFF]
+	bl _objc_msgSend
+	;adrp x1,sel.topItem@PAGE
+	;ldr x1,[x1,sel.topItem@PAGEOFF]
+	;bl _objc_msgSend
+	str x21,[sp,#16]
+	mov x21,x0
+	adrp x0,licenseStr@PAGE
+	add x0,x0,licenseStr@PAGEOFF
+	bl ___CFStringMakeConstantString
+	mov x2,x0
+	mov x0,x21
+	adrp x1,sel.setTitle@PAGE
+	ldr x1,[x1,sel.setTitle@PAGEOFF]
+	bl _objc_msgSend
+	adrp x0,declineStr@PAGE
+	add x0,x0,declineStr@PAGEOFF
+	mov x2,#0
+	adrp x1,show_license.susp@PAGE
+	add x1,x1,show_license.susp@PAGEOFF
+	bl makeBarButtonItem
+	mov x2,x0
+	adrp x1,sel.setLBBI@PAGE
+	ldr x1,[x1,sel.setLBBI@PAGEOFF]
+	mov x0,x21
+	bl _objc_msgSend
+	adrp x1,show_license.a@PAGE
+	add x1,x1,show_license.a@PAGEOFF
+	adrp x0,agreeStr@PAGE
+	add x0,x0,agreeStr@PAGEOFF
+	mov x2,x19
+	bl makeBarButtonItem
+	mov x2,x0
+	adrp x1,sel.setRBBI@PAGE
+	ldr x1,[x1,sel.setRBBI@PAGEOFF]
+	mov x0,x21
+	bl _objc_msgSend
+	adrp x0,_OBJC_CLASS_$_WKWebView@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_WKWebView@GOTPAGEOFF]
+	adrp x1,sel.1new@PAGE
+	ldr x1,[x1,sel.1new@PAGEOFF]
+	bl _objc_msgSend
+	;str x0,[sp,#8]
+	mov x21,x0
+	mov x0,x20
+	adrp x1,sel.loadView@PAGE
+	ldr x1,[x1,sel.loadView@PAGEOFF]
+	bl _objc_msgSend
+	mov x0,x20
+	adrp x1,sel.view@PAGE
+	ldr x1,[x1,sel.view@PAGEOFF]
+	bl _objc_msgSend
+	mov x20,x0
+	;str x21,[sp,#16]
+	;ldr x21,[sp,#8]
+	adrp x1,sel.frame@PAGE
+	ldr x1,[x1,sel.frame@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,sel.setFrame@PAGE
+	ldr x1,[x1,sel.setFrame@PAGEOFF]
+	mov x2,x0
+	mov x0,x21
+	bl _objc_msgSend
+	mov x0,x20
+	mov x2,x21
+	adrp x1,sel.addSubview@PAGE
+	ldr x1,[x1,sel.addSubview@PAGEOFF]
+	bl _objc_msgSend
+	/*mov x0,x21
+	mov x2,xzr
+	adrp x1,sel.tamic@PAGE
+	ldr x1,[x1,sel.tamic@PAGEOFF]
+	bl _objc_msgSend
+	mov x0,x20
+	mov x2,x21
+	adrp x1,sel.addSubview@PAGE
+	ldr x1,[x1,sel.addSubview@PAGEOFF]
+	bl _objc_msgSend
+	mov x2,x20
+	mov x0,x21
+	mov x3,#1
+	adrp x1,sel.topAnchor@PAGE
+	ldr x1,[x1,sel.topAnchor@PAGEOFF]
+	bl bindAnchors
+	mov x0,x21
+	mov x2,x20
+	mov x3,#1
+	adrp x1,sel.leadingAnchor@PAGE
+	ldr x1,[x1,sel.leadingAnchor@PAGEOFF]
+	bl bindAnchors
+	mov x0,x21
+	mov x2,x20
+	mov x3,#1
+	adrp x1,sel.trailingAnchor@PAGE
+	ldr x1,[x1,sel.trailingAnchor@PAGEOFF]
+	bl bindAnchors
+	mov x0,x21
+	mov x3,#1
+	adrp x1,sel.bottomAnchor@PAGE
+	ldr x1,[x1,sel.bottomAnchor@PAGEOFF]
+	mov x2,x20
+	bl bindAnchors*/
+	mov x20,x21
+	ldr x21,[sp,#16]
+	mov x0,#0
+	adrp x3,.lfd.s@PAGE
+	ldr x2,[x3,.lfd.s@PAGEOFF]
+	adrp x10,.lfd.1@PAGE
+	ldr x1,[x10,.lfd.1@PAGEOFF]
+	mov x3,#0x100
+	movk x3,#0x800,LSL #16
+	mov w4,#0
+	bl _CFStringCreateWithBytes
+	str x0,[sp,#8]
+	adrp x1,.lfd.s@PAGE
+	ldr x1,[x1,.lfd.s@PAGEOFF]
+	adrp x0,.lfd.1@PAGE
+	ldr x0,[x0,.lfd.1@PAGEOFF]
+	mov x16,#73
+	svc #0x80
+	;str xzr,[sp,#16]
+	mov x1,#47
+	str w1,[sp,#16]
+	add x1,sp,#16
+	mov x0,xzr
+	mov x2,#0x100
+	movk x2,#0x800,LSL #16
+	bl _CFStringCreateWithCString
+	mov x1,x0
+	mov x0,xzr
+	mov x2,x0
+	mov x3,#1
+	bl _CFURLCreateWithFileSystemPath
+	mov x3,x0
+	ldr x2,[sp,#8]
+	mov x0,x20
+	adrp x1,sel.loadHTMLString@PAGE
+	ldr x1,[x1,sel.loadHTMLString@PAGEOFF]
+	bl _objc_msgSend
+	mov x0,x19
+	ldr x2,[sp]
+	adrp x1,s.setRootVC@PAGE
+	ldr x1,[x1,s.setRootVC@PAGEOFF]
+	bl _objc_msgSend
+	mov x0,x19
+	adrp x1,sel.makeKeyAndVisible@PAGE
+	ldr x1,[x1,sel.makeKeyAndVisible@PAGEOFF]
+	bl _objc_msgSend
+	add x0,sp,#128
+	ldp x19,x20,[sp,#128]
+	ldp x29,x30,[x0,#32]
+	add sp,sp,#176
+	b show_license.return.succ
+show_license:
+	adrp x0,IOPUUID@PAGE
+	add x0,x0,IOPUUID@PAGEOFF
+	bl ___CFStringMakeConstantString
+	mov x20,x0
+	adrp x0,IOPExpDev@PAGE
+	add x0,x0,IOPExpDev@PAGEOFF
+	bl _IOServiceMatching
+	mov x1,x0
+	mov x0,xzr
+	bl _IOServiceGetMatchingService
+	cmp x0,#0
+	b.eq show_license.return.fail
+	mov x9,x20
+	mov x20,x0
+	mov x2,xzr
+	mov x3,x2
+	mov x1,x9
+	bl _IORegistryEntryCreateCFProperty
+	cmp x0,#0
+	b.eq show_license.return.fail
+	sub sp,sp,#64
+	mov x1,#0x0100
+	movk x1,#0x0800,LSL #16
+	bl _CFStringGetCStringPtr
+	mov x1,x0
+	mov x0,sp
+	mov x2,#32
+	bl _memcpy
+	adrp x0,_lh_arr@PAGE
+	add x1,x0,_lh_arr@PAGEOFF
+	mov x2,#32
+	add x0,sp,x2
+	bl _memcpy
+	mov x0,x20
+	bl _IOObjectRelease
+	mov x0,sp
+	mov x1,#64
+	sub sp,sp,#32
+	;sub x2,x0,sp
+	mov x2,sp
+	bl _CC_SHA256
+	mov x0,#0x4f48
+	movk x0,#0x454d,LSL #16
+	str x0,[sp,#32]
+	add x0,sp,#32
+	bl _getenv
+	mov x20,x0
+	bl _strlen
+	cmp x0,#512
+	b.gt show_license.1
+	mov x0,#512
+show_license.1:
+	add x0,x0,#16
+	bl _malloc
+	str x0,[sp,#32]
+	mov x1,x20
+	bl _stpcpy
+	adrp x1,tokenFile@PAGE
+	add x1,x1,tokenFile@PAGEOFF
+	bl _stpcpy
+	ldrb w1,[x0]
+	ldr x0,[sp,#32]
+	mov x16,#5
+	ldr x9,[sp,#96]
+	cmp x9,#0
+	b.ne show_license.1.svc
+	mov x1,#0x202
+	mov x2,#0x180
+show_license.1.svc:
+	svc #0x80
+	str w0,[sp,#40]
+	;ldr x0,[sp,#32]
+	;bl _free
+	b.cs show_license.cb
+	ldr x16,[sp,#96]
+	cmp x16,#0
+	b.ne show_license.2
+	mov x20,x0
+	ldr x0,[sp,#32]
+	bl _free
+	mov x0,x20
+	mov x1,sp
+	mov x2,#32
+	mov x16,#4
+	svc #0x80
+	b.cs show_license.return.fail
+	ldr x0,[sp,#32]
+	mov x16,#6
+	svc #0x80
+	add sp,sp,#96
+	ldr x20,[sp,#8]
+	adrp x1,sel.keyWindow@PAGE
+	ldr x1,[x1,sel.keyWindow@PAGEOFF]
+	mov x0,x20
+	bl _objc_msgSend
+	adrp x1,sel.setHidden@PAGE
+	ldr x1,[x1,sel.setHidden@PAGEOFF]
+	mov x2,#1
+	bl _objc_msgSend
+	mov x0,x20
+	adrp x1,sel.connectedScenes@PAGE
+	ldr x1,[x1,sel.connectedScenes@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,sel.anyObject@PAGE
+	ldr x1,[x1,sel.anyObject@PAGEOFF]
+	bl _objc_msgSend
+	str x0,[sp]
+	adrp x1,sel.delegate@PAGE
+	ldr x1,[x1,sel.delegate@PAGEOFF]
+	bl _objc_msgSend
+	ldr x2,[sp]
+	mov x1,#2
+	bl _battman_bootstrap
+	ldp x29,x30,[sp,#32]
+	ldp x19,x20,[sp,#16]
+	add sp,sp,#48
+	ret
+show_license.2:
+	mov x16,#189
+	;ldr w0,[sp,#40]
+	ldr x1,[sp,#32]
+	svc #0x80
+	b.cs show_license.cb
+	ldr x1,[sp,#32]
+	ldr x1,[x1,#72]
+	str w1,[sp,#44]
+	mov x0,#0
+	mov x2,#1
+	mov x3,xzr
+	ldr w4,[sp,#40]
+	mov x5,#0
+	mov x16,#197
+	svc #0x80
+	b.cs show_license.return.succ
+	mov x20,x0
+	ldr x0,[sp,#32]
+	bl _free
+	ldr w0,[sp,#40]
+	mov x16,#6
+	svc #0x80
+	ldr x0,[sp]
+	ldr x1,[x20]
+	ldr x2,[sp,#8]
+	ldr x3,[x20,#8]
+	ldr x4,[sp,#16]
+	ldr x5,[x20,#16]
+	ldr x6,[sp,#24]
+	ldr x7,[x20,#24]
+	cmp x0,x1
+	b.ne show_license.pcb
+	cmp x2,x3
+	b.ne show_license.pcb
+	cmp x4,x5
+	b.eq show_license.3
+	add sp,sp,#8
+	cmp x6,x7
+	b.ne show_license.pcb
+show_license.3:
+	add x2,sp,#96
+	str x2,[sp]
+	cmp x6,x7
+	b.ne show_license.pcb
+	mov x0,x19
+	ldr w1,[sp,#44]
+	mov x16,#73
+	svc #0x80
+	ldr x2,[sp]
+	adrp x1,.sel.arrwobjs@PAGE
+	ldr x1,[x1,.sel.arrwobjs@PAGEOFF]
+	adrp x0,_OBJC_CLASS_$_NSArray@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_NSArray@GOTPAGEOFF]
+	mov x3,#2
+	bl _objc_msgSend
+	mov x2,x0
+	adrp x1,.sel.setRootVCs@PAGE
+	ldr x1,[x1,.sel.setRootVCs@PAGEOFF]
+	ldr x0,[sp,#120]
+	mov x20,x0
+	bl _objc_msgSend
+	mov x2,x20
+	adrp x1,s.setRootVC@PAGE
+	ldr x1,[x1,s.setRootVC@PAGEOFF]
+	mov x0,x19
+	bl _objc_msgSend
+	mov x0,x19
+	adrp x1,sel.makeKeyAndVisible@PAGE
+	ldr x1,[x1,sel.makeKeyAndVisible@PAGEOFF]
+	bl _objc_msgSend
+	add x0,sp,#128
+	ldp x19,x20,[x0]
+	add sp,sp,#176
+	ldp x29,x30,[x0,#32]
+	b show_license.return.succ
+show_license.return.fail:
+	mov x0,#0
+	b show_license.return
+show_license.return.succ:
+	mov x0,#1
+show_license.return:
+	ret
+
+; x19 to x29 are callee saved
+
+; x0: out (size>=32)
+get_token:
+	sub sp,sp,#80
+	str x0,[sp,#48]
+	stp x29,x30,[sp,#64]
+	stp x19,x20,[sp]
+	;adrp x0,_OBJC_CLASS_$_UIDevice@GOTPAGE
+	adrp x0,UIDevice_str@PAGE
+	add x0,x0,UIDevice_str@PAGEOFF
+	bl _objc_getRequiredClass
+	mov x19,x0
+	adrp x0,curDevStr@PAGE
+	add x0,x0,curDevStr@PAGEOFF
+	bl _sel_registerName
+	mov x1,x0
+	mov x0,x19
+	bl _objc_msgSend
+	mov x19,x0
+	adrp x0,idForVendStr@PAGE
+	add x0,x0,idForVendStr@PAGEOFF
+	bl _sel_registerName
+	mov x1,x0
+	mov x0,x19
+	bl _objc_msgSend
+	mov x19,x0
+	adrp x0,getUBStr@PAGE
+	add x0,x0,getUBStr@PAGEOFF
+	bl _sel_registerName
+	mov x1,x0
+	mov x0,x19
+	add x2,sp,#16
+	bl _objc_msgSend
+	add x0,sp,#32
+	ldr x1,[sp,#56]
+	mov x2,#16
+	bl _memcpy
+	ldr x2,[sp,#48]
+	add x0,sp,#16
+	mov x1,#32
+	bl _CC_SHA256
+	ldp x29,x30,[sp,#64]
+	ldp x19,x20,[sp]
+	add sp,sp,#80
+	ret
+; x0: class
+.createNC:
+	sub sp,sp,#32
+	stp x29,x30,[sp,#16]
+	stp x21,x22,[sp]
+	mov x22,x1
+	adrp x1,sel.1new@PAGE
+	ldr x1,[x1,sel.1new@PAGEOFF]
+	bl _objc_msgSend
+	mov x21,x0
+	adrp x0,allocSel@PAGE
+	ldr x1,[x0,allocSel@PAGEOFF]
+	adrp x0,_OBJC_CLASS_$_UINavigationController@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UINavigationController@GOTPAGEOFF]
+	bl _objc_msgSend
+	mov x2,x21
+	adrp x1,sel.initwrvc@PAGE
+	ldr x1,[x1,sel.initwrvc@PAGEOFF]
+	bl _objc_msgSend
+	str x0,[x22]
+	mov x0,x21
+	ldp x21,x22,[sp]
+	ldp x29,x30,[sp,#16]
+	add sp,sp,#32
+	ret
+.licensing.S.end:
+
+.section __TEXT,__cstring,cstring_literals
+UIDevice_str:
+.asciz "UIDevice"
+UIWindow_str:
+.asciz "UIWindow"
+UISceneDelegate_str:
+.asciz "UISceneDelegate"
+uiresponderclass:
+.asciz "SceneDelegateBase"
+curDevStr:
+.asciz "currentDevice"
+idForVendStr:
+.asciz "identifierForVendor"
+getUBStr:
+.asciz "getUUIDBytes:"
+sceneName:
+.asciz "SceneDelegate"
+sceneInitSign:
+.asciz "v@:@@@"
+noParamSign:
+.asciz "v@:"
+tokenFile:
+.asciz "/Library/token"
+UIWindowType:
+.asciz "@\"UIWindow\""
+TStr:
+.asciz "T"
+C_CStr:
+.asciz "C"
+IOPUUID:
+.asciz "IOPlatformUUID"
+IOPExpDev:
+.asciz "IOPlatformExpertDevice"
+agreeStr:
+.asciz "Agree"
+declineStr:
+.asciz "Decline"
+licenseStr:
+.asciz "License"
+.section __DATA,__const
+.p2align 3
+"1ImpBlockDescriptor":
+	.quad 0
+	.quad 40
+
+.section __DATA,__common
+.global _graceful,_gWindow,_THEPATH,_THENUM
+_graceful:
+	.quad 0
+_gWindow:
+	.quad 0
+_THEPATH:
+	.quad 0
+_THENUM:
+	.quad 0
+.lfd.0:
+	.quad 0
+.lfd.1:
+	.quad 0
+.lfd.s:
+	.quad 0
+;selectors
+.section __TEXT,__objc_methname,cstring_literals
+meth.makeKeyAndVisible:
+	.asciz "makeKeyAndVisible"
+m..sceneInit:
+	.asciz "scene:willConnectToSession:options:"
+m.setRootVC:
+	.asciz "setRootViewController:"
+newMeth:
+	.asciz "new"
+setWindowStr:
+	.asciz "setWindow:"
+.m.initWithWS:
+	.asciz "initWithWindowScene:"
+m.1alloc:
+	.asciz "alloc"
+.m.arrwobjs:
+	.asciz "arrayWithObjects:count:"
+.m.setRootVCs:
+	.asciz "setViewControllers:animated:"
+m.initWithRootVC:
+	.asciz "initWithRootViewController:"
+m.window:
+	.asciz "window"
+m.class:
+	.asciz "class"
+m.lhtmlstring:
+	.asciz "loadHTMLString:baseURL:"
+m.ceta:
+	.asciz "constraintEqualToAnchor:"
+m.salg:
+	.asciz "safeAreaLayoutGuide"
+m.topAnchor:
+	.asciz "topAnchor"
+m.leadingAnchor:
+	.asciz "leadingAnchor"
+m.trailingAnchor:
+	.asciz "trailingAnchor"
+m.bottomAnchor:
+	.asciz "bottomAnchor"
+m.setActive:
+	.asciz "setActive:"
+meth.view:
+	.asciz "view"
+meth.loadView:
+	.asciz "loadView"
+meth.addSubview:
+	.asciz "addSubview:"
+meth.tamic:
+	.asciz "setTranslatesAutoresizingMaskIntoConstraints:"
+m.frame:
+	.asciz "frame"
+m.setFrame:
+	.asciz "setFrame:"
+m.actionWithTitleEtc:
+	.asciz "actionWithTitle:image:identifier:handler:"
+m.initWithPrimaryAction:
+	.asciz "initWithPrimaryAction:"
+m.setLBBI:
+	.asciz "setLeftBarButtonItem:"
+m.setTitle:
+	.asciz "setTitle:"
+m.sharedApp:
+	.asciz "sharedApplication"
+m.suspend:
+	.asciz "suspend"
+m.topItem:
+	.asciz "topItem"
+m.navBar: .asciz "navigationBar"
+m.navItem: .asciz "navigationItem"
+m.initWithTSTA: .asciz "initWithTitle:style:target:action:"
+m.invoke: .asciz "invoke"
+m.copy:
+	.asciz "copy"
+m.setRBBI: .asciz "setRightBarButtonItem:"
+
+
+.section __DATA,__objc_selrefs,literal_pointers,no_dead_strip
+.p2align 3
+sel.makeKeyAndVisible:
+	.quad meth.makeKeyAndVisible
+s..sceneInit:
+	.quad m..sceneInit
+s.setRootVC:
+	.quad m.setRootVC
+sel.1new:
+	.quad newMeth
+sel.setWindow:
+	.quad setWindowStr
+initWithWS:
+	.quad .m.initWithWS
+allocSel:
+	.quad m.1alloc
+.sel.setRootVCs:
+	.quad .m.setRootVCs
+.sel.arrwobjs:
+	.quad .m.arrwobjs
+sel.initwrvc:
+	.quad m.initWithRootVC
+sel.window:
+	.quad m.window
+sel.class:
+.quad m.class
+sel.loadHTMLString:
+.quad m.lhtmlstring
+sel.ceta:
+.quad m.ceta
+sel.salg:
+.quad m.salg
+sel.topAnchor:
+.quad m.topAnchor
+sel.leadingAnchor:
+.quad m.leadingAnchor
+sel.trailingAnchor:
+.quad m.trailingAnchor
+sel.bottomAnchor:
+.quad m.bottomAnchor
+sel.setActive:
+.quad m.setActive
+sel.view:
+.quad meth.view
+sel.loadView:
+.quad meth.loadView
+sel.addSubview:
+.quad meth.addSubview
+sel.tamic:
+.quad meth.tamic
+sel.frame:
+	.quad m.frame
+sel.setFrame:
+	.quad m.setFrame
+sel.actionWithTitleEtc: .quad m.actionWithTitleEtc
+sel.initWithPrimaryAction: .quad m.initWithPrimaryAction
+sel.setLBBI: .quad m.setLBBI
+sel.setTitle: .quad m.setTitle
+sel.sharedApp: .quad m.sharedApp
+sel.suspend: .quad m.suspend
+sel.topItem: .quad m.topItem
+sel.navItem: .quad m.navItem
+sel.navBar: .quad m.navBar
+sel.initWithTSTA: .quad m.initWithTSTA
+sel.invoke: .quad m.invoke
+sel.copy: .quad m.copy
+sel.setRBBI: .quad m.setRBBI
+sel.anyObject: .quad m.anyObject
+sel.delegate: .quad m.delegate
+sel.connectedScenes: .quad m.connectedScenes
+sel.keyWindow: .quad m.keyWindow
+sel.setHidden: .quad m.setHidden
+
+.section __TEXT,__objc_methname,cstring_literals
+m.keyWindow:
+	.asciz "keyWindow"
+m.setHidden:
+	.asciz "setHidden:"
+m.connectedScenes:
+	.asciz "connectedScenes"
+m.anyObject:
+	.asciz "anyObject"
+m.delegate:
+	.asciz "delegate"

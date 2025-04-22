@@ -341,7 +341,7 @@ hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size);
 const char *get_adapter_family_desc(mach_port_t family);
 bool get_charger_data(charger_data_t *data);
 char *not_charging_reason_str(uint64_t code);
-char *port_type_str(uint8_t pt);
+const char *port_type_str(uint8_t pt);
 
 __END_DECLS
 

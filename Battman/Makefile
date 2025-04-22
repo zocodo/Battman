@@ -8,7 +8,7 @@ LOCAL_IP := $(shell /sbin/ifconfig | $(SED) -n "s/.*inet \([0-9]*\.[0-9]*\.[0-9]
 
 SDKROOT := ${THEOS}/sdks/iPhoneOS14.5.sdk
 LIBS := -lobjc
-FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework IOKit
+FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework IOKit -framework WebKit
 
 CFLAGS = -target arm64-apple-ios${IPHONEOS_DEPLOYMENT_TARGET} -target arm64-apple-darwin -fobjc-arc -fconstant-cfstrings
 LDFLAGS = -target arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET) -target arm64-apple-darwin $(LIBS) $(FRAMEWORKS) -Wl,-dead_strip_dylibs
@@ -49,13 +49,18 @@ else
 	PUBLISH_TARGET := publish_none
 endif
 
-SOURCES := $(wildcard *.m *.c */*.m */*.c)
+SOURCES := $(wildcard *.m *.c */*.m */*.c */*.S)
 PRESRC := $(addprefix build/preprocessed/,$(SOURCES))
 #OBJECTS:=$(addprefix build/objects/,$(addsuffix .o,$(SOURCES)))
 OBJECTS := $(subst build/preprocessed,build/objects,$(addsuffix .o,$(PRESRC)))
+OBJECTS += build/objects/license/constants.c.o
 
 all: $(PUBLISH_TARGET)
 
+build/preprocessed/license/constants.c: license/license.html
+	echo "const unsigned char lh_arr[]={">$@
+	openssl sha256 -c license/license.html|$(SED) "s/^.*= /0x/g;s/:/,0x/g" >>$@
+	echo "};">>$@
 $(PRESRC): build/preprocessed/%: % Localizations/*.po Localizations/*.sh
 	@mkdir -p $(@D)
 	./Localizations/preprocess.sh $< > $@
@@ -73,14 +78,17 @@ build/Payload/Battman.app/Info.plist: Info.plist
 	$(SED) 's/\$$(DEVELOPMENT_LANGUAGE)/en/;s/\$$(EXECUTABLE_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_IDENTIFIER)/com.torrekie.Battman/;s/\$$(PRODUCT_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/;s/\$$(COMMIT_HASH)/$(COMMIT_HASH)/' Info.plist > build/Payload/Battman.app/Info.plist
 build/Payload/Battman.app/1024.png: ../Battman.svg
 	./generate_icons.sh ../Battman.svg build/Payload/Battman.app/
-build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist build/Payload/Battman.app/1024.png
+build/Payload/Battman.app/license.html: license/license.html
+	cp $^ $@
+build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist build/Payload/Battman.app/1024.png build/Payload/Battman.app/license.html
 	cd build/ && zip -r Battman.ipa ./Payload
-ifeq ($(shell test $(IPHONEOS_DEPLOYMENT_TARGET) -lt 13.0; echo $$?),0)
-	# TODO: .deb process for iOS 12
-	@echo "###### WARNING ######"
-	@echo "This Makefile is generating an .ipa which not designed for your target."
-	@echo "Please repack it to .deb manually in order to work on your OS!"
-endif
+#ifeq ($(shell test $(IPHONEOS_DEPLOYMENT_TARGET) -lt 13.0; echo $$?),0)
+#	# TODO: .deb process for iOS 12
+#	@echo "###### WARNING ######"
+#	@echo "This Makefile is generating an .ipa which not designed for your target."
+#	@echo "Please repack it to .deb manually in order to work on your OS!"
+#endif
+# FIXME: test: Illegal number: 13.0
 
 %/Battman.ipa: build/Battman.ipa
 	cp $< $@
@@ -90,7 +98,7 @@ endif
 publish_mounted_site: mount/pub_html/battman/ \
 			mount/pub_html/battman/Battman.ipa \
 			mount/pub_html/battman/index.html
-	@echo Install at your site.
+	@echo Install on your site.
 publish_local_site: /var/www/html/files/battman \
 			/var/www/html/files/battman/Battman.ipa \
 			/var/www/html/files/battman/index.html

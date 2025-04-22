@@ -803,7 +803,7 @@ char *not_charging_reason_str(uint64_t code) {
     return reason;
 }
 
-static char *port_types[] = {
+static const char *port_types[] = {
     _ID_("Unknown"),
     _ID_("Virtual"),
     _ID_("USB-C"),
@@ -822,7 +822,7 @@ static char *port_types[] = {
     _ID_("SmartConnector"),
     _ID_("DisplayPort")
 };
-char *port_type_str(uint8_t pt) {
+const char *port_type_str(uint8_t pt) {
     if (pt > 16) {
         return _ID_("Undefined");
     }

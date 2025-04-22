@@ -13,13 +13,6 @@
 #include <TargetConditionals.h>
 #include "main.h"
 
-#if TARGET_OS_IPHONE
-#import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
-#else
-#import <AppKit/AppKit.h>
-#endif
-
 #ifdef DEBUG
 #define DBGLOG(...) NSLog(__VA_ARGS__)
 #define DBGALT(x, y, z) show_alert(x, y, z)
@@ -55,9 +48,6 @@ void open_url(const char *url);
 
 bool match_regex(const char *string, const char *pattern);
 
-#if TARGET_OS_IPHONE
-UIImage *imageForSFProGlyph(NSString *glyph, NSString *fontName, CGFloat fontSize, UIColor *tintColor);
-#endif
 
 int is_rosetta(void);
 
