@@ -41,6 +41,7 @@
 
     if (@available(iOS 13.0, *)) {
         bgColor = [UIColor systemBackgroundColor];
+        NSLog(@"[UIColor systemBackgroundColor] %@", [UIColor systemBackgroundColor].CGColor);
     }
     self.view.backgroundColor = bgColor;
 

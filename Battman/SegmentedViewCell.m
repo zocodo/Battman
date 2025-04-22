@@ -1,5 +1,6 @@
 #import "SegmentedViewCell.h"
 
+/* TODO: Use WLSegmentedControls instead of UberSegmentedControl for iOS 12 or earlier */
 @implementation SegmentedViewCell
 
 - (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
@@ -89,43 +90,43 @@
 @implementation SegmentedFlagViewCell
 #define USE_TEXT_FLAGS
 #ifndef USE_TEXT_FLAGS
-#define INIT    @"✅"
+#define INIT    @"􀃲" // U+1000F2 checkmark.square
 #define RSVD    @" "
-#define BATHI   @"🔋⬆️"
-#define BATLOW  @"🔋⬇️"
-#define CHG_INH @"🚫🔌"
-#define FC      @"🔋✅"
-#define FD      @"🔋❌"
-#define CHG_SUS @"⏸🔌"
-#define IMAX    @"🔌💪"
-#define CHG     @"🔌"
-#define DSG     @"⚡⬇️"
-#define SOC1    @"🔋⚠️"
-#define SOCF    @"🔋🚨"
-#define RTA     @"⏰⚠️"
-#define OTA     @"🔥⚠️"
-#define TDA     @"⚡⏹️"
-#define TCA     @"🔌⏹️"
-#define OCA     @"🔋💥"
-#define RCA     @"🔋⏳"
-#define TDD     @"🔌❓"
-#define ISD     @"💥⚡"
-#define BAT_DET @"🔋📥"
-#define CFGUPMODE @"⚙️"
-#define ITPOR   @"🔄"
-#define OCVTAKEN @"💤📏"
-#define OT      @"🌡️🔥"
-#define UT      @"🌡️❄️"
-#define OTC     @"🔌🔥"
-#define OTD     @"🔥"
-#define EEFAIL  @"💾❌"
-#define DODCorrect @"🔋🔧"
-#define HW1     @"1⃣️"
-#define HW0     @"0⃣️"
-#define EC3     @"3⃣️"
-#define EC2     @"2⃣️"
-#define EC1     @"1⃣️"
-#define EC0     @"0⃣️"
+#define BATHI   @"􀛨" // U+1006E8 battery.100
+#define BATLOW  @"􀛩" // U+1006E9 battery.25
+#define CHG_INH @"􀋫" // U+1002EB bolt.slash.circle
+#define FC      @"􀢋" // U+10088B battery.100.bolt
+#define FD      @"􀛪" // U+1006EA battery.0
+#define CHG_SUS @"􀬘" // U+100B18 (missing after SF Symbols 2, consider do by ourself)
+#define IMAX    @"􀂤" // U+1000A4 i.square
+#define CHG     @"􀥤" // U+100964 poweron
+#define DSG     @"􀥥" // U+100965 poweroff
+#define SOC1    @"􀃊" // U+1000CA 1.square
+#define SOCF    @"􀂞" // U+10009E f.square
+#define RTA     @"􀐫" // U+10042B clock
+#define OTA     @"􀙬" // U+10066C flame
+#define TDA     @"􀛶" // U+100299 play.rectangle
+#define TCA     @"􀊛" // U+10029B pause.rectangle
+#define OCA     @"􀏇" // U+1003C7 plus.rectangle
+#define RCA     @"􀖇" // U+100587 hourglass
+#define TDD     @"􀋩" // U+1002E9 bolt.slash
+#define ISD     @"􀈀" // U+100200 drop.triangle
+#define BAT_DET @"􀈧" // U+100227 tray.and.arrow.down
+#define CFGUPMODE @"􀯛" // U+100BDB clock.arrow.circlepath
+#define ITPOR   @"􀊯" // U+1002AF arrow.triangle.2.circlepath
+#define OCVTAKEN @"􀍾" // U+10037E speedometer
+#define OT      @"􀇪" // U+1001EA thermometer.sun
+#define UT      @"􀇫" // U+1001EB thermometer.snowflake
+#define OTC     @"􀇘" // U+1001D8 cloud.sun.bolt
+#define OTD     @"􀇔" // U+1001D4 cloud.sun
+#define EEFAIL  @"􀩑" // U+100A51 externaldrive.badge.xmark
+#define DODCorrect @"􀋉" // U+1002C9 flag
+#define HW1     @"􀔪" // U+10052A 01.square
+#define HW0     @"􀔩" // U+100529 00.square
+#define EC3     @"􀃎" // U+1000CE 3.square
+#define EC2     @"􀃌" // U+1000CC 2.square
+#define EC1     @"􀃊" // U+1000CA 1.square
+#define EC0     @"􀃈" // U+1000C8 0.square
 #else
 #define INIT    @"INIT"
 #define RSVD    @"RSVD"
@@ -414,7 +415,13 @@
         [self.contentView addSubview:self.detailLabel];
 
         // Initialize segmented control with sample segment
-        UberSegmentedControlConfig *conf = [[UberSegmentedControlConfig alloc] initWithFont:[UIFont systemFontOfSize:(UIFont.smallSystemFontSize + 1) * 0.7 weight:UIFontWeightRegular] tintColor:nil allowsMultipleSelection:YES];
+        UIFont *font;
+#ifdef USE_TEXT_FLAGS
+        font = [UIFont systemFontOfSize:(UIFont.smallSystemFontSize + 1) * 0.7 weight:UIFontWeightRegular];
+#else
+        font = [UIFont fontWithName:@"SFProDisplay-Regular" size:(UIFont.smallSystemFontSize + 1) * 0.7];
+#endif
+        UberSegmentedControlConfig *conf = [[UberSegmentedControlConfig alloc] initWithFont:font tintColor:nil allowsMultipleSelection:YES];
 
         [self setBitSetByModel:@"STUB"]; // Stub first, adjust in ref
         self.highByte = [[UberSegmentedControl alloc] initWithItems:[self highBitSet] config:conf];

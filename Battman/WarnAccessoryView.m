@@ -2,25 +2,37 @@
 
 @implementation WarnAccessoryView
 
-+ (instancetype)warnAccessoryView {
-    // Create an instance using the system's factory method.
++ (instancetype)_accessoryViewWithSystemImageNamed:(NSString *)systemName
+                                          fallback:(NSString *)fallbackGlyph
+{
     WarnAccessoryView *button = [super buttonWithType:UIButtonTypeSystem];
-    if (button) {
-        // Set the SF Symbol image.
-        if (@available(iOS 13.0, *)) {
-            UIImage *symbolImage = [UIImage systemImageNamed:@"exclamationmark.triangle"];
-            [button setImage:symbolImage forState:UIControlStateNormal];
-        } else {
-            // Fallback to SF-Pro-Display-Regular.otf
-            // U+1001FE
-            [button setTitle:@"􀇾" forState:UIControlStateNormal];
-            [button.titleLabel setFont:[UIFont fontWithName:@"SFProDisplay-Regular" size:22]];
-        }
-        button.tintColor = [UIColor systemBlueColor];
-        button.frame = CGRectZero;
-        [button sizeToFit];
+    if (!button) return nil;
+
+    if (@available(iOS 13.0, *)) {
+        UIImage *img = [UIImage systemImageNamed:systemName];
+        [button setImage:img forState:UIControlStateNormal];
+    } else {
+        [button setTitle:fallbackGlyph forState:UIControlStateNormal];
+        button.titleLabel.font = [UIFont fontWithName:@"SFProDisplay-Regular" size:22];
     }
+
+    button.tintColor = [UIColor systemBlueColor];
+    [button sizeToFit];
     return button;
+}
+
++ (instancetype)warnAccessoryView {
+    // U+1001FE
+    WarnAccessoryView *ret = [self _accessoryViewWithSystemImageNamed:@"exclamationmark.triangle"
+                                          fallback:@"􀇾"];
+    ret.isWarn = YES;
+    return ret;
+}
+
++ (instancetype)altAccessoryView {
+    // U+100174
+    return [self _accessoryViewWithSystemImageNamed:@"info.circle"
+                                          fallback:@"􀅴"];
 }
 
 @end

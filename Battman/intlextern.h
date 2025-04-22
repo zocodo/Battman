@@ -9,7 +9,7 @@
 #define intlextern_h
 
 #ifdef USE_GETTEXT
-#define _C(x) gettext_ptr(x)
+#define _C(x) cond_localize_c(x)
 #else
 #define _C(x) x
 #endif

@@ -51,7 +51,13 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     /* Consider add a "Accessory" section in data struct */
     if ([desc_batt indexOfObject:cell.textLabel.text] != NSNotFound) {
         DBGLOG(@"Accessory %@, Index %lu", cell.textLabel.text, [desc_batt indexOfObject:cell.textLabel.text]);
-        cell.accessoryType = UITableViewCellAccessoryDetailButton;
+        if (@available(iOS 13.0, *)) {
+            cell.accessoryType = UITableViewCellAccessoryDetailButton;
+        } else {
+            WarnAccessoryView *button = [WarnAccessoryView altAccessoryView];
+            [cell setAccessoryType:UITableViewCellAccessoryNone];
+            [cell setAccessoryView:button];
+        }
     } else {
         cell.accessoryType = UITableViewCellAccessoryNone;
     }
@@ -299,6 +305,30 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     DBGLOG(@"Accessory Pressed, %@", cell.textLabel.text);
 }
 
+- (void)altAccTapped:(UIButton *)button {
+    UIView *view = button;
+    UITableViewCell *cell;
+
+    UITableView *tv;
+    NSIndexPath *ip;
+    while (view && ![view isKindOfClass:[UITableViewCell class]]) {
+        view = [view superview];
+    }
+    if (view) {
+        cell = (UITableViewCell *)view;
+        UIView *tb = view;
+        while (tb && ![tb isKindOfClass:[UITableView class]]) {
+            tb = [tb superview];
+        }
+        if (tb) {
+            tv = (UITableView *)tb;
+            ip = [tv indexPathForCell:cell];
+            return [self tableView:tv accessoryButtonTappedForRowWithIndexPath:ip];
+        }
+    }
+    DBGLOG(@"altAccTapped: Something goes wrong! view: %@, cell: %@, table: %@", view, cell, tv);
+}
+
 - (NSString *)tableView:(id)tv titleForHeaderInSection:(NSInteger)section {
     // Doesn't matter, it will be changed by willDisplayHeaderView
     return @"This is a Title yeah";
@@ -454,8 +484,12 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
             return code;
         });
         WarnAccessoryView *button = (WarnAccessoryView *)[cell accessoryView];
-        if (button != nil) {
-            [button addTarget:self action:@selector(warnTapped:) forControlEvents:UIControlEventTouchUpInside];
+        if (button != nil && [button isKindOfClass:[WarnAccessoryView class]]) {
+            if (button.isWarn) {
+                [button addTarget:self action:@selector(warnTapped:) forControlEvents:UIControlEventTouchUpInside];
+            } else {
+                [button addTarget:self action:@selector(altAccTapped:) forControlEvents:UIControlEventTouchUpInside];
+            }
         }
         /* TODO: record 1st-read capacity data in defaults in order to observe battery problems */
     	return cell;
@@ -477,7 +511,14 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
         if ([desc_adap indexOfObject:cell.textLabel.text] != NSNotFound) {
             DBGLOG(@"Accessory %@, Index %lu", cell.textLabel.text, [desc_adap indexOfObject:cell.textLabel.text]);
-            cell.accessoryType = UITableViewCellAccessoryDetailButton;
+            if (@available(iOS 13, *)) {
+                cell.accessoryType = UITableViewCellAccessoryDetailButton;
+            } else {
+                WarnAccessoryView *button = [WarnAccessoryView altAccessoryView];
+                [cell setAccessoryType:UITableViewCellAccessoryNone];
+                [cell setAccessoryView:button];
+                [button addTarget:self action:@selector(altAccTapped:) forControlEvents:UIControlEventTouchUpInside];
+            }
         } else {
             cell.accessoryType = UITableViewCellAccessoryNone;
         }
@@ -519,7 +560,14 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
             if (hvc_menu != NULL && hvc_menu_size != 0) {
                 SegmentedViewCell *cell_seg = [tv dequeueReusableCellWithIdentifier:@"HVC"];
                 if (!cell_seg) cell_seg = [[SegmentedViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"HVC"];
-                cell_seg.accessoryType = UITableViewCellAccessoryDetailButton;
+                if (@available(iOS 13.0, *)) {
+                    cell_seg.accessoryType = UITableViewCellAccessoryDetailButton;
+                } else {
+                    WarnAccessoryView *button = [WarnAccessoryView altAccessoryView];
+                    [cell setAccessoryType:UITableViewCellAccessoryNone];
+                    [cell setAccessoryView:button];
+                    [button addTarget:self action:@selector(altAccTapped:) forControlEvents:UIControlEventTouchUpInside];
+                }
                 cell_seg.textLabel.text = cell.textLabel.text; // For Accessory selection
                 cell_seg.titleLabel.text = cell.textLabel.text;
                 [cell_seg.segmentedControl addTarget:self action:@selector(hvcSegmentSelected:) forControlEvents:UIControlEventValueChanged];
@@ -584,12 +632,13 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
 - (void)warnTapped:(UIButton *)button {
     UIView *view = button;
+    UITableViewCell *cell;
     while (view && ![view isKindOfClass:[UITableViewCell class]]) {
         view = [view superview];
     }
     if (view) {
         char *title = NULL;
-        UITableViewCell *cell = (UITableViewCell *)view;
+        cell = (UITableViewCell *)view;
         for (int i = 0; i < WARN_MAX; i++) {
             CFIndex index = [warns indexOfObject:[NSString stringWithFormat:@"%@_%d", cell.textLabel.text, i]];
             if (index != NSNotFound) {
@@ -612,10 +661,11 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
                 }
                 const char *content = [[warns objectAtIndex:index + 1] UTF8String];
                 show_alert(title, content, _C("OK"));
-                break;
+                return;
             }
         }
     }
+    DBGLOG(@"warnTapped: Something goes wrong! view: %@, cell: %@", view, cell);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {

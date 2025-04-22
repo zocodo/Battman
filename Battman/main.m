@@ -42,15 +42,20 @@ NSString *cond_localize(unsigned long long localize_id) {
 	// Also TODO: detect locale
 	return (__bridge NSString *)localization_arr[LOCALIZATION_COUNT * preferred_language + localize_id - 1];
 }
+char *cond_localize_c(unsigned long long localize_id) {
+    NSString *ret = cond_localize(localize_id);
+    return [ret UTF8String];
+}
 #else
 /* Use gettext i18n for App & CLI consistency */
 /* While running as CLI, NSBundle is unset,
    which means we cannot use Localizables.strings
    and NSLocalizedString() at such scene. */
 /* TODO: try implement void *cond_localize(void *strOrCFSTR)? */
-NSString *cond_localize(const char *str) {
+static bool use_libintl = false;
+
+static void gettext_init(void) {
     static dispatch_once_t onceToken;
-    static bool use_libintl = false;
 
     dispatch_once(&onceToken, ^{
         if (libintl_available()) {
@@ -125,15 +130,21 @@ NSString *cond_localize(const char *str) {
 
 #undef _
 #define _(x) cond_localize(x)
-            DBGLOG(@"gettext_ptr(%s) = %s", str, gettext_ptr(str));
-            //DBGALT(lang, locale_name, "OK");
             free(lang);
         } else {
             show_alert("Warning", "Failed to load Gettext, defaulting to English", "OK");
         }
     });
+}
 
+NSString *cond_localize(const char *str) {
+    gettext_init();
     return [NSString stringWithCString:(use_libintl ? gettext_ptr(str) : str) encoding:NSUTF8StringEncoding];
+}
+
+char *cond_localize_c(const char *str) {
+    gettext_init();
+    return (char *)(use_libintl ? gettext_ptr(str) : str);
 }
 #endif
 
@@ -201,7 +212,7 @@ int main(int argc, char * argv[]) {
     /* Not running as App, CLI/Daemon code */
     {
         // TODO: cli + x11
-        fprintf(stderr, "%s\n", [_("Battman CLI not implemented yet.") UTF8String]);
+        fprintf(stderr, "%s\n", _C("Battman CLI not implemented yet."));
         return EXIT_FAILURE;
     }
     return EXIT_SUCCESS;

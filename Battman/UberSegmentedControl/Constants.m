@@ -7,8 +7,8 @@
     if (@available(iOS 13.0, *)) {
         return [UIColor secondarySystemFillColor];
     } else {
-        return [UIColor blackColor];
-        // return [UIColor colorWithRed:(120.0f / 255) green:(120.0f / 255) blue:(128.0f / 255) alpha:0.16f];
+        // orig: return [UIColor blackColor];
+        return [UIColor colorWithRed:(120.0f / 255) green:(120.0f / 255) blue:(128.0f / 255) alpha:0.16f];
     }
 }
 
@@ -30,6 +30,7 @@
     if (@available(iOS 13.0, *)) {
         return [UIColor labelColor];
     } else {
+        // (kCGColorSpaceICCBased; kCGColorSpaceModelMonochrome; Generic Gray Gamma 2.2 Profile; extended range)] ( 0 1 )
         return [UIColor blackColor];
     }
 }
@@ -38,7 +39,8 @@
     if (@available(iOS 13.0, *)) {
         return [UIColor tertiarySystemFillColor];
     } else {
-        return [[UIColor blackColor] colorWithAlphaComponent:0.25];
+        // orig: return [[UIColor blackColor] colorWithAlphaComponent:0.25];
+        return [UIColor colorWithRed:(118.0f / 255) green:(118.0f / 255) blue:(128.0f / 255) alpha:0.12f];
     }
 }
 

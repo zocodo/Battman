@@ -42,16 +42,22 @@
 #define BATTMAN_TEXTDOMAIN "battman"
 #endif
 
-#ifdef __OBJC__
 __BEGIN_DECLS
 
+#ifdef __OBJC__
 #ifndef USE_GETTEXT
 NSString *cond_localize(unsigned long long localize_id);
 #else
 NSString *cond_localize(const char *str);
 #endif
+#endif
+
+#ifndef USE_GETTEXT
+char *cond_localize_c(unsigned long long localize_id)
+#else
+char *cond_localize_c(const char *str);
+#endif
 
 __END_DECLS
-#endif
 
 #endif /* main_h */
