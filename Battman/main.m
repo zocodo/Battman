@@ -194,15 +194,8 @@ int main(int argc, char * argv[]) {
     // sleep(10);
     if (is_carbon()) {
 #if TARGET_OS_IPHONE
-	extern void battman_bootstrap(char *,int);
-	battman_bootstrap("",0);
-        NSString *appDelegateClassName;
-        @autoreleasepool {
-            // Setup code that might create autoreleased objects goes here.
-            appDelegateClassName = NSStringFromClass([AppDelegate class]);
-        }
-        /* TODO: add X11 and AppKit support? */
-        return UIApplicationMain(argc, argv, nil, appDelegateClassName);
+	extern NSString *battman_bootstrap(char *,int);
+	return UIApplicationMain(argc,argv,nil,battman_bootstrap("",0));
 #else
         @autoreleasepool {
         }

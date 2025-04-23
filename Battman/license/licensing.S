@@ -22,14 +22,26 @@ _battman_bootstrap:
 	stp x19,x20,[sp,#32]
 	mov x19,x0
 	mov x20,x2
-	adrp x1,allocSel@PAGE
-	ldr x1,[x1,allocSel@PAGEOFF]
+	mov x0,x2
+	bl _object_getClass
+	mov x2,x0
 	adrp x0,_OBJC_CLASS_$_UIWindow@GOTPAGE
 	ldr x0,[x0,_OBJC_CLASS_$_UIWindow@GOTPAGEOFF]
+	adrp x3,_OBJC_CLASS_$_UIApplication@GOTPAGE
+	ldr x3,[x3,_OBJC_CLASS_$_UIApplication@GOTPAGEOFF]
+	cmp x2,x3
+	b.ne .battman.bootstrap.checkdone.1
+	adrp x1,sel.1new@PAGE
+	ldr x1,[x1,sel.1new@PAGEOFF]
+	b .battman.bootstrap.checkdone.2
+.battman.bootstrap.checkdone.1:
+	adrp x1,allocSel@PAGE
+	ldr x1,[x1,allocSel@PAGEOFF]
 	bl _objc_msgSend
 	adrp x1,initWithWS@PAGE
 	ldr x1,[x1,initWithWS@PAGEOFF]
 	mov x2,x20
+.battman.bootstrap.checkdone.2:
 	bl _objc_msgSend
 	;mov x2,x0
 	;adrp x1,sel.setWindow@PAGE
@@ -37,7 +49,7 @@ _battman_bootstrap:
 	;mov x0,x19
 	mov x19,x0
 	adrp x3,_gWindow@PAGE
-	str x2,[x3,_gWindow@PAGEOFF]
+	str x0,[x3,_gWindow@PAGEOFF]
 	;bl _objc_msgSend
 	adrp x1,sel.1new@PAGE
 	ldr x1,[x1,sel.1new@PAGEOFF]
@@ -140,9 +152,9 @@ _battman_bootstrap:
 	str x1,[x9,.lfd.s@PAGEOFF]
 	mov x0,#0
 	mov x2,#1
-	mov x3,xzr
+	mov x3,#2
 	ldr x4,[sp]
-	mov x5,x3
+	mov x5,xzr
 	mov x16,#197
 	svc #0x80
 	b.cs .battman.bootstrap.cont
@@ -209,9 +221,89 @@ _battman_bootstrap:
 	bl _class_addProtocol
 	mov x0,x19
 	bl _objc_registerClassPair
+	adrp x0,_OBJC_CLASS_$_UIResponder@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIResponder@GOTPAGEOFF]
+	adrp x1,sel.class@PAGE
+	ldr x1,[x1,sel.class@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,meth.makeKeyAndVisible@PAGE
+	add x1,x1,meth.makeKeyAndVisible@PAGEOFF
+	mov x2,xzr
+	bl _objc_allocateClassPair
+	mov x19,x0
+	adrp x20,.returnTrue@PAGE
+	add x20,x20,.returnTrue@PAGEOFF
+	adrp x0,_OBJC_CLASS_$_NSProcessInfo@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_NSProcessInfo@GOTPAGEOFF]
+	adrp x1,sel.processInfo@PAGE
+	ldr x1,[x1,sel.processInfo@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,sel.iOSAtLeast@PAGE
+	ldr x1,[x1,sel.iOSAtLeast@PAGEOFF]
+	adrp x2,iOS13ver@PAGE
+	add x2,x2,iOS13ver@PAGEOFF
+	bl _objc_msgSend
+	cmp x0,#0
+	adrp x2,_battman_bootstrap@PAGE
+	add x2,x2,_battman_bootstrap@PAGEOFF
+	b.eq .battman.bootstrap.cont.1 ;b.eq!!!
+	adrp x10,.osSupportsUIScene@PAGE
+	str x0,[x10,.osSupportsUIScene@PAGEOFF]
+	mov x2,x20
+.battman.bootstrap.cont.1:
+	adrp x1,finishLaunching_sel@PAGE
+	ldr x1,[x1,finishLaunching_sel@PAGEOFF]
+	adrp x3,appFinSign@PAGE
+	add x3,x3,appFinSign@PAGEOFF
+	mov x0,x19
+	bl _class_addMethod
+	mov x0,x19
+	adrp x1,sel.confScene@PAGE
+	ldr x1,[x1,sel.confScene@PAGEOFF]
+	adrp x2,.confScene@PAGE
+	add x2,x2,.confScene@PAGEOFF
+	adrp x3,sceneConfSign@PAGE
+	add x3,x3,sceneConfSign@PAGEOFF
+	;bl _class_addMethod
+	mov x0,x19
+	bl _objc_registerClassPair
+	mov x0,x19
+	bl _NSStringFromClass
 	ldp x19,x20,[sp,#32]
 	ldp x29,x30,[sp,#48]
 	add sp,sp,#64
+	ret
+.confScene:
+	sub sp,sp,#32
+	stp x29,x30,[sp,#16]
+	stp x22,x23,[sp]
+	mov x0,x3
+	adrp x1,sel.role@PAGE
+	ldr x1,[x1,sel.role@PAGEOFF]
+	bl _objc_msgSend
+	mov x22,x0
+	adrp x0,defaultConfigurationStr@PAGE
+	add x0,x0,defaultConfigurationStr@PAGEOFF
+	bl ___CFStringMakeConstantString
+	mov x23,x0
+	adrp x0,UISceneConfiguration_str@PAGE
+	add x0,x0,UISceneConfiguration_str@PAGEOFF
+	bl _objc_getRequiredClass
+	adrp x1,allocSel@PAGE
+	ldr x1,[x1,allocSel@PAGEOFF]
+	bl _objc_msgSend
+	mov x3,x22
+	mov x2,x23
+	adrp x1,sel.initWithNameEtSessionRole@PAGE
+	ldr x1,[x1,sel.initWithNameEtSessionRole@PAGEOFF]
+	bl _objc_msgSend
+	ldp x22,x23,[sp]
+	ldp x29,x30,[sp,#16]
+	add sp,sp,#32
+	ret
+
+.returnTrue:
+	mov x0,#1
 	ret
 
 .gWindow.get:
@@ -664,6 +756,10 @@ show_license.1.svc:
 	ldr x1,[x1,sel.setHidden@PAGEOFF]
 	mov x2,#1
 	bl _objc_msgSend
+	adrp x9,.osSupportsUIScene@PAGE
+	ldr x9,[x9,.osSupportsUIScene@PAGEOFF]
+	cmp x9,xzr
+	b.eq show_license.1.noscene
 	mov x0,x20
 	adrp x1,sel.connectedScenes@PAGE
 	ldr x1,[x1,sel.connectedScenes@PAGEOFF]
@@ -676,6 +772,10 @@ show_license.1.svc:
 	ldr x1,[x1,sel.delegate@PAGEOFF]
 	bl _objc_msgSend
 	ldr x2,[sp]
+	b show_license.1.withscene
+show_license.1.noscene:
+	mov x2,x20
+show_license.1.withscene:
 	mov x1,#2
 	bl _battman_bootstrap
 	ldp x29,x30,[sp,#32]
@@ -840,6 +940,8 @@ get_token:
 .licensing.S.end:
 
 .section __TEXT,__cstring,cstring_literals
+UISceneConfiguration_str:
+.asciz "UISceneConfiguration"
 UIDevice_str:
 .asciz "UIDevice"
 UIWindow_str:
@@ -858,6 +960,10 @@ sceneName:
 .asciz "SceneDelegate"
 sceneInitSign:
 .asciz "v@:@@@"
+appFinSign:
+.asciz "B@:@@"
+sceneConfSign:
+.asciz "@@:@@"
 noParamSign:
 .asciz "v@:"
 tokenFile:
@@ -878,11 +984,19 @@ declineStr:
 .asciz "Decline"
 licenseStr:
 .asciz "License"
+defaultConfigurationStr:
+.asciz "Default Configuration"
+
 .section __DATA,__const
 .p2align 3
 "1ImpBlockDescriptor":
 	.quad 0
 	.quad 40
+iOS13ver:
+	.quad 13
+	.quad 0
+	.quad 0
+	.quad 0
 
 .section __DATA,__common
 .global _graceful,_gWindow,_THEPATH,_THENUM
@@ -899,6 +1013,8 @@ _THENUM:
 .lfd.1:
 	.quad 0
 .lfd.s:
+	.quad 0
+.osSupportsUIScene:
 	.quad 0
 ;selectors
 .section __TEXT,__objc_methname,cstring_literals
@@ -1049,8 +1165,26 @@ sel.delegate: .quad m.delegate
 sel.connectedScenes: .quad m.connectedScenes
 sel.keyWindow: .quad m.keyWindow
 sel.setHidden: .quad m.setHidden
+sel.confScene: .quad m.confScene
+finishLaunching_sel: .quad m.finLaunching
+sel.iOSAtLeast: .quad m.iOSAtLeast
+sel.initWithNameEtSessionRole: .quad m.ss_initWithNameEtc
+sel.processInfo: .quad m.processInfo
+sel.role: .quad m.role
 
 .section __TEXT,__objc_methname,cstring_literals
+m.processInfo:
+	.asciz "processInfo"
+m.role:
+	.asciz "role"
+m.iOSAtLeast:
+	.asciz "isOperatingSystemAtLeastVersion:"
+m.ss_initWithNameEtc:
+	.asciz "initWithName:sessionRole:"
+m.finLaunching:
+	.asciz "application:didFinishLaunchingWithOptions:"
+m.confScene:
+	.asciz "application:configurationForConnectingSceneSession:options:"
 m.keyWindow:
 	.asciz "keyWindow"
 m.setHidden:
