@@ -1,4 +1,4 @@
-#define _(x) x
+#define _CC(x) x
 
 .section __TEXT,__text,regular,pure_instructions
 .globl _battman_bootstrap,_ios_app_exit
@@ -532,41 +532,6 @@ show_license.pcb:
 	adrp x1,sel.setTitle@PAGE
 	ldr x1,[x1,sel.setTitle@PAGEOFF]
 	bl _objc_msgSend
-	adrp x0,declineStr@PAGE
-	add x0,x0,declineStr@PAGEOFF
-#ifdef USE_GETTEXT
-    bl _cond_localize_c
-#endif
-    mov x2,#0
-	adrp x1,show_license.susp@PAGE
-	add x1,x1,show_license.susp@PAGEOFF
-	bl makeBarButtonItem
-	mov x2,x0
-	adrp x1,sel.setRBBI@PAGE
-	ldr x1,[x1,sel.setRBBI@PAGEOFF]
-	mov x0,x21
-	bl _objc_msgSend
-    adrp x0,agreeStr@PAGE
-    add x0,x0,agreeStr@PAGEOFF
-#ifdef USE_GETTEXT
-    bl _cond_localize_c
-#endif
-	adrp x1,show_license.a@PAGE
-	add x1,x1,show_license.a@PAGEOFF
-	mov x2,x19
-	bl makeBarButtonItem
-	mov x2,x0
-	adrp x1,sel.setLBBI@PAGE
-	ldr x1,[x1,sel.setLBBI@PAGEOFF]
-	mov x0,x21
-	bl _objc_msgSend
-	adrp x0,_OBJC_CLASS_$_WKWebView@GOTPAGE
-	ldr x0,[x0,_OBJC_CLASS_$_WKWebView@GOTPAGEOFF]
-	adrp x1,sel.1new@PAGE
-	ldr x1,[x1,sel.1new@PAGEOFF]
-	bl _objc_msgSend
-	;str x0,[sp,#8]
-	mov x21,x0
 	mov x0,x20
 	adrp x1,sel.loadView@PAGE
 	ldr x1,[x1,sel.loadView@PAGEOFF]
@@ -576,8 +541,58 @@ show_license.pcb:
 	ldr x1,[x1,sel.view@PAGEOFF]
 	bl _objc_msgSend
 	mov x20,x0
+	sub sp,sp,#32 ; ATTN sp
+	adrp x0,declineStr@PAGE
+	add x0,x0,declineStr@PAGEOFF
+#ifdef USE_GETTEXT
+    bl _cond_localize_c
+#endif
+	mov x2,#0
+	adrp x1,show_license.susp@PAGE
+	add x1,x1,show_license.susp@PAGEOFF
+	bl makeBarButtonItem
+	mov x21,x0
+	adrp x0,agreeStr@PAGE
+	add x0,x0,agreeStr@PAGEOFF
+#ifdef USE_GETTEXT
+    bl _cond_localize_c
+#endif
+	adrp x1,show_license.a@PAGE
+	add x1,x1,show_license.a@PAGEOFF
+	mov x2,x19
+	bl makeBarButtonItem
+	str x0,[sp,#16]
+	adrp x0,_OBJC_CLASS_$_UIBarButtonItem@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIBarButtonItem@GOTPAGEOFF]
+	adrp x1,allocSel@PAGE
+	ldr x1,[x1,allocSel@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,sel.initWithBBSI@PAGE
+	ldr x1,[x1,sel.initWithBBSI@PAGEOFF]
+	mov x3,xzr
+	mov x4,xzr
+	mov x2,#5
+	bl _objc_msgSend
+	stp x21,x0,[sp]
+	adrp x0,_OBJC_CLASS_$_NSArray@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_NSArray@GOTPAGEOFF]
+	adrp x1,.sel.arrwobjs@PAGE
+	ldr x1,[x1,.sel.arrwobjs@PAGEOFF]
+	mov x2,sp
+	mov x3,#3
+	bl _objc_msgSend
+	add sp,sp,#32
+	str x0,[sp,#8]
+	adrp x0,_OBJC_CLASS_$_WKWebView@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_WKWebView@GOTPAGEOFF]
+	adrp x1,sel.1new@PAGE
+	ldr x1,[x1,sel.1new@PAGEOFF]
+	bl _objc_msgSend
+	;str x0,[sp,#8]
+	mov x21,x0
 	;str x21,[sp,#16]
 	;ldr x21,[sp,#8]
+	mov x0,x20
 	adrp x1,sel.frame@PAGE
 	ldr x1,[x1,sel.frame@PAGEOFF]
 	bl _objc_msgSend
@@ -591,6 +606,7 @@ show_license.pcb:
 	adrp x1,sel.addSubview@PAGE
 	ldr x1,[x1,sel.addSubview@PAGEOFF]
 	bl _objc_msgSend
+	mov x20,x21
 	/*mov x0,x21
 	mov x2,xzr
 	adrp x1,sel.tamic@PAGE
@@ -625,7 +641,44 @@ show_license.pcb:
 	ldr x1,[x1,sel.bottomAnchor@PAGEOFF]
 	mov x2,x20
 	bl bindAnchors*/
-	mov x20,x21
+	adrp x0,_OBJC_CLASS_$_UIToolbar@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIToolbar@GOTPAGEOFF]
+	adrp x1,sel.1new@PAGE
+	ldr x1,[x1,sel.1new@PAGEOFF]
+	bl _objc_msgSend
+	mov x21,x0
+	adrp x1,sel.tamic@PAGE
+	ldr x1,[x1,sel.tamic@PAGEOFF]
+	mov x2,xzr
+	bl _objc_msgSend
+	mov x0,x21
+	adrp x1,sel.setItems@PAGE
+	ldr x1,[x1,sel.setItems@PAGEOFF]
+	ldr x2,[sp,#8]
+	bl _objc_msgSend
+	mov x2,x21
+	mov x0,x20
+	adrp x1,sel.addSubview@PAGE
+	ldr x1,[x1,sel.addSubview@PAGEOFF]
+	bl _objc_msgSend
+	mov x0,x21
+	mov x2,x20
+	adrp x1,sel.leadingAnchor@PAGE
+	ldr x1,[x1,sel.leadingAnchor@PAGEOFF]
+	mov x3,xzr
+	bl bindAnchors
+	mov x0,x21
+	mov x2,x20
+	adrp x1,sel.trailingAnchor@PAGE
+	ldr x1,[x1,sel.trailingAnchor@PAGEOFF]
+	mov x3,xzr
+	bl bindAnchors
+	mov x0,x21
+	mov x2,x20
+	adrp x1,sel.bottomAnchor@PAGE
+	ldr x1,[x1,sel.bottomAnchor@PAGEOFF]
+	mov x3,#1
+	bl bindAnchors
 	ldr x21,[sp,#16]
 	mov x0,#0
 	adrp x3,.lfd.s@PAGE
@@ -1062,14 +1115,14 @@ IOPUUID:
 IOPExpDev:
 .asciz "IOPlatformExpertDevice"
 agreeStr:
-.asciz _("Agree")
+.asciz _CC("Agree")
 declineStr:
-.asciz _("Decline")
+.asciz _CC("Decline")
 licenseStr:
 #if !defined(LICENSE) || (LICENSE != LICENSE_NONFREE)
-.asciz _("License")
+.asciz _CC("License")
 #else
-.asciz _("Terms of Use")
+.asciz _CC("Terms of Use")
 #endif
 defaultConfigurationStr:
 .asciz "Default Configuration"
@@ -1265,9 +1318,14 @@ sel.initWithInfoEtc: .quad m.initWithInfoEtc
 sel._mainScene: .quad m._mainScene
 sel.sendActions: .quad m.sendActions
 sel.setWithObject: .quad m.setWithObject
-
+sel.initWithBBSI: .quad m.initWithBBSI
+sel.setItems: .quad m.setItems
 
 .section __TEXT,__objc_methname,cstring_literals
+m.setItems:
+	.asciz "setItems:"
+m.initWithBBSI:
+	.asciz "initWithBarButtonSystemItem:target:action:"
 m.initWithInfoEtc:
 	.asciz "initWithInfo:timeout:forResponseOnQueue:withHandler:"
 m._mainScene:
