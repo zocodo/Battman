@@ -199,8 +199,8 @@
 
 /* This should not be used when DeviceName exists */
 - (void)setBitSetByTargetName {
-    board_info_t board = get_board_info();
-    NSString *rplt_nsstr = [NSString stringWithUTF8String:board.TargetName];
+    const board_info_t *board = get_board_info();
+    NSString *rplt_nsstr = [NSString stringWithUTF8String:board->TargetName];
 
     // Not really bq27545, but most similar
     /* As I observed on iPhone 12, most possibly bq275 which has BATHI/BATLOW

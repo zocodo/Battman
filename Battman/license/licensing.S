@@ -1,6 +1,6 @@
 .section __TEXT,__text,regular,pure_instructions
 .build_version ios, 14, 5
-.globl _battman_bootstrap
+.globl _battman_bootstrap,_ios_app_exit
 .p2align 2
 
 ; current version only works for iOS :(
@@ -325,8 +325,8 @@ checktoken:
 	bl _CC_SHA256
 	b checktoken.pt
 	add x2,sp,#16
-	adrp x1,.licensing.S.end@PAGE
-	add x1,x1,.licensing.S.end@PAGEOFF
+	;adrp x1,.licensing.S.end@PAGE
+	;add x1,x1,.licensing.S.end@PAGEOFF
 	ldr x0,[sp,#64]
 	sub x1,x1,x0
 	str x1,[sp,#32]
@@ -937,9 +937,71 @@ get_token:
 	ldp x29,x30,[sp,#16]
 	add sp,sp,#32
 	ret
-.licensing.S.end:
+
+_ios_app_exit:
+	sub sp,sp,#64
+	stp x29,x30,[sp,#48]
+	str x19,[sp,#32]
+	adrp x0,UIDismissSceneAction_str@PAGE
+	add x0,x0,UIDismissSceneAction_str@PAGEOFF
+	bl _objc_getClass
+	cmp x0,xzr
+	b.ne _ios_app_exit.graceful
+	bl _exit
+_ios_app_exit.graceful:
+	mov x9,x0
+	adrp x0,__NSConcreteStackBlock@GOTPAGE
+	ldr x0,[x0,__NSConcreteStackBlock@GOTPAGEOFF]
+	mov x1,#0x60000000
+	adrp x2,_exit@GOTPAGE
+	ldr x2,[x2,_exit@GOTPAGEOFF]
+	adrp x3,plainBlockDescriptor@PAGE
+	add x3,x3,plainBlockDescriptor@PAGEOFF
+	stp x0,x1,[sp]
+	stp x2,x3,[sp,#16]
+	mov x0,x9
+	adrp x1,allocSel@PAGE
+	ldr x1,[x1,allocSel@PAGEOFF]
+	bl _objc_msgSend
+	mov x19,x0
+	mov x0,xzr
+	mov x1,xzr
+	bl _dispatch_get_global_queue
+	mov x3,x0
+	mov x0,x19
+	adrp x1,sel.initWithInfoEtc@PAGE
+	ldr x1,[x1,sel.initWithInfoEtc@PAGEOFF]
+	mov x2,xzr
+	mov x4,sp
+	fmov d0,#0.0
+	bl _objc_msgSend
+	mov x2,x0
+	adrp x0,_OBJC_CLASS_$_NSSet@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_NSSet@GOTPAGEOFF]
+	adrp x1,sel.setWithObject@PAGE
+	ldr x1,[x1,sel.setWithObject@PAGEOFF]
+	bl _objc_msgSend
+	mov x19,x0
+	adrp x0,_OBJC_CLASS_$_UIApplication@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_UIApplication@GOTPAGEOFF]
+	adrp x1,sel.sharedApp@PAGE
+	ldr x1,[x1,sel.sharedApp@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,sel._mainScene@PAGE
+	ldr x1,[x1,sel._mainScene@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,sel.sendActions@PAGE
+	ldr x1,[x1,sel.sendActions@PAGEOFF]
+	mov x2,x19
+	bl _objc_msgSend
+	ldr x19,[sp,#32]
+	ldp x29,x30,[sp,#48]
+	add sp,sp,#64
+	ret
 
 .section __TEXT,__cstring,cstring_literals
+UIDismissSceneAction_str:
+.asciz "UIDismissSceneAction"
 UISceneConfiguration_str:
 .asciz "UISceneConfiguration"
 UIDevice_str:
@@ -989,6 +1051,9 @@ defaultConfigurationStr:
 
 .section __DATA,__const
 .p2align 3
+plainBlockDescriptor:
+	.quad 0
+	.quad 32
 "1ImpBlockDescriptor":
 	.quad 0
 	.quad 40
@@ -1171,8 +1236,21 @@ sel.iOSAtLeast: .quad m.iOSAtLeast
 sel.initWithNameEtSessionRole: .quad m.ss_initWithNameEtc
 sel.processInfo: .quad m.processInfo
 sel.role: .quad m.role
+sel.initWithInfoEtc: .quad m.initWithInfoEtc
+sel._mainScene: .quad m._mainScene
+sel.sendActions: .quad m.sendActions
+sel.setWithObject: .quad m.setWithObject
+
 
 .section __TEXT,__objc_methname,cstring_literals
+m.initWithInfoEtc:
+	.asciz "initWithInfo:timeout:forResponseOnQueue:withHandler:"
+m._mainScene:
+	.asciz "_mainScene"
+m.sendActions:
+	.asciz "sendActions:"
+m.setWithObject:
+	.asciz "setWithObject:"
 m.processInfo:
 	.asciz "processInfo"
 m.role:

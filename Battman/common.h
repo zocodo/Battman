@@ -48,8 +48,11 @@ void open_url(const char *url);
 
 bool match_regex(const char *string, const char *pattern);
 
-
 int is_rosetta(void);
+
+int open_lang_override(int flags,int mode);
+
+int preferred_language_code();
 
 __END_DECLS
 

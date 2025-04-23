@@ -637,7 +637,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         view = [view superview];
     }
     if (view) {
-        char *title = NULL;
+        const char *title = NULL;
         cell = (UITableViewCell *)view;
         for (int i = 0; i < WARN_MAX; i++) {
             CFIndex index = [warns indexOfObject:[NSString stringWithFormat:@"%@_%d", cell.textLabel.text, i]];

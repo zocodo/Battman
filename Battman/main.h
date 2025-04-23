@@ -53,9 +53,9 @@ NSString *cond_localize(const char *str);
 #endif
 
 #ifndef USE_GETTEXT
-char *cond_localize_c(unsigned long long localize_id);
+const char *cond_localize_c(unsigned long long localize_id);
 #else
-char *cond_localize_c(const char *str);
+const char *cond_localize_c(const char *str);
 #endif
 
 __END_DECLS

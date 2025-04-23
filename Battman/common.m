@@ -53,6 +53,7 @@ static char *get_CFLocale()
     return lang;
 }
 
+// Caller free!!!
 char *preferred_language (void)
 {
     /* Convert new-style locale names with language tags (ISO 639 and ISO 15924)
@@ -418,10 +419,8 @@ void app_exit(void) {
     if (is_carbon()) {
 #if TARGET_OS_IOS
         /* Play an animation that back to homescreen, then exit app by sceneDidEnterBackground: */
-        extern UIApplication *UIApp;
-        extern BOOL graceful;
-        graceful = YES;
-        [[UIControl new] sendAction:@selector(suspend) to:UIApp forEvent:nil];
+        extern void ios_app_exit();
+        ios_app_exit();
 #endif
 #if TARGET_OS_OSX
         /* OSX specific App exit logic (why not just exit(0)?) */
@@ -511,4 +510,46 @@ int is_rosetta(void) {
         return -1;
     }
     return ret;
+}
+
+int open_lang_override(int flags,int mode) {
+	const char *homedir=getenv("HOME");
+	if(!homedir)
+		return 0;
+	char *langoverride_fn=malloc(strlen(homedir)+20);
+	stpcpy(stpcpy(langoverride_fn,homedir),"/Library/_LANG");
+	int fd=open(langoverride_fn,flags,mode);
+	free(langoverride_fn);
+	return fd;
+}
+
+static int _preferred_language_code=-1;
+
+void preferred_language_code_clear() {
+	_preferred_language_code=-1;
+}
+
+int preferred_language_code() {
+	if(_preferred_language_code!=-1)
+		return _preferred_language_code;
+	int lfd=open_lang_override(O_RDONLY,0);
+	if(lfd==-1) {
+		char *lang=preferred_language();
+		if(*(uint16_t*)lang==0x6e7a) {
+			_preferred_language_code=1;
+		}else{
+			_preferred_language_code=0;
+		}
+		free(lang);
+		return _preferred_language_code;
+	}
+	int ret;
+	if(read(lfd,&ret,4)!=4) {
+		close(lfd);
+		_preferred_language_code=0;
+		return 0;
+	}
+	close(lfd);
+	_preferred_language_code=ret;
+	return ret;
 }

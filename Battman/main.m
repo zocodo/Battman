@@ -33,16 +33,21 @@ CFStringRef localization_arr[]={
 #endif
 
 #ifndef USE_GETTEXT
+int cond_localize_cnt=LOCALIZATION_COUNT;
+
 NSString *cond_localize(unsigned long long localize_id) {
 	if (localize_id > 10000)
 		return [NSString stringWithUTF8String:(const char *)localize_id];
-	int preferred_language = 0; // current: 0=eng 1=cn
+	int preferred_language = preferred_language_code(); // current: 0=eng 1=cn
 	// ^^ TODO: Make it dynamically modifyable
 	// Also TODO: detect locale
 	return (__bridge NSString *)localization_arr[LOCALIZATION_COUNT * preferred_language + localize_id - 1];
 }
-char *cond_localize_c(unsigned long long localize_id) {
-	return NULL;
+const char *cond_localize_c(unsigned long long localize_id) {
+	if (localize_id > 10000)
+		return (const char *)localize_id;
+	int preferred_language = preferred_language_code(); // current: 0=eng 1=cn
+	return CFStringGetCStringPtr(localization_arr[LOCALIZATION_COUNT * preferred_language + localize_id - 1],0x08000100);
 }
 #else
 /* Use gettext i18n for App & CLI consistency */
@@ -140,9 +145,9 @@ NSString *cond_localize(const char *str) {
     return [NSString stringWithCString:(use_libintl ? gettext_ptr(str) : str) encoding:NSUTF8StringEncoding];
 }
 
-char *cond_localize_c(const char *str) {
+const char *cond_localize_c(const char *str) {
     gettext_init();
-    return (char *)(use_libintl ? gettext_ptr(str) : str);
+    return (const char *)(use_libintl ? gettext_ptr(str) : str);
 }
 #endif
 
@@ -150,7 +155,10 @@ char *cond_localize_c(const char *str) {
 NSMutableAttributedString *redirectedOutput;
 #endif
 
+void *globalArgv;
+
 int main(int argc, char * argv[]) {
+	globalArgv=argv;
 #if defined(DEBUG) && !TARGET_OS_SIMULATOR
     // Redirecting is not needed for Simulator
     char *tty = ttyname(0);

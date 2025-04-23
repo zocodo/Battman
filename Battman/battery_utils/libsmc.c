@@ -88,8 +88,8 @@ enum {
 #define DBGLOG(...)
 #endif
 
-extern bool show_alert(char *, char *, char *);
-extern void show_alert_async(char *, char *, char *, void (^)(bool));
+extern bool show_alert(const char *, const char *, const char *);
+extern void show_alert_async(const char *, const char *, const char *, void (^)(bool));
 extern void app_exit(void);
 extern void NSLog(CFStringRef, ...);
 
@@ -101,7 +101,7 @@ static IOReturn smc_open(void) {
     IOReturn result;
     mach_port_t masterPort;
     io_service_t service;
-    char *fail_title = NULL;
+    const char *fail_title = NULL;
 
     if (IOMasterPort(MACH_PORT_NULL, &masterPort) != kIOReturnSuccess) {
         DBGLOG(CFSTR("IOMasterPort() failed"));
@@ -139,37 +139,32 @@ static IOReturn smc_call(int index, SMCParamStruct *inputStruct,
 }
 
 static IOReturn smc_get_keyinfo(UInt32 key, SMCKeyInfoData *keyInfo) {
-    SMCParamStruct inputStruct;
+    SMCParamStruct inputStruct={0};
     SMCParamStruct outputStruct;
-    IOReturn result = kIOReturnSuccess;
-
-    memset(&inputStruct, 0, sizeof(inputStruct));
-    memset(&outputStruct, 0, sizeof(outputStruct));
+    IOReturn result;
 
     inputStruct.key = key;
     inputStruct.param.data8 = kSMCGetKeyInfo;
 
     result = smc_call(kSMCHandleYPCEvent, &inputStruct, &outputStruct);
-    if (result == kIOReturnSuccess) {
-        *keyInfo = outputStruct.param.keyInfo;
-    }
 
     // Important check: dataSize != 0
     // idk why a nonexist key could return kIOReturnSuccess
     if (outputStruct.param.keyInfo.dataSize == 0)
         result = kIOReturnError;
+    
+    if (result == kIOReturnSuccess) {
+        *keyInfo = outputStruct.param.keyInfo;
+    }
 
     return result;
 }
 
-static IOReturn smc_read(UInt32 key, void *bytes) {
+static IOReturn smc_read(uint32_t key, void *bytes) {
     IOReturn result;
-    SMCParamStruct inputStruct;
+    SMCParamStruct inputStruct={0};
     SMCParamStruct outputStruct;
     SMCKeyInfoData keyInfo;
-
-    memset(&inputStruct, 0, sizeof(inputStruct));
-    memset(&keyInfo, 0, sizeof(keyInfo));
 
     inputStruct.key = key;
 
@@ -181,7 +176,6 @@ static IOReturn smc_read(UInt32 key, void *bytes) {
     inputStruct.param.keyInfo.dataSize = keyInfo.dataSize;
     inputStruct.param.data8 = kSMCReadKey;
     
-    memset(&outputStruct, 0, sizeof(outputStruct));
     result = smc_call(kSMCHandleYPCEvent, &inputStruct, &outputStruct);
     if (result != kIOReturnSuccess) {
         DBGLOG(CFSTR("smc_call failed %d"), result);
@@ -205,35 +199,35 @@ static float ioft2flt(void *bytes) {
     return (float)res / 65536.0f;
 }
 
-__attribute__((destructor)) void smc_close(void) {
+__attribute__((destructor)) static void smc_close(void) {
     if (gConn != 0)
         IOServiceClose(gConn);
 }
 
-board_info_t get_board_info(void) {
+const board_info_t *get_board_info(void) {
     static bool retrieved = false;
 
     /* These info are constants, only retrieve once and set gBoard */
     if (!retrieved) {
         /* RGEN(ui8 ) Generation */
-        (void)smc_read('RGEN', &gBoard.Generation);
+        smc_read('RGEN', &gBoard.Generation);
         /* RESV(ch8*)[16] EmbeddedOSVersion */
-        (void)smc_read('RESV', &gBoard.EmbeddedOSVersion);
+        smc_read('RESV', &gBoard.EmbeddedOSVersion);
         /* RECI(ui64) ChipEcid */
-        (void)smc_read('RECI', &gBoard.ChipEcid);
+        smc_read('RECI', &gBoard.ChipEcid);
         /* RCRV(ui32) ChipRev */
-        (void)smc_read('RCRV', &gBoard.ChipRev);
+        smc_read('RCRV', &gBoard.ChipRev);
         /* RBRV(ui32) BoardRev */
-        (void)smc_read('RBRV', &gBoard.BoardRev);
+        smc_read('RBRV', &gBoard.BoardRev);
         /* RBID(ui32) BoardId */
-        (void)smc_read('RBID', &gBoard.BoardId);
+        smc_read('RBID', &gBoard.BoardId);
         /* RPlt(ch8*)[8] TargetName */
-        (void)smc_read('RPlt', &gBoard.TargetName);
+        smc_read('RPlt', &gBoard.TargetName);
 
         retrieved = true;
     }
 
-    return gBoard;
+    return &gBoard;
 }
 
 /* Fan Control Keys:
@@ -254,8 +248,7 @@ board_info_t get_board_info(void) {
 /* TODO: Return arrays */
 int get_fan_status(void) {
     IOReturn result = kIOReturnSuccess;
-    uint8_t fan_num = 0;
-    int i;
+    uint8_t fan_num;
 
     if (gConn == 0)
         result = smc_open();
@@ -268,12 +261,12 @@ int get_fan_status(void) {
     if (result != kIOReturnSuccess)
         return 0;
 
-    /* FNum(ui8) = 0, no fans on device */
-    if (fan_num == 0)
+    /* FNum(ui8) == 0, no fans on device */
+    if (!fan_num)
         return 0;
 
     /* If have fans, check 'F*Ac', which is current speed */
-    for (i = 0; i < fan_num; i++) {
+    for (int i = 0; i < fan_num; i++) {
         float retval;
         result = smc_read('F\0Ac' | ((0x30 + i) << 0x10), &retval);
         /* F*Ac(flt), return 1 if any fan working */
@@ -293,7 +286,7 @@ int get_fan_status(void) {
 
 float get_temperature(void) {
     IOReturn result = kIOReturnSuccess;
-    uint16_t retval = 0;
+    uint16_t retval;
 
     if (gConn == 0)
         result = smc_open();
@@ -308,9 +301,9 @@ float get_temperature(void) {
     return (float)retval * 0.01f;
 }
 
-float *get_temperature_per_cells(void) {
-    IOReturn result = kIOReturnSuccess;
-    float retval = 0;
+float *get_temperature_per_cell(void) {
+    IOReturn result;
+    float retval;
     uint8_t ioftret[8];
 
     int num = batt_cell_num();
@@ -346,7 +339,7 @@ float *get_temperature_per_cells(void) {
 
 int get_time_to_empty(void) {
     IOReturn result = kIOReturnSuccess;
-    uint16_t retval = 0;
+    int16_t retval;
 
     if (gConn == 0)
         result = smc_open();
@@ -369,8 +362,9 @@ int get_time_to_empty(void) {
 
 got_time:
     /* 0xFFFF, battery charging (known scene, possibly others) */
-    if (retval == 65535)
-        return -1;
+    //if (retval == 65535)
+    //    return -1;
+    // signed int16_t 65535=-1
 
     return retval;
 }
@@ -437,10 +431,11 @@ float get_battery_health(float *design_cap, float *full_cap) {
 }
 
 bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
-    if (!gConn) {
-        if (smc_open() != kIOReturnSuccess)
-            return false;
-    }
+    if(!remaining&&!full&&!design)
+        return true;
+    
+    if (!gConn&&smc_open())
+        return false;
 
     int num = batt_cell_num();
     if (num == -1) num = 1;
@@ -469,20 +464,18 @@ bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
         B0RM = ((B0RM & 0xFF) << 8) | (B0RM >> 8);
     }
 
-    *remaining = B0RM * num;
-    *full = B0FC * num;
-    *design = B0DC * num;
+    if(remaining)
+        *remaining = B0RM * num;
+    if(full)
+        *full = B0FC * num;
+    if(design)
+        *design = B0DC * num;
 
     return result == kIOReturnSuccess;
 }
 
 bool get_gas_gauge(gas_gauge_t *gauge) {
-    IOReturn result = kIOReturnSuccess;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
+    if (!gConn&&smc_open())
         return false;
 
     // Zero before use
@@ -491,103 +484,103 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     /* TODO: Continue shorten those code */
 
     /* B0AT(ui16): Temperature */
-    (void)smc_read('B0AT', &gauge->Temperature);
+    smc_read('B0AT', &gauge->Temperature);
 
     /* B0AV(ui16): Average Voltage */
-    (void)smc_read('B0AV', &gauge->Voltage);
+    smc_read('B0AV', &gauge->Voltage);
     
     /* B0FI(hex_): Flags */
-    (void)smc_read('B0FI', &gauge->Flags);
+    smc_read('B0FI', &gauge->Flags);
     
     /* B0RM(ui16): RemainingCapacity */
-    (void)smc_read('B0RM', &gauge->RemainingCapacity);
+    smc_read('B0RM', &gauge->RemainingCapacity);
     
     /* B0FC(ui16): FullChargeCapacity */
-    (void)smc_read('B0FC', &gauge->FullChargeCapacity);
+    smc_read('B0FC', &gauge->FullChargeCapacity);
 
     /* B0AC(si16): AverageCurrent */
-    (void)smc_read('B0AC', &gauge->AverageCurrent);
+    smc_read('B0AC', &gauge->AverageCurrent);
 
     /* B0TF(ui16): TimeToEmpty */
-    (void)smc_read('B0TF', &gauge->TimeToEmpty);
+    smc_read('B0TF', &gauge->TimeToEmpty);
 
     /* BQX1(ui16): Qmax */
-    (void)smc_read('BQX1', &gauge->Qmax);
+    smc_read('BQX1', &gauge->Qmax);
 
     /* B0AP(si16/si32): AveragePower */
-    (void)smc_read('B0AP', &gauge->AveragePower);
+    smc_read('B0AP', &gauge->AveragePower);
 
     /* B0OC(si16): OCV_Current */
-    (void)smc_read('B0OC', &gauge->OCV_Current);
+    smc_read('B0OC', &gauge->OCV_Current);
 
     /* B0OV(ui16): OCV_Voltage */
-    (void)smc_read('B0OV', &gauge->OCV_Voltage);
+    smc_read('B0OV', &gauge->OCV_Voltage);
 
     /* B0CT(ui16): CycleCount */
-    (void)smc_read('B0CT', &gauge->CycleCount);
+    smc_read('B0CT', &gauge->CycleCount);
 
     /* BRSC(ui16): StateOfCharge */
-    (void)smc_read('BRSC', &gauge->StateOfCharge);
+    smc_read('BRSC', &gauge->StateOfCharge);
 
     /* B0TC(si16): TrueRemainingCapacity */
-    (void)smc_read('B0TC', &gauge->TrueRemainingCapacity);
+    smc_read('B0TC', &gauge->TrueRemainingCapacity);
 
     /* BQCC(si16): PassedCharge */
-    (void)smc_read('BQCC', &gauge->PassedCharge);
+    smc_read('BQCC', &gauge->PassedCharge);
 
     /* BQD1(ui16): DOD0 */
-    (void)smc_read('BQD1', &gauge->DOD0);
+    smc_read('BQD1', &gauge->DOD0);
     
     /* TODO: BDD1(ui8/ui16): PresentDOD */
     /* ui8 (%), ui16 (mAh) */
-    // (void)smc_read('BDD1', &gauge->PresentDOD);
+    // smc_read('BDD1', &gauge->PresentDOD);
 
     /* B0DC(ui16): DesignCapacity */
-    (void)smc_read('B0DC', &gauge->DesignCapacity);
+    smc_read('B0DC', &gauge->DesignCapacity);
 
     /* B0IM(si16): IMAX */
-    (void)smc_read('B0IM', &gauge->IMAX);
+    smc_read('B0IM', &gauge->IMAX);
 
     /* B0NC(ui16): NCC */
-    (void)smc_read('B0NC', &gauge->NCC);
+    smc_read('B0NC', &gauge->NCC);
 
     /* B0RS(si16): ResScale */
-    (void)smc_read('B0RS', &gauge->ResScale);
+    smc_read('B0RS', &gauge->ResScale);
 
     /* B0MS(ui16): ITMiscStatus */
-    (void)smc_read('B0MS', &gauge->ITMiscStatus);
+    smc_read('B0MS', &gauge->ITMiscStatus);
 
     /* B0I2(si16): IMAX2 */
-    (void)smc_read('B0I2', &gauge->IMAX2);
+    smc_read('B0I2', &gauge->IMAX2);
 
     /* B0CI(hex_): ChemID */
-    (void)smc_read('B0CI', &gauge->ChemID);
+    smc_read('B0CI', &gauge->ChemID);
 
     /* B0SR(si16): SimRate */
-    (void)smc_read('B0SR', &gauge->SimRate);
+    smc_read('B0SR', &gauge->SimRate);
 
     /* Extensions */
 
     /* BMDN(ch8*)[32]: DeviceName (MacBooks Only) */
-    (void)smc_read('BMDN', &gauge->DeviceName);
+    smc_read('BMDN', &gauge->DeviceName);
 
     /* B0CU(ui16): DesignCycleCount (MacBooks Only) */
-    (void)smc_read('B0CU', &gauge->DesignCycleCount);
+    smc_read('B0CU', &gauge->DesignCycleCount);
 
     /* BMSC(ui16): DailyMaxSoc */
-    (void)smc_read('BMSC', &gauge->DailyMaxSoc);
+    smc_read('BMSC', &gauge->DailyMaxSoc);
 
     /* BNSC(ui16): DailyMinSoc */
-    (void)smc_read('BNSC', &gauge->DailyMinSoc);
+    smc_read('BNSC', &gauge->DailyMinSoc);
 
     /* BUIC(ui8 ): UI Displayed SoC */
-    (void)smc_read('BUIC', &gauge->UISoC);
+    smc_read('BUIC', &gauge->UISoC);
 
     /* B0SC(si8 ): Chemical SoC */
-    (void)smc_read('B0SC', &gauge->ChemicalSoC);
+    smc_read('B0SC', &gauge->ChemicalSoC);
 
     /* BUPT(hex_)[8]: BMS Uptime */
-    (void)smc_read('BUPT', &gauge->bmsUpTime);
+    smc_read('BUPT', &gauge->bmsUpTime);
     
     /* B0FD BattData */
     /* BROS MinDOD? */
@@ -611,7 +604,7 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
 /* -1: Unknown */
 int batt_cell_num(void) {
     IOReturn result = kIOReturnSuccess;
-    int8_t count = 0;
+    int8_t count;
 
     if (gConn == 0)
         result = smc_open();
@@ -624,7 +617,7 @@ int batt_cell_num(void) {
     if (result != kIOReturnSuccess)
         return -1;
     
-    return (int)count;
+    return count;
 }
 
 bool get_cells(cell_info_t cells) {
@@ -672,7 +665,7 @@ bool battery_serial(char *serial) {
 #define addreason(reason, x) if (code & reason) sprintf(subreason, "%s\n%s", subreason, x);
 #define setreason(x) sprintf(subreason, "%s", x);
 #define addfault(reason, x) if (code & reason) { fault_reason = true; sprintf(subreason, "%s\n%s", subreason, x); }
-char *not_charging_reason_str(uint64_t code) {
+const char *not_charging_reason_str(uint64_t code) {
     static char reason[1024];
     static uint8_t gen = 0;
     bool fault_reason = false;
@@ -822,6 +815,7 @@ static const char *port_types[] = {
     _ID_("SmartConnector"),
     _ID_("DisplayPort")
 };
+
 const char *port_type_str(uint8_t pt) {
     if (pt > 16) {
         return _ID_("Undefined");
@@ -830,7 +824,6 @@ const char *port_type_str(uint8_t pt) {
 }
 
 const char *charger_status_str(uint8_t code[64]) {
-    static char status[1024];
     const char *byte2stat = NULL;
 
     if (code[0] == 0x00) return _ID_("None");
@@ -848,7 +841,7 @@ const char *charger_status_str(uint8_t code[64]) {
             case 0xD8: byte2stat = _ID_("Charging");
         }
     }
-    return status;
+    return byte2stat;
 }
 
 const char *get_adapter_family_desc(mach_port_t family) {

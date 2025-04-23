@@ -1,6 +1,10 @@
 #import "SettingsViewController.h"
 #include "common.h"
 
+
+@interface LanguageSelectionVC:UITableViewController
+@end
+
 static NSMutableArray *sections_settings;
 
 extern NSMutableAttributedString *redirectedOutput;
@@ -83,7 +87,7 @@ extern NSMutableAttributedString *redirectedOutput;
     }
 #ifdef DEBUG
     if (section == [sections_settings indexOfObject:_("Debug")]) {
-        return 1;
+        return 3;
     }
 #endif
     return 0;
@@ -106,8 +110,19 @@ extern NSMutableAttributedString *redirectedOutput;
         }
     }
 #ifdef DEBUG
-    if (indexPath.section == [sections_settings indexOfObject:_("Debug")])
-        [self.navigationController pushViewController:[[DebugViewController alloc] init] animated:YES];
+	if (indexPath.section == [sections_settings indexOfObject:_("Debug")]) {
+		if(indexPath.row==0) {
+			[self.navigationController pushViewController:[DebugViewController new] animated:YES];
+		}else if(indexPath.row==1){
+#ifndef USE_GETTEXT
+			[self.navigationController pushViewController:[LanguageSelectionVC new] animated:YES];
+#else
+			show_alert("USE_GETTEXT", "USE_GETTEXT SET", "ok");
+#endif
+		}else{
+			app_exit();
+		}
+	}
 #endif
 
     [tv deselectRowAtIndexPath:indexPath animated:YES];
@@ -133,12 +148,24 @@ extern NSMutableAttributedString *redirectedOutput;
         }
     }
 #ifdef DEBUG
-    if (indexPath.section == [sections_settings indexOfObject:_("Debug")]) {
-        UITableViewCell *cell = [UITableViewCell new];
-        cell.textLabel.text = _("Logs (stdio)");
-        cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
-        return cell;
-    }
+	if (indexPath.section == [sections_settings indexOfObject:_("Debug")]) {
+		if(indexPath.row==0) {
+			UITableViewCell *cell = [UITableViewCell new];
+			cell.textLabel.text = _("Logs (stdout)");
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			return cell;
+		}else if(indexPath.row==1) {
+			UITableViewCell *cell = [UITableViewCell new];
+			cell.textLabel.text = _("Select language override");
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			return cell;
+		}else if(indexPath.row==2) {
+			UITableViewCell *cell = [UITableViewCell new];
+			cell.textLabel.text = _("Exit App");
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			return cell;
+		}
+	}
 #endif
 	UITableViewCell *batteryChargeCell = [UITableViewCell new];
 	batteryChargeCell.textLabel.text = @"Test222";
@@ -147,10 +174,12 @@ extern NSMutableAttributedString *redirectedOutput;
 
 @end
 
-NSString *_contrib[] = {
+static NSString *_contrib[] = {
 	@"Torrekie", @"https://github.com/Torrekie",
 	@"Ruphane", @"https://github.com/LNSSPsd",
 };
+
+// Credit
 
 @implementation CreditViewController
 
@@ -204,6 +233,68 @@ NSString *_contrib[] = {
 + (NSArray *)debugGetBatteryCausesLeakDoNotUseInProduction {
 	void *IOPSCopyPowerSourcesByType(int);
 	return (__bridge NSArray *)IOPSCopyPowerSourcesByType(1);
+}
+
+@end
+
+// Language
+#ifdef USE_GETTEXT
+static int cond_localize_cnt=0;
+static CFStringRef localization_arr[];
+#else
+extern int cond_localize_cnt;
+extern CFStringRef localization_arr[];
+#endif
+extern void preferred_language_code_clear();
+
+@implementation LanguageSelectionVC
+
+- (NSString *)title {
+	return @"Language Override";
+}
+
+- (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
+	return 2+1;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(id)tv {
+	return 1;
+}
+
+- (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+	UITableViewCell *cell = [UITableViewCell new];
+	if(indexPath.row==0) {
+		cell.textLabel.text=@"Clear";
+		return cell;
+	}
+	cell.textLabel.text = (__bridge NSString*)localization_arr[cond_localize_cnt*(indexPath.row-1)];
+	if(preferred_language_code()+1==indexPath.row) {
+		cell.accessoryType=UITableViewCellAccessoryCheckmark;
+	}
+	return cell;
+}
+
+- (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+	if(indexPath.row==0) {
+		const char *homedir=getenv("HOME");
+		if(!homedir)
+			return;
+		char *langoverride_fn=malloc(strlen(homedir)+20);
+		stpcpy(stpcpy(langoverride_fn,homedir),"/Library/_LANG");
+		remove(langoverride_fn);
+		free(langoverride_fn);
+		preferred_language_code_clear();
+		[tv reloadData];
+		return;
+	}else{
+		int fd=open_lang_override(O_RDWR|O_CREAT,0600);
+		int n=indexPath.row-1;
+		write(fd,&n,4);
+		close(fd);
+		preferred_language_code_clear();
+		[tv reloadData];
+	}
+	[tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end

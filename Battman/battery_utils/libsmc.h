@@ -3,6 +3,7 @@
 
 #include <CoreFoundation/CFBase.h>
 #include <stdio.h>
+#include <stdint.h>
 
 #if !defined(__arm64__) && !defined(__aarch64__) && !defined(__arm64e__)
 //#error Current SMC implementation is arm64 only! \
@@ -37,9 +38,9 @@ typedef CF_ENUM(UInt8, SMCIndex) {
     kSMCVariableCommand
 };
 
-typedef UInt32 SMCKey;
-typedef UInt32 SMCDataType;
-typedef UInt8 SMCDataAttributes;
+typedef uint32_t SMCKey;
+typedef uint32_t SMCDataType;
+typedef uint8_t SMCDataAttributes;
 
 /* a struct to hold the SMC version */
 typedef struct SMCVersion {
@@ -51,16 +52,16 @@ typedef struct SMCVersion {
 } SMCVersion;
 
 typedef struct SMCPLimitData {
-    UInt16 version;
-    UInt16 length;
-    UInt32 cpuPLimit;
-    UInt32 gpuPLimit;
-    UInt32 memPLimit;
+    uint16_t version;
+    uint16_t length;
+    uint32_t cpuPLimit;
+    uint32_t gpuPLimit;
+    uint32_t memPLimit;
 } SMCPLimitData;
 
 /* a struct to hold the key info data */
 typedef struct SMCKeyInfoData {
-    UInt32 dataSize;
+    uint32_t dataSize;
     SMCDataType dataType;
     SMCDataAttributes dataAttributes;
 } SMCKeyInfoData;
@@ -75,12 +76,12 @@ typedef struct SMCParamStruct {
         SMCPLimitData pLimitData;
         SMCKeyInfoData keyInfo;
 
-        UInt8 result;
-        UInt8 status;
+        uint8_t result;
+        uint8_t status;
 
-        UInt8 data8;
-        UInt32 data32;
-        UInt8 bytes[120];
+        uint8_t data8;
+        uint32_t data32;
+        unsigned char bytes[120];
     } param;
 } SMCParamStruct;
 
@@ -324,7 +325,7 @@ __BEGIN_DECLS
 extern gas_gauge_t gGauge;
 extern board_info_t gBoard;
 
-board_info_t get_board_info(void);
+const board_info_t *get_board_info(void);
 int get_fan_status(void);
 float get_temperature(void);
 int get_time_to_empty(void);
@@ -335,12 +336,12 @@ int batt_cell_num(void);
 bool get_gas_gauge(gas_gauge_t *gauge);
 typedef unsigned int mach_port_t;
 charging_state_t is_charging(mach_port_t *family, device_info_t *info);
-float *get_temperature_per_cells(void);
+float *get_temperature_per_cell(void);
 bool battery_serial(char *serial);
 hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size);
 const char *get_adapter_family_desc(mach_port_t family);
 bool get_charger_data(charger_data_t *data);
-char *not_charging_reason_str(uint64_t code);
+const char *not_charging_reason_str(uint64_t code);
 const char *port_type_str(uint8_t pt);
 
 __END_DECLS
