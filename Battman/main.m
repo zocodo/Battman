@@ -13,6 +13,10 @@
 #import <Cocoa/Cocoa.h>
 #endif
 
+#if __has_include("constants.c")
+#include "constants.c"
+#endif
+
 #include "common.h"
 #include "intlextern.h"
 #include <libgen.h>
@@ -201,8 +205,8 @@ int main(int argc, char * argv[]) {
     // sleep(10);
     if (is_carbon()) {
 #if TARGET_OS_IPHONE
-	extern NSString *battman_bootstrap(char *,int);
-	return UIApplicationMain(argc,argv,nil,battman_bootstrap("",0));
+        extern NSString *battman_bootstrap(char *, int);
+        return UIApplicationMain(argc, argv, nil, battman_bootstrap("", 0));
 #else
         @autoreleasepool {
         }

@@ -419,7 +419,7 @@ void app_exit(void) {
     if (is_carbon()) {
 #if TARGET_OS_IOS
         /* Play an animation that back to homescreen, then exit app by sceneDidEnterBackground: */
-        extern void ios_app_exit();
+        extern void ios_app_exit(void);
         ios_app_exit();
 #endif
 #if TARGET_OS_OSX
@@ -525,7 +525,7 @@ int open_lang_override(int flags,int mode) {
 
 static int _preferred_language_code=-1;
 
-void preferred_language_code_clear() {
+void preferred_language_code_clear(void) {
 	_preferred_language_code=-1;
 }
 

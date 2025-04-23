@@ -1,9 +1,10 @@
+#define _(x) x
+
 .section __TEXT,__text,regular,pure_instructions
-.build_version ios, 14, 5
 .globl _battman_bootstrap,_ios_app_exit
 .p2align 2
 
-; current version only works for iOS :(
+; current version only works for arm64 iOS :(
 ; Licensing code and some utilities
 
 ; x0: license_hash
@@ -424,8 +425,17 @@ makeBarButtonItem:
 	stp x29,x30,[sp,#48]
 	str x1,[sp,#16]
 	str x2,[sp,#32]
+#if 0
 	bl ___CFStringMakeConstantString
 	mov x24,x0
+#else
+    mov x1, x0
+    mov x0, xzr
+    movz x2, #0x0100
+    movk x2, #0x0800, lsl #16 ; kCFStringEncodingUTF8
+    bl _CFStringCreateWithCString
+    mov x24, x0
+#endif
 	adrp x0,__NSConcreteStackBlock@GOTPAGE
 	ldr x0,[x0,__NSConcreteStackBlock@GOTPAGEOFF]
 	mov x1,#0x60000000
@@ -512,7 +522,11 @@ show_license.pcb:
 	mov x21,x0
 	adrp x0,licenseStr@PAGE
 	add x0,x0,licenseStr@PAGEOFF
+#if 0
 	bl ___CFStringMakeConstantString
+#else
+    bl _cond_localize
+#endif
 	mov x2,x0
 	mov x0,x21
 	adrp x1,sel.setTitle@PAGE
@@ -520,24 +534,30 @@ show_license.pcb:
 	bl _objc_msgSend
 	adrp x0,declineStr@PAGE
 	add x0,x0,declineStr@PAGEOFF
-	mov x2,#0
+#ifdef USE_GETTEXT
+    bl _cond_localize_c
+#endif
+    mov x2,#0
 	adrp x1,show_license.susp@PAGE
 	add x1,x1,show_license.susp@PAGEOFF
 	bl makeBarButtonItem
 	mov x2,x0
-	adrp x1,sel.setLBBI@PAGE
-	ldr x1,[x1,sel.setLBBI@PAGEOFF]
+	adrp x1,sel.setRBBI@PAGE
+	ldr x1,[x1,sel.setRBBI@PAGEOFF]
 	mov x0,x21
 	bl _objc_msgSend
+    adrp x0,agreeStr@PAGE
+    add x0,x0,agreeStr@PAGEOFF
+#ifdef USE_GETTEXT
+    bl _cond_localize_c
+#endif
 	adrp x1,show_license.a@PAGE
 	add x1,x1,show_license.a@PAGEOFF
-	adrp x0,agreeStr@PAGE
-	add x0,x0,agreeStr@PAGEOFF
 	mov x2,x19
 	bl makeBarButtonItem
 	mov x2,x0
-	adrp x1,sel.setRBBI@PAGE
-	ldr x1,[x1,sel.setRBBI@PAGEOFF]
+	adrp x1,sel.setLBBI@PAGE
+	ldr x1,[x1,sel.setLBBI@PAGEOFF]
 	mov x0,x21
 	bl _objc_msgSend
 	adrp x0,_OBJC_CLASS_$_WKWebView@GOTPAGE
@@ -617,12 +637,12 @@ show_license.pcb:
 	mov w4,#0
 	bl _CFStringCreateWithBytes
 	str x0,[sp,#8]
-	adrp x1,.lfd.s@PAGE
-	ldr x1,[x1,.lfd.s@PAGEOFF]
-	adrp x0,.lfd.1@PAGE
-	ldr x0,[x0,.lfd.1@PAGEOFF]
-	mov x16,#73
-	svc #0x80
+	;adrp x1,.lfd.s@PAGE
+	;ldr x1,[x1,.lfd.s@PAGEOFF]
+	;adrp x0,.lfd.1@PAGE
+	;ldr x0,[x0,.lfd.1@PAGEOFF]
+	;mov x16,#73
+	;svc #0x80
 	;str xzr,[sp,#16]
 	mov x1,#47
 	str w1,[sp,#16]
@@ -1028,6 +1048,7 @@ sceneConfSign:
 .asciz "@@:@@"
 noParamSign:
 .asciz "v@:"
+; FIXME: Dynamic token provider
 tokenFile:
 .asciz "/Library/token"
 UIWindowType:
@@ -1041,11 +1062,15 @@ IOPUUID:
 IOPExpDev:
 .asciz "IOPlatformExpertDevice"
 agreeStr:
-.asciz "Agree"
+.asciz _("Agree")
 declineStr:
-.asciz "Decline"
+.asciz _("Decline")
 licenseStr:
-.asciz "License"
+#if !defined(LICENSE) || (LICENSE != LICENSE_NONFREE)
+.asciz _("License")
+#else
+.asciz _("Terms of Use")
+#endif
 defaultConfigurationStr:
 .asciz "Default Configuration"
 

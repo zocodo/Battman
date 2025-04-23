@@ -56,14 +56,13 @@
 /* Begin PBXBuildFile section */
 		68171A302D5221C400DD4224 /* libsmc.c in Sources */ = {isa = PBXBuildFile; fileRef = 68171A2F2D5221C400DD4224 /* libsmc.c */; };
 		68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */; };
-		6833A8A32D9E7FC200B71299 /* LicenseViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6833A8A22D9E7FC200B71299 /* LicenseViewController.m */; };
-		6833A8A62D9FBEF100B71299 /* license_check.m in Sources */ = {isa = PBXBuildFile; fileRef = 6833A8A52D9FBEF100B71299 /* license_check.m */; };
 		6833A8C92DA3C6E500B71299 /* WarnAccessoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6833A8C82DA3C6E500B71299 /* WarnAccessoryView.m */; };
 		6834254B2D7C4F560070CE6F /* iokit_connection.c in Sources */ = {isa = PBXBuildFile; fileRef = 68E9389A2D58980B00223285 /* iokit_connection.c */; };
 		683425502D7D6A240070CE6F /* MultilineViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6834254F2D7D6A240070CE6F /* MultilineViewCell.m */; };
+		6838BF6A2DB8D06B007EB66C /* license.html in Resources */ = {isa = PBXBuildFile; fileRef = 6838BF642DB8D06B007EB66C /* license.html */; };
+		6838BF6B2DB8D06B007EB66C /* licensing.S in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF652DB8D06B007EB66C /* licensing.S */; };
+		6838BF6F2DB8D89E007EB66C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF6E2DB8D89E007EB66C /* WebKit.framework */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; };
-		686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC32D3B93CB0059ECD0 /* AppDelegate.m */; };
-		686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
 		687742B62D43838500375A2C /* locales in Resources */ = {isa = PBXBuildFile; fileRef = 687742B52D43837B00375A2C /* locales */; };
 		687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 687743342D4E08AD00375A2C /* SettingsViewController.m */; };
@@ -109,19 +108,15 @@
 		68171A2F2D5221C400DD4224 /* libsmc.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = libsmc.c; sourceTree = "<group>"; };
 		68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatteryDetailsViewController.m; sourceTree = "<group>"; };
 		68171A362D534E6B00DD4224 /* BatteryDetailsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatteryDetailsViewController.h; sourceTree = "<group>"; };
-		6833A8A22D9E7FC200B71299 /* LicenseViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LicenseViewController.m; sourceTree = "<group>"; };
-		6833A8A42D9E7FF800B71299 /* LicenseViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LicenseViewController.h; sourceTree = "<group>"; };
-		6833A8A52D9FBEF100B71299 /* license_check.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = license_check.m; sourceTree = "<group>"; };
-		6833A8A72D9FBF0000B71299 /* license_check.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = license_check.h; sourceTree = "<group>"; };
 		6833A8C82DA3C6E500B71299 /* WarnAccessoryView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WarnAccessoryView.m; sourceTree = "<group>"; };
 		6833A8CA2DA3C6FE00B71299 /* WarnAccessoryView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WarnAccessoryView.h; sourceTree = "<group>"; };
 		6834254F2D7D6A240070CE6F /* MultilineViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MultilineViewCell.m; sourceTree = "<group>"; };
 		683425512D7D6A380070CE6F /* MultilineViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MultilineViewCell.h; sourceTree = "<group>"; };
+		6838BF642DB8D06B007EB66C /* license.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = license.html; sourceTree = "<group>"; };
+		6838BF652DB8D06B007EB66C /* licensing.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = licensing.S; sourceTree = "<group>"; };
+		6838BF662DB8D06B007EB66C /* test.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = test.S; sourceTree = "<group>"; };
+		6838BF6E2DB8D89E007EB66C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		686AECC22D3B93CB0059ECD0 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		686AECC32D3B93CB0059ECD0 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		686AECC52D3B93CB0059ECD0 /* SceneDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SceneDelegate.h; sourceTree = "<group>"; };
-		686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SceneDelegate.m; sourceTree = "<group>"; };
 		686AECD32D3B93CD0059ECD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		686AECD42D3B93CD0059ECD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		687742B52D43837B00375A2C /* locales */ = {isa = PBXFileReference; lastKnownFileType = folder; path = locales; sourceTree = "<group>"; };
@@ -185,6 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6838BF6F2DB8D89E007EB66C /* WebKit.framework in Frameworks */,
 				684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */,
 				68A3EAFD2D5204EA003381DF /* IOKit.framework in Frameworks */,
 			);
@@ -193,6 +189,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6838BF632DB8D06B007EB66C /* license */ = {
+			isa = PBXGroup;
+			children = (
+				6838BF642DB8D06B007EB66C /* license.html */,
+				6838BF652DB8D06B007EB66C /* licensing.S */,
+				6838BF662DB8D06B007EB66C /* test.S */,
+			);
+			path = license;
+			sourceTree = "<group>";
+		};
 		686AECB62D3B93CB0059ECD0 = {
 			isa = PBXGroup;
 			children = (
@@ -216,6 +222,7 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				6838BF632DB8D06B007EB66C /* license */,
 				68CC02872DB3C57B00914051 /* SF-Pro-Display-Regular.otf */,
 				68AE40A42D8EB7710023D7B0 /* CustomUIElements */,
 				68171A362D534E6B00DD4224 /* BatteryDetailsViewController.h */,
@@ -231,20 +238,12 @@
 				687743352D4E08AD00375A2C /* BatteryInfoViewController.m */,
 				6877432F2D4E08AD00375A2C /* SettingsViewController.h */,
 				687743342D4E08AD00375A2C /* SettingsViewController.m */,
-				6833A8A22D9E7FC200B71299 /* LicenseViewController.m */,
-				6833A8A42D9E7FF800B71299 /* LicenseViewController.h */,
 				687742B52D43837B00375A2C /* locales */,
 				68DCA5B42D40EDE8004D0104 /* Localizations */,
-				686AECC22D3B93CB0059ECD0 /* AppDelegate.h */,
-				686AECC32D3B93CB0059ECD0 /* AppDelegate.m */,
-				686AECC52D3B93CB0059ECD0 /* SceneDelegate.h */,
-				686AECC62D3B93CB0059ECD0 /* SceneDelegate.m */,
 				686AECD32D3B93CD0059ECD0 /* Info.plist */,
 				686AECD42D3B93CD0059ECD0 /* main.m */,
 				68DCA5602D3D0AC5004D0104 /* main.h */,
 				68DCA5A82D3F9338004D0104 /* common.m */,
-				6833A8A72D9FBF0000B71299 /* license_check.h */,
-				6833A8A52D9FBEF100B71299 /* license_check.m */,
 				68DCA5AA2D3F935E004D0104 /* common.h */,
 				68DCA5AB2D3F9A10004D0104 /* gtkextern.h */,
 				68DCA5AD2D3F9BFD004D0104 /* glibextern.h */,
@@ -264,6 +263,7 @@
 		687743162D461E5100375A2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6838BF6E2DB8D89E007EB66C /* WebKit.framework */,
 				68A3EAFC2D5204EA003381DF /* IOKit.framework */,
 			);
 			name = Frameworks;
@@ -343,6 +343,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 686AECD82D3B93CD0059ECD0 /* Build configuration list for PBXNativeTarget "Battman" */;
 			buildPhases = (
+				6838BF6D2DB8D363007EB66C /* Generate Sources */,
 				686AECBB2D3B93CB0059ECD0 /* Sources */,
 				686AECBC2D3B93CB0059ECD0 /* Frameworks */,
 				686AECBD2D3B93CB0059ECD0 /* Resources */,
@@ -426,6 +427,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6838BF6A2DB8D06B007EB66C /* license.html in Resources */,
 				68CC02882DB3C57B00914051 /* SF-Pro-Display-Regular.otf in Resources */,
 				687742B62D43838500375A2C /* locales in Resources */,
 			);
@@ -451,6 +453,26 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e -x\n\nPATH=/opt/homebrew/bin:$PATH\n\n# ldid fakesign\nif [ ${PLATFORM_NAME} == \"iphoneos\" ]; then\n  ldid -S${PROJECT_DIR}/Battman.entitlements ${CODESIGNING_FOLDER_PATH}/Battman\nfi\n\n# Replace GIT_COMMIT_HASH in Info.plist\nCOMMIT_HASH=`git rev-parse --short HEAD`\n/usr/libexec/PlistBuddy -c \"Set :GIT_COMMIT_HASH $COMMIT_HASH\" \"${CODESIGNING_FOLDER_PATH}/Info.plist\"\n\n# generate and sync icons to app root\nsh ${PROJECT_DIR}/Battman/generate_icons.sh ${PROJECT_DIR}/Battman.svg ${CODESIGNING_FOLDER_PATH}/\n\n# restore\ngit restore \"${INFOPLIST_FILE}\" || true\n";
+		};
+		6838BF6D2DB8D363007EB66C /* Generate Sources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Battman/license/license.html",
+			);
+			name = "Generate Sources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/constants.c",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "PATH=/opt/homebrew/bin:$PATH\n\nINFILE=${SCRIPT_INPUT_FILE_0}\nOUTFILE=${SCRIPT_OUTPUT_FILE_0}\n\necho \"const unsigned char lh_arr[] = {\" > ${OUTFILE}\nopenssl sha256 -c ${INFILE} | gsed \"s/^.*= /0x/g;s/:/,0x/g\" >> ${OUTFILE}\necho \"};\" >> ${OUTFILE}\n";
 		};
 		687742AF2D437EEA00375A2C /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -535,12 +557,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6833A8A62D9FBEF100B71299 /* license_check.m in Sources */,
 				6834254B2D7C4F560070CE6F /* iokit_connection.c in Sources */,
 				68AE40BE2D8EB8870023D7B0 /* SegmentButton.m in Sources */,
 				687743462D4F6C7800375A2C /* BatteryCellView.m in Sources */,
 				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
-				686AECC42D3B93CB0059ECD0 /* AppDelegate.m in Sources */,
 				687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */,
 				68AE40BD2D8EB8870023D7B0 /* Constants.m in Sources */,
 				68AE40B92D8EB8870023D7B0 /* MultiSelectSegmentedControl.m in Sources */,
@@ -557,8 +577,7 @@
 				68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */,
 				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
 				68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */,
-				686AECC72D3B93CB0059ECD0 /* SceneDelegate.m in Sources */,
-				6833A8A32D9E7FC200B71299 /* LicenseViewController.m in Sources */,
+				6838BF6B2DB8D06B007EB66C /* licensing.S in Sources */,
 				68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */,
 				687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */,
 				68171A302D5221C400DD4224 /* libsmc.c in Sources */,
@@ -717,6 +736,7 @@
 					"DEBUG=1",
 					"USE_GETTEXT=1",
 				);
+				HEADER_SEARCH_PATHS = "$(DERIVED_FILE_DIR)";
 				INFOPLIST_FILE = Battman/Info.plist;
 				INSTALL_GROUP = "$(GROUP)";
 				INSTALL_OWNER = "$(USER)";
@@ -751,6 +771,7 @@
 				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "BATTMAN_TEXTDOMAIN=\\\"battman\\\"";
+				HEADER_SEARCH_PATHS = "$(DERIVED_FILE_DIR)";
 				INFOPLIST_FILE = Battman/Info.plist;
 				INSTALL_GROUP = "$(GROUP)";
 				INSTALL_OWNER = "$(USER)";

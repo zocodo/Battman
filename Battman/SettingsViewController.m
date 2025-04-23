@@ -239,13 +239,13 @@ static NSString *_contrib[] = {
 
 // Language
 #ifdef USE_GETTEXT
-static int cond_localize_cnt=0;
+static int cond_localize_cnt = 0;
 static CFStringRef localization_arr[];
 #else
 extern int cond_localize_cnt;
 extern CFStringRef localization_arr[];
 #endif
-extern void preferred_language_code_clear();
+extern void preferred_language_code_clear(void);
 
 @implementation LanguageSelectionVC
 
@@ -254,7 +254,7 @@ extern void preferred_language_code_clear();
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-	return 2+1;
+	return 2 + 1;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
@@ -263,33 +263,33 @@ extern void preferred_language_code_clear();
 
 - (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	UITableViewCell *cell = [UITableViewCell new];
-	if(indexPath.row==0) {
-		cell.textLabel.text=@"Clear";
+	if (indexPath.row == 0) {
+		cell.textLabel.text = @"Clear";
 		return cell;
 	}
-	cell.textLabel.text = (__bridge NSString*)localization_arr[cond_localize_cnt*(indexPath.row-1)];
-	if(preferred_language_code()+1==indexPath.row) {
-		cell.accessoryType=UITableViewCellAccessoryCheckmark;
+	cell.textLabel.text = (__bridge NSString *)localization_arr[cond_localize_cnt*(indexPath.row - 1)];
+	if (preferred_language_code() + 1 == indexPath.row) {
+		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	}
 	return cell;
 }
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	if(indexPath.row==0) {
-		const char *homedir=getenv("HOME");
-		if(!homedir)
+	if (indexPath.row == 0) {
+		const char *homedir = getenv("HOME");
+		if (!homedir)
 			return;
-		char *langoverride_fn=malloc(strlen(homedir)+20);
-		stpcpy(stpcpy(langoverride_fn,homedir),"/Library/_LANG");
+		char *langoverride_fn = malloc(strlen(homedir)+20);
+		stpcpy(stpcpy(langoverride_fn, homedir), "/Library/_LANG");
 		remove(langoverride_fn);
 		free(langoverride_fn);
 		preferred_language_code_clear();
 		[tv reloadData];
 		return;
-	}else{
-		int fd=open_lang_override(O_RDWR|O_CREAT,0600);
-		int n=indexPath.row-1;
-		write(fd,&n,4);
+	} else {
+		int fd = open_lang_override(O_RDWR | O_CREAT, 0600);
+		int n = (int)indexPath.row - 1;
+		write(fd, &n, 4);
 		close(fd);
 		preferred_language_code_clear();
 		[tv reloadData];

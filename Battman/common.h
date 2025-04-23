@@ -52,7 +52,7 @@ int is_rosetta(void);
 
 int open_lang_override(int flags,int mode);
 
-int preferred_language_code();
+int preferred_language_code(void);
 
 __END_DECLS
 

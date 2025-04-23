@@ -302,7 +302,7 @@ float get_temperature(void) {
 }
 
 float *get_temperature_per_cell(void) {
-    IOReturn result;
+    IOReturn result = kIOReturnSuccess;
     float retval;
     uint8_t ioftret[8];
 
