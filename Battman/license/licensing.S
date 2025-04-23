@@ -153,7 +153,7 @@ _battman_bootstrap:
 	str x1,[x9,.lfd.s@PAGEOFF]
 	mov x0,#0
 	mov x2,#1
-	mov x3,#2
+	mov x3,#0
 	ldr x4,[sp]
 	mov x5,xzr
 	mov x16,#197
