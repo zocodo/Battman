@@ -2,6 +2,7 @@
 #import "BatteryCellView/BatteryInfoTableViewCell.h"
 #import "BatteryCellView/TemperatureInfoTableViewCell.h"
 #import "BatteryDetailsViewController.h"
+#import "ChargingLimitViewController.h"
 #include "battery_utils/battery_utils.h"
 
 #include "common.h"
@@ -100,7 +101,8 @@ enum sections_batteryinfo {
         [self.navigationController
             pushViewController:[[BatteryDetailsViewController alloc] initWithBatteryInfo:batteryInfo]
                       animated:YES];
-
+	else if(indexPath.section==BI_SECT_MANAGE)
+		[self.navigationController pushViewController:[ChargingLimitViewController new] animated:YES];
     [tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 

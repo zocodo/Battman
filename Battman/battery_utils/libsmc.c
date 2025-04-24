@@ -160,7 +160,24 @@ static IOReturn smc_get_keyinfo(UInt32 key, SMCKeyInfoData *keyInfo) {
     return result;
 }
 
-static IOReturn smc_read(uint32_t key, void *bytes) {
+IOReturn smc_write(uint32_t key, void *bytes) {
+	SMCParamStruct input={0};
+	SMCParamStruct out;
+	IOReturn result;
+	if((result=smc_get_keyinfo(key,&input.param.keyInfo)))
+		return result;
+	input.param.data8=kSMCWriteKey;
+	input.key=key;
+	memcpy(input.param.bytes,bytes,input.param.keyInfo.dataSize);
+	result=smc_call(kSMCHandleYPCEvent, &input,&out);
+	if(result != kIOReturnSuccess) {
+		DBGLOG(CFSTR("smc_call failed %d"), result);
+		return result;
+	}
+	return kIOReturnSuccess;
+}
+
+IOReturn smc_read(uint32_t key, void *bytes) {
     IOReturn result;
     SMCParamStruct inputStruct={0};
     SMCParamStruct outputStruct;

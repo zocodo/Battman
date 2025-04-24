@@ -344,6 +344,9 @@ bool get_charger_data(charger_data_t *data);
 const char *not_charging_reason_str(uint64_t code);
 const char *port_type_str(uint8_t pt);
 
+int smc_write(uint32_t key, void *bytes);
+int smc_read (uint32_t key, void *bytes);
+
 __END_DECLS
 
 #endif

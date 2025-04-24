@@ -382,6 +382,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     /* Use different identifier to avoid wrong location of Accessory */
     NSString *cell_id = [sections_detail objectAtIndex:ip.section];
 #if 0
+	// TODO: Use separate reusable cells for different types
     /* Sadly, Accessory still displays wrongly when we use custom Accessory */
     UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:cell_id];
     if (!cell) {
