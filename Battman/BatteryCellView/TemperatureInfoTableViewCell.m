@@ -1,6 +1,9 @@
 #import "TemperatureInfoTableViewCell.h"
 #import "../GradientArcView.h"
 
+#include "../battery_utils/libsmc.h"
+// Temporary ^
+
 @implementation TemperatureCellView
 
 /* Apple lied to us, CGColorCreateGenericRGB is already a thing
@@ -50,13 +53,13 @@
     temperatureCell.translatesAutoresizingMaskIntoConstraints = NO;
     [self.contentView addSubview:temperatureCell];
 
-    /*
+    
     UILabel *temperatureLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 10, 600, 100)];
     temperatureLabel.lineBreakMode = NSLineBreakByWordWrapping;
     temperatureLabel.numberOfLines = 0;
-    temperatureLabel.text = @"CPU温度：11.45℃\n电池温度：14.19℃\n充电器温度：19.81℃";
+    temperatureLabel.text = [NSString stringWithFormat:@"Battery Temperature: %0.2f℃",get_temperature()];
     [self.contentView addSubview:temperatureLabel];
-     */
+     
 
     //UICollectionView *collection = [[UICollectionView alloc] initWithFrame:CGRectZero];
     
