@@ -5,7 +5,13 @@
 @interface LanguageSelectionVC:UITableViewController
 @end
 
-static NSMutableArray *sections_settings;
+enum sections_settings {
+	SS_SECT_ABOUT,
+#ifdef DEBUG
+	SS_SECT_DEBUG,
+#endif
+	SS_SECT_COUNT
+};
 
 extern NSMutableAttributedString *redirectedOutput;
 
@@ -73,36 +79,35 @@ extern NSMutableAttributedString *redirectedOutput;
 	tabbarItem.title = _("More"); // UITabBarSystemItem cannot change title like this
     [tabbarItem setValue:_("More") forKey:@"internalTitle"]; // This is the correct way (But not accepted by App Store)
 	self.tabBarItem = tabbarItem;
-
-    sections_settings = [[NSMutableArray alloc] initWithArray:@[_("About Battman")]];
-#if DEBUG
-    [sections_settings addObject:_("Debug")];
-#endif
 	return [super initWithStyle:UITableViewStyleGrouped]; // or plain if desired
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-    if (section == [sections_settings indexOfObject:_("About Battman")]) {
-        return 2;
-    }
+	if(section==SS_SECT_ABOUT)
+		return 2;
 #ifdef DEBUG
-    if (section == [sections_settings indexOfObject:_("Debug")]) {
-        return 3;
-    }
+	else if(section==SS_SECT_DEBUG)
+		return 3;
 #endif
-    return 0;
+	return 0;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
-    return sections_settings.count;
+	return SS_SECT_COUNT;
 }
 
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)sect {
-    return sections_settings[sect];
+	if(sect==SS_SECT_ABOUT)
+		return _("About Battman");
+#ifdef DEBUG
+	else if(sect==SS_SECT_DEBUG)
+		return _("Debug");
+#endif
+	return nil;
 }
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == [sections_settings indexOfObject:_("About Battman")]) {
+    if (indexPath.section == SS_SECT_ABOUT) {
         if (indexPath.row == 0) {
             [self.navigationController pushViewController:[CreditViewController new] animated:YES];
         } else if (indexPath.row == 1) {
@@ -110,7 +115,7 @@ extern NSMutableAttributedString *redirectedOutput;
         }
     }
 #ifdef DEBUG
-	if (indexPath.section == [sections_settings indexOfObject:_("Debug")]) {
+	if (indexPath.section == SS_SECT_DEBUG) {
 		if(indexPath.row==0) {
 			[self.navigationController pushViewController:[DebugViewController new] animated:YES];
 		}else if(indexPath.row==1){
@@ -130,7 +135,7 @@ extern NSMutableAttributedString *redirectedOutput;
 
 - (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	// TODO: REUSE (Too few cells to reuse for now so no need at this moment)
-    if (indexPath.section == [sections_settings indexOfObject:_("About Battman")]) {
+    if (indexPath.section == SS_SECT_ABOUT) {
         if (indexPath.row == 0) {
             UITableViewCell *creditCell = [UITableViewCell new];
             creditCell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -148,7 +153,7 @@ extern NSMutableAttributedString *redirectedOutput;
         }
     }
 #ifdef DEBUG
-	if (indexPath.section == [sections_settings indexOfObject:_("Debug")]) {
+	if (indexPath.section == SS_SECT_DEBUG) {
 		if(indexPath.row==0) {
 			UITableViewCell *cell = [UITableViewCell new];
 			cell.textLabel.text = _("Logs (stdout)");

@@ -8,7 +8,12 @@
 
 // TODO: UI Refreshing
 
-static NSMutableArray *sections_batteryinfo;
+enum sections_batteryinfo {
+	BI_SECT_BATTERY_INFO,
+	BI_SECT_HW_TEMP,
+	BI_SECT_MANAGE,
+	BI_SECT_COUNT
+};
 
 @implementation BatteryInfoViewController
 
@@ -61,8 +66,6 @@ static NSMutableArray *sections_batteryinfo;
     self.tabBarItem = tabbarItem;
     batteryInfo = battery_info_init();
 
-    sections_batteryinfo = [[NSMutableArray alloc] initWithArray:@[_("Battery Info"), _("Hardware Temperatures"), _("Manage")]];
-    
     return [super initWithStyle:UITableViewStyleGrouped];
 }
 
@@ -71,11 +74,20 @@ static NSMutableArray *sections_batteryinfo;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
-    return sections_batteryinfo.count;
+    return BI_SECT_COUNT;
 }
 
 - (NSString *)tableView:(id)t titleForHeaderInSection:(NSInteger)sect {
-    return sections_batteryinfo[sect];
+	switch(sect) {
+	case BI_SECT_BATTERY_INFO:
+		return _("Battery Info");
+	case BI_SECT_HW_TEMP:
+		return _("Hardware Temperature");
+	case BI_SECT_MANAGE:
+		return _("Manage");
+	default:
+		return nil;
+	};
 }
 
 - (NSString *)tableView:(id)tv titleForFooterInSection:(NSInteger)section {
@@ -84,7 +96,7 @@ static NSMutableArray *sections_batteryinfo;
 
 - (void)tableView:(UITableView *)tv
     didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == [sections_batteryinfo indexOfObject:_("Battery Info")])
+    if (indexPath.section == BI_SECT_BATTERY_INFO)
         [self.navigationController
             pushViewController:[[BatteryDetailsViewController alloc] initWithBatteryInfo:batteryInfo]
                       animated:YES];
@@ -94,7 +106,7 @@ static NSMutableArray *sections_batteryinfo;
 
 - (UITableViewCell *)tableView:(id)tv
          cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == [sections_batteryinfo indexOfObject:_("Battery Info")]) {
+    if (indexPath.section == BI_SECT_BATTERY_INFO) {
         BatteryInfoTableViewCell *cell = [[BatteryInfoTableViewCell alloc]
             initWithFrame:CGRectMake(0, 0, 1000, 100)];
 
@@ -102,10 +114,10 @@ static NSMutableArray *sections_batteryinfo;
         // battery_info_update shall be called within cell impl.
         [cell updateBatteryInfo];
         return cell;
-    } else if (indexPath.section == [sections_batteryinfo indexOfObject:_("Hardware Temperatures")]) {
+    } else if (indexPath.section == BI_SECT_HW_TEMP) {
         TemperatureInfoTableViewCell *cell = [[TemperatureInfoTableViewCell alloc] initWithFrame:CGRectMake(0, 0, 1000, 100)];
         return cell;
-    } else if (indexPath.section == [sections_batteryinfo indexOfObject:_("Manage")]) {
+    } else if (indexPath.section == BI_SECT_MANAGE) {
         UITableViewCell *cell = [UITableViewCell new];
         cell.textLabel.text = _("Charging Limit");
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -116,9 +128,9 @@ static NSMutableArray *sections_batteryinfo;
 }
 
 - (CGFloat)tableView:(id)tv heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.section == [sections_batteryinfo indexOfObject:_("Battery Info")] && indexPath.row == 0) {
+    if (indexPath.section == BI_SECT_BATTERY_INFO && indexPath.row == 0) {
         return 130;
-    } else if (indexPath.section == [sections_batteryinfo indexOfObject:_("Hardware Temperatures")] && indexPath.row == 0) {
+    } else if (indexPath.section == BI_SECT_HW_TEMP && indexPath.row == 0) {
         return 130;
     } else {
         return [super tableView:tv heightForRowAtIndexPath:indexPath];
