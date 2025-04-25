@@ -185,7 +185,6 @@ IOReturn smc_read_safe(uint32_t key, void *bytes, uint32_t *size) {
     IOReturn result;
     SMCParamStruct inputStruct={0};
     SMCParamStruct outputStruct;
-    SMCKeyInfoData keyInfo;
 
     inputStruct.key = key;
 
@@ -208,7 +207,7 @@ IOReturn smc_read_safe(uint32_t key, void *bytes, uint32_t *size) {
         return result;
     }
 
-    memcpy(bytes, outputStruct.param.bytes, keyInfo.dataSize);
+    memcpy(bytes, outputStruct.param.bytes, inputStruct.param.keyInfo.dataSize);
 
     return kIOReturnSuccess;
 }
@@ -245,11 +244,11 @@ const board_info_t *get_board_info(void) {
     /* These info are constants, only retrieve once and set gBoard */
     if (!retrieved) {
         /* RGEN(ui8 ) Generation */
-        smc_read_n('RGEN', &gBoard.Generation, 1);
+        smc_read_n('RGEN', &gBoard.Generation,1);
         /* RESV(ch8)[16] EmbeddedOSVersion */
-        smc_read_n('RESV', &gBoard.EmbeddedOSVersion, 16);
+        smc_read_n('RESV', &gBoard.EmbeddedOSVersion,16);
         /* RECI(ui64) ChipEcid */
-        smc_read_n('RECI', &gBoard.ChipEcid, 8);
+        smc_read_n('RECI', &gBoard.ChipEcid,8);
         /* RCRV(ui32) ChipRev */
         smc_read_n('RCRV', &gBoard.ChipRev, 4);
         /* RBRV(ui32) BoardRev */
