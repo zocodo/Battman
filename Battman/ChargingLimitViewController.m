@@ -14,7 +14,11 @@
 }
 
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)sect {
-	return @"General";
+	if(sect==0) {
+		return @"General";
+	}else{
+		return @"Smart Charging";
+	}
 }
 
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)sect {
@@ -26,10 +30,10 @@
 }
 
 - (void)setBlockCharging:(UISwitch *)cswitch {
-	int val=cswitch.on;
-	smc_write('CH0C', &val);
+	BOOL val=cswitch.on;
+	smc_write_safe('CH0C', &val, 1);
 	int new_val;
-	smc_read('CH0C',&new_val);
+	smc_read_n('CH0C',&new_val,1);
 	new_val&=0xff;
 	if((new_val!=0)!=val) {
 		cswitch.on=(new_val!=0);
@@ -41,7 +45,7 @@
 	cell.textLabel.text=@"Block Charging";
 	UISwitch *cswitch=[UISwitch new];
 	int switchOn;
-	smc_read('CH0C', &switchOn);
+	smc_read_n('CH0C', &switchOn, 1);
 	cswitch.on=(switchOn&0xff)!=0;
 	[cswitch addTarget:self action:@selector(setBlockCharging:) forControlEvents:UIControlEventValueChanged];
 	cell.accessoryView=cswitch;

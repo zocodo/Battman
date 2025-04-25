@@ -160,12 +160,16 @@ static IOReturn smc_get_keyinfo(UInt32 key, SMCKeyInfoData *keyInfo) {
     return result;
 }
 
-IOReturn smc_write(uint32_t key, void *bytes) {
+IOReturn smc_write_safe(uint32_t key, void *bytes, uint32_t size) {
 	SMCParamStruct input={0};
 	SMCParamStruct out;
 	IOReturn result;
 	if((result=smc_get_keyinfo(key,&input.param.keyInfo)))
 		return result;
+	if(input.param.keyInfo.dataSize>size) {
+		DBGLOG(CFSTR("smc_write_safe failed: data too short"));
+		return -1;
+	}
 	input.param.data8=kSMCWriteKey;
 	input.key=key;
 	memcpy(input.param.bytes,bytes,input.param.keyInfo.dataSize);
@@ -177,7 +181,7 @@ IOReturn smc_write(uint32_t key, void *bytes) {
 	return kIOReturnSuccess;
 }
 
-IOReturn smc_read(uint32_t key, void *bytes) {
+IOReturn smc_read_safe(uint32_t key, void *bytes, uint32_t *size) {
     IOReturn result;
     SMCParamStruct inputStruct={0};
     SMCParamStruct outputStruct;
@@ -185,12 +189,17 @@ IOReturn smc_read(uint32_t key, void *bytes) {
 
     inputStruct.key = key;
 
-    result = smc_get_keyinfo(inputStruct.key, &keyInfo);
+    result = smc_get_keyinfo(inputStruct.key, &inputStruct.param.keyInfo);
     if (result != kIOReturnSuccess) {
         return result;
     }
 
-    inputStruct.param.keyInfo.dataSize = keyInfo.dataSize;
+	if(*size<inputStruct.param.keyInfo.dataSize) {
+		DBGLOG(CFSTR("smc_read_safe failed: buffer too short"));
+		return -1;
+	}
+	*size=inputStruct.param.keyInfo.dataSize;
+
     inputStruct.param.data8 = kSMCReadKey;
     
     result = smc_call(kSMCHandleYPCEvent, &inputStruct, &outputStruct);
@@ -202,6 +211,15 @@ IOReturn smc_read(uint32_t key, void *bytes) {
     memcpy(bytes, outputStruct.param.bytes, keyInfo.dataSize);
 
     return kIOReturnSuccess;
+}
+
+IOReturn smc_read_n(uint32_t key, void *bytes, uint32_t size) {
+	return smc_read_safe(key,bytes,&size);
+}
+
+IOReturn smc_read(uint32_t key, void *bytes) {
+	// TODO: Deprecate, use safe ones instead.
+	return smc_read_n(key,bytes,1024);
 }
 
 static float ioft2flt(void *bytes) {
@@ -227,19 +245,19 @@ const board_info_t *get_board_info(void) {
     /* These info are constants, only retrieve once and set gBoard */
     if (!retrieved) {
         /* RGEN(ui8 ) Generation */
-        smc_read('RGEN', &gBoard.Generation);
-        /* RESV(ch8*)[16] EmbeddedOSVersion */
-        smc_read('RESV', &gBoard.EmbeddedOSVersion);
+        smc_read_n('RGEN', &gBoard.Generation, 1);
+        /* RESV(ch8)[16] EmbeddedOSVersion */
+        smc_read_n('RESV', &gBoard.EmbeddedOSVersion, 16);
         /* RECI(ui64) ChipEcid */
-        smc_read('RECI', &gBoard.ChipEcid);
+        smc_read_n('RECI', &gBoard.ChipEcid, 8);
         /* RCRV(ui32) ChipRev */
-        smc_read('RCRV', &gBoard.ChipRev);
+        smc_read_n('RCRV', &gBoard.ChipRev, 4);
         /* RBRV(ui32) BoardRev */
-        smc_read('RBRV', &gBoard.BoardRev);
+        smc_read_n('RBRV', &gBoard.BoardRev, 4);
         /* RBID(ui32) BoardId */
-        smc_read('RBID', &gBoard.BoardId);
-        /* RPlt(ch8*)[8] TargetName */
-        smc_read('RPlt', &gBoard.TargetName);
+        smc_read_n('RBID', &gBoard.BoardId, 4);
+        /* RPlt(ch8)[8] TargetName */
+        smc_read_n('RPlt', &gBoard.TargetName,8);
 
         retrieved = true;
     }
@@ -285,7 +303,7 @@ int get_fan_status(void) {
     /* If have fans, check 'F*Ac', which is current speed */
     for (int i = 0; i < fan_num; i++) {
         float retval;
-        result = smc_read('F\0Ac' | ((0x30 + i) << 0x10), &retval);
+        result = smc_read_n('F\0Ac' | ((0x30 + i) << 0x10), &retval, 4);
         /* F*Ac(flt), return 1 if any fan working */
         if (retval > 0.0)
             return 1;
@@ -311,7 +329,7 @@ float get_temperature(void) {
     if (result != kIOReturnSuccess)
         return -1;
 
-    result = smc_read('B0AT', &retval);
+    result = smc_read_n('B0AT', &retval, 2);
     if (result != kIOReturnSuccess)
         return -1;
 

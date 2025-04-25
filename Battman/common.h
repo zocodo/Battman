@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <dlfcn.h>
 #include <TargetConditionals.h>
+#include <stdio.h>
 #include "main.h"
 
 #ifdef DEBUG
