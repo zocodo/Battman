@@ -51,8 +51,8 @@ bool match_regex(const char *string, const char *pattern);
 
 int is_rosetta(void);
 
+const char *lang_cfg_file(void);
 int open_lang_override(int flags,int mode);
-
 int preferred_language_code(void);
 
 __END_DECLS

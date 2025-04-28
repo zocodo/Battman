@@ -22,7 +22,7 @@ extern NSMutableAttributedString *redirectedOutput;
 @implementation DebugViewController
 
 - (NSString *)title {
-    return @"Logs";
+    return _("Logs");
 }
 
 - (void)DebugExportPressed {
@@ -83,10 +83,10 @@ extern NSMutableAttributedString *redirectedOutput;
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-	if(section==SS_SECT_ABOUT)
+	if (section == SS_SECT_ABOUT)
 		return 2;
 #ifdef DEBUG
-	else if(section==SS_SECT_DEBUG)
+	else if (section == SS_SECT_DEBUG)
 		return 3;
 #endif
 	return 0;
@@ -97,10 +97,10 @@ extern NSMutableAttributedString *redirectedOutput;
 }
 
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)sect {
-	if(sect==SS_SECT_ABOUT)
+	if (sect == SS_SECT_ABOUT)
 		return _("About Battman");
 #ifdef DEBUG
-	else if(sect==SS_SECT_DEBUG)
+	else if (sect == SS_SECT_DEBUG)
 		return _("Debug");
 #endif
 	return nil;
@@ -116,13 +116,13 @@ extern NSMutableAttributedString *redirectedOutput;
     }
 #ifdef DEBUG
 	if (indexPath.section == SS_SECT_DEBUG) {
-		if(indexPath.row==0) {
+		if (indexPath.row == 0) {
 			[self.navigationController pushViewController:[DebugViewController new] animated:YES];
-		}else if(indexPath.row==1){
+		} else if (indexPath.row == 1){
 #ifndef USE_GETTEXT
 			[self.navigationController pushViewController:[LanguageSelectionVC new] animated:YES];
 #else
-			show_alert("USE_GETTEXT", "USE_GETTEXT SET", "ok");
+			show_alert("USE_GETTEXT", "UNIMPLEMENTED YET", "OK");
 #endif
 		}else{
 			app_exit();
@@ -255,7 +255,7 @@ extern void preferred_language_code_clear(void);
 @implementation LanguageSelectionVC
 
 - (NSString *)title {
-	return @"Language Override";
+	return _("Language Override");
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
@@ -269,10 +269,10 @@ extern void preferred_language_code_clear(void);
 - (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	UITableViewCell *cell = [UITableViewCell new];
 	if (indexPath.row == 0) {
-		cell.textLabel.text = @"Clear";
+		cell.textLabel.text = _("Clear");
 		return cell;
 	}
-	cell.textLabel.text = (__bridge NSString *)localization_arr[cond_localize_cnt*(indexPath.row - 1)];
+	cell.textLabel.text = (__bridge NSString *)localization_arr[cond_localize_cnt * (indexPath.row - 1)];
 	if (preferred_language_code() + 1 == indexPath.row) {
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	}
@@ -284,8 +284,8 @@ extern void preferred_language_code_clear(void);
 		const char *homedir = getenv("HOME");
 		if (!homedir)
 			return;
-		char *langoverride_fn = malloc(strlen(homedir)+20);
-		stpcpy(stpcpy(langoverride_fn, homedir), "/Library/_LANG");
+		char *langoverride_fn = malloc(strlen(homedir) + 20);
+		stpcpy(stpcpy(langoverride_fn, homedir), lang_cfg_file());
 		remove(langoverride_fn);
 		free(langoverride_fn);
 		preferred_language_code_clear();

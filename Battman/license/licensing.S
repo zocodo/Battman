@@ -1,5 +1,3 @@
-#define _CC(x) x
-
 .section __TEXT,__text,regular,pure_instructions
 .globl _battman_bootstrap,_ios_app_exit
 .p2align 2
@@ -1115,14 +1113,14 @@ IOPUUID:
 IOPExpDev:
 .asciz "IOPlatformExpertDevice"
 agreeStr:
-.asciz _CC("Agree")
+.asciz "Agree"
 declineStr:
-.asciz _CC("Decline")
+.asciz "Decline"
 licenseStr:
 #if !defined(LICENSE) || (LICENSE != LICENSE_NONFREE)
-.asciz _CC("License")
+.asciz "License"
 #else
-.asciz _CC("Terms of Use")
+.asciz "Terms of Use"
 #endif
 defaultConfigurationStr:
 .asciz "Default Configuration"

@@ -512,12 +512,26 @@ int is_rosetta(void) {
     return ret;
 }
 
+/* Consider use NSDefaults instead of file */
+const char *lang_cfg_file(void) {
+    char *home = getenv("HOME");
+    if (match_regex(home, IOS_CONTAINER_FMT) || match_regex(home, MAC_CONTAINER_FMT)) {
+        /* iOS/macOS sandboxed */
+    } else if (match_regex(home, SIM_CONTAINER_FMT)) {
+        /* Simulator sandboxed */
+    } else {
+        /* Unknown/Unsandboxed */
+        return "/.config/Battman_LANG";
+    }
+    return "/Library/_LANG";
+}
+
 int open_lang_override(int flags,int mode) {
 	const char *homedir = getenv("HOME");
 	if(!homedir)
 		return 0;
 	char *langoverride_fn = malloc(strlen(homedir) + 20);
-	stpcpy(stpcpy(langoverride_fn,homedir), "/Library/_LANG");
+	stpcpy(stpcpy(langoverride_fn, homedir), lang_cfg_file());
 	int fd = open(langoverride_fn, flags, mode);
 	free(langoverride_fn);
 	return fd;

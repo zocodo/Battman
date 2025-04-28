@@ -17,7 +17,7 @@
 
 #include "libsmc.h"
 #include "../intlextern.h"
-#include <dispatch/once.h>
+#include <dispatch/dispatch.h>
 #include <CoreFoundation/CFBase.h>
 #include <CoreFoundation/CFString.h>
 #include <string.h>
