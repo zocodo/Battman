@@ -20,6 +20,7 @@ $${\color{grey}真正优雅的软件讲究代码的艺术，而非外表的点�
 - [x] **没有**任何的 **Swift** 或者 **SwiftUI** 被添加，它们令人不适
 - [x] 不含**CocoaPods**，不含**Swift 扩展包**，不含**外部代码包依赖**，不含**第三方框架**
 - [x] Xcode 编译？不用 Xcode 编译也可以
+- [x] 编译在 Linux（没错，“你需要 Mac 来做 iOS App”是 Apple 的鼓动宣传）
 - [x] 直接获取并操作硬件最深处的原始数据
 - [x] 支持 iPhone、iPad、iPod、Xcode 模拟器和 Apple 芯片的 Mac 设备（如果有人捐赠设备的话，我甚至可以支持Apple Watch和Apple TV）
 - [x] 高度适配设备电池中的德州仪器电量监测计芯片
