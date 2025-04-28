@@ -1,5 +1,4 @@
 .section __TEXT,__text,regular,pure_instructions
-;.build_version ios, 14, 5
 .globl _regAppleSMCNotification
 .p2align 2
 

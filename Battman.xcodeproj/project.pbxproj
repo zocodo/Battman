@@ -25,6 +25,7 @@
 				6877432A2D4CACCC00375A2C /* ShellScript */,
 			);
 			dependencies = (
+				6838BF742DBF71BD007EB66C /* PBXTargetDependency */,
 			);
 			name = "pofiles update";
 			productName = "pofiles update";
@@ -62,6 +63,7 @@
 		6838BF6A2DB8D06B007EB66C /* license.html in Resources */ = {isa = PBXBuildFile; fileRef = 6838BF642DB8D06B007EB66C /* license.html */; };
 		6838BF6B2DB8D06B007EB66C /* licensing.S in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF652DB8D06B007EB66C /* licensing.S */; };
 		6838BF6F2DB8D89E007EB66C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF6E2DB8D89E007EB66C /* WebKit.framework */; };
+		6838BF722DBF6D44007EB66C /* ChargingLimitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF702DBF6D44007EB66C /* ChargingLimitViewController.m */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
 		687742B62D43838500375A2C /* locales in Resources */ = {isa = PBXBuildFile; fileRef = 687742B52D43837B00375A2C /* locales */; };
@@ -87,6 +89,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		6838BF732DBF71BD007EB66C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 686AECB72D3B93CB0059ECD0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 68DCA5AF2D40EC57004D0104;
+			remoteInfo = base.pot;
+		};
 		687742B72D43866400375A2C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 686AECB72D3B93CB0059ECD0 /* Project object */;
@@ -116,6 +125,8 @@
 		6838BF652DB8D06B007EB66C /* licensing.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = licensing.S; sourceTree = "<group>"; };
 		6838BF662DB8D06B007EB66C /* test.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = test.S; sourceTree = "<group>"; };
 		6838BF6E2DB8D89E007EB66C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		6838BF702DBF6D44007EB66C /* ChargingLimitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChargingLimitViewController.m; sourceTree = "<group>"; };
+		6838BF712DBF6D44007EB66C /* ChargingLimitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChargingLimitViewController.h; sourceTree = "<group>"; };
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		686AECD32D3B93CD0059ECD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		686AECD42D3B93CD0059ECD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -222,6 +233,8 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				6838BF712DBF6D44007EB66C /* ChargingLimitViewController.h */,
+				6838BF702DBF6D44007EB66C /* ChargingLimitViewController.m */,
 				6838BF632DB8D06B007EB66C /* license */,
 				68CC02872DB3C57B00914051 /* SF-Pro-Display-Regular.otf */,
 				68AE40A42D8EB7710023D7B0 /* CustomUIElements */,
@@ -531,7 +544,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nPOT_FILE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot\"\nrm -f \"${POT_FILE}\"\nexec xgettext -v --keyword=_ --keyword=_ID_ --keyword=_C --copyright-holder=\"Torrekie <me@torrekie.dev>\" --package-name=\"${PROJECT_NAME}\" --package-version=\"${CURRENT_PROJECT_VERSION}\" --output=$POT_FILE --from-code=UTF-8 $(find ${PROJECT_DIR}/${PROJECT_NAME} -name \"*.m\" -or -name \"*.c\" -or -name \"*.h\")\n";
+			shellScript = "set -e -x\n\nexport PATH=\"/opt/homebrew/bin:$PATH\"\n\nPOT_FILE=\"${PROJECT_DIR}/${PROJECT_NAME}/Localizations/base.pot\"\nrm -f \"${POT_FILE}\"\nexec xgettext -v --keyword=_ --keyword=_ID_ --keyword=_C -keyword=_CC --copyright-holder=\"Torrekie <me@torrekie.dev>\" --package-name=\"${PROJECT_NAME}\" --package-version=\"${CURRENT_PROJECT_VERSION}\" --output=$POT_FILE --from-code=UTF-8 $(find ${PROJECT_DIR}/${PROJECT_NAME} -name \"*.m\" -or -name \"*.c\" -or -name \"*.h\" -or -name \"*.S\")\n";
 		};
 		68DCA5BC2D40FAB1004D0104 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -562,6 +575,7 @@
 				687743462D4F6C7800375A2C /* BatteryCellView.m in Sources */,
 				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
 				687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */,
+				6838BF722DBF6D44007EB66C /* ChargingLimitViewController.m in Sources */,
 				68AE40BD2D8EB8870023D7B0 /* Constants.m in Sources */,
 				68AE40B92D8EB8870023D7B0 /* MultiSelectSegmentedControl.m in Sources */,
 				68AE40BA2D8EB8870023D7B0 /* DividerView.m in Sources */,
@@ -587,6 +601,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		6838BF742DBF71BD007EB66C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 68DCA5AF2D40EC57004D0104 /* base.pot */;
+			targetProxy = 6838BF732DBF71BD007EB66C /* PBXContainerItemProxy */;
+		};
 		687742B82D43866400375A2C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 687742AB2D437EE400375A2C /* Gettext Localizations */;

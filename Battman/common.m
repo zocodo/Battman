@@ -501,7 +501,7 @@ UIImage *imageForSFProGlyph(NSString *glyph, NSString *fontName, CGFloat fontSiz
     return [img imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
 }
 
-// UIWebView & WKWebView broken on Rosetta Sims pre iOS 14
+// HTML operations broken on Rosetta Sims pre iOS 14
 int is_rosetta(void) {
     int ret = 0;
     size_t size = sizeof(ret);
@@ -513,43 +513,43 @@ int is_rosetta(void) {
 }
 
 int open_lang_override(int flags,int mode) {
-	const char *homedir=getenv("HOME");
+	const char *homedir = getenv("HOME");
 	if(!homedir)
 		return 0;
-	char *langoverride_fn=malloc(strlen(homedir)+20);
-	stpcpy(stpcpy(langoverride_fn,homedir),"/Library/_LANG");
-	int fd=open(langoverride_fn,flags,mode);
+	char *langoverride_fn = malloc(strlen(homedir) + 20);
+	stpcpy(stpcpy(langoverride_fn,homedir), "/Library/_LANG");
+	int fd = open(langoverride_fn, flags, mode);
 	free(langoverride_fn);
 	return fd;
 }
 
-static int _preferred_language_code=-1;
+static int _preferred_language_code = -1;
 
 void preferred_language_code_clear(void) {
-	_preferred_language_code=-1;
+	_preferred_language_code = -1;
 }
 
 int preferred_language_code() {
-	if(_preferred_language_code!=-1)
+	if (_preferred_language_code!=-1)
 		return _preferred_language_code;
-	int lfd=open_lang_override(O_RDONLY,0);
-	if(lfd==-1) {
-		char *lang=preferred_language();
-		if(*(uint16_t*)lang==0x6e7a) {
-			_preferred_language_code=1;
-		}else{
-			_preferred_language_code=0;
+	int lfd = open_lang_override(O_RDONLY,0);
+	if (lfd == -1) {
+		char *lang = preferred_language();
+		if (*(uint16_t*)lang == 0x6e7a) {
+			_preferred_language_code = 1;
+		} else {
+			_preferred_language_code = 0;
 		}
 		free(lang);
 		return _preferred_language_code;
 	}
 	int ret;
-	if(read(lfd,&ret,4)!=4) {
+	if (read(lfd, &ret, 4) != 4) {
 		close(lfd);
-		_preferred_language_code=0;
+		_preferred_language_code = 0;
 		return 0;
 	}
 	close(lfd);
-	_preferred_language_code=ret;
+	_preferred_language_code = ret;
 	return ret;
 }
