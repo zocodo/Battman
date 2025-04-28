@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 #if !defined(__arm64__) && !defined(__aarch64__) && !defined(__arm64e__)
-//#error Current SMC implementation is arm64 only! \
+#error Current SMC implementation is arm64 only! \
        Please file an issue if you would like to contribute!
 #endif
 
@@ -144,12 +144,13 @@ typedef struct device_info {
 } device_info_t;
 
 typedef struct cell_info {
-    uint16_t Voltage;       /* BC?V */
-    uint16_t Qmax;          /* BQX? */
-    uint16_t DOD0;          /* BQD? */
-    uint16_t PresentDOD;    /* BDD? */
-    uint16_t WoM;           /* BMW? */
-    uint8_t RaTableRaw[32]; /* B0R? */
+    int64_t CurrentAccumulator; /* BC?A */
+    uint16_t Voltage;           /* BC?V */
+    uint16_t Qmax;              /* BQX? */
+    uint16_t DOD0;              /* BQD? */
+    uint16_t PresentDOD;        /* BDD? */
+    uint16_t WoM;               /* BMW? */
+    uint8_t RaTableRaw[32];     /* B0R? */
 } cell_info_t;
 
 typedef struct lifetime_data {
@@ -188,6 +189,15 @@ typedef struct lifetime_data {
     uint16_t QmaxUpdSucCnt;                     /* BLQN (Conditional) */
     uint16_t QmaxUpdFailCnt;                    /* BLQO (Conditional) */
     uint32_t TimeAtHighSoc[10];                 /* BLTP (Min 16, Max 40) */
+    uint64_t SafetyFaultCounter[4];             /* BLSC (Conditional) */
+    /* The following keys were not seen in my pre 2021 devices, need contributors */
+    uint64_t LowVoltageRes;                     /* BLTV (Conditional) */
+    uint64_t FlashEraseCounter;                 /* BFLE (Conditional) */
+    uint64_t FlashFailureCounter;               /* BFLF (Conditional) */
+    uint64_t LtOcvRestCnt;                      /* BLSD (Conditional) */
+    uint64_t LtQmaxUpdCnt;                      /* BLSE (Conditional) */
+    uint64_t LtOcvRestCntHsp;                   /* BLSF (Conditional) */
+    uint64_t LtQmaxUpdCntHsp;                   /* BLSG (Conditional) */
 } lifetime_data_t;
 
 typedef struct shutdown_data {
@@ -219,12 +229,23 @@ typedef struct shutdown_data {
     uint8_t UnexpectedRestart;          /* UPOR */
     uint64_t RestartTimestamp;          /* UB0T */
     uint8_t DataError;                  /* UPOF */
+    int16_t FilteredCurrent;            /* UBIS */
+    uint16_t LpemMode;                  /* UBLP */
+    /* The following keys were not seen in my pre 2021 devices, need contributors */
+    uint16_t SocAlarm;                  /* UBSA */
+    uint16_t DataSoc1vcut;              /* UBSB */
+    uint16_t SocSoc2;                   /* UBSU */
+    uint16_t ShutdownVoltage;           /* UBSV */
+    uint16_t ShutdownSoc;               /* UBSW */
+    uint16_t DataSwRemCap;              /* UBSX */
+    uint16_t SwFcc;                     /* UBSY */
+    uint16_t SocfThres;                 /* UBSZ */
 } shutdown_data_t;
 
 typedef struct carrier_mode {
-    uint32_t status;        /* CHTE */
-    uint32_t high_voltage;  /* CHTU */
-    uint32_t low_voltage;   /* CHTL */
+    uint32_t status;        /* CHTE (bootarg: carrier-mode) */
+    uint32_t high_voltage;  /* CHTU (bootarg: max-charge-voltage/carrier-max-limit) */
+    uint32_t low_voltage;   /* CHTL (bootarg: min-charge-voltage/carrier-min-limit) */
     /* CHTM */
 } carrier_mode_t;
 
@@ -234,8 +255,8 @@ typedef struct kiosk_mode {
     /* CHKG */
     /* CHKH */
     /* CHKK */
-    uint8_t mode;               /* CHKM */
-    uint16_t FullVoltage;       /* CHKL */
+    uint8_t mode;               /* CHKM (bootarg: kiosk-mode) */
+    uint16_t FullVoltage;       /* CHKL (bootarg: kiosk-mode-voltage) */
     uint32_t HighSocSecs;       /* CHKO */
     uint8_t HighSocDays;        /* CHKP */
     /* CHKQ */
@@ -259,7 +280,117 @@ typedef struct charger_data {
     uint8_t ChargerExist;               /* CHCE */
     /* Charging Limits: CHA? CHI? CHP? */
     /* Inflow Inhibit: CH0R */
+    /* The following keys were not seen in my pre 2021 devices, need contributors */
+    uint16_t TimeThermallyLimited;      /* CHTC */
 } charger_data_t;
+
+typedef struct lpem_data {
+    uint16_t Mode;          /* B0LP */
+    /* The following keys were not seen in my pre 2021 devices, need contributors */
+    uint32_t Fcc;           /* SBOF */
+    uint32_t Soc;           /* SBOP */
+    uint32_t RemCap;        /* SBOR */
+    uint32_t SocfThresh;    /* SBOT */
+    uint32_t AlgoStatus;    /* SBST */
+} lpem_data_t;
+
+typedef struct ocv_data {
+    /* The following keys were not seen in my pre 2021 devices, need contributors */
+    uint32_t Count;         /* OBOF */
+    uint32_t Ocv;           /* OBOO */
+    uint32_t RaDisq;        /* OBOR */
+    uint32_t QmaxDisq;      /* OBOQ */
+    uint32_t TimeSinceOcv;  /* OBTO */
+} ocv_data_t;
+
+typedef struct shallow_discharge_data {
+    /* The following keys were not seen in my pre 2021 devices, need contributors */
+    uint32_t Levels;    /* BSDC */
+    uint32_t Score;     /* BSDS */
+    uint32_t Flag;      /* BSDF */
+} shallow_discharge_data_t;
+
+typedef struct battery_data {
+    uint16_t StateOfCharge;                 /* BRSC */
+    int16_t ResScale;                       /* B0RS */
+    float AdapterPower;                     /* PDTR */
+    float SystemPower;                      /* PSTR */
+    uint32_t PMUConfigured;                 /* CHGI */
+    char mfgData[32];                       /* BMDA */
+    char ManfDate[7];                       /* BMDT */
+    int64_t PackCurrentAccumulator;         /* BAAC */
+    uint64_t PackCurrentAccumulatorCount;   /* BACC */
+    uint64_t CellCurrentAccumulatorCount;   /* BCCA */
+    uint16_t RSS;                           /* B0SS */
+    int16_t RSSFiltered;                    /* BRSS */
+    uint32_t ChemID;                        /* B0CI */
+    uint32_t AlgoChemID;                    /* B0CJ */
+    int16_t ISS;                            /* BISS */
+    uint32_t CSMStatus;                     /* BCST */
+    uint16_t MaxCapacity;                   /* B0CM */
+    uint16_t HealthMetric;                  /* B0HM */
+    uint16_t ChemicalWRa;                   /* BR0C */
+    uint64_t Flags;                         /* B0FG */
+    uint16_t WRa;                           /* BR0W */
+    uint16_t Ra00;                          /* BR00 */
+    uint16_t Ra01;                          /* BR01 */
+    uint16_t Ra02;                          /* BR02 */
+    uint16_t Ra03;                          /* BR03 */
+    uint16_t Ra04;                          /* BR04 */
+    uint16_t Ra05;                          /* BR05 */
+    uint16_t Ra06;                          /* BR06 */
+    uint16_t Ra07;                          /* BR07 */
+    uint16_t Ra08;                          /* BR08 */
+    uint16_t Ra09;                          /* BR09 */
+    uint16_t Ra10;                          /* BR10 */
+    uint16_t Ra11;                          /* BR11 */
+    uint16_t Ra12;                          /* BR12 */
+    uint16_t Ra13;                          /* BR13 */
+    uint16_t Ra14;                          /* BR14 */
+    uint32_t GaugeResetCounter;             /* GGRC */
+    int16_t soc1Voltage;                    /* B0S1 */
+    uint16_t DailyMaxSoc;                   /* BMSC */
+    uint16_t DailyMinSoc;                   /* BNSC */
+    uint32_t UUID;                          /* B0ID */
+    uint8_t GaugeResetData[32];             /* BLRD */
+    uint16_t GaugeResetDataFirmware;        /* BLRF */
+    uint16_t GaugeResetDataHardware;        /* BLRH */
+    uint16_t GaugeResetDataSoftware;        /* BLRS */
+    uint16_t GaugeResetDataWatchDog;        /* BLRW */
+    uint16_t QmaxDisqReason;                /* B0QD */
+    int16_t ChargeAccum;                    /* B0CH */
+    int16_t SimRate;                        /* B0SR */
+    int16_t FilteredCurrent;                /* B0IF */
+    int16_t FilteredCurrentRc3;             /* BI03 */
+    int16_t FilteredCurrentRc4;             /* BI04 */
+    uint8_t iMaxAndSocSmoothTable[32];      /* B0IS */
+    int16_t PassedCharge;                   /* BQCC */
+    int16_t Qstart;                         /* B0QS */
+    uint8_t BatteryState[16];               /* BAST */
+    uint16_t ITMiscStatus;                  /* B0MS */
+    uint16_t GaugeFlagRaw;                  /* B0FI */
+    uint16_t FccComp1;                      /* BFC1 */
+    uint16_t FccComp2;                      /* BFC2 */
+    uint8_t WatchdogDebugDump[32];          /* B0WD */
+    /* GaugeDataFlashWriteCnt BFWC */
+    uint16_t SocAlarm;                      /* B0SA */
+    int16_t DynamicSoc1Vcut;                /* B0VC */
+    uint64_t AlgoTemperature;               /* TG0A */
+    uint64_t VirtualTemperature;            /* TG0V */
+    /* DODatEOC BDDE */
+} battery_data_t;
+
+typedef struct gg_data_flash_update {
+    /* The following keys were not seen in my pre 2021 devices, need contributors */
+    /*
+     Status BFUE
+     Error BFUF
+     Phase BFUG
+     ErrorPhase BFUH
+     SubclassId BFUI
+     Block BFUJ
+     */
+} gg_data_flash_update_t;
 
 typedef struct hvc_menu {
     uint16_t current;
@@ -304,9 +435,39 @@ typedef struct iktara_fw {
     bool LpmActive;             /* (WAFS >> 0x1C) & 1 */
 } iktara_fw_t;
 
-/* TODO: iktara_drv_t */
+typedef struct iktara_drv {
+    bool insuff_power;
+    bool exception;
+    bool verify_failed;
+    bool fw_downloaded;
+    uint8_t cloak_reason;
+    uint8_t auth_status;
+    struct {
+        bool pwr_transident;
+        bool pwr_limited;
+        bool ilim_frozen;
+    } cl_status;
+    struct {
+        bool quiesced;
+        bool ldo_disabled;
+        bool on_mat_raw;
+        bool cl_active;
+        bool hb_failed;
+        bool coex_limited;
+        bool ldo_limited;
+        bool high_temp_disc;
+        bool uid_rolled;
+    } status;
+    uint8_t drv_status;
+    uint16_t ss_vrect;
+    uint8_t state_2pp;
+    uint8_t iload_mod;
+    uint16_t not_cloaking_reason;
+    bool sys_trans;
+} iktara_drv_t;
 
 typedef struct inductive_param {
+    uint32_t FwMode;            /* WASM */
     uint16_t RectifierVoltage;  /* WAVR */
     int16_t RectifierCurrent;   /* WAIR */
     int16_t VoltageTarget;      /* WATV */
@@ -316,6 +477,16 @@ typedef struct inductive_param {
     uint32_t TxGain2;           /* WAG2 */
     uint32_t TxVersion;         /* WAVN */
     uint32_t Frequency;         /* WARF */
+    uint16_t RxVoltage;         /* WARV */
+    int16_t RxCurrent;          /* WARI */
+    int16_t RxPower;            /* WARP */
+    uint8_t PromotionState2PP;  /* WAPS */
+    uint32_t SignalStrenth;     /* WASS */
+    uint32_t NotCloakReason;    /* WANC */
+    uint32_t CloakReason;       /* WACM */
+    uint32_t ModDepth;          /* WAMD */
+    uint8_t HighFreq;           /* WAHF */
+    /* OVPCount WAOC */
     /* WAFS -> iktara_fw_t */
     /* WADS -> iktara_drv_t */
 } inductive_param_t;
@@ -347,6 +518,10 @@ const char *port_type_str(uint8_t pt);
 int smc_write_safe(uint32_t key, void *bytes, uint32_t size);
 int smc_read_n(uint32_t key, void *bytes, uint32_t size);
 
+bool wireless_available(void);
+wireless_state_t wireless_charging_detect(void);
+bool get_iktara_fw_stat(iktara_fw_t *fw);
+bool get_iktara_drv_stat(iktara_drv_t *drv);
 __END_DECLS
 
 #endif

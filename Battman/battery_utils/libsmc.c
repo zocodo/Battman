@@ -88,6 +88,12 @@ enum {
 #define DBGLOG(...)
 #endif
 
+#define SMC_INIT_CHK(FAIL_RETURN)       \
+    IOReturn result = kIOReturnSuccess; \
+    if (gConn == 0) result = smc_open();\
+    if (result != kIOReturnSuccess)     \
+    return FAIL_RETURN
+
 extern bool show_alert(const char *, const char *, const char *);
 extern void show_alert_async(const char *, const char *, const char *, void (^)(bool));
 extern void app_exit(void);
@@ -281,14 +287,9 @@ const board_info_t *get_board_info(void) {
  */
 /* TODO: Return arrays */
 int get_fan_status(void) {
-    IOReturn result = kIOReturnSuccess;
+    SMC_INIT_CHK(0);
+
     uint8_t fan_num;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return 0;
 
     result = smc_read('FNum', &fan_num);
     /* No hardware fan support, or permission deined */
@@ -311,7 +312,7 @@ int get_fan_status(void) {
     return 0;
 }
 
-#pragma Temperatures
+#pragma mark - Temperatures
 
 /* Known keys:
  TP?d(ioft): PMU tdev ?
@@ -319,14 +320,9 @@ int get_fan_status(void) {
  */
 
 float get_temperature(void) {
-    IOReturn result = kIOReturnSuccess;
+    SMC_INIT_CHK(-1);
+
     uint16_t retval;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return -1;
 
     result = smc_read_n('B0AT', &retval, 2);
     if (result != kIOReturnSuccess)
@@ -372,14 +368,9 @@ float *get_temperature_per_cell(void) {
 }
 
 int get_time_to_empty(void) {
-    IOReturn result = kIOReturnSuccess;
+    SMC_INIT_CHK(0);
+
     int16_t retval;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return 0;
 
 #if TARGET_OS_EMBEDDED && !TARGET_OS_SIMULATOR
     /* This is weird, why B0TF means TimeToEmpty on Embedded,
@@ -404,15 +395,10 @@ got_time:
 }
 
 int estimate_time_to_full() {
-    IOReturn result = kIOReturnSuccess;
+    SMC_INIT_CHK(0);
+
     int16_t current;
     uint16_t fullcap;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return 0;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
     result = smc_read('B0FC', &fullcap);
@@ -434,15 +420,10 @@ int estimate_time_to_full() {
 }
 
 float get_battery_health(float *design_cap, float *full_cap) {
-    IOReturn result = kIOReturnSuccess;
+    SMC_INIT_CHK(0);
+
     uint16_t fullcap;
     uint16_t designcap;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return 0;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
     result = smc_read('B0FC', &fullcap);
@@ -465,10 +446,10 @@ float get_battery_health(float *design_cap, float *full_cap) {
 }
 
 bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
-    if(!remaining&&!full&&!design)
+    if(!remaining && !full && !design)
         return true;
     
-    if (!gConn&&smc_open())
+    if (!gConn && smc_open())
         return false;
 
     int num = batt_cell_num();
@@ -509,8 +490,7 @@ bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
 }
 
 bool get_gas_gauge(gas_gauge_t *gauge) {
-    if (!gConn&&smc_open())
-        return false;
+    SMC_INIT_CHK(false);
 
     // Zero before use
     memset(gauge, 0, sizeof(gas_gauge_t));
@@ -637,14 +617,9 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
 
 /* -1: Unknown */
 int batt_cell_num(void) {
-    IOReturn result = kIOReturnSuccess;
+    SMC_INIT_CHK(-1);
+
     int8_t count;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return -1;
     
     /* BNCB(si8) Number of Battery Cells */
     result = smc_read('BNCB', &count);
@@ -654,18 +629,13 @@ int batt_cell_num(void) {
     return count;
 }
 
+/* TODO: */
 bool get_cells(cell_info_t cells) {
     return true;
 }
 
 bool battery_serial(char *serial) {
-    IOReturn result = kIOReturnSuccess;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return false;
+    SMC_INIT_CHK(false);
 
     /* BMSN(ch8*) Battery Serial */
     result = smc_read('BMSN', serial);
@@ -908,17 +878,11 @@ const char *get_adapter_family_desc(mach_port_t family) {
 }
 
 charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
-    IOReturn result = kIOReturnSuccess;
     SMCKey key;
     int8_t charging = 0;
     charging_state_t ret = kIsUnavail;
-    
 
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return ret;
+    SMC_INIT_CHK(ret);
     
     /* AC-W(si8) Known cases */
     /* -1: No Adapter (M Chip) */
@@ -1042,7 +1006,7 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
             DBGLOG(CFSTR("Port: %d, Index: %d"), charging, info->hvc_index);
 
         /* Other info */
-        /* D?PT(ui8 ) Port Type */
+        /* D?PT(ui8 ) Adapter Type */
         key = 'D\0PT' | ((0x30 + charging) << 0x10);
         result = smc_read(key, &info->port_type);
         if (result == kIOReturnSuccess)
@@ -1051,17 +1015,17 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
         /* D?AR(ui32) Ampere Rating (Mobile Only) */
         /* D?BD(ui32) AdapterID */
         /* D?DB(hex_) debounce */
-        /* D?ER(?) */
+        /* D?ER(hex_) ErrorFlags */
         /* D?ID(flag) IOAM Inflow Inhibit (Mobile Only) */
         /* D?IG(flag) Ignored (Mobile Only) */
         /* D?NO(ui8 ) Select power source (write only) (Mobile Only) */
-        /* D?SD(flag) SourceID (Mobile Only) */
+        /* D?SD(flag) sharedSource (Mobile Only) */
         /* D?SM(ui32) Socket Model (Mobile Only) */
         /* D?SN(ui8 ) ? */
         /* D1SP(ui8 ) HVC Notification (Mobile Only) */
         /* D?SR(ui16) HVC Request Ready (Mobile Only) */
         /* D?SX(ui8 ) HVC Interrupt Action (Mobile Only) */
-        /* D?UD(ui32) sharedSource (Mobile Only) */
+        /* D?UD(ui32) SourceID (Mobile Only) */
     }
 
     return ret;
@@ -1157,23 +1121,36 @@ hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size) {
     return menu;
 }
 
-#pragma Iktara Wireless
+#pragma mark - Iktara Wireless (not always iktara tho)
 
+#include "inductive_status.h"
 /* Known charger Keys:
- VQ0u(ioft)[8]: VBUS Voltage (V)
- IQ0u(ioft)[8]: IBUS Current (A)
+ VQ0u(ioft)[8]: VBUS 0 Voltage (V)
+ VQ1u(ioft)[8]: VBUS 1 Voltage (V)
+ IQ0u(ioft)[8]: IBUS 0 Current (A)
  CHIE(hex_)[1]: Inflow Inhibit
  CHIS(ui32): Charger Input State (like D?AP)?
  */
+bool wireless_available(void) {
+    SMC_INIT_CHK(false);
+
+    static uint8_t count = 0;
+    static dispatch_once_t wireless_once = -1;
+
+    /* Constants only do once */
+    dispatch_once(&wireless_once, ^{
+        /* AY-N(ui8 ) Num Accessory ports */
+        if (smc_read('AY-N', &count) != kIOReturnSuccess)
+            count = 0;
+    });
+
+    return (count != 0);
+}
+
 wireless_state_t wireless_charging_detect(void) {
-    IOReturn result = kIOReturnSuccess;
+    SMC_INIT_CHK(0);
+
     uint32_t st = 0;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return false;
 
     /* VBUS(ui32) Voltage Bus */
     result = smc_read('VBUS', &st);
@@ -1184,14 +1161,9 @@ wireless_state_t wireless_charging_detect(void) {
 }
 
 bool get_iktara_fw_stat(iktara_fw_t *fw) {
-    IOReturn result = kIOReturnSuccess;
+    SMC_INIT_CHK(false);
+
     uint64_t st = 0;
-
-    if (gConn == 0)
-        result = smc_open();
-
-    if (result != kIOReturnSuccess)
-        return false;
     
     /* WAFS(hex_) Iktara Firmware Status */
     result = smc_read('WAFS', &st);
@@ -1213,13 +1185,75 @@ bool get_iktara_fw_stat(iktara_fw_t *fw) {
     return true;
 }
 
+bool get_iktara_drv_stat(iktara_drv_t *drv) {
+    SMC_INIT_CHK(false);
+
+    uint64_t raw = 0;
+
+    /* WADS(hex_) Iktara Driver Status */
+    result = smc_read('WADS', &raw);
+    if (result != kIOReturnSuccess)
+        return false;
+
+    if (drv != NULL) {
+        memset(drv, 0, sizeof(iktara_drv_t));
+        // Basic flags
+        drv->insuff_power   = (raw & INDUCTIVE_STATUS_INSUFF_POWER)   != 0;
+        drv->exception      = (raw & INDUCTIVE_STATUS_EXCEPTION)      != 0;
+        drv->verify_failed  = (raw & INDUCTIVE_STATUS_VERIFY_FAILED)  != 0;
+        drv->fw_downloaded  = (raw & INDUCTIVE_STATUS_FW_DOWNLOADED)  != 0;
+
+        // Cloak reason (extract bits [4..9])
+        drv->cloak_reason   = (uint8_t)((raw & INDUCTIVE_STATUS_CLOAK_REASONS) >> 4);
+
+        // Auth status (extract bits [10..11])
+        drv->auth_status    = (uint8_t)((raw & INDUCTIVE_STATUS_AUTH_STATUS) >> INDUCTIVE_STATUS_AUTH_STATUS_SHIFT);
+
+        // CL-status sub-flags
+        drv->cl_status.pwr_transident = (raw & INDUCTIVE_STATUS_CL_PWR_TRANSIENT) != 0;
+        drv->cl_status.pwr_limited    = (raw & INDUCTIVE_STATUS_CL_PWR_LIMITED)   != 0;
+        drv->cl_status.ilim_frozen    = (raw & INDUCTIVE_STATUS_CL_ILIM_FROZEN)   != 0;
+
+        // Other status bits
+        drv->status.quiesced     = (raw & INDUCTIVE_STATUS_QUIESCED)       != 0;
+        drv->status.ldo_disabled = (raw & INDUCTIVE_STATUS_LDO_DISABLED)   != 0;
+        drv->status.on_mat_raw   = (raw & INDUCTIVE_STATUS_ON_MAT_RAW)     != 0;
+        drv->status.cl_active    = (raw & INDUCTIVE_STATUS_CL_ACTIVE)      != 0;
+        drv->status.hb_failed    = (raw & INDUCTIVE_STATUS_HB_FAILED)      != 0;
+        drv->status.coex_limited = (raw & INDUCTIVE_STATUS_COEX_LIMITED)   != 0;
+        drv->status.ldo_limited  = (raw & INDUCTIVE_STATUS_LDO_LIMITED)    != 0;
+        drv->status.high_temp_disc = (raw & INDUCTIVE_STATUS_HIGH_TEMP_DISC) != 0;
+        drv->status.uid_rolled   = (raw & INDUCTIVE_STATUS_UID_ROLLED)     != 0;
+
+        // Driver state (bits [24..31])
+        drv->drv_status = (uint8_t)((raw & INDUCTIVE_STATUS_DRV_STATE) >> INDUCTIVE_STATUS_DRV_STATE_SHIFT);
+
+        // VRECT sample (bits [32..39])
+        drv->ss_vrect   = (uint16_t)((raw & INDUCTIVE_STATUS_SS_VRECT) >> INDUCTIVE_STATUS_SS_VRECT_SHIFT);
+
+        // EPP 2-phase state (bits [40..43])
+        drv->state_2pp  = (uint8_t)((raw & INDUCTIVE_STATUS_2PP_STATE) >> INDUCTIVE_STATUS_2PP_STATE_SHIFT);
+
+        // Load-current modulation (bits [44..47])
+        drv->iload_mod  = (uint8_t)((raw & INDUCTIVE_STATUS_ILOAD_MOD) >> INDUCTIVE_STATUS_ILOAD_MOD_SHIFT);
+
+        // Non-cloaking reasons (bits [48..55])
+        drv->not_cloaking_reason = (uint16_t)((raw & INDUCTIVE_STATUS_NOT_CLOAKING_REASON) >> INDUCTIVE_STATUS_CLOAK_REASONS_SHIFT);
+
+        // System transition flag (bit 56)
+        drv->sys_trans  = (raw & INDUCTIVE_STATUS_SYS_TRANS) != 0;
+    }
+
+    return true;
+}
+
 /*
- AY-N(ui8 ): Num Wireless ports
- AY1A(hex_): Wireless A Array [0-4 Status?][5 AY1P][6 AY1C][7 AY1T][8 AY1S][9-10 VendorID][11-12 ProductID]
- AY1C(ui8 ): Wireless Charging
- AY1P(ui8 ): Wireless Present
- AY1S(ui8 ): Wireless Curent Capacity
+ AY1A(hex_): Accessory A Array [0-4 Status?][5 AY1P][6 AY1C][7 AY1T][8 AY1S][9-10 VendorID][11-12 ProductID]
+ AY1C(ui8 ): Accessory Charging
+ AY1P(ui8 ): Accessory Present
+ AY1S(ui8 ): Accessory Curent Capacity
  AY1T(ui8 ):
+ AP*: Power Out keys
 */
 /*
  (<_BCPowerSourceController: 0x28235c900>) Found power source: {
@@ -1241,10 +1275,18 @@ bool get_iktara_fw_stat(iktara_fw_t *fw) {
 
 /* Notes on some guessed keys
  Mobile Only:
-    WAFC(ui32): (write only) Smart Battery control bit (Enable: 0x10000) | (0x7: Wireless Cloak) (0x25: Charge Limit Display)
+    CKRQ(flag): Cloaking Required
+    CKST(ui8 ): Cloaking Status
+    CKCH(ui8 ): Cloaking remaining time?
+ 
+    WAFC(ui32): (write only, check ui8InductiveFWCtrl) Smart Battery control bit (Enable: 0x10000) | (0x1: quiesce on) | (0x2: quiesce off) | (0x3: FW update) | (0x7: Wireless Cloak) | (0x25: Charge Limit Display) | (0x28: Demo Mode)
+    WAFD(hex_): (write only) Wireless data
+    WAFB(ui32): Wireless frequency
     WADS(hex_): Inductive status
     BD0E(ui32): DiffAmp
     B0LP(ui16): Lpem Props
+ 
+    B1WI(flt ): Battery 1 Wireless Input Rate (Disabled: 10.0)
  
     GBCM(ui16): GG blockdata related
     GBRW(hex_): GG blockdata related
@@ -1260,6 +1302,9 @@ bool get_iktara_fw_stat(iktara_fw_t *fw) {
  All:
     AC-N(ui8 ): Adapter count
  
+    BAPS(flag): Battery State
+    BFS0(ui8 ): Battery Auth Support (0x20: GG Update Support)
+    B0FV(hex_): Gas Gauge Firmware Version
     B0Ti(ui32): Charge Limit Rate Index
 
     CHSC(ui8 ): Charger Charging?
@@ -1270,13 +1315,6 @@ bool get_iktara_fw_stat(iktara_fw_t *fw) {
     CHA?(ui32): Powerpath ?
     CHHV(ui64): (write only) USB Input High Voltage
     CHI?(ui32): USB Port ? Input Current Limit / PMUConfiguration
-    CHBI(ui32): Charge Current Configuration
-    CHBV(ui32): Charge Voltage Configuration
-    CHTU(ui32): Carrier Mode upper voltage
-    CHTL(ui32): Carrier Mode lower voltage
-    CHTE(ui32): Carrier Mode
-    CHKL(ui16): Kiosk Mode voltage
-    CHKM(ui8 ): Kiosk Mode
     CH0I(ui8 ): Battery Connected State 1 << 0
     CH0J(ui8 ): Battery Connected State 1 << 1
     CH0K(ui8 ): Battery Connected State 1 << 2
