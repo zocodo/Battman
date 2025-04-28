@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Battman 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-28 16:44+0800\n"
+"POT-Creation-Date: 2025-04-28 17:27+0800\n"
 "PO-Revision-Date: 2025-01-27 17:32+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,6 +16,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:25
+msgid "Logs"
+msgstr "Logs"
 
 #: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:74
 #: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:79
@@ -55,6 +59,30 @@ msgstr "Exit App"
 #: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:208
 msgid "Battman Credit"
 msgstr "Battman Credit"
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:258
+msgid "Language Override"
+msgstr "Language Override"
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:272
+msgid "Clear"
+msgstr "Clear"
+
+#: /Users/torrekie/proj/Battman/Battman/license/localized.c:7
+msgid "Agree"
+msgstr "Agree"
+
+#: /Users/torrekie/proj/Battman/Battman/license/localized.c:8
+msgid "Decline"
+msgstr "Decline"
+
+#: /Users/torrekie/proj/Battman/Battman/license/localized.c:9
+msgid "License"
+msgstr "License"
+
+#: /Users/torrekie/proj/Battman/Battman/license/localized.c:10
+msgid "Terms of Use"
+msgstr "Terms of Use"
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:22
 msgid "Battman"
@@ -202,15 +230,15 @@ msgstr ""
 msgid "Starting at"
 msgstr "Starting at"
 
-#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:97
+#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:99
 msgid "Until"
 msgstr "Until"
 
-#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:110
+#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:113
 msgid "Schedule"
 msgstr "Schedule"
 
-#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:119
+#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:122
 msgid "Block Charging"
 msgstr "Block Charging"
 
@@ -1239,46 +1267,3 @@ msgstr "Daily Max SoC"
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:295
 msgid "Daily Min SoC"
 msgstr "Daily Min SoC"
-
-#~ msgid "Battman License"
-#~ msgstr "Battman License"
-
-#~ msgid ""
-#~ "Battman does not use non-free license at current stage, press Agree to "
-#~ "proceed."
-#~ msgstr ""
-#~ "Battman does not use non-free license at current stage, press Agree to "
-#~ "proceed."
-
-#~ msgid "Terms of Use and Privacy Policies"
-#~ msgstr "Terms of Use and Privacy Policies"
-
-#~ msgid "Agree"
-#~ msgstr "Agree"
-
-#~ msgid "Deny"
-#~ msgstr "Deny"
-
-#~ msgid "Agreed"
-#~ msgstr "Agreed"
-
-#~ msgid "Reopen Battman to take effect"
-#~ msgstr "Reopen Battman to take effect"
-
-#~ msgid "Denied"
-#~ msgstr "Denied"
-
-#~ msgid "You will not able to use Battman before you agree the Term of Use."
-#~ msgstr "You will not able to use Battman before you agree the Term of Use."
-
-#~ msgid "Logs (stdio)"
-#~ msgstr "Logs (stdio)"
-
-#~ msgid "Hardware Temperatures"
-#~ msgstr "Hardware Temperatures"
-
-#~ msgid "Failed to create directories"
-#~ msgstr "Failed to create directories"
-
-#~ msgid "Failed to write file"
-#~ msgstr "Failed to write file"

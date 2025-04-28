@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Battman 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-28 16:44+0800\n"
+"POT-Creation-Date: 2025-04-28 17:27+0800\n"
 "PO-Revision-Date: 2025-01-27 17:32+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -16,6 +16,10 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:25
+msgid "Logs"
+msgstr ""
 
 #: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:74
 #: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:79
@@ -55,6 +59,30 @@ msgstr "退出App"
 #: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:208
 msgid "Battman Credit"
 msgstr "Battman 贡献者名单"
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:258
+msgid "Language Override"
+msgstr "更改语言"
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:272
+msgid "Clear"
+msgstr "清除"
+
+#: /Users/torrekie/proj/Battman/Battman/license/localized.c:7
+msgid "Agree"
+msgstr "同意"
+
+#: /Users/torrekie/proj/Battman/Battman/license/localized.c:8
+msgid "Decline"
+msgstr "拒绝"
+
+#: /Users/torrekie/proj/Battman/Battman/license/localized.c:9
+msgid "License"
+msgstr "证书"
+
+#: /Users/torrekie/proj/Battman/Battman/license/localized.c:10
+msgid "Terms of Use"
+msgstr "使用条款"
 
 #: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:22
 msgid "Battman"
@@ -161,8 +189,8 @@ msgid ""
 "Smart Charging will start 900 seconds (15 minutes) after power is plugged-"
 "in, or the date you scheduled, whichever one comes first."
 msgstr ""
-"“优化电池充电”将在接通电源 900 秒（15 分钟）后，或您选择的日期开始，以较早者为"
-"准。"
+"“优化电池充电”将在接通电源 900 秒（15 分钟）后，或您选择的日期开始，以较早者"
+"为准。"
 
 #: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:60
 #: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:68
@@ -197,15 +225,15 @@ msgstr ""
 msgid "Starting at"
 msgstr "始于"
 
-#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:97
+#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:99
 msgid "Until"
 msgstr "直到"
 
-#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:110
+#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:113
 msgid "Schedule"
 msgstr "设置计划"
 
-#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:119
+#: /Users/torrekie/proj/Battman/Battman/ChargingLimitViewController.m:122
 msgid "Block Charging"
 msgstr "阻止充电"
 
@@ -1200,44 +1228,3 @@ msgstr "单日最大余量"
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:295
 msgid "Daily Min SoC"
 msgstr "单日最小余量"
-
-#~ msgid "Battman License"
-#~ msgstr "Battman 许可证"
-
-#~ msgid ""
-#~ "Battman does not use non-free license at current stage, press Agree to "
-#~ "proceed."
-#~ msgstr "目前 Battman 不使用非自由协议，按下“同意”以继续。"
-
-#~ msgid "Terms of Use and Privacy Policies"
-#~ msgstr "使用协议 与 隐私策略"
-
-#~ msgid "Agree"
-#~ msgstr "同意"
-
-#~ msgid "Deny"
-#~ msgstr "拒绝"
-
-#~ msgid "Agreed"
-#~ msgstr "已同意"
-
-#~ msgid "Reopen Battman to take effect"
-#~ msgstr "重新开启 Battman 以生效"
-
-#~ msgid "Denied"
-#~ msgstr "已拒绝"
-
-#~ msgid "You will not able to use Battman before you agree the Term of Use."
-#~ msgstr "在您同意使用协议之前，您将无法使用 Battman。"
-
-#~ msgid "Logs (stdio)"
-#~ msgstr "日志（stdio）"
-
-#~ msgid "Hardware Temperatures"
-#~ msgstr "硬件温度"
-
-#~ msgid "Failed to create directories"
-#~ msgstr "无法创建目录"
-
-#~ msgid "Failed to write file"
-#~ msgstr "无法写入文件"
