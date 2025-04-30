@@ -193,7 +193,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
     [self.tableView registerClass:[SegmentedViewCell class] forCellReuseIdentifier:@"HVC"];
     [self.tableView registerClass:[SegmentedFlagViewCell class] forCellReuseIdentifier:@"FLAGS"];
-    [self.tableView registerClass:[MultilineViewCell class] forCellReuseIdentifier:_("Adapter Details")];
+    [self.tableView registerClass:[MultilineViewCell class] forCellReuseIdentifier:@"bdvc:addt"];
     self.tableView.estimatedRowHeight = 100;
     self.tableView.rowHeight = UITableViewAutomaticDimension;
 }
@@ -379,22 +379,13 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
 - (UITableViewCell *)tableView:(UITableView *)tv
          cellForRowAtIndexPath:(NSIndexPath *)ip {
-    /* Use different identifier to avoid wrong location of Accessory */
-    NSString *cell_id = [sections_detail objectAtIndex:ip.section];
-#if 0
-	// TODO: Use separate reusable cells for different types
-    /* Sadly, Accessory still displays wrongly when we use custom Accessory */
-    UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:cell_id];
-    if (!cell) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
-    }
-#else
-    UITableViewCell *cell;
-#endif
 
     if (ip.section == 0) {
-        /* I'm sorry this reduces some speed, but it ensures Accessory */
-        UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
+        UITableViewCell *cell=[tv dequeueReusableCellWithIdentifier:@"bdvc:sect0"];
+        cell.accessoryType=0;
+        cell.accessoryView=nil;
+        if(!cell)
+        	cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"bdvc:sect0"];
         UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
         [cell addGestureRecognizer:longPressRecognizer];
 
@@ -498,9 +489,9 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
     // Consider make this an adapter_info.c?
     if (ip.section == [sections_detail indexOfObject:_("Adapter Details")]) {
-        cell = [tv dequeueReusableCellWithIdentifier:cell_id];
+        UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:@"bdvc:addt"];
         if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:cell_id];
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"bdvc:addt"];
         }
 
         NSArray *adapter_cell = adapter_cells[ip.row];
