@@ -43,7 +43,7 @@ jobs:
       run: |
         export THEOS=~/theos
         cd Battman
-        make
+        make -j8
     - uses: actions/upload-artifact@v4
       with:
         name: Battman.ipa
