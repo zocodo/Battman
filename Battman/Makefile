@@ -10,7 +10,14 @@ SDKROOT := ${THEOS}/sdks/iPhoneOS14.5.sdk
 LIBS := -lobjc
 FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework IOKit -framework WebKit
 
-CFLAGS = -DDEBUG -Wno-deprecated-declarations -Werror -target arm64-apple-ios${IPHONEOS_DEPLOYMENT_TARGET} -target arm64-apple-darwin -fobjc-arc -fconstant-cfstrings
+USE_MOBILEGESTALT := 1
+CFLAGS_MG := -DUSE_MOBILEGESTALT=0
+ifeq ($(USE_MOBILEGESTALT),1)
+CFLAGS_MG = -DUSE_MOBILEGESTALT=1
+LIBS += -lMobileGestalt
+endif
+
+CFLAGS = -DDEBUG $(CFLAGS_MG) -Wno-deprecated-declarations -Werror -target arm64-apple-ios${IPHONEOS_DEPLOYMENT_TARGET} -target arm64-apple-darwin -fobjc-arc -fconstant-cfstrings
 LDFLAGS = -target arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET) -target arm64-apple-darwin $(LIBS) $(FRAMEWORKS) -Wl,-dead_strip_dylibs
 THEOS := ~/theos
 
