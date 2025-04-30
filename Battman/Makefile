@@ -75,6 +75,7 @@ build/Payload/Battman.app/Battman: $(OBJECTS) ../Battman.entitlements
 	$(CC) $(LDFLAGS) $(filter %.o,$^) -o $@
 	$(CODESIGN)../Battman.entitlements $@
 build/Payload/Battman.app/Info.plist: Info.plist
+	@mkdir -p $(@D)
 	$(SED) 's/\$$(DEVELOPMENT_LANGUAGE)/en/;s/\$$(EXECUTABLE_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_IDENTIFIER)/com.torrekie.Battman/;s/\$$(PRODUCT_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/;s/\$$(COMMIT_HASH)/$(COMMIT_HASH)/' Info.plist > build/Payload/Battman.app/Info.plist
 build/Payload/Battman.app/1024.png: ../Battman.svg
 	./generate_icons.sh ../Battman.svg build/Payload/Battman.app/

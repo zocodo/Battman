@@ -1,8 +1,7 @@
 #pragma once
 #import <UIKit/UIKit.h>
-#include "battery_utils/libsmc.h"
 
-@interface ChargingLimitViewController:UITableViewController
+@interface ChargingManagementViewController:UITableViewController
 {
 	UIDatePicker *fromPicker;
 	UIDatePicker *untilPicker;

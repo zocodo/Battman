@@ -1,12 +1,12 @@
-#import "ChargingLimitViewController.h"
+#import "ChargingManagementViewController.h"
 #include "battery_utils/libsmc.h"
 #include "common.h"
 #include "intlextern.h"
 
-@implementation ChargingLimitViewController
+@implementation ChargingManagementViewController
 
 - (NSString *)title {
-	return _("Charging Limit");
+	return _("Charging Management");
 }
 
 - (instancetype)init {
