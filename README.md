@@ -38,6 +38,7 @@ What other battery utils made for iOS hasn’t done
 - [x] Texas Intruments Impedance Track™ information retrieving
 - [x] Real-time charging current/voltage reading
 - [x] Running perfectly when in Xcode Simulator (Other people uses IOPS in their app so not working in Sims)
+- [x] Smart Charging (Optimized Battery Charging) communication
 
 ### Requirements
 

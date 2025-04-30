@@ -14,6 +14,10 @@
 		<string>spi</string>
 		<string>identity</string>
 	</array>
+	<key>com.apple.security.exception.shared-preference.read-write</key>
+	<array>
+		<string>com.apple.coreduetd.batterysaver.state</string>
+	</array>
 
 	<key>platform-application</key>
 	<true/>
@@ -49,6 +53,8 @@
 	<true/>
 	<key>com.apple.private.powersource-read</key>
 	<true/>
+	<key>com.apple.coreduetd.allow</key>
+	<true/>
 	<key>com.apple.coreduetd.batterysaver.allow</key>
 	<true/>
 	<key>com.apple.private.applesmc.user-access</key>
@@ -81,6 +87,7 @@
 	<true/>
 	<key>com.apple.security.exception.mach-lookup.global-name</key>
 	<array>
+		<string>com.apple.coreduetd.batterysaver</string>
 		<string>com.apple.powerui.smartChargeManager</string>
 	</array>
 </dict>

@@ -171,7 +171,7 @@ IOReturn smc_write_safe(uint32_t key, void *bytes, uint32_t size) {
 	SMCParamStruct input={0};
 	SMCParamStruct out;
 	IOReturn result;
-	if((result=smc_get_keyinfo(key,&input.param.keyInfo)))
+	if((result = smc_get_keyinfo(key, &input.param.keyInfo)))
 		return result;
 	if(input.param.keyInfo.dataSize>size) {
 		DBGLOG(CFSTR("smc_write_safe failed: data too short"));

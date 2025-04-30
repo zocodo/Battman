@@ -22,6 +22,12 @@
 #define DBGALT(x, y, z)
 #endif
 
+#ifndef USE_MOBILEGESTALT
+#if !TARGET_OS_OSX
+#define USE_MOBILEGESTALT 1
+#endif
+#endif
+
 #define LICENSE_MIT 2
 #define LICENSE_GPL 3
 #define LICENSE_NONFREE 4

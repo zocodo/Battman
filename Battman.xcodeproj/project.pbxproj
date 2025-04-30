@@ -63,8 +63,9 @@
 		6838BF6A2DB8D06B007EB66C /* license.html in Resources */ = {isa = PBXBuildFile; fileRef = 6838BF642DB8D06B007EB66C /* license.html */; };
 		6838BF6B2DB8D06B007EB66C /* licensing.S in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF652DB8D06B007EB66C /* licensing.S */; };
 		6838BF6F2DB8D89E007EB66C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF6E2DB8D89E007EB66C /* WebKit.framework */; };
-		6838BF722DBF6D44007EB66C /* ChargingLimitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF702DBF6D44007EB66C /* ChargingLimitViewController.m */; };
 		6838BF762DBF810D007EB66C /* localized.c in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF752DBF810D007EB66C /* localized.c */; };
+		6838BF7C2DC22CF6007EB66C /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF7B2DC22CF6007EB66C /* libMobileGestalt.tbd */; };
+		6838BF832DC27F1E007EB66C /* ChargingManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF822DC27F1E007EB66C /* ChargingManagementViewController.m */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
 		687742B62D43838500375A2C /* locales in Resources */ = {isa = PBXBuildFile; fileRef = 687742B52D43837B00375A2C /* locales */; };
@@ -84,7 +85,6 @@
 		68AE40BE2D8EB8870023D7B0 /* SegmentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B62D8EB8870023D7B0 /* SegmentButton.m */; };
 		68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2D2D85606000919BC2 /* GradientArcView.m */; };
 		68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */; };
-		68CC02882DB3C57B00914051 /* SF-Pro-Display-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 68CC02872DB3C57B00914051 /* SF-Pro-Display-Regular.otf */; };
 		68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */; };
 		68DCA5A92D3F9339004D0104 /* common.m in Sources */ = {isa = PBXBuildFile; fileRef = 68DCA5A82D3F9338004D0104 /* common.m */; };
 /* End PBXBuildFile section */
@@ -126,9 +126,10 @@
 		6838BF652DB8D06B007EB66C /* licensing.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = licensing.S; sourceTree = "<group>"; };
 		6838BF662DB8D06B007EB66C /* test.S */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = test.S; sourceTree = "<group>"; };
 		6838BF6E2DB8D89E007EB66C /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		6838BF702DBF6D44007EB66C /* ChargingLimitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChargingLimitViewController.m; sourceTree = "<group>"; };
-		6838BF712DBF6D44007EB66C /* ChargingLimitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChargingLimitViewController.h; sourceTree = "<group>"; };
 		6838BF752DBF810D007EB66C /* localized.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = localized.c; sourceTree = "<group>"; };
+		6838BF7B2DC22CF6007EB66C /* libMobileGestalt.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libMobileGestalt.tbd; path = usr/lib/libMobileGestalt.tbd; sourceTree = SDKROOT; };
+		6838BF7E2DC27F1E007EB66C /* ChargingManagementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChargingManagementViewController.h; sourceTree = "<group>"; };
+		6838BF822DC27F1E007EB66C /* ChargingManagementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChargingManagementViewController.m; sourceTree = "<group>"; };
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		686AECD32D3B93CD0059ECD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		686AECD42D3B93CD0059ECD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -193,6 +194,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6838BF7C2DC22CF6007EB66C /* libMobileGestalt.tbd in Frameworks */,
 				6838BF6F2DB8D89E007EB66C /* WebKit.framework in Frameworks */,
 				684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */,
 				68A3EAFD2D5204EA003381DF /* IOKit.framework in Frameworks */,
@@ -236,8 +238,8 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
-				6838BF712DBF6D44007EB66C /* ChargingLimitViewController.h */,
-				6838BF702DBF6D44007EB66C /* ChargingLimitViewController.m */,
+				6838BF7E2DC27F1E007EB66C /* ChargingManagementViewController.h */,
+				6838BF822DC27F1E007EB66C /* ChargingManagementViewController.m */,
 				6838BF632DB8D06B007EB66C /* license */,
 				68CC02872DB3C57B00914051 /* SF-Pro-Display-Regular.otf */,
 				68AE40A42D8EB7710023D7B0 /* CustomUIElements */,
@@ -279,6 +281,7 @@
 		687743162D461E5100375A2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6838BF7B2DC22CF6007EB66C /* libMobileGestalt.tbd */,
 				6838BF6E2DB8D89E007EB66C /* WebKit.framework */,
 				68A3EAFC2D5204EA003381DF /* IOKit.framework */,
 			);
@@ -444,7 +447,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				6838BF6A2DB8D06B007EB66C /* license.html in Resources */,
-				68CC02882DB3C57B00914051 /* SF-Pro-Display-Regular.otf in Resources */,
 				687742B62D43838500375A2C /* locales in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -577,8 +579,8 @@
 				68AE40BE2D8EB8870023D7B0 /* SegmentButton.m in Sources */,
 				687743462D4F6C7800375A2C /* BatteryCellView.m in Sources */,
 				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
+				6838BF832DC27F1E007EB66C /* ChargingManagementViewController.m in Sources */,
 				687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */,
-				6838BF722DBF6D44007EB66C /* ChargingLimitViewController.m in Sources */,
 				68AE40BD2D8EB8870023D7B0 /* Constants.m in Sources */,
 				68AE40B92D8EB8870023D7B0 /* MultiSelectSegmentedControl.m in Sources */,
 				68AE40BA2D8EB8870023D7B0 /* DividerView.m in Sources */,
