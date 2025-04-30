@@ -3,9 +3,10 @@
 #ifndef _ID_
 #define _ID_(x) (x)
 #endif
-
-const char agreeStr[]   = _ID_("Agree");
-const char declineStr[] = _ID_("Decline");
-const char licenseStr[] = _ID_("License");
-const char licenseStr[] = _ID_("Terms of Use");
+const char *asm_strings[] = {
+    _ID_("Agree"),
+    _ID_("Decline"),
+    _ID_("License"),
+    _ID_("Terms of Use"),
+};
 #endif
