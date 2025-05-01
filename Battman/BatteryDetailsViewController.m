@@ -86,6 +86,7 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     }
 
     cell.detailTextLabel.text = final_str;
+    cell.detailTextLabel.textColor = [UIColor secondaryLabelColor];
     return;
 }
 

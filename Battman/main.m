@@ -42,7 +42,7 @@ extern int cond_localize_cnt;
 extern int cond_localize_language_cnt;
 
 inline static int localization_simple_hash(const char *str) {
-	return (((unsigned long long)str)>>2)&0xff;
+	return (((unsigned long long)str)>>3)&0xff;
 }
 
 __attribute__((destructor)) static void localization_deinit() {
