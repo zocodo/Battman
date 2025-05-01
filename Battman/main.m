@@ -27,31 +27,82 @@
 extern int _NSGetExecutablePath(char* buf, uint32_t* bufsize);
 #endif
 
-CFStringRef localization_arr[]={
-	// !LOCALIZATION_ARR_CODE!
-	/* ^ DO NOT REMOVE, will be autoprocessed */
+struct localization_entry {
+	CFStringRef *cfstr;
+	const char **pstr;
 };
 
-#ifndef LOCALIZATION_COUNT
-#define LOCALIZATION_COUNT 1
-#endif
+extern CFStringRef localization_arr[];
+
+#define PSTRMAP_SIZE 256
+struct localization_entry pstrmap[PSTRMAP_SIZE]={0};
 
 #ifndef USE_GETTEXT
-int cond_localize_cnt=LOCALIZATION_COUNT;
+extern int cond_localize_cnt;
+extern int cond_localize_language_cnt;
 
-NSString *cond_localize(unsigned long long localize_id) {
-	if (localize_id > 10000)
-		return [NSString stringWithUTF8String:(const char *)localize_id];
-	int preferred_language = preferred_language_code(); // current: 0=eng 1=cn
-	// ^^ TODO: Make it dynamically modifyable
-	// Also TODO: detect locale
-	return (__bridge NSString *)localization_arr[LOCALIZATION_COUNT * preferred_language + localize_id - 1];
+inline static int localization_simple_hash(const char *str) {
+	return (((unsigned long long)str)>>2)&0xff;
 }
-const char *cond_localize_c(unsigned long long localize_id) {
-	if (localize_id > 10000)
-		return (const char *)localize_id;
+
+__attribute__((destructor)) static void localization_deinit() {
+	for(int i=0;i<PSTRMAP_SIZE;i++) {
+		if(pstrmap[i].pstr) {
+			free(pstrmap[i].pstr);
+		}
+	}
+}
+
+__attribute__((constructor)) static void localization_init() {
+	for(int i=0;i<cond_localize_cnt;i++) {
+		const char *cstr=CFStringGetCStringPtr(localization_arr[i],0x08000100);
+		struct localization_entry *ent=pstrmap+localization_simple_hash(cstr);
+		while(ent->pstr) {
+			ent++;
+			if(ent==pstrmap+PSTRMAP_SIZE)
+				ent=pstrmap;
+		}
+		ent->pstr=malloc(sizeof(void*)*(cond_localize_language_cnt<<1));
+		ent->cfstr=(CFStringRef*)(ent->pstr+cond_localize_language_cnt);
+		for(int j=0;j<cond_localize_language_cnt;j++) {
+			CFStringRef cfstr=localization_arr[cond_localize_cnt*j+i];
+			ent->pstr[j]=CFStringGetCStringPtr(cfstr,0x08000100);
+			ent->cfstr[j]=cfstr;
+		}
+	}
+}
+
+struct localization_entry *cond_localize_find(const char *str) {
+	struct localization_entry *ent=pstrmap+localization_simple_hash(str);
+	for(;ent->pstr;ent++) {
+		if(ent==pstrmap+PSTRMAP_SIZE) {
+			ent=pstrmap;
+			if(!ent->pstr)
+				break;
+		}
+		if(*(ent->pstr)!=str)
+			continue;
+		return ent;
+	}
+	return NULL;
+}
+
+NSString *cond_localize(const char *str) {
 	int preferred_language = preferred_language_code(); // current: 0=eng 1=cn
-	return CFStringGetCStringPtr(localization_arr[LOCALIZATION_COUNT * preferred_language + localize_id - 1],0x08000100);
+	struct localization_entry *ent;
+	if((ent=cond_localize_find(str))) {
+		return (__bridge NSString *)ent->cfstr[preferred_language];
+	}
+	return [NSString stringWithUTF8String:str];
+}
+
+const char *cond_localize_c(const char *str) {
+	int preferred_language = preferred_language_code(); // current: 0=eng 1=cn
+	struct localization_entry *ent;
+	if((ent=cond_localize_find(str))) {
+		return ent->pstr[preferred_language];
+	}
+	return str;
 }
 #else
 /* Use gettext i18n for App & CLI consistency */

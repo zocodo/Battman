@@ -58,26 +58,30 @@ endif
 
 SOURCES := $(wildcard *.m *.c */*.m */*.c */*.S)
 PRESRC := $(addprefix build/preprocessed/,$(SOURCES))
-#OBJECTS:=$(addprefix build/objects/,$(addsuffix .o,$(SOURCES)))
-OBJECTS := $(subst build/preprocessed,build/objects,$(addsuffix .o,$(PRESRC)))
-OBJECTS += build/objects/license/constants.c.o
+OBJECTS:=$(addprefix build/objects/,$(addsuffix .o,$(SOURCES)))
+#OBJECTS := $(subst build/preprocessed,build/objects,$(addsuffix .o,$(PRESRC)))
+POBJECTS := build/objects/license/constants.c.o \
+		build/objects/localization_data.c.o
 
 all: $(PUBLISH_TARGET)
 
 build/preprocessed/license/constants.c: license/license.html
+	@mkdir -p $(@D)
 	echo "const unsigned char lh_arr[]={">$@
 	openssl sha256 -c license/license.html|$(SED) "s/^.*= /0x/g;s/:/,0x/g" >>$@
 	echo "};">>$@
-$(PRESRC): build/preprocessed/%: % Localizations/*.po Localizations/*.sh
+build/preprocessed/localization_data.c: Localizations/*.po Localizations/*.sh
 	@mkdir -p $(@D)
-	./Localizations/preprocess.sh $< > $@
+	./Localizations/generate_code.sh>$@
 
-#$(OBJECTS): build/objects/%.o: %
-$(OBJECTS): build/objects/%.o: build/preprocessed/%
+$(OBJECTS): build/objects/%.o: %
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -I.$(subst build/preprocessed,,$(dir $<)) -c $< -o $@
+$(POBJECTS): build/objects/%.o: build/preprocessed/%
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -I.$(dir $<) -c $< -o $@
 
-build/Payload/Battman.app/Battman: $(OBJECTS) ../Battman.entitlements
+build/Payload/Battman.app/Battman: $(OBJECTS) $(POBJECTS) ../Battman.entitlements
 	@mkdir -p $(@D)
 	$(CC) $(LDFLAGS) $(filter %.o,$^) -o $@
 	$(CODESIGN)../Battman.entitlements $@
