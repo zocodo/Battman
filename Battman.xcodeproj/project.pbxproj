@@ -64,7 +64,7 @@
 		6838BF6B2DB8D06B007EB66C /* licensing.S in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF652DB8D06B007EB66C /* licensing.S */; };
 		6838BF6F2DB8D89E007EB66C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF6E2DB8D89E007EB66C /* WebKit.framework */; };
 		6838BF762DBF810D007EB66C /* localized.c in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF752DBF810D007EB66C /* localized.c */; };
-		6838BF7C2DC22CF6007EB66C /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF7B2DC22CF6007EB66C /* libMobileGestalt.tbd */; };
+		6838BF7C2DC22CF6007EB66C /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF7B2DC22CF6007EB66C /* libMobileGestalt.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6838BF832DC27F1E007EB66C /* ChargingManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF822DC27F1E007EB66C /* ChargingManagementViewController.m */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
