@@ -3,6 +3,13 @@
 #include "common.h"
 #include "intlextern.h"
 
+enum sections_cl {
+	CM_SECT_GENERAL,
+	CM_SECT_SMART_CHARGING,
+	CM_SECT_LOW_POWER_MODE,
+	CM_SECT_COUNT
+};
+
 static NSArray *sections_cl = nil;
 static bool lpm_supported = true;
 static bool lpm_on = false;
@@ -20,16 +27,19 @@ static bool lpm_on = false;
         self = [super initWithStyle:UITableViewStyleGrouped];
     }
 	//self.tableView.allowsSelection=NO;
-    sections_cl = @[
-        _("General"),
-        _("Smart Charging"),
-        _("Low Power Mode"),
-    ];
 	return self;
 }
 
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)sect {
-    return [sections_cl objectAtIndex:sect];
+	switch(sect) {
+	case CM_SECT_GENERAL:
+		return _("General");
+	case CM_SECT_SMART_CHARGING:
+		return _("Smart Charging");
+	case CM_SECT_LOW_POWER_MODE:
+		return _("Low Power Mode");
+	}
+	return nil;
 }
 
 - (NSString *)tableView:(UITableView *)tv titleForFooterInSection:(NSInteger)sect {
@@ -39,10 +49,13 @@ static bool lpm_on = false;
 		return _("Smart Charging will start 900 seconds (15 minutes) after power is plugged-in, or the date you scheduled, whichever one comes first.");
     } else if (sect == 2) {
         NSUserDefaults *batterysaver_state = [[NSUserDefaults alloc] initWithSuiteName:@"com.apple.coreduetd.batterysaver.state"];
-#if USE_MOBILEGESTALT
-        extern bool MGGetBoolAnswer(CFStringRef);
-        lpm_supported = MGGetBoolAnswer(CFSTR("f+PE44W6AO2UENJk3p2s5A"));
-#endif
+	void *mobileGestalt=dlopen("/usr/lib/libMobileGestalt.dylib",RTLD_LAZY);
+	if(mobileGestalt) {
+		bool (*MGGetBoolAnswer)(CFStringRef)=(bool(*)(CFStringRef))dlsym(mobileGestalt,"_MGGetBoolAnswer");
+		if(MGGetBoolAnswer)
+			lpm_supported = MGGetBoolAnswer(CFSTR("f+PE44W6AO2UENJk3p2s5A"));
+		dlclose(mobileGestalt);
+	}
         if (lpm_supported) {
             NSMutableString *finalStr = [[NSMutableString alloc] init];
             [batterysaver_state synchronize];
@@ -82,22 +95,27 @@ static bool lpm_on = false;
 }
 
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)sect {
-    if (sect == 0)
-        return 2;
-    if (sect == 1)
+	switch(sect) {
+	case CM_SECT_GENERAL:
+		return 2;
+	case CM_SECT_SMART_CHARGING:
 		return 3;
-	return 1;
+	case CM_SECT_LOW_POWER_MODE:
+	default:
+		return 1;
+	}
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
-	return sections_cl.count;
+	return CM_SECT_COUNT;
 }
 
 - (void)setBlockCharging:(UISwitch *)cswitch {
 	BOOL val = cswitch.on;
     /* FIXME: kIOReturnNotPrivileged */
 	int ret = smc_write_safe('CH0C', &val, 1);
-    if (ret) show_alert(_C("Failed"), _C("Something went wrong when setting this property."), _C("OK"));
+    if(ret)
+    	show_alert(_C("Failed"), _C("Something went wrong when setting this property."), _C("OK"));
     int new_val;
 	smc_read_n('CH0C', &new_val, 1);
 	new_val &= 0xFF;
@@ -105,11 +123,13 @@ static bool lpm_on = false;
 		cswitch.on = (new_val != 0);
 	}
 }
+
 - (void)setBlockPower:(UISwitch *)cswitch {
     BOOL val = cswitch.on;
     /* FIXME: kIOReturnNotPrivileged */
     int ret = smc_write_safe('CH0I', &val, 1);
-    if (ret) show_alert(_C("Failed"), _C("Something went wrong when setting this property."), _C("OK"));
+    if(ret)
+    	show_alert(_C("Failed"), _C("Something went wrong when setting this property."), _C("OK"));
     int new_val;
     smc_read_n('CH0I', &new_val, 1);
     new_val &= 0xFF;
