@@ -34,7 +34,7 @@ struct localization_entry {
 
 extern CFStringRef localization_arr[];
 
-#define PSTRMAP_SIZE 256
+#define PSTRMAP_SIZE 512
 struct localization_entry pstrmap[PSTRMAP_SIZE]={0};
 
 #ifndef USE_GETTEXT
@@ -42,7 +42,7 @@ extern int cond_localize_cnt;
 extern int cond_localize_language_cnt;
 
 inline static int localization_simple_hash(const char *str) {
-	return (((unsigned long long)str)>>3)&0xff;
+	return (((unsigned long long)str)>>3)&0x1ff;
 }
 
 __attribute__((destructor)) static void localization_deinit() {

@@ -242,10 +242,9 @@ _battman_bootstrap:
 	adrp x2,iOS13ver@PAGE
 	add x2,x2,iOS13ver@PAGEOFF
 	bl _objc_msgSend
-	cmp x0,#0
 	adrp x2,_battman_bootstrap@PAGE
 	add x2,x2,_battman_bootstrap@PAGEOFF
-	b.eq .battman.bootstrap.cont.1 ;b.eq!!!
+	tbz x0,#0,.battman.bootstrap.cont.1 ;b.eq!!!
 	adrp x10,.osSupportsUIScene@PAGE
 	str x0,[x10,.osSupportsUIScene@PAGEOFF]
 	mov x2,x20
@@ -357,7 +356,17 @@ checktoken.pt:
 	adrp x0,_lh_arr@PAGE
 	add x0,x0,_lh_arr@PAGEOFF
 	mov x16,sp
+	ldp q0,q2,[x16]
+	ldp q1,q3,[x0]
+	cmeq v0.2d,v1.2d,v0.2d
+	cmeq v1.2d,v2.2d,v3.2d
+	uminp v0.16b,v1.16b,v0.16b
+	uminv b0,v0.16b
+	umov w0,v0.b[0]
+	ldr x9,[sp,#80]
+	tbnz w0,#0,checktoken.b
 	add x3,sp,#32
+	mov x0,x16
 checktoken.a:
 	cmp x3,x16
 	b.eq checktoken.b
@@ -366,7 +375,6 @@ checktoken.a:
 	cmp x1,x2
 	add x16,x16,#8
 	add x0,x0,#8
-	ldr x9,[sp,#80]
 	b.eq checktoken.a
 	mov x9,x1
 checktoken.b:
@@ -738,7 +746,7 @@ show_license:
 	mov x1,x0
 	mov x0,xzr
 	bl _IOServiceGetMatchingService
-	cmp x0,#0
+	cmp w0,wzr
 	b.eq show_license.return.fail
 	mov x9,x20
 	mov x20,x0
@@ -746,7 +754,7 @@ show_license:
 	mov x3,x2
 	mov x1,x9
 	bl _IORegistryEntryCreateCFProperty
-	cmp x0,#0
+	cmp w0,wzr
 	b.eq show_license.return.fail
 	sub sp,sp,#64
 	mov x1,#0x0100
@@ -792,7 +800,7 @@ show_license.1:
 	ldr x0,[sp,#32]
 	mov x16,#5
 	ldr x9,[sp,#96]
-	cmp x9,#0
+	cmp x9,xzr
 	b.ne show_license.1.svc
 	mov x1,#0x202
 	mov x2,#0x180
@@ -803,7 +811,7 @@ show_license.1.svc:
 	;bl _free
 	b.cs show_license.cb
 	ldr x16,[sp,#96]
-	cmp x16,#0
+	cmp x16,xzr
 	b.ne show_license.2
 	mov x20,x0
 	ldr x0,[sp,#32]
@@ -829,8 +837,7 @@ show_license.1.svc:
 	bl _objc_msgSend
 	adrp x9,.osSupportsUIScene@PAGE
 	ldr x9,[x9,.osSupportsUIScene@PAGEOFF]
-	cmp x9,xzr
-	b.eq show_license.1.noscene
+	tbz x9,#0,show_license.1.noscene
 	mov x0,x20
 	adrp x1,sel.connectedScenes@PAGE
 	ldr x1,[x1,sel.connectedScenes@PAGEOFF]
@@ -876,28 +883,18 @@ show_license.2:
 	ldr w0,[sp,#40]
 	mov x16,#6
 	svc #0x80
-	ldr x0,[sp]
-	ldr x1,[x20]
-	ldr x2,[sp,#8]
-	ldr x3,[x20,#8]
-	ldr x4,[sp,#16]
-	ldr x5,[x20,#16]
-	ldr x6,[sp,#24]
-	ldr x7,[x20,#24]
-	cmp x0,x1
-	b.ne show_license.pcb
-	cmp x2,x3
-	b.ne show_license.pcb
-	cmp x4,x5
-	b.eq show_license.3
-	add sp,sp,#8
-	cmp x6,x7
+	ldp q0,q1,[sp]
+	ldp q2,q3,[x20]
+	cmeq v0.2d,v0.2d,v2.2d
+	cmeq v1.2d,v1.2d,v3.2d
+	uminp v0.16b,v0.16b,v1.16b
+	uminv b0,v0.16b
+	umov w0,v0.b[0]
+	cmp w0,#0xFF
 	b.ne show_license.pcb
 show_license.3:
 	add x2,sp,#96
 	str x2,[sp]
-	cmp x6,x7
-	b.ne show_license.pcb
 	mov x0,x19
 	ldr w1,[sp,#44]
 	mov x16,#73
