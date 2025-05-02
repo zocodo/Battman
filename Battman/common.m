@@ -323,6 +323,28 @@ UIViewController* find_top_controller(UIViewController *root)
 }
 #endif
 
+const char *L_OK;
+const char *L_FAILED;
+const char *L_ERR;
+const char *L_NONE;
+const char *L_MA;
+const char *L_MAH;
+const char *L_MV;
+/* This function is for speed up PO generation */
+void init_common_text(void) {
+    static bool done = false;
+    if (!done) {
+        L_OK = _C("OK");
+        L_FAILED = _C("Failed");
+        L_ERR = _C("Error");
+        L_NONE = _C("None"); // Consider "None" => "N/A"
+        L_MA = _C("mA");
+        L_MAH = _C("mAh");
+        L_MV = _C("mV");
+    }
+    done = true;
+}
+
 /* Alert for multiple scene */
 /* TODO: Check if program running under SSH */
 bool show_alert(const char *title, const char *message, const char *button) {

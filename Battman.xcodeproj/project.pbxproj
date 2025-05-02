@@ -66,6 +66,7 @@
 		6838BF762DBF810D007EB66C /* localized.c in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF752DBF810D007EB66C /* localized.c */; };
 		6838BF7C2DC22CF6007EB66C /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF7B2DC22CF6007EB66C /* libMobileGestalt.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6838BF832DC27F1E007EB66C /* ChargingManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF822DC27F1E007EB66C /* ChargingManagementViewController.m */; };
+		6838BFAC2DC3984C007EB66C /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6838BFAB2DC3984C007EB66C /* SliderTableViewCell.m */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		686AECD52D3B93CD0059ECD0 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 686AECD42D3B93CD0059ECD0 /* main.m */; };
 		687742B62D43838500375A2C /* locales in Resources */ = {isa = PBXBuildFile; fileRef = 687742B52D43837B00375A2C /* locales */; };
@@ -130,6 +131,8 @@
 		6838BF7B2DC22CF6007EB66C /* libMobileGestalt.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libMobileGestalt.tbd; path = usr/lib/libMobileGestalt.tbd; sourceTree = SDKROOT; };
 		6838BF7E2DC27F1E007EB66C /* ChargingManagementViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChargingManagementViewController.h; sourceTree = "<group>"; };
 		6838BF822DC27F1E007EB66C /* ChargingManagementViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChargingManagementViewController.m; sourceTree = "<group>"; };
+		6838BFAA2DC3984C007EB66C /* SliderTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SliderTableViewCell.h; sourceTree = "<group>"; };
+		6838BFAB2DC3984C007EB66C /* SliderTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SliderTableViewCell.m; sourceTree = "<group>"; };
 		686AECBF2D3B93CB0059ECD0 /* Battman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Battman.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		686AECD32D3B93CD0059ECD0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		686AECD42D3B93CD0059ECD0 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -319,6 +322,8 @@
 				68B5FF2D2D85606000919BC2 /* GradientArcView.m */,
 				6833A8C82DA3C6E500B71299 /* WarnAccessoryView.m */,
 				6833A8CA2DA3C6FE00B71299 /* WarnAccessoryView.h */,
+				6838BFAA2DC3984C007EB66C /* SliderTableViewCell.h */,
+				6838BFAB2DC3984C007EB66C /* SliderTableViewCell.m */,
 			);
 			name = CustomUIElements;
 			sourceTree = "<group>";
@@ -598,6 +603,7 @@
 				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
 				68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */,
 				6838BF6B2DB8D06B007EB66C /* licensing.S in Sources */,
+				6838BFAC2DC3984C007EB66C /* SliderTableViewCell.m in Sources */,
 				68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */,
 				687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */,
 				68171A302D5221C400DD4224 /* libsmc.c in Sources */,

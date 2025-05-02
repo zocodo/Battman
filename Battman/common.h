@@ -23,9 +23,7 @@
 #endif
 
 #ifndef USE_MOBILEGESTALT
-#if !TARGET_OS_OSX
-#define USE_MOBILEGESTALT 1
-#endif
+#define USE_MOBILEGESTALT 0
 #endif
 
 #define LICENSE_MIT 2
@@ -42,12 +40,22 @@
 
 __BEGIN_DECLS
 
+extern const char *L_OK;
+extern const char *L_FAILED;
+extern const char *L_ERR;
+extern const char *L_NONE;
+extern const char *L_MA;
+extern const char *L_MAH;
+extern const char *L_MV;
+
 bool show_alert(const char *title, const char *message, const char *cancel_button_title);
 void show_alert_async(const char *title, const char *message, const char *button, void (^completion)(bool result));
 
 char *preferred_language(void);
 bool libintl_available(void);
 bool gtk_available(void);
+
+void init_common_text(void);
 
 void app_exit(void);
 bool is_carbon(void);

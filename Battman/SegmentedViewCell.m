@@ -162,7 +162,7 @@
 #define HW1     @"HW1"
 #define HW0     @"HW0"
 #define EC3     @"EC3"
-#define EC2     @"EC3"
+#define EC2     @"EC2"
 #define EC1     @"EC1"
 #define EC0     @"EC0"
 #endif

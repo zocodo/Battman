@@ -213,7 +213,7 @@ NSMutableAttributedString *redirectedOutput;
 void *globalArgv;
 
 int main(int argc, char * argv[]) {
-	globalArgv=argv;
+	globalArgv = argv;
 #if defined(DEBUG) && !TARGET_OS_SIMULATOR
     // Redirecting is not needed for Simulator
     char *tty = ttyname(0);

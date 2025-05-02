@@ -86,7 +86,11 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     }
 
     cell.detailTextLabel.text = final_str;
-    cell.detailTextLabel.textColor = [UIColor secondaryLabelColor];
+    if (@available(iOS 13.0, *))
+        cell.detailTextLabel.textColor = [UIColor secondaryLabelColor];
+    else
+        cell.detailTextLabel.textColor = [UIColor colorWithRed:(60.0f / 255) green:(60.0f / 255) blue:(67.0f / 255) alpha:0.6];
+
     return;
 }
 
@@ -188,7 +192,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         _("Current Rating"), _("Current rating of connected power source, this does not indicates the real-time passing current."),
         _("Voltage Rating"), _("Voltage rating of connected power source, this does not indicates the real-time passing voltage."),
         _("Description"), _("Short description provided by Apple PMU on current power adapter Family Code. Sometimes may not set."),
-        _("Not Charging Reason"), _("If this field appears in the list, it indicates that an issue has occurred or that a condition was met, causing charging to stop."),
+        _("Reason"), _("If this field appears in the list, it indicates that an issue has occurred or that a condition was met, causing charging to stop."),
         _("HVC Mode"), _("High Voltage Charging (HVC) Mode may accquired by your power adapter or system, all supported modes will be listed below."),
     ];
 
@@ -243,10 +247,10 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
             @[_("Compatibility"),       [NSString stringWithFormat:@"%@: %@\n%@: %@", _("External Connected"), (adapter_data.ChargerExist == 1) ? _("True") : _("False"), _("Charger Capable"), (adapter_data.ChargerCapable == 1) ? _("True") : _("False")]],
             @[_("Type"),                [NSString stringWithFormat:@"%@ (%.8X)", _(adapter_family_str), adapter_family]],
             @[_("Status"),              (charging_stat == kIsPausing || adapter_data.NotChargingReason != 0) ? _("Not Charging") : _("Charging")],
-            @[_("Current Rating"),      [NSString stringWithFormat:@"%u %@", adapter_info.current, _("mA")]],
-            @[_("Voltage Rating"),      [NSString stringWithFormat:@"%u %@", adapter_info.voltage, _("mV")]],
-            @[_("Charging Current"),    [NSString stringWithFormat:@"%u %@", adapter_data.ChargingCurrent, _("mA")]],
-            @[_("Charging Voltage"),    [NSString stringWithFormat:@"%u %@", adapter_data.ChargingVoltage, _("mV")]],
+            @[_("Current Rating"),      [NSString stringWithFormat:@"%u %s", adapter_info.current, L_MA]],
+            @[_("Voltage Rating"),      [NSString stringWithFormat:@"%u %s", adapter_info.voltage, L_MV]],
+            @[_("Charging Current"),    [NSString stringWithFormat:@"%u %s", adapter_data.ChargingCurrent, L_MA]],
+            @[_("Charging Voltage"),    [NSString stringWithFormat:@"%u %s", adapter_data.ChargingVoltage, L_MV]],
             @[_("Charger ID"),          [NSString stringWithFormat:@"0x%.4X", adapter_data.ChargerId]],
             @[_("Model Name"),          [NSString stringWithUTF8String:adapter_info.name]],
             @[_("Manufacturer"),        [NSString stringWithUTF8String:adapter_info.vendor]],
@@ -265,12 +269,12 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
              */
             @[_("Description"),         [NSString stringWithUTF8String:adapter_info.description]],
             @[_("Serial No."),          [NSString stringWithUTF8String:adapter_info.serial]],
-            @[_("PMU Configuration"),   [NSString stringWithFormat:@"%u %@", adapter_info.PMUConfiguration, _("mA")]],
-            @[_("Charger Configuration"),[NSString stringWithFormat:@"%u %@", adapter_data.ChargerConfiguration, _("mA")]],
+            @[_("PMU Configuration"),   [NSString stringWithFormat:@"%u %s", adapter_info.PMUConfiguration, L_MA]],
+            @[_("Charger Configuration"),[NSString stringWithFormat:@"%u %s", adapter_data.ChargerConfiguration, L_MA]],
             @[_("HVC Mode"),            @""], /* Special type, content controlled later */
         ]];
         if (adapter_data.NotChargingReason != 0) {
-            [adapter_cells insertObject:@[_("Not Charging Reason"), [NSString stringWithUTF8String:not_charging_reason_str(adapter_data.NotChargingReason)]] atIndex:4];
+            [adapter_cells insertObject:@[_("Reason"), [NSString stringWithUTF8String:not_charging_reason_str(adapter_data.NotChargingReason)]] atIndex:4];
         }
         if (adapter_info.port_type != 0) {
             [adapter_cells insertObject:@[_("Port Type"), _(port_type_str(adapter_info.port_type))] atIndex:1];
@@ -298,9 +302,9 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         if ([cell.textLabel.text isEqualToString:_("Type")]) {
             NSString *finalstr = [target_desc objectAtIndex:(index + 1)];
             NSString *explaination_Ext = ((adapter_family & 0x20000) && (adapter_family & 0x7)) ? [NSString stringWithFormat:@"\n\n%@", _("\"External Power\" indicator may suggest that the connected adapter is a wireless charger. Most information may not be displayed because wireless chargers are handled differently by the hardware.")] : @"";
-            show_alert([cell.textLabel.text UTF8String], [[NSString stringWithFormat:@"%@%@", finalstr, explaination_Ext] UTF8String], _C("OK"));
+            show_alert([cell.textLabel.text UTF8String], [[NSString stringWithFormat:@"%@%@", finalstr, explaination_Ext] UTF8String], L_OK);
         } else {
-            show_alert([cell.textLabel.text UTF8String], [[target_desc objectAtIndex:(index + 1)] UTF8String], _C("OK"));
+            show_alert([cell.textLabel.text UTF8String], [[target_desc objectAtIndex:(index + 1)] UTF8String], L_OK);
         }
     }
     DBGLOG(@"Accessory Pressed, %@", cell.textLabel.text);
@@ -581,8 +585,8 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
                     cell_seg.detailLabel.text = [NSString stringWithFormat:@"%d (%@)", hvc_index, _("Software Controlled")];
                     [cell_seg.segmentedControl setSelectedSegmentIndex:hvc_index];
                     /* Why its not refreshing label after setSelectedSegmentIndex? */
-                    cell_seg.subTitleLabel.text = [NSString stringWithFormat:@"%d %@", hvc_menu[hvc_index].voltage, _("mV")];
-                    cell_seg.subDetailLabel.text = [NSString stringWithFormat:@"%d %@", hvc_menu[hvc_index].current, _("mA")];
+                    cell_seg.subTitleLabel.text = [NSString stringWithFormat:@"%d %s", hvc_menu[hvc_index].voltage, L_MV];
+                    cell_seg.subDetailLabel.text = [NSString stringWithFormat:@"%d %s", hvc_menu[hvc_index].current, L_MA];
                 } else if (hvc_index == -1) {
                     cell_seg.detailLabel.text = [NSString stringWithFormat:@"%d (%@)", hvc_index, _("Unavailable")];
                     cell_seg.subTitleLabel.text = @" ";
@@ -591,8 +595,8 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
                     cell_seg.detailLabel.text = [NSString stringWithFormat:@"%d", hvc_index];
                     [cell_seg.segmentedControl setSelectedSegmentIndex:hvc_index];
                     /* Why its not refreshing label after setSelectedSegmentIndex? */
-                    cell_seg.subTitleLabel.text = [NSString stringWithFormat:@"%d %@", hvc_menu[hvc_index].voltage, _("mV")];
-                    cell_seg.subDetailLabel.text = [NSString stringWithFormat:@"%d %@", hvc_menu[hvc_index].current, _("mA")];
+                    cell_seg.subTitleLabel.text = [NSString stringWithFormat:@"%d %s", hvc_menu[hvc_index].voltage, L_MV];
+                    cell_seg.subDetailLabel.text = [NSString stringWithFormat:@"%d %s", hvc_menu[hvc_index].current, L_MA];
                 }
 
                 return cell_seg;
@@ -615,8 +619,8 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     if (view) {
         SegmentedViewCell *cell_seg = (SegmentedViewCell *)view;
         // Now update the cell's title
-        cell_seg.subTitleLabel.text = [NSString stringWithFormat:@"%d %@", hvc_menu[segment.selectedSegmentIndex].voltage, _("mV")];
-        cell_seg.subDetailLabel.text = [NSString stringWithFormat:@"%d %@", hvc_menu[segment.selectedSegmentIndex].current, _("mA")];
+        cell_seg.subTitleLabel.text = [NSString stringWithFormat:@"%d %s", hvc_menu[segment.selectedSegmentIndex].voltage, L_MV];
+        cell_seg.subDetailLabel.text = [NSString stringWithFormat:@"%d %s", hvc_menu[segment.selectedSegmentIndex].current, L_MA];
         return;
     }
 
@@ -653,7 +657,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
                         break;
                 }
                 const char *content = [[warns objectAtIndex:index + 1] UTF8String];
-                show_alert(title, content, _C("OK"));
+                show_alert(title, content, L_OK);
                 return;
             }
         }
@@ -691,7 +695,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         pasteboard = [UIPasteboard generalPasteboard];
         [pasteboard setString:pending];
 
-        show_alert(_C("Copied!"), [pending UTF8String], _C("OK"));
+        show_alert(_C("Copied!"), [pending UTF8String], L_OK);
     }
 }
 

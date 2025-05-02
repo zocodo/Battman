@@ -16,6 +16,7 @@
  */
 
 #include "libsmc.h"
+#include "common.h"
 #include "../intlextern.h"
 #include <dispatch/dispatch.h>
 #include <CoreFoundation/CFBase.h>
@@ -128,7 +129,7 @@ static IOReturn smc_open(void) {
     return kIOReturnSuccess;
 
 fail:
-    show_alert_async(fail_title, _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"), _C("OK"), ^(bool res) {
+    show_alert_async(fail_title, _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"), L_OK, ^(bool res) {
         app_exit();
     });
     return kIOReturnError;
@@ -685,7 +686,7 @@ const char *not_charging_reason_str(uint64_t code) {
 
     /* Apple Silicon NotChargingReason */
     if (gen >= 4) {
-        if (code == DEVICE_IS_CHARGING) return _C("None");
+        if (code == DEVICE_IS_CHARGING) return L_NONE;
 
         /* Common */
         addreason(NOT_CHARGING_REASON_FULLY_CHARGED, _C("Fully Charged")); // This will be set when FC flag sets
@@ -747,7 +748,7 @@ const char *not_charging_reason_str(uint64_t code) {
         /* X86 NotChargingReason (BNCR/CHNC) */
         if (code < 0x20) {
             switch (code) {
-                case NO_REASON: setreason(_C("None")); break;
+                case NO_REASON: setreason(L_NONE); break;
                 case NO_BATTERY: setreason(_C("No Battery")); break;
                 case BAD_BATTERY: setreason(_C("Bad Battery")); break;
                 case BATTERY_FC: setreason(_C("Fully Charged")); break;

@@ -244,16 +244,16 @@ static NSString *_contrib[] = {
 
 // Language
 #ifdef USE_GETTEXT
-static int cond_localize_cnt = 0;
+static int __unused cond_localize_cnt = 0;
 static int cond_localize_language_cnt=0;
-static CFStringRef localization_arr[];
+static CFStringRef __unused localization_arr[];
 #else
 extern int cond_localize_cnt;
 extern int cond_localize_language_cnt;
 extern CFStringRef localization_arr[];
+extern CFStringRef **cond_localize_find(const char *str);
 #endif
 extern void preferred_language_code_clear(void);
-extern CFStringRef **cond_localize_find(const char *str);
 
 @implementation LanguageSelectionVC
 
@@ -275,10 +275,12 @@ extern CFStringRef **cond_localize_find(const char *str);
 		cell.textLabel.text = _("Clear");
 		return cell;
 	}
-	cell.textLabel.text = (__bridge NSString *)(*cond_localize_find("English"))[indexPath.row-1];
+#if !defined(USE_GETTEXT)
+	cell.textLabel.text = (__bridge NSString *)(*cond_localize_find("English"))[indexPath.row - 1];
 	if (preferred_language_code() + 1 == indexPath.row) {
 		cell.accessoryType = UITableViewCellAccessoryCheckmark;
 	}
+#endif
 	return cell;
 }
 
