@@ -7,6 +7,7 @@
     unsigned char pendingLoadOffsets[64];
     NSString *gasGaugeDisclaimer;
     NSString *adapterDisclaimer;
+    id observerToUnsubscribe;
 }
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi;
 @end

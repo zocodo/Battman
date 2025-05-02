@@ -160,8 +160,16 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     [self updateTableView];
 }
 
+- (void)viewDidUnload {
+	[super viewDidUnload];
+	[[NSNotificationCenter defaultCenter] removeObserver:observerToUnsubscribe];
+}
+
 - (void)viewDidLoad {
-    /* We knows too less to listen on SMC events */
+	[super viewDidLoad];
+	observerToUnsubscribe=[[NSNotificationCenter defaultCenter] addObserverForName:@"SMC60000" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *n){
+		[self updateTableView];
+	}];
     if (configured_autorefresh) {
         (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval
                                                target:self
