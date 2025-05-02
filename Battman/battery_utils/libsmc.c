@@ -16,7 +16,7 @@
  */
 
 #include "libsmc.h"
-#include "common.h"
+#include "../common.h"
 #include "../intlextern.h"
 #include <dispatch/dispatch.h>
 #include <CoreFoundation/CFBase.h>

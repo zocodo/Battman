@@ -1,5 +1,5 @@
 .section __TEXT,__text,regular,pure_instructions
-.globl _battman_bootstrap,_ios_app_exit
+.globl _battman_bootstrap,_ios_app_exit,___isOSVersionAtLeast
 .p2align 2
 
 ; current version only works for arm64 iOS :(
@@ -1065,6 +1065,23 @@ _ios_app_exit.graceful:
 	ldr x19,[sp,#32]
 	ldp x29,x30,[sp,#48]
 	add sp,sp,#64
+	ret
+___isOSVersionAtLeast:
+	sub sp,sp,#48
+	stp x29,x30,[sp,#32]
+	stp x0,x1,[sp]
+	stp x2,x3,[sp,#16]
+	adrp x0,_OBJC_CLASS_$_NSProcessInfo@GOTPAGE
+	ldr x0,[x0,_OBJC_CLASS_$_NSProcessInfo@GOTPAGEOFF]
+	adrp x1,sel.processInfo@PAGE
+	ldr x1,[x1,sel.processInfo@PAGEOFF]
+	bl _objc_msgSend
+	adrp x1,sel.iOSAtLeast@PAGE
+	ldr x1,[x1,sel.iOSAtLeast@PAGEOFF]
+	mov x2,sp
+	bl _objc_msgSend
+	ldp x29,x30,[sp,#32]
+	add sp,sp,#48
 	ret
 
 .section __TEXT,__cstring,cstring_literals
