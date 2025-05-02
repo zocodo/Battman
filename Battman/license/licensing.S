@@ -1070,7 +1070,7 @@ ___isOSVersionAtLeast:
 	sub sp,sp,#48
 	stp x29,x30,[sp,#32]
 	stp x0,x1,[sp]
-	stp x2,x3,[sp,#16]
+	stp x2,xzr,[sp,#16]
 	adrp x0,_OBJC_CLASS_$_NSProcessInfo@GOTPAGE
 	ldr x0,[x0,_OBJC_CLASS_$_NSProcessInfo@GOTPAGEOFF]
 	adrp x1,sel.processInfo@PAGE
