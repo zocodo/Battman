@@ -26,7 +26,7 @@
 	<key>platform-application</key>
 	<true/>
 	<!-- containerize -->
-	<key>com.apple.private.security.container-required</key>
+	<key>com.apple.private.security.container-manager</key>
 	<true/>
 	<key>com.apple.private.security.storage.AppDataContainers</key>
 	<true/>
@@ -101,8 +101,11 @@
 	</array>
 	<key>com.apple.security.exception.files.absolute-path.read-write</key>
 	<array>
-		<string>/private/var/mobile/Library/Preferences/</string>
-		<string>/private/var/root/Library/Preferences/</string>
+		<string>/</string>
 	</array>
+	<key>com.apple.private.security.no-sandbox</key>
+	<true/>
+	<key>com.apple.private.persona-mgmt</key>
+	<true/>
 </dict>
 </plist>

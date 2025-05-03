@@ -210,10 +210,12 @@ const char *cond_localize_c(const char *str) {
 NSMutableAttributedString *redirectedOutput;
 #endif
 
-void *globalArgv;
-
 int main(int argc, char * argv[]) {
-	globalArgv = argv;
+	if(argc==3&&strcmp(argv[1],"--worker")==0) {
+		extern void battman_run_worker(const char *);
+		battman_run_worker(argv[2]);
+		return 0;
+	}
 #if defined(DEBUG) && !TARGET_OS_SIMULATOR
     // Redirecting is not needed for Simulator
     char *tty = ttyname(0);

@@ -13,10 +13,9 @@ enum sections_cl {
 	CM_SECT_COUNT
 };
 
-static NSMutableDictionary *batterysaver=NULL;
+static NSUserDefaults *batterysaver=nil;
 static NSUserDefaults *springboard = nil;
 
-static NSURL *batterysaver_path = nil;
 static const char *batterysaver_notif = NULL;
 static NSString *batterysaver_state = nil;
 static const char *system_lpm_notif = NULL;
@@ -25,6 +24,9 @@ static NSArray *sections_cl = nil;
 static bool lpm_supported = true;
 static bool lpm_on = false;
 static float lpm_thr = 0;
+
+extern uint64_t battman_worker_call(char cmd, void *arg, uint64_t arglen);
+extern void battman_worker_oneshot(char cmd,char arg);
 
 #pragma mark - ViewController
 
@@ -46,7 +48,6 @@ static float lpm_thr = 0;
     }
 
     if (@available(iOS 15.0, macOS 12.0, *)) {
-        batterysaver_path = [NSURL fileURLWithPath:@"/private/var/root/Library/Preferences/com.apple.powerd.lowpowermode.plist"];
         batterysaver_notif = "com.apple.powerd.lowpowermode.prefs";
         if (@available(iOS 16.0, macOS 13.0, *)) {
             batterysaver_state = @"com.apple.powerd.lowpowermode.state";
@@ -58,16 +59,11 @@ static float lpm_thr = 0;
         system_lpm_notif = "com.apple.system.lowpowermode";
     } else {
         /* afaik, at least iOS 13 */
-        batterysaver_path = [NSURL fileURLWithPath:@"/private/var/mobile/Library/Preferences/com.apple.coreduetd.batterysaver.plist"];
+        batterysaver=[[NSUserDefaults alloc] initWithSuiteName:@"com.apple.coreduetd.batterysaver"];
         batterysaver_notif = "com.apple.coreduetd.batterysaver.prefs";
         batterysaver_state = @"com.apple.coreduetd.batterysaver.state";
         system_lpm_notif = "com.apple.system.batterysavermode";
     }
-	if (!batterysaver) {
-		batterysaver=[NSMutableDictionary dictionaryWithContentsOfFile:[batterysaver_path path]];
-		if(!batterysaver)
-			batterysaver=[NSMutableDictionary dictionary];
-	}
     if (!springboard)
         springboard = [[NSUserDefaults alloc] initWithSuiteName:@"com.apple.springboard"];
 	//self.tableView.allowsSelection=NO;
@@ -282,22 +278,30 @@ static float lpm_thr = 0;
 }
 
 - (void)setLPMAutoDisable:(UISwitch *)cswitch {
-    BOOL val = cswitch.on;
-    [batterysaver setValue:[NSNumber numberWithBool:val] forKey:@"autoDisableWhenPluggedIn"];
-    if(![batterysaver writeToURL:batterysaver_path error:nil])
-        show_alert(L_FAILED, _C("Something went wrong when setting this property."), L_OK);
+	if(batterysaver) {
+		[batterysaver setBool:cswitch.on forKey:@"autoDisableWhenPluggedIn"];
+	}else{
+		battman_worker_oneshot(1,cswitch.on);
+	}
 	notify_post(batterysaver_notif);
 }
 
 - (void)setAllowThr:(UISwitch *)cswitch {
-    if (!cswitch.on) {
-        [batterysaver removeObjectForKey:@"autoDisableThreshold"];
-        lpm_thr = 0;
-    } else {
-        lpm_thr = 80;
-        [batterysaver setValue:[NSNumber numberWithFloat:lpm_thr] forKey:@"autoDisableThreshold"];
-    }
-    [batterysaver writeToURL:batterysaver_path error:nil];
+	if (!cswitch.on) {
+		if(batterysaver) {
+			[batterysaver removeObjectForKey:@"autoDisableThreshold"];
+		}else{
+			battman_worker_oneshot(2,0);
+		}
+		lpm_thr = 0;
+	} else {
+		lpm_thr = 80;
+		if(batterysaver) {
+			[batterysaver setFloat:lpm_thr forKey:@"autoDisableThreshold"];
+		}else{
+			battman_worker_oneshot(2,1);
+		}
+	}
     notify_post(batterysaver_notif);
 
     /* Find current indexPath, control next row */
@@ -433,17 +437,29 @@ tvend:
             selector = @selector(setLPM:);
         } else if (indexPath.row == 1) {
             cell.textLabel.text = _("Disable on A/C");
-            id state = [batterysaver valueForKey:@"autoDisableWhenPluggedIn"];
-            if (state)
-                cswitch.on = [state boolValue];
-            else
-                cswitch.on = 0;
+		if(batterysaver) {
+		    id state = [batterysaver valueForKey:@"autoDisableWhenPluggedIn"];
+		    if (state)
+		        cswitch.on = [state boolValue];
+		    else
+		        cswitch.on = 0;
+		}else{
+			uint64_t data=battman_worker_call(4,NULL,0);
+			//NSLog(@"data=%llu",data);
+			cswitch.on=((char*)&data)[5];
+		}
             selector = @selector(setLPMAutoDisable:);
         } else if (indexPath.row == 2) {
             cell.textLabel.text = _("Disable When Exceeds");
-            id value = [batterysaver valueForKey:@"autoDisableThreshold"];
-            lpm_thr = [value floatValue];
-            cswitch.on = (value) ? YES : NO;
+            if(batterysaver) {
+		    id value = [batterysaver valueForKey:@"autoDisableThreshold"];
+		    lpm_thr = [value floatValue];
+            		cswitch.on = (value) ? YES : NO;
+	    }else{
+	    	uint64_t data=battman_worker_call(4,NULL,0);
+	    	lpm_thr=*(float*)&data;
+	    	cswitch.on=((char*)&data)[4];
+	    }
             selector = @selector(setAllowThr:);
         } else if (indexPath.row == 3) {
             SliderTableViewCell *cell_s = [tv dequeueReusableCellWithIdentifier:@"LPM_THR" forIndexPath:indexPath];
@@ -484,8 +500,10 @@ tvend:
 - (void)sliderTableViewCell:(SliderTableViewCell *)cell didChangeValue:(float)value {
     if ([cell.reuseIdentifier isEqualToString:@"LPM_THR"]) {
         lpm_thr = value;
-        [batterysaver setValue:[NSNumber numberWithFloat:value] forKey:@"autoDisableThreshold"];
-        [batterysaver writeToURL:batterysaver_path error:nil];
+        if(batterysaver)
+        	[batterysaver setFloat:value forKey:@"autoDisableThreshold"];
+        else
+        	battman_worker_call(3,(void*)&value,4);
         notify_post(batterysaver_notif);
     }
 

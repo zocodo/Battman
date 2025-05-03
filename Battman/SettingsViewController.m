@@ -87,7 +87,7 @@ extern NSMutableAttributedString *redirectedOutput;
 		return 2;
 #ifdef DEBUG
 	else if (section == SS_SECT_DEBUG)
-		return 3;
+		return 4;
 #endif
 	return 0;
 }
@@ -124,8 +124,11 @@ extern NSMutableAttributedString *redirectedOutput;
 #else
 			show_alert("USE_GETTEXT", "UNIMPLEMENTED YET", "OK");
 #endif
-		}else{
+		}else if(indexPath.row==2){
 			app_exit();
+		}else{
+			extern void worker_test();
+			worker_test();
 		}
 	}
 #endif
@@ -167,6 +170,11 @@ extern NSMutableAttributedString *redirectedOutput;
 		}else if(indexPath.row==2) {
 			UITableViewCell *cell = [UITableViewCell new];
 			cell.textLabel.text = _("Exit App");
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			return cell;
+		}else if(indexPath.row==3) {
+			UITableViewCell *cell = [UITableViewCell new];
+			cell.textLabel.text = _("TEST TEST");
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			return cell;
 		}
