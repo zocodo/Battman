@@ -99,5 +99,10 @@
 		<string>com.apple.coreduetd.batterysaver</string>
 		<string>com.apple.powerui.smartChargeManager</string>
 	</array>
+	<key>com.apple.security.exception.files.absolute-path.read-write</key>
+	<array>
+		<string>/private/var/mobile/Library/Preferences/</string>
+		<string>/private/var/root/Library/Preferences/</string>
+	</array>
 </dict>
 </plist>

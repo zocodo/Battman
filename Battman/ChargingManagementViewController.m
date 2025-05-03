@@ -13,13 +13,13 @@ enum sections_cl {
 	CM_SECT_COUNT
 };
 
-static NSUserDefaults *batterysaver = nil;
+static NSMutableDictionary *batterysaver=NULL;
 static NSUserDefaults *springboard = nil;
 
-static NSString *batterysaver_suite = nil;
-static char *batterysaver_notif = NULL;
+static NSURL *batterysaver_path = nil;
+static const char *batterysaver_notif = NULL;
 static NSString *batterysaver_state = nil;
-static char *system_lpm_notif = NULL;
+static const char *system_lpm_notif = NULL;
 
 static NSArray *sections_cl = nil;
 static bool lpm_supported = true;
@@ -45,9 +45,8 @@ static float lpm_thr = 0;
         self = [super initWithStyle:UITableViewStyleGrouped];
     }
 
-    batterysaver_suite = nil;
     if (@available(iOS 15.0, macOS 12.0, *)) {
-        batterysaver_suite = @"com.apple.powerd.lowpowermode";
+        batterysaver_path = [NSURL fileURLWithPath:@"/private/var/root/Library/Preferences/com.apple.powerd.lowpowermode.plist"];
         batterysaver_notif = "com.apple.powerd.lowpowermode.prefs";
         if (@available(iOS 16.0, macOS 13.0, *)) {
             batterysaver_state = @"com.apple.powerd.lowpowermode.state";
@@ -59,13 +58,16 @@ static float lpm_thr = 0;
         system_lpm_notif = "com.apple.system.lowpowermode";
     } else {
         /* afaik, at least iOS 13 */
-        batterysaver_suite = @"com.apple.coreduetd.batterysaver";
+        batterysaver_path = [NSURL fileURLWithPath:@"/private/var/mobile/Library/Preferences/com.apple.coreduetd.batterysaver.plist"];
         batterysaver_notif = "com.apple.coreduetd.batterysaver.prefs";
         batterysaver_state = @"com.apple.coreduetd.batterysaver.state";
         system_lpm_notif = "com.apple.system.batterysavermode";
     }
-    if (!batterysaver)
-        batterysaver = [[NSUserDefaults alloc] initWithSuiteName:batterysaver_suite];
+	if (!batterysaver) {
+		batterysaver=[NSMutableDictionary dictionaryWithContentsOfFile:[batterysaver_path path]];
+		if(!batterysaver)
+			batterysaver=[NSMutableDictionary dictionary];
+	}
     if (!springboard)
         springboard = [[NSUserDefaults alloc] initWithSuiteName:@"com.apple.springboard"];
 	//self.tableView.allowsSelection=NO;
@@ -281,16 +283,10 @@ static float lpm_thr = 0;
 
 - (void)setLPMAutoDisable:(UISwitch *)cswitch {
     BOOL val = cswitch.on;
-    [batterysaver setBool:val forKey:@"autoDisableWhenPluggedIn"];
-    [batterysaver synchronize];
-
-    BOOL new = NO;
-    id state = [batterysaver valueForKey:@"autoDisableWhenPluggedIn"];
-    if (state)
-        new = [state boolValue];
-
-    if (val != new)
+    [batterysaver setValue:[NSNumber numberWithBool:val] forKey:@"autoDisableWhenPluggedIn"];
+    if(![batterysaver writeToURL:batterysaver_path error:nil])
         show_alert(L_FAILED, _C("Something went wrong when setting this property."), L_OK);
+	notify_post(batterysaver_notif);
 }
 
 - (void)setAllowThr:(UISwitch *)cswitch {
@@ -299,9 +295,9 @@ static float lpm_thr = 0;
         lpm_thr = 0;
     } else {
         lpm_thr = 80;
-        [batterysaver setFloat:lpm_thr forKey:@"autoDisableThreshold"];
+        [batterysaver setValue:[NSNumber numberWithFloat:lpm_thr] forKey:@"autoDisableThreshold"];
     }
-    [batterysaver synchronize];
+    [batterysaver writeToURL:batterysaver_path error:nil];
     notify_post(batterysaver_notif);
 
     /* Find current indexPath, control next row */
@@ -346,17 +342,17 @@ static float lpm_thr = 0;
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.section == CM_SECT_SMART_CHARGING && indexPath.row == 2) {
-        NSError *err = nil;
+		NSError *err = nil;
 		NSBundle *powerUIBundle = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/PowerUI.framework"];
 		if (![powerUIBundle loadAndReturnError:&err]) {
-            NSString *errorMessage = [NSString stringWithFormat:@"%@ %@\n\n%s: %@", _("Failed to load"), @"PowerUI.framework", L_ERR, [err localizedDescription]];
+			NSString *errorMessage = [NSString stringWithFormat:@"%@ %@\n\n%s: %@", _("Failed to load"), @"PowerUI.framework", L_ERR, [err localizedDescription]];
 			show_alert(L_FAILED, [errorMessage UTF8String], L_OK);
 			goto tvend;
 		}
 		id sccClass = [powerUIBundle classNamed:@"PowerUISmartChargeClient"];
 		id sccObject = [[sccClass alloc] initWithClientName:@"ok"];
 		if(![sccObject setState:1 error:&err]) {
-            NSString *errorMessage = [NSString stringWithFormat:@"%@\n\n%s: %@", _("Failed to enable Smart Charging."), L_ERR, [err localizedDescription]];
+			NSString *errorMessage = [NSString stringWithFormat:@"%@\n\n%s: %@", _("Failed to enable Smart Charging."), L_ERR, [err localizedDescription]];
 			show_alert(L_FAILED, [errorMessage UTF8String], L_OK);
 			goto tvend;
 		}
@@ -427,7 +423,6 @@ tvend:
             }
 		}
     } else if (indexPath.section == CM_SECT_LOW_POWER_MODE) {
-        [batterysaver synchronize];
         UISwitch *cswitch = [UISwitch new];
         SEL selector = nil;
 
@@ -489,8 +484,8 @@ tvend:
 - (void)sliderTableViewCell:(SliderTableViewCell *)cell didChangeValue:(float)value {
     if ([cell.reuseIdentifier isEqualToString:@"LPM_THR"]) {
         lpm_thr = value;
-        [batterysaver setFloat:value forKey:@"autoDisableThreshold"];
-        [batterysaver synchronize];
+        [batterysaver setValue:[NSNumber numberWithFloat:value] forKey:@"autoDisableThreshold"];
+        [batterysaver writeToURL:batterysaver_path error:nil];
         notify_post(batterysaver_notif);
     }
 
