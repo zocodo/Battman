@@ -157,22 +157,16 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+	[super viewWillAppear:animated];
     [self updateTableView];
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-implementations"
-- (void)viewDidUnload {
-	[super viewDidUnload];
-	[[NSNotificationCenter defaultCenter] removeObserver:observerToUnsubscribe];
+- (void)batteryStatusDidUpdate {
+	[self updateTableView];
 }
-#pragma clang diagnostic pop
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	observerToUnsubscribe=[[NSNotificationCenter defaultCenter] addObserverForName:@"SMC60000" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *n){
-		[self updateTableView];
-	}];
     if (configured_autorefresh) {
         (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval
                                                target:self

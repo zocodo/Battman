@@ -14,6 +14,6 @@ static void smcCB(void* a,void *b,int c,void *d) {
 	//}
 }
 
-__attribute__((constructor)) static void runSMCTest() {
-	regAppleSMCNotification(smcCB);
-}
+//__attribute__((constructor)) static void runSMCTest() {
+//	regAppleSMCNotification(smcCB);
+//}

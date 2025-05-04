@@ -1,7 +1,8 @@
 #pragma once
 #import <UIKit/UIKit.h>
+#import "BatterySubscriberViewControllerBase.h"
 
-@interface ChargingManagementViewController : UITableViewController
+@interface ChargingManagementViewController : BatterySubscriberViewControllerBase
 {
 	UIDatePicker *fromPicker;
 	UIDatePicker *untilPicker;

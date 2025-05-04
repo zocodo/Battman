@@ -1,7 +1,8 @@
 #import <UIKit/UIKit.h>
+#import "BatterySubscriberViewControllerBase.h"
 #include "battery_utils/battery_info.h"
 
-@interface BatteryInfoViewController : UITableViewController
+@interface BatteryInfoViewController : BatterySubscriberViewControllerBase
 {
 	struct battery_info_node *batteryInfo;
 }

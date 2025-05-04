@@ -1,13 +1,13 @@
 #pragma once
 #import <UIKit/UIKit.h>
+#import "BatterySubscriberViewControllerBase.h"
 #include "battery_utils/battery_info.h"
 
-@interface BatteryDetailsViewController : UITableViewController {
+@interface BatteryDetailsViewController : BatterySubscriberViewControllerBase {
     struct battery_info_node *batteryInfo;
     unsigned char pendingLoadOffsets[64];
     NSString *gasGaugeDisclaimer;
     NSString *adapterDisclaimer;
-    id observerToUnsubscribe;
 }
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi;
 @end

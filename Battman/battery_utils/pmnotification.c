@@ -79,15 +79,16 @@ void subscribeToPowerEvents(void (*cb)(int, io_registry_entry_t, int32_t)) {
 void pmncb(int a, io_registry_entry_t b, int32_t c) {
 	if (c != -536723200)
 		return;
-	CFMutableDictionaryRef props;
-	IORegistryEntryCreateCFProperties(b, &props, 0, 0);
-	CFStringRef desc = CFCopyDescription(props);
-	CFRelease(props);
+	//CFMutableDictionaryRef props;
+	//IORegistryEntryCreateCFProperties(b,&props,0,0);
+	//CFStringRef desc=CFCopyDescription(props);
+	//CFRelease(props);
 	//NSLog(CFSTR("Power Update: %@"),desc);
-	show_alert("Power", CFStringGetCStringPtr(desc, kCFStringEncodingUTF8), "ok");
-	CFRelease(desc);
+	//show_alert("Power",CFStringGetCStringPtr(desc,0x08000100),"ok");
+	//CFRelease(desc);
+	CFNotificationCenterPostNotification(CFNotificationCenterGetLocalCenter(),CFSTR("SMC60000"),NULL,NULL,1);
 }
 
-//__attribute__((constructor)) static void startpmn() {
-//	subscribeToPowerEvents(pmncb);
-//}
+__attribute__((constructor)) static void startpmn() {
+	subscribeToPowerEvents(pmncb);
+}

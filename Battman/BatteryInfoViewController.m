@@ -23,6 +23,11 @@ enum sections_batteryinfo {
     return _("Battman");
 }
 
+- (void)batteryStatusDidUpdate {
+	battery_info_update(batteryInfo,0);
+	[super batteryStatusDidUpdate];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
@@ -35,7 +40,7 @@ enum sections_batteryinfo {
     NSString *me = _("2025 Ⓒ Torrekie <me@torrekie.dev>");
 #ifdef DEBUG
     /* FIXME: GIT_COMMIT_HASH should be a macro */
-    copyright.text = [NSString stringWithFormat:@"%@\n%@ %@\n%s %s\n%@", me, _("Debug Build"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GIT_COMMIT_HASH"], __DATE__, __TIME__, _("Redistribution Prohibited")];
+    copyright.text = [NSString stringWithFormat:@"%@\n%@ %@\n%s %s\n%@", me, _("Debug Commit"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GIT_COMMIT_HASH"], __DATE__, __TIME__, @""];
     copyright.numberOfLines = 0;
 #else
     copyright.text = me;
