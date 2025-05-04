@@ -80,7 +80,7 @@ Please file [issues](../../issues/new) if Battman not working correctly on your 
 - [ ] Thermal control
 - [ ] Run as CLI
 - [ ] Run as daemon
-- [ ] Charge limit
+- [x] Charge limit
 - [ ] Wireless/MagSafe integration
 - [ ] App rate limit
 - [ ] Jetsam control
