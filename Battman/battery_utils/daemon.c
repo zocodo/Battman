@@ -1,3 +1,12 @@
+// Avoid libiosexec
+#ifndef LIBIOSEXEC_INTERNAL
+#define LIBIOSEXEC_INTERNAL 1
+#endif
+#ifdef posix_spawn
+#undef posix_spawn
+#endif
+#define LIBIOSEXEC_H
+
 #include "libsmc.h"
 #include "../common.h"
 #include <CoreFoundation/CFDictionary.h>
