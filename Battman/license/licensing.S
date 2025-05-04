@@ -548,23 +548,23 @@ show_license.pcb:
 	bl _objc_msgSend
 	mov x20,x0
 	sub sp,sp,#32 ; ATTN sp
-	adrp x0,declineStr@PAGE
-	add x0,x0,declineStr@PAGEOFF
-#ifdef USE_GETTEXT
-    bl _cond_localize_c
-#endif
-	mov x2,#0
-	adrp x1,show_license.susp@PAGE
-	add x1,x1,show_license.susp@PAGEOFF
-	bl makeBarButtonItem
-	mov x21,x0
 	adrp x0,agreeStr@PAGE
 	add x0,x0,agreeStr@PAGEOFF
 #ifdef USE_GETTEXT
     bl _cond_localize_c
 #endif
+	mov x2,#0
 	adrp x1,show_license.a@PAGE
 	add x1,x1,show_license.a@PAGEOFF
+	bl makeBarButtonItem
+	mov x21,x0
+	adrp x0,declineStr@PAGE
+	add x0,x0,declineStr@PAGEOFF
+#ifdef USE_GETTEXT
+    bl _cond_localize_c
+#endif
+	adrp x1,show_license.susp@PAGE
+	add x1,x1,show_license.susp@PAGEOFF
 	mov x2,x19
 	bl makeBarButtonItem
 	str x0,[sp,#16]

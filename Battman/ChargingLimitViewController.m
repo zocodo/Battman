@@ -37,11 +37,16 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
         }
         close(drfd);
     }
+    
+    char errstr[1024];
+    
     strcpy(end, "_settings");
     int fd = open(buf, O_RDWR | O_CREAT, 0644);
-    if(fd==-1) {
-    	show_alert("ERROR open failed",buf,"1");
-    	vals=malloc(2);
+    if (fd == -1) {
+        memset(errstr, 0, sizeof(errstr));
+        sprintf(errstr, "%s %s\n%s: %s", _C("Unable to open"), buf, L_ERR, strerror(errno));
+    	show_alert(L_ERR, errstr, L_OK);
+    	vals = malloc(2);
     	return self;
     }
     char _vals[2];
@@ -53,9 +58,11 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
     }
     lseek(fd, 0, SEEK_SET);
     vals = mmap(NULL, 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if((long long)vals==-1) {
-    	show_alert("ERROR","mmap failed","1");
-    	vals=malloc(2);
+    if ((long long)vals == -1) {
+        memset(errstr, 0, sizeof(errstr));
+        sprintf(errstr, "%s\n%s: %s", _C("mmap() failed"), L_ERR, strerror(errno));
+    	show_alert(L_ERR, errstr, L_OK);
+    	vals = malloc(2);
     	return self;
     }
     close(fd);
@@ -70,7 +77,7 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
 
 - (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
     if (section == 0)
-        return _("Charging Limit uses a background service to monitor your battery's charge level and automatically adjust charging behavior.");
+        return _("Charging Limit uses a background service to monitor your battery's charge level and automatically adjust charging behavior. You need to restart the service after changing the configuration.");
     return nil;
 }
 
@@ -185,7 +192,7 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
     } else if (indexPath.row == 3) {
         if (vals[0] == -1)
             cell.textLabel.enabled = NO;
-        cell.textLabel.text = _("Resume charging at \x0028%\x0029");
+        cell.textLabel.text = _("Resume charging at (%)");
         return cell;
     } else if (indexPath.row == 4) {
         SliderTableViewCell *scell = [tv dequeueReusableCellWithIdentifier:@"cllowthr" forIndexPath:indexPath];

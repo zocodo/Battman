@@ -96,7 +96,7 @@ extern void battman_worker_oneshot(char cmd,char arg);
             dlclose(mobileGestalt);
         }
 #else
-	lpm_supported=1;
+        lpm_supported = 1;
         /* TODO: Alternative checks if MobileGestalt is unreliable */
 #endif
         if (lpm_supported) {
@@ -361,6 +361,7 @@ tvend:
 - (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
 	UITableViewCell *cell = [UITableViewCell new];
 	cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    // FIXME: Disable this section when daemon running
     if (indexPath.section == CM_SECT_GENERAL) {
         UISwitch *cswitch = [UISwitch new];
         int switchOn = 0;
