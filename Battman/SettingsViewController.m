@@ -123,9 +123,10 @@ extern NSMutableAttributedString *redirectedOutput;
 #endif
 		} else if (indexPath.row == 2){
 			app_exit();
-		} else {
-			extern void worker_test(void);
-			worker_test();
+		}else{
+			NSLog(@"TEST TEST Pressed; No test defined rn");
+			//extern void worker_test(void);
+			//worker_test();
 		}
 	}
 #endif

@@ -24,9 +24,10 @@
         CGColorRef colorLight = CGColorCreateGenericRGB(174.0f / 255, 174.0f / 255, 178.0f / 255, 1.0f);
         [temperatureView.layer setBorderColor:colorLight];
         CFRelease(colorDark);
+        CFRelease(colorLight);
     }
     [temperatureView.layer setBorderWidth:3];
-    [temperatureView setBackgroundColor:[UIColor blackColor]];
+    [temperatureView setBackgroundColor:[UIColor whiteColor]];
 //    temperatureView.layer.backgroundColor = CGColorCreateGenericRGB(0.15, 0.15, 0.15, 1.0);
 
     {
@@ -34,7 +35,7 @@
         arcView.center = temperatureView.center;
         [temperatureView addSubview:arcView];
 
-        [arcView rotatePointerToPercent:percentage];
+        [arcView rotatePointerToPercentage:percentage];
     }
     [self addSubview:temperatureView];
     return self;
@@ -46,28 +47,30 @@
 
 @implementation TemperatureInfoTableViewCell
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    TemperatureCellView *temperatureCell =
-        [[TemperatureCellView alloc] initWithFrame:CGRectMake(20, 20, 80, 80) percentage:0.2];
-    temperatureCell.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:temperatureCell];
-
+- (instancetype)init {
+	self = [super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TITVC-ri"];
+	TemperatureCellView *temperatureCell =
+		[[TemperatureCellView alloc] initWithFrame:CGRectMake(0, 0, 80, 80) percentage:0.2];
+	temperatureCell.translatesAutoresizingMaskIntoConstraints = NO;
+	[self.contentView addSubview:temperatureCell];
+	[temperatureCell.centerYAnchor constraintEqualToAnchor:self.centerYAnchor].active=1;
+	[temperatureCell.leftAnchor constraintEqualToAnchor:self.leftAnchor constant:20].active=1;
+	[temperatureCell.heightAnchor constraintEqualToConstant:80].active=1;
+	[temperatureCell.widthAnchor constraintEqualToAnchor:temperatureCell.heightAnchor].active=1;
     
-    UILabel *temperatureLabel = [[UILabel alloc] initWithFrame:CGRectMake(120, 10, 600, 100)];
-    temperatureLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    temperatureLabel.numberOfLines = 0;
-    temperatureLabel.text = [NSString stringWithFormat:@"Battery Temperature: %0.2f℃",get_temperature()];
-    [self.contentView addSubview:temperatureLabel];
-     
+	UILabel *temperatureLabel = [UILabel new];
+	temperatureLabel.lineBreakMode = NSLineBreakByWordWrapping;
+	temperatureLabel.numberOfLines = 0;
+	temperatureLabel.text = [NSString stringWithFormat:@"Battery Temperature: %0.2f℃",get_temperature()];
+	[self.contentView addSubview:temperatureLabel];
+	temperatureLabel.translatesAutoresizingMaskIntoConstraints=0;
+	[temperatureLabel.rightAnchor constraintEqualToAnchor:self.rightAnchor constant:-20].active=1;
+	[temperatureLabel.centerYAnchor constraintEqualToAnchor:self.centerYAnchor].active=1;
+	[temperatureLabel.heightAnchor constraintEqualToAnchor:self.heightAnchor multiplier:0.8].active=1;
+	[temperatureLabel.leftAnchor constraintEqualToAnchor:temperatureCell.rightAnchor constant:20].active=1;
 
-    //UICollectionView *collection = [[UICollectionView alloc] initWithFrame:CGRectZero];
-    
-    
-    //_temperatureLabel = temperatureLabel;
-    _temperatureCell = temperatureCell;
-
-    return self;
+	_temperatureCell = temperatureCell;
+	return self;
 }
 
 @end

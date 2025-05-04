@@ -11,7 +11,6 @@
 @property(nonatomic, strong, readonly) BatteryCellView *batteryCell;
 @property(nonatomic, strong, readonly) UILabel *batteryLabel;
 
-- (instancetype)initWithFrame:(CGRect)frame;
 - (void)updateBatteryInfo;
 
 @end

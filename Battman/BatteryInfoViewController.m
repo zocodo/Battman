@@ -114,15 +114,20 @@ enum sections_batteryinfo {
     [tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-- (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(UITableView *)tv
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == BI_SECT_BATTERY_INFO) {
-        BatteryInfoTableViewCell *cell = [[BatteryInfoTableViewCell alloc] initWithFrame:CGRectMake(0, 0, 1000, 100)];
+        BatteryInfoTableViewCell *cell=[tv dequeueReusableCellWithIdentifier:@"BTTVC-cell"];
+        if(!cell)
+        	cell=[BatteryInfoTableViewCell new];
         cell.batteryInfo = batteryInfo;
         // battery_info_update shall be called within cell impl.
         [cell updateBatteryInfo];
         return cell;
     } else if (indexPath.section == BI_SECT_HW_TEMP) {
-        TemperatureInfoTableViewCell *cell = [[TemperatureInfoTableViewCell alloc] initWithFrame:CGRectMake(0, 0, 1000, 100)];
+        TemperatureInfoTableViewCell *cell=[tv dequeueReusableCellWithIdentifier:@"TITVC-ri"];
+        if(!cell)
+        	cell=[TemperatureInfoTableViewCell new];
         return cell;
     } else if (indexPath.section == BI_SECT_MANAGE) {
         UITableViewCell *cell = [UITableViewCell new];

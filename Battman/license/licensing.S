@@ -388,21 +388,29 @@ checktoken.b:
 ; x0: victim
 ; x1: sel
 ; x2: src
-; x3: use safeAreaLayoutGuide ?
+; x3: nop (0)
+;     use safeAreaLayoutGuide ? (1)
+;     src different selector
 bindAnchors:
 	sub sp,sp,#32
 	stp x22,x23,[sp]
 	stp x29,x30,[sp,#16]
 	mov x22,x0
 	mov x23,x1
-	cmp x3,#0
+	cmp x3,#1
 	mov x0,x2
-	b.eq bindAnchors.nosafearea
+	b.ne bindAnchors.nosafearea
 	adrp x1,sel.salg@PAGE
 	ldr x1,[x1,sel.salg@PAGEOFF]
 	bl _objc_msgSend
-bindAnchors.nosafearea:
 	mov x1,x23
+	b bindAnchors.continue
+bindAnchors.nosafearea:
+	cmp x3,xzr
+	mov x1,x23
+	b.eq bindAnchors.continue
+	mov x1,x3
+bindAnchors.continue:
 	bl _objc_msgSend
 	mov x1,x23
 	mov x23,x0
@@ -598,7 +606,7 @@ show_license.pcb:
 	mov x21,x0
 	;str x21,[sp,#16]
 	;ldr x21,[sp,#8]
-	mov x0,x20
+	/*mov x0,x20
 	adrp x1,sel.frame@PAGE
 	ldr x1,[x1,sel.frame@PAGEOFF]
 	bl _objc_msgSend
@@ -606,47 +614,42 @@ show_license.pcb:
 	ldr x1,[x1,sel.setFrame@PAGEOFF]
 	mov x2,x0
 	mov x0,x21
-	bl _objc_msgSend
+	bl _objc_msgSend*/
 	mov x0,x20
 	mov x2,x21
 	adrp x1,sel.addSubview@PAGE
 	ldr x1,[x1,sel.addSubview@PAGEOFF]
 	bl _objc_msgSend
-	mov x20,x21
-	/*mov x0,x21
+	mov x0,x21
 	mov x2,xzr
 	adrp x1,sel.tamic@PAGE
 	ldr x1,[x1,sel.tamic@PAGEOFF]
 	bl _objc_msgSend
-	mov x0,x20
-	mov x2,x21
-	adrp x1,sel.addSubview@PAGE
-	ldr x1,[x1,sel.addSubview@PAGEOFF]
-	bl _objc_msgSend
 	mov x2,x20
 	mov x0,x21
-	mov x3,#1
+	mov x3,#0
 	adrp x1,sel.topAnchor@PAGE
 	ldr x1,[x1,sel.topAnchor@PAGEOFF]
 	bl bindAnchors
 	mov x0,x21
 	mov x2,x20
-	mov x3,#1
+	mov x3,#0
 	adrp x1,sel.leadingAnchor@PAGE
 	ldr x1,[x1,sel.leadingAnchor@PAGEOFF]
 	bl bindAnchors
 	mov x0,x21
 	mov x2,x20
-	mov x3,#1
+	mov x3,#0
 	adrp x1,sel.trailingAnchor@PAGE
 	ldr x1,[x1,sel.trailingAnchor@PAGEOFF]
 	bl bindAnchors
 	mov x0,x21
-	mov x3,#1
+	mov x3,xzr
 	adrp x1,sel.bottomAnchor@PAGE
 	ldr x1,[x1,sel.bottomAnchor@PAGEOFF]
 	mov x2,x20
-	bl bindAnchors*/
+	bl bindAnchors
+	mov x20,x21
 	adrp x0,_OBJC_CLASS_$_UIToolbar@GOTPAGE
 	ldr x0,[x0,_OBJC_CLASS_$_UIToolbar@GOTPAGEOFF]
 	adrp x1,sel.1new@PAGE

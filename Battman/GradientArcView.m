@@ -45,7 +45,7 @@
     CGPathAddEllipseInRect(roundPath, NULL, roundRect);
     CAShapeLayer *roundLayer = [CAShapeLayer layer];
     roundLayer.path = roundPath;
-    roundLayer.fillColor = CGColorCreateGenericRGB(0.7, 0.0, 0.0, 1.0);
+    roundLayer.fillColor = CGColorCreateGenericRGB(0.9, 0.0, 0.0, 1.0);
     [self.pointerLayer addSublayer:roundLayer];
 
     CGMutablePathRef trianglePath = CGPathCreateMutable();
@@ -55,7 +55,7 @@
     CGPathCloseSubpath(trianglePath);
     CAShapeLayer *triangleLayer = [CAShapeLayer layer];
     triangleLayer.path = trianglePath;
-    triangleLayer.fillColor = CGColorCreateGenericRGB(0.7, 0.0, 0.0, 1.0);
+    triangleLayer.fillColor = CGColorCreateGenericRGB(0.9, 0.0, 0.0, 1.0);
     //triangleLayer.opacity = 0.5;
     triangleLayer.anchorPoint = CGPointMake(0.5, 1.0);
     triangleLayer.frame = [self.pointerLayer bounds];
@@ -94,7 +94,7 @@
     previousAngle = angle;
 }
 
-- (void)rotatePointerToPercent:(CGFloat)percent {
+- (void)rotatePointerToPercentage:(CGFloat)percent {
     [self rotatePointerToAngle:6 * M_PI_4 * percent - M_PI_4];
 }
 

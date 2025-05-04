@@ -7,27 +7,32 @@
 
 @implementation BatteryInfoTableViewCell
 
-- (instancetype)initWithFrame:(CGRect)frame {
-    self = [super initWithFrame:frame];
-    BatteryCellView *batteryCell =
-        [[BatteryCellView alloc] initWithFrame:CGRectMake(20, 20, 80, 80)
-                          foregroundPercentage:0
-                          backgroundPercentage:0];
-    batteryCell.translatesAutoresizingMaskIntoConstraints = NO;
-    [self.contentView addSubview:batteryCell];
-    //[batteryCell.centerYAnchor constraintEqualToAnchor:self.centerYAnchor
-    //constant:0].active=YES;
-    UILabel *batteryRemainingLabel =
-        [[UILabel alloc] initWithFrame:CGRectMake(120, 10, 600, 100)];
-    batteryRemainingLabel.lineBreakMode = NSLineBreakByWordWrapping;
-    batteryRemainingLabel.numberOfLines = 0;
-    // batteryRemainingLabel.text=@"Battery Capacity: 80%\nCharge: 50%\nTest:
-    // 0%";
-    [self.contentView addSubview:batteryRemainingLabel];
-    _batteryLabel = batteryRemainingLabel;
-    _batteryCell = batteryCell;
-    _batteryInfo = NULL;
-    return self;
+- (instancetype)init {
+	self=[super initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"BTTVC-cell"];
+	//self.frame=CGRectMake(0,0,1000,100);
+	BatteryCellView *batteryCell =
+		[[BatteryCellView alloc] initWithFrame:CGRectMake(0, 0, 80, 80)
+			foregroundPercentage:0
+			backgroundPercentage:0];
+	batteryCell.translatesAutoresizingMaskIntoConstraints = NO;
+	[self.contentView addSubview:batteryCell];
+	[batteryCell.centerYAnchor constraintEqualToAnchor:self.centerYAnchor].active=1;
+	[batteryCell.leftAnchor constraintEqualToAnchor:self.leftAnchor constant:20].active=1;
+	[batteryCell.heightAnchor constraintEqualToConstant:80].active=1;
+	[batteryCell.widthAnchor constraintEqualToAnchor:batteryCell.heightAnchor].active=1;
+	UILabel *batteryRemainingLabel=[UILabel new];
+	batteryRemainingLabel.lineBreakMode = NSLineBreakByWordWrapping;
+	batteryRemainingLabel.numberOfLines = 0;
+	[self.contentView addSubview:batteryRemainingLabel];
+	[batteryRemainingLabel.centerYAnchor constraintEqualToAnchor:self.centerYAnchor].active=1;
+	[batteryRemainingLabel.rightAnchor constraintEqualToAnchor:self.rightAnchor constant:-20].active=1;
+	[batteryRemainingLabel.heightAnchor constraintEqualToAnchor:self.heightAnchor multiplier:0.8].active=1;
+	[batteryRemainingLabel.leftAnchor constraintEqualToAnchor:batteryCell.rightAnchor constant:20].active=1;
+	batteryRemainingLabel.translatesAutoresizingMaskIntoConstraints=0;
+	_batteryLabel = batteryRemainingLabel;
+	_batteryCell = batteryCell;
+	//_batteryInfo = NULL;
+	return self;
 }
 
 - (void)updateBatteryInfo {

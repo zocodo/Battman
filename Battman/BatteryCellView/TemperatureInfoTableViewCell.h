@@ -10,7 +10,6 @@
 @property(nonatomic, strong, readonly) TemperatureCellView *temperatureCell;
 //@property(nonatomic, strong, readonly) UILabel *temperatureLabel;
 
-- (instancetype)initWithFrame:(CGRect)frame;
 //- (void)updateTemperatureInfo;
 
 @end
