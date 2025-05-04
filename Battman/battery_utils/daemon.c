@@ -120,7 +120,6 @@ static void powerevent_listener(int a, void *b, int32_t c) {
 		return;
 	}
 	if(daemon_settings->disable_charging_at_level!=255) {
-		int val;
 		if(val>=daemon_settings->disable_charging_at_level) {
 			val=1;
 		}else{
