@@ -1,8 +1,8 @@
-#include <stdint.h>
-#include <stdlib.h>
+#include "../common.h"
 #include <CoreFoundation/CFDictionary.h>
 #include <CoreFoundation/CFString.h>
-#include "../common.h"
+#include <stdint.h>
+#include <stdlib.h>
 
 #if __has_include(<IOKit/IOKitKeys.h>)
 #include <IOKit/IOKitKeys.h>
@@ -22,14 +22,9 @@ typedef io_object_t io_iterator_t;
 typedef io_object_t io_service_t;
 typedef io_object_t io_registry_entry_t;
 
-typedef struct IONotificationPort * IONotificationPortRef;
+typedef struct IONotificationPort *IONotificationPortRef;
 
-typedef void
-(*IOServiceInterestCallback)(
-    void *            refcon,
-    io_service_t        service,
-    uint32_t        messageType,
-    void *            messageArgument );
+typedef void (*IOServiceInterestCallback)(void *refcon, io_service_t service, uint32_t messageType, void *messageArgument);
 typedef void (*IOServiceMatchingCallback)(void *refcon, io_iterator_t iterator);
 
 extern int IOServiceAddMatchingNotification(void *, const char *, void *, void *, void *, io_iterator_t *);
@@ -48,47 +43,44 @@ extern void IONotificationPortSetDispatchQueue(void *, void *);
 extern void *dispatch_get_global_queue(int, int);
 #endif
 
-
 extern void NSLog(CFStringRef, ...);
 
 // IOServiceMatchingCallback
 static void stpe_cb(void **pcb, io_iterator_t it) {
-	if (!it)
-		return;
-	io_object_t next;
-	while ((next = IOIteratorNext(it))) {
-		void *buf;
-		int err = IOServiceAddInterestNotification(*pcb, next, kIOGeneralInterest, (IOServiceInterestCallback)pcb[1], 0, (void *)&buf);
-		if(err)
-			abort();
-		IOObjectRelease(next);
-	}
+    if (!it)
+        return;
+    io_object_t next;
+    while ((next = IOIteratorNext(it))) {
+        void *buf;
+        int err = IOServiceAddInterestNotification(*pcb, next, kIOGeneralInterest, (IOServiceInterestCallback)pcb[1], 0, (void *)&buf);
+        if (err)
+            abort();
+        IOObjectRelease(next);
+    }
 }
 
 void subscribeToPowerEvents(void (*cb)(int, io_registry_entry_t, int32_t)) {
-	void *port[] = {IONotificationPortCreate(0), cb};
-	IONotificationPortSetDispatchQueue(*port,dispatch_get_global_queue(0,0));
-	io_iterator_t nit = 0;
-	int err = IOServiceAddMatchingNotification(*port, kIOFirstMatchNotification, IOServiceMatching("IOPMPowerSource"), (IOServiceMatchingCallback)stpe_cb, port, &nit);
-	if (err)
-		abort();
-	stpe_cb(port, nit);
-	IOObjectRelease(nit);
+    void *port[] = {IONotificationPortCreate(0), cb};
+    IONotificationPortSetDispatchQueue(*port, dispatch_get_global_queue(0, 0));
+    io_iterator_t nit = 0;
+    int err = IOServiceAddMatchingNotification(*port, kIOFirstMatchNotification, IOServiceMatching("IOPMPowerSource"), (IOServiceMatchingCallback)stpe_cb, port, &nit);
+    if (err)
+        abort();
+    stpe_cb(port, nit);
+    IOObjectRelease(nit);
 }
 
 void pmncb(int a, io_registry_entry_t b, int32_t c) {
-	if (c != -536723200)
-		return;
-	//CFMutableDictionaryRef props;
-	//IORegistryEntryCreateCFProperties(b,&props,0,0);
-	//CFStringRef desc=CFCopyDescription(props);
-	//CFRelease(props);
-	//NSLog(CFSTR("Power Update: %@"),desc);
-	//show_alert("Power",CFStringGetCStringPtr(desc,0x08000100),"ok");
-	//CFRelease(desc);
-	CFNotificationCenterPostNotification(CFNotificationCenterGetLocalCenter(),CFSTR("SMC60000"),NULL,NULL,1);
+    if (c != -536723200)
+        return;
+    // CFMutableDictionaryRef props;
+    // IORegistryEntryCreateCFProperties(b,&props,0,0);
+    // CFStringRef desc=CFCopyDescription(props);
+    // CFRelease(props);
+    // NSLog(CFSTR("Power Update: %@"),desc);
+    // show_alert("Power",CFStringGetCStringPtr(desc,0x08000100),"ok");
+    // CFRelease(desc);
+    CFNotificationCenterPostNotification(CFNotificationCenterGetLocalCenter(), CFSTR("SMC60000"), NULL, NULL, 1);
 }
 
-__attribute__((constructor)) static void startpmn() {
-	subscribeToPowerEvents(pmncb);
-}
+__attribute__((constructor)) static void startpmn() { subscribeToPowerEvents(pmncb); }

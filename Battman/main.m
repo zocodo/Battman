@@ -35,52 +35,52 @@ struct localization_entry {
 extern CFStringRef localization_arr[];
 
 #define PSTRMAP_SIZE 512
-struct localization_entry pstrmap[PSTRMAP_SIZE]={0};
+struct localization_entry pstrmap[PSTRMAP_SIZE] = {0};
 
 #ifndef USE_GETTEXT
 extern int cond_localize_cnt;
 extern int cond_localize_language_cnt;
 
 inline static int localization_simple_hash(const char *str) {
-	return (((unsigned long long)str)>>3)&0x1ff;
+	return (((unsigned long long)str) >> 3) & 0x1ff;
 }
 
 __attribute__((destructor)) static void localization_deinit() {
-	for(int i=0;i<PSTRMAP_SIZE;i++) {
-		if(pstrmap[i].pstr) {
+	for (int i = 0; i < PSTRMAP_SIZE; i++) {
+		if (pstrmap[i].pstr) {
 			free(pstrmap[i].pstr);
 		}
 	}
 }
 
 __attribute__((constructor)) static void localization_init() {
-	for(int i=0;i<cond_localize_cnt;i++) {
-		const char *cstr=CFStringGetCStringPtr(localization_arr[i],0x08000100);
-		struct localization_entry *ent=pstrmap+localization_simple_hash(cstr);
-		while(ent->pstr) {
+	for(int i = 0; i < cond_localize_cnt; i++) {
+		const char *cstr = CFStringGetCStringPtr(localization_arr[i], kCFStringEncodingUTF8);
+		struct localization_entry *ent = pstrmap + localization_simple_hash(cstr);
+		while (ent->pstr) {
 			ent++;
-			if(ent==pstrmap+PSTRMAP_SIZE)
-				ent=pstrmap;
+			if (ent == pstrmap + PSTRMAP_SIZE)
+				ent = pstrmap;
 		}
-		ent->pstr=malloc(sizeof(void*)*(cond_localize_language_cnt<<1));
-		ent->cfstr=(CFStringRef*)(ent->pstr+cond_localize_language_cnt);
-		for(int j=0;j<cond_localize_language_cnt;j++) {
-			CFStringRef cfstr=localization_arr[cond_localize_cnt*j+i];
-			ent->pstr[j]=CFStringGetCStringPtr(cfstr,0x08000100);
-			ent->cfstr[j]=cfstr;
+		ent->pstr = malloc(sizeof(void *)*(cond_localize_language_cnt<<1));
+		ent->cfstr = (CFStringRef *)(ent->pstr + cond_localize_language_cnt);
+		for (int j = 0; j < cond_localize_language_cnt; j++) {
+			CFStringRef cfstr = localization_arr[cond_localize_cnt * j + i];
+			ent->pstr[j] = CFStringGetCStringPtr(cfstr, kCFStringEncodingUTF8);
+			ent->cfstr[j] = cfstr;
 		}
 	}
 }
 
 struct localization_entry *cond_localize_find(const char *str) {
-	struct localization_entry *ent=pstrmap+localization_simple_hash(str);
-	for(;ent->pstr;ent++) {
-		if(ent==pstrmap+PSTRMAP_SIZE) {
-			ent=pstrmap;
-			if(!ent->pstr)
+	struct localization_entry *ent = pstrmap + localization_simple_hash(str);
+	for (; ent->pstr; ent++) {
+		if (ent == pstrmap + PSTRMAP_SIZE) {
+			ent = pstrmap;
+			if (!ent->pstr)
 				break;
 		}
-		if(*(ent->pstr)!=str)
+		if (*(ent->pstr) != str)
 			continue;
 		return ent;
 	}
@@ -90,7 +90,7 @@ struct localization_entry *cond_localize_find(const char *str) {
 NSString *cond_localize(const char *str) {
 	int preferred_language = preferred_language_code(); // current: 0=eng 1=cn
 	struct localization_entry *ent;
-	if((ent=cond_localize_find(str))) {
+	if ((ent = cond_localize_find(str))) {
 		return (__bridge NSString *)ent->cfstr[preferred_language];
 	}
 	return [NSString stringWithUTF8String:str];
@@ -99,7 +99,7 @@ NSString *cond_localize(const char *str) {
 const char *cond_localize_c(const char *str) {
 	int preferred_language = preferred_language_code(); // current: 0=eng 1=cn
 	struct localization_entry *ent;
-	if((ent=cond_localize_find(str))) {
+	if ((ent = cond_localize_find(str))) {
 		return ent->pstr[preferred_language];
 	}
 	return str;
@@ -211,11 +211,12 @@ NSMutableAttributedString *redirectedOutput;
 #endif
 
 int main(int argc, char * argv[]) {
-	if(argc==3&&strcmp(argv[1],"--worker")==0) {
+    // FIXME: use getopt()
+	if (argc == 3 && strcmp(argv[1], "--worker") == 0) {
 		extern void battman_run_worker(const char *);
 		battman_run_worker(argv[2]);
 		return 0;
-	}else if(argc==2&&strcmp(argv[1],"--daemon")==0) {
+	} else if (argc == 2 && strcmp(argv[1], "--daemon") == 0) {
 		extern void daemon_main(void);
 		daemon_main();
 		return 0;

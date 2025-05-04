@@ -24,7 +24,7 @@ enum sections_batteryinfo {
 }
 
 - (void)batteryStatusDidUpdate {
-	battery_info_update(batteryInfo,0);
+	battery_info_update(batteryInfo, 0);
 	[super batteryStatusDidUpdate];
 }
 
@@ -40,7 +40,7 @@ enum sections_batteryinfo {
     NSString *me = _("2025 Ⓒ Torrekie <me@torrekie.dev>");
 #ifdef DEBUG
     /* FIXME: GIT_COMMIT_HASH should be a macro */
-    copyright.text = [NSString stringWithFormat:@"%@\n%@ %@\n%s %s\n%@", me, _("Debug Commit"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GIT_COMMIT_HASH"], __DATE__, __TIME__, @""];
+    copyright.text = [NSString stringWithFormat:@"%@\n%@ %@\n%s %s", me, _("Debug Commit"), [[NSBundle mainBundle] objectForInfoDictionaryKey:@"GIT_COMMIT_HASH"], __DATE__, __TIME__];
     copyright.numberOfLines = 0;
 #else
     copyright.text = me;
@@ -80,7 +80,7 @@ enum sections_batteryinfo {
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-	if(section==BI_SECT_MANAGE)
+	if (section == BI_SECT_MANAGE)
 		return 2;
     return 1;
 }
@@ -91,14 +91,14 @@ enum sections_batteryinfo {
 
 - (NSString *)tableView:(id)t titleForHeaderInSection:(NSInteger)sect {
 	switch(sect) {
-	case BI_SECT_BATTERY_INFO:
-		return _("Battery Info");
-	case BI_SECT_HW_TEMP:
-		return _("Hardware Temperature");
-	case BI_SECT_MANAGE:
-		return _("Manage");
-	default:
-		return nil;
+        case BI_SECT_BATTERY_INFO:
+            return _("Battery Info");
+        case BI_SECT_HW_TEMP:
+            return _("Hardware Temperature");
+        case BI_SECT_MANAGE:
+            return _("Manage");
+        default:
+            return nil;
 	};
 }
 
@@ -106,23 +106,17 @@ enum sections_batteryinfo {
     return nil;
 }
 
-- (void)tableView:(UITableView *)tv
-    didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == BI_SECT_BATTERY_INFO)
-        [self.navigationController
-            pushViewController:[[BatteryDetailsViewController alloc] initWithBatteryInfo:batteryInfo]
-                      animated:YES];
-	else if(indexPath.section==BI_SECT_MANAGE)
-		[self.navigationController pushViewController:indexPath.row==0?[ChargingManagementViewController new]:[ChargingLimitViewController new] animated:YES];
+        [self.navigationController pushViewController:[[BatteryDetailsViewController alloc] initWithBatteryInfo:batteryInfo] animated:YES];
+	else if (indexPath.section == BI_SECT_MANAGE)
+		[self.navigationController pushViewController:indexPath.row == 0 ? [ChargingManagementViewController new] : [ChargingLimitViewController new] animated:YES];
     [tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-- (UITableViewCell *)tableView:(id)tv
-         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+- (UITableViewCell *)tableView:(id)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.section == BI_SECT_BATTERY_INFO) {
-        BatteryInfoTableViewCell *cell = [[BatteryInfoTableViewCell alloc]
-            initWithFrame:CGRectMake(0, 0, 1000, 100)];
-
+        BatteryInfoTableViewCell *cell = [[BatteryInfoTableViewCell alloc] initWithFrame:CGRectMake(0, 0, 1000, 100)];
         cell.batteryInfo = batteryInfo;
         // battery_info_update shall be called within cell impl.
         [cell updateBatteryInfo];
@@ -132,7 +126,7 @@ enum sections_batteryinfo {
         return cell;
     } else if (indexPath.section == BI_SECT_MANAGE) {
         UITableViewCell *cell = [UITableViewCell new];
-        cell.textLabel.text = indexPath.row==0?_("Charging Management"):_("Charging Limit");
+        cell.textLabel.text = indexPath.row == 0 ? _("Charging Management") : _("Charging Limit");
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         return cell;
     }

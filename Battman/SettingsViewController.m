@@ -28,9 +28,7 @@ extern NSMutableAttributedString *redirectedOutput;
 - (void)DebugExportPressed {
     NSString *str = [redirectedOutput string];
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[str] applicationActivities:nil];
-    [self.navigationController presentViewController:activityViewController
-                                      animated:YES
-                                    completion:^{}];
+    [self.navigationController presentViewController:activityViewController animated:YES completion:^{}];
 }
 
 - (void)viewDidLoad {
@@ -57,8 +55,7 @@ extern NSMutableAttributedString *redirectedOutput;
         [export_button setTitle:@"􀈂" forState:UIControlStateNormal];
         [export_button setFrame:CGRectZero];
     }
-    [export_button addTarget:self action:@selector(DebugExportPressed)
-      forControlEvents:UIControlEventTouchUpInside];
+    [export_button addTarget:self action:@selector(DebugExportPressed) forControlEvents:UIControlEventTouchUpInside];
     [export_button setShowsTouchWhenHighlighted:YES];
 
     UIBarButtonItem *barButton = [[UIBarButtonItem alloc] initWithCustomView:export_button];
@@ -124,9 +121,9 @@ extern NSMutableAttributedString *redirectedOutput;
 #else
 			show_alert("USE_GETTEXT", "UNIMPLEMENTED YET", "OK");
 #endif
-		}else if(indexPath.row==2){
+		} else if (indexPath.row == 2){
 			app_exit();
-		}else{
+		} else {
 			extern void worker_test(void);
 			worker_test();
 		}

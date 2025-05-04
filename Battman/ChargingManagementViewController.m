@@ -14,7 +14,7 @@ enum sections_cl {
 };
 
 extern uint64_t battman_worker_call(char cmd, void *arg, uint64_t arglen);
-extern void battman_worker_oneshot(char cmd,char arg);
+extern void battman_worker_oneshot(char cmd, char arg);
 
 #pragma mark - ViewController
 
@@ -47,7 +47,7 @@ extern void battman_worker_oneshot(char cmd,char arg);
         system_lpm_notif = "com.apple.system.lowpowermode";
     } else {
         /* afaik, at least iOS 13 */
-        batterysaver=[[NSUserDefaults alloc] initWithSuiteName:@"com.apple.coreduetd.batterysaver"];
+        batterysaver = [[NSUserDefaults alloc] initWithSuiteName:@"com.apple.coreduetd.batterysaver"];
         batterysaver_notif = "com.apple.coreduetd.batterysaver.prefs";
         batterysaver_state = @"com.apple.coreduetd.batterysaver.state";
         system_lpm_notif = "com.apple.system.batterysavermode";
@@ -267,28 +267,28 @@ extern void battman_worker_oneshot(char cmd,char arg);
 }
 
 - (void)setLPMAutoDisable:(UISwitch *)cswitch {
-	if(batterysaver) {
+	if (batterysaver) {
 		[batterysaver setBool:cswitch.on forKey:@"autoDisableWhenPluggedIn"];
-	}else{
-		battman_worker_oneshot(1,cswitch.on);
+	} else {
+		battman_worker_oneshot(1, cswitch.on);
 	}
 	notify_post(batterysaver_notif);
 }
 
 - (void)setAllowThr:(UISwitch *)cswitch {
 	if (!cswitch.on) {
-		if(batterysaver) {
+		if (batterysaver) {
 			[batterysaver removeObjectForKey:@"autoDisableThreshold"];
-		}else{
-			battman_worker_oneshot(2,0);
+		} else {
+			battman_worker_oneshot(2, 0);
 		}
 		lpm_thr = 0;
 	} else {
 		lpm_thr = 80;
-		if(batterysaver) {
+		if (batterysaver) {
 			[batterysaver setFloat:lpm_thr forKey:@"autoDisableThreshold"];
-		}else{
-			battman_worker_oneshot(2,1);
+		} else {
+			battman_worker_oneshot(2, 1);
 		}
 	}
     notify_post(batterysaver_notif);
@@ -427,29 +427,29 @@ tvend:
             selector = @selector(setLPM:);
         } else if (indexPath.row == 1) {
             cell.textLabel.text = _("Disable on A/C");
-		if(batterysaver) {
-		    id state = [batterysaver valueForKey:@"autoDisableWhenPluggedIn"];
-		    if (state)
-		        cswitch.on = [state boolValue];
-		    else
-		        cswitch.on = 0;
-		}else{
-			uint64_t data=battman_worker_call(4,NULL,0);
-			//NSLog(@"data=%llu",data);
-			cswitch.on=((char*)&data)[5];
-		}
+            if (batterysaver) {
+                id state = [batterysaver valueForKey:@"autoDisableWhenPluggedIn"];
+                if (state)
+                    cswitch.on = [state boolValue];
+                else
+                    cswitch.on = 0;
+            } else {
+                uint64_t data = battman_worker_call(4, NULL, 0);
+                //NSLog(@"data=%llu",data);
+                cswitch.on = ((char *)&data)[5];
+            }
             selector = @selector(setLPMAutoDisable:);
         } else if (indexPath.row == 2) {
             cell.textLabel.text = _("Disable When Exceeds");
-            if(batterysaver) {
-		    id value = [batterysaver valueForKey:@"autoDisableThreshold"];
-		    lpm_thr = [value floatValue];
-            		cswitch.on = (value) ? YES : NO;
-	    }else{
-	    	uint64_t data=battman_worker_call(4,NULL,0);
-	    	lpm_thr=*(float*)&data;
-	    	cswitch.on=((char*)&data)[4];
-	    }
+            if (batterysaver) {
+                id value = [batterysaver valueForKey:@"autoDisableThreshold"];
+                lpm_thr = [value floatValue];
+                cswitch.on = (value) ? YES : NO;
+            } else {
+                uint64_t data = battman_worker_call(4, NULL, 0);
+                lpm_thr = *(float *)&data;
+                cswitch.on = ((char *)&data)[4];
+            }
             selector = @selector(setAllowThr:);
         } else if (indexPath.row == 3) {
             SliderTableViewCell *cell_s = [tv dequeueReusableCellWithIdentifier:@"LPM_THR" forIndexPath:indexPath];
@@ -490,10 +490,10 @@ tvend:
 - (void)sliderTableViewCell:(SliderTableViewCell *)cell didChangeValue:(float)value {
     if ([cell.reuseIdentifier isEqualToString:@"LPM_THR"]) {
         lpm_thr = value;
-        if(batterysaver)
+        if (batterysaver)
         	[batterysaver setFloat:value forKey:@"autoDisableThreshold"];
         else
-        	battman_worker_call(3,(void*)&value,4);
+        	battman_worker_call(3, (void *)&value, 4);
         notify_post(batterysaver_notif);
     }
 
