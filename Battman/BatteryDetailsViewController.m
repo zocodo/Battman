@@ -160,10 +160,13 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     [self updateTableView];
 }
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 - (void)viewDidUnload {
 	[super viewDidUnload];
 	[[NSNotificationCenter defaultCenter] removeObserver:observerToUnsubscribe];
 }
+#pragma clang diagnostic pop
 
 - (void)viewDidLoad {
 	[super viewDidLoad];

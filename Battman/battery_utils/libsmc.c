@@ -135,7 +135,7 @@ fail:
     return kIOReturnError;
 }
 
-void _smc_open() {
+void _smc_open(void) {
 	smc_open();
 }
 

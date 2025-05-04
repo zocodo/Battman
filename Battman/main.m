@@ -216,7 +216,7 @@ int main(int argc, char * argv[]) {
 		battman_run_worker(argv[2]);
 		return 0;
 	}else if(argc==2&&strcmp(argv[1],"--daemon")==0) {
-		extern void daemon_main();
+		extern void daemon_main(void);
 		daemon_main();
 		return 0;
 	}

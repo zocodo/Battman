@@ -127,7 +127,7 @@ extern NSMutableAttributedString *redirectedOutput;
 		}else if(indexPath.row==2){
 			app_exit();
 		}else{
-			extern void worker_test();
+			extern void worker_test(void);
 			worker_test();
 		}
 	}
@@ -157,22 +157,22 @@ extern NSMutableAttributedString *redirectedOutput;
     }
 #ifdef DEBUG
 	if (indexPath.section == SS_SECT_DEBUG) {
-		if(indexPath.row==0) {
+		if (indexPath.row == 0) {
 			UITableViewCell *cell = [UITableViewCell new];
 			cell.textLabel.text = _("Logs (stdout)");
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			return cell;
-		}else if(indexPath.row==1) {
+		} else if (indexPath.row == 1) {
 			UITableViewCell *cell = [UITableViewCell new];
 			cell.textLabel.text = _("Select language override");
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			return cell;
-		}else if(indexPath.row==2) {
+		} else if (indexPath.row == 2) {
 			UITableViewCell *cell = [UITableViewCell new];
 			cell.textLabel.text = _("Exit App");
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			return cell;
-		}else if(indexPath.row==3) {
+		} else if (indexPath.row == 3) {
 			UITableViewCell *cell = [UITableViewCell new];
 			cell.textLabel.text = _("TEST TEST");
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
@@ -217,7 +217,7 @@ static NSString *_contrib[] = {
 }
 
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	[[UIApplication sharedApplication] openURL:[NSURL URLWithString:_contrib[indexPath.row*2+1]] options:@{} completionHandler:nil];
+    open_url([_contrib[indexPath.row * 2 + 1] UTF8String]);
 	[tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 

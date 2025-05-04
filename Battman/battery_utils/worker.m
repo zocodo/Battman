@@ -129,7 +129,7 @@ static void battman_spawn_worker() {
 	return;
 }
 
-void worker_test() {
+void worker_test(void) {
 	battman_spawn_worker();
 	//char buf[10];
 	//read(worker_pipefd[0],buf,10);

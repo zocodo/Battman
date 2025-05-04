@@ -84,6 +84,10 @@
 		68AE40BC2D8EB8870023D7B0 /* StackViewGestureHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B42D8EB8870023D7B0 /* StackViewGestureHandler.m */; };
 		68AE40BD2D8EB8870023D7B0 /* Constants.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B52D8EB8870023D7B0 /* Constants.m */; };
 		68AE40BE2D8EB8870023D7B0 /* SegmentButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 68AE40B62D8EB8870023D7B0 /* SegmentButton.m */; };
+		68B291212DC754100089BA1F /* worker.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B2911A2DC754100089BA1F /* worker.m */; };
+		68B291232DC754100089BA1F /* daemon.c in Sources */ = {isa = PBXBuildFile; fileRef = 68B2911F2DC754100089BA1F /* daemon.c */; };
+		68B291272DC7547B0089BA1F /* ChargingLimitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291252DC7547B0089BA1F /* ChargingLimitViewController.m */; };
+		68B291282DC75F610089BA1F /* pmnotification.c in Sources */ = {isa = PBXBuildFile; fileRef = 68B2911E2DC754100089BA1F /* pmnotification.c */; };
 		68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2D2D85606000919BC2 /* GradientArcView.m */; };
 		68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */; };
 		68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */; };
@@ -169,6 +173,12 @@
 		68AE40B62D8EB8870023D7B0 /* SegmentButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SegmentButton.m; sourceTree = "<group>"; };
 		68AE40B72D8EB8870023D7B0 /* MultiSelectSegmentedControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiSelectSegmentedControl.h; sourceTree = "<group>"; };
 		68AE40BF2D8EB9190023D7B0 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		68B2911A2DC754100089BA1F /* worker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = worker.m; sourceTree = "<group>"; };
+		68B2911E2DC754100089BA1F /* pmnotification.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pmnotification.c; sourceTree = "<group>"; };
+		68B2911F2DC754100089BA1F /* daemon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = daemon.c; sourceTree = "<group>"; };
+		68B291202DC754100089BA1F /* smctest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = smctest.c; sourceTree = "<group>"; };
+		68B291252DC7547B0089BA1F /* ChargingLimitViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ChargingLimitViewController.m; sourceTree = "<group>"; };
+		68B291262DC7547B0089BA1F /* ChargingLimitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChargingLimitViewController.h; sourceTree = "<group>"; };
 		68B33C3F2DAF9B38008EA090 /* inductive_status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = inductive_status.h; sourceTree = "<group>"; };
 		68B5FF292D85602100919BC2 /* GradientArcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientArcView.h; sourceTree = "<group>"; };
 		68B5FF2D2D85606000919BC2 /* GradientArcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GradientArcView.m; sourceTree = "<group>"; };
@@ -241,6 +251,8 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				68B291262DC7547B0089BA1F /* ChargingLimitViewController.h */,
+				68B291252DC7547B0089BA1F /* ChargingLimitViewController.m */,
 				6838BF7E2DC27F1E007EB66C /* ChargingManagementViewController.h */,
 				6838BF822DC27F1E007EB66C /* ChargingManagementViewController.m */,
 				6838BF632DB8D06B007EB66C /* license */,
@@ -294,6 +306,10 @@
 		68A3EAF42D5204D2003381DF /* battery_utils */ = {
 			isa = PBXGroup;
 			children = (
+				68B2911F2DC754100089BA1F /* daemon.c */,
+				68B2911E2DC754100089BA1F /* pmnotification.c */,
+				68B291202DC754100089BA1F /* smctest.c */,
+				68B2911A2DC754100089BA1F /* worker.m */,
 				68A3EAF52D5204D2003381DF /* battery_utils.h */,
 				68A3EAF62D5204D2003381DF /* battery_info.c */,
 				68A3EAF72D5204D2003381DF /* battery_info.h */,
@@ -600,12 +616,16 @@
 				68AE40BB2D8EB8870023D7B0 /* UIView+Fill.m in Sources */,
 				68AE40B82D8EB8870023D7B0 /* UberSegmentedControl.m in Sources */,
 				68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */,
+				68B291232DC754100089BA1F /* daemon.c in Sources */,
 				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
+				68B291282DC75F610089BA1F /* pmnotification.c in Sources */,
 				68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */,
 				6838BF6B2DB8D06B007EB66C /* licensing.S in Sources */,
 				6838BFAC2DC3984C007EB66C /* SliderTableViewCell.m in Sources */,
 				68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */,
+				68B291212DC754100089BA1F /* worker.m in Sources */,
 				687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */,
+				68B291272DC7547B0089BA1F /* ChargingLimitViewController.m in Sources */,
 				68171A302D5221C400DD4224 /* libsmc.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -778,6 +798,7 @@
 				);
 				LOCALIZED_STRING_MACRO_NAMES = _;
 				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
+				OTHER_CFLAGS = "$(CUSTOM_CFLAGS)";
 				OTHER_LDFLAGS = "$(OLDFL)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.torrekie.Battman;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -813,6 +834,7 @@
 				);
 				LOCALIZED_STRING_MACRO_NAMES = _;
 				LOCALIZED_STRING_SWIFTUI_SUPPORT = NO;
+				OTHER_CFLAGS = "$(CUSTOM_CFLAGS)";
 				OTHER_LDFLAGS = "$(OLDFL)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.torrekie.Battman;
 				PRODUCT_NAME = "$(TARGET_NAME)";

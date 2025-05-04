@@ -249,7 +249,7 @@ extern void battman_worker_oneshot(char cmd,char arg);
             LPMObject = [LPMClass sharedInstance];
             [LPMObject setPowerMode:val fromSource:@"com.torrekie.Battman" withCompletion:^(BOOL success, NSError *error) {
                 DBGLOG(@"Switching %@ LPM. Success=%d error: %@", val ? @"into" : @"out of", success, error);
-                if (success) lpm_on = val;
+                if (success) self->lpm_on = val;
             }];
         } else {
             /* 0 = Normal, 1 = LPM */
