@@ -24,6 +24,7 @@ ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/clang && echo exists),
 CC = ${THEOS}/toolchain/linux/iphone/bin/clang
 CFLAGS += -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
 LDFLAGS += -isysroot $(SDKROOT)
+NO_CLANGRT=1
 else ifneq ($(shell which xcrun),)
 CC = xcrun -sdk iphoneos cc
 else
@@ -55,9 +56,18 @@ OBJECTS:=$(addprefix build/objects/,$(addsuffix .o,$(SOURCES)))
 #OBJECTS := $(subst build/preprocessed,build/objects,$(addsuffix .o,$(PRESRC)))
 POBJECTS := build/objects/license/constants.c.o \
 		build/objects/localization_data.c.o
+ifeq ($(NO_CLANGRT),1)
+POBJECTS += build/objects/isOSVersionAtLeast.S.o
+endif
 
 all: $(PUBLISH_TARGET)
 
+build/preprocessed/isOSVersionAtLeast.S:
+	@mkdir -p $(@D)
+	echo ".section __TEXT,__text,regular,pure_instructions">$@
+	echo ".globl ___isOSVersionAtLeast">>$@
+	echo "___isOSVersionAtLeast:">>$@
+	echo "b ____isOSVersionAtLeast">>$@
 build/preprocessed/license/constants.c: license/license.html
 	@mkdir -p $(@D)
 	echo "const unsigned char lh_arr[]={">$@

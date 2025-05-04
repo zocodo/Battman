@@ -1,5 +1,5 @@
 .section __TEXT,__text,regular,pure_instructions
-.globl _battman_bootstrap,_ios_app_exit,___isOSVersionAtLeast
+.globl _battman_bootstrap,_ios_app_exit,____isOSVersionAtLeast
 .p2align 2
 
 ; current version only works for arm64 iOS :(
@@ -1066,7 +1066,7 @@ _ios_app_exit.graceful:
 	ldp x29,x30,[sp,#48]
 	add sp,sp,#64
 	ret
-___isOSVersionAtLeast:
+____isOSVersionAtLeast:
 	sub sp,sp,#48
 	stp x29,x30,[sp,#32]
 	stp x0,x1,[sp]

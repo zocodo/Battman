@@ -54,7 +54,7 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
 
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)section {
     if (section == 0)
-        return _("Charging Limit \x28""Experimental\x29");
+        return _("Charging Limit (Experimental)");
     return nil;
 }
 
@@ -211,9 +211,9 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
     } else if (indexPath.row == 6) {
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         if (daemon_pid) {
-            cell.textLabel.text = _("Stop Daemon \x28""Disable Charging Limit\x29");
+            cell.textLabel.text = _("Stop Daemon (Disable Charging Limit)");
         } else {
-            cell.textLabel.text = _("Start Daemon \x28""Enforce Charging Limit\x29");
+            cell.textLabel.text = _("Start Daemon (Enforce Charging Limit)");
         }
         if (@available(iOS 13.0, *)) {
             cell.textLabel.textColor = [UIColor linkColor];
