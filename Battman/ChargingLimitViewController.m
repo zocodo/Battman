@@ -54,7 +54,7 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
 
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)section {
     if (section == 0)
-        return _("Charging Limit (Experimental)");
+        return _("Charging Limit \x28""Experimental\x29");
     return nil;
 }
 
@@ -152,7 +152,7 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
         cell.accessoryView = segCon;
         return cell;
     } else if (indexPath.row == 1) {
-        cell.textLabel.text = _("Limit charging at (%)");
+        cell.textLabel.text = _("Limit charging at \x0028%\x0029");
         return cell;
     } else if (indexPath.row == 2) {
         SliderTableViewCell *scell = [tv dequeueReusableCellWithIdentifier:@"clhighthr" forIndexPath:indexPath];
@@ -175,7 +175,7 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
     } else if (indexPath.row == 3) {
         if (vals[0] == -1)
             cell.textLabel.enabled = NO;
-        cell.textLabel.text = _("Resume charging at (%)");
+        cell.textLabel.text = _("Resume charging at \x0028%\x0029");
         return cell;
     } else if (indexPath.row == 4) {
         SliderTableViewCell *scell = [tv dequeueReusableCellWithIdentifier:@"cllowthr" forIndexPath:indexPath];
@@ -211,9 +211,9 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
     } else if (indexPath.row == 6) {
         cell.selectionStyle = UITableViewCellSelectionStyleDefault;
         if (daemon_pid) {
-            cell.textLabel.text = _("Stop Daemon (Disable Charging Limit)");
+            cell.textLabel.text = _("Stop Daemon \x28""Disable Charging Limit\x29");
         } else {
-            cell.textLabel.text = _("Start Daemon (Enforce Charging Limit)");
+            cell.textLabel.text = _("Start Daemon \x28""Enforce Charging Limit\x29");
         }
         if (@available(iOS 13.0, *)) {
             cell.textLabel.textColor = [UIColor linkColor];
