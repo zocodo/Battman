@@ -36,6 +36,8 @@ extern int
 posix_spawnattr_set_persona_uid_np(const posix_spawnattr_t *__restrict, uid_t);
 extern int
 posix_spawnattr_set_persona_gid_np(const posix_spawnattr_t *__restrict, uid_t);
+extern int posix_spawnattr_setprocesstype_np(posix_spawnattr_t *,int);
+extern int posix_spawnattr_setjetsam_ext(posix_spawnattr_t *,int,int,int,int);
 #endif
 
 extern char **environ;
@@ -196,13 +198,6 @@ static void powerevent_listener(int a, void *b, int32_t c) {
 }
 
 void daemon_main(void) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    // Consider better implementations
-    if (daemon(0, 0) != 0)
-        abort();
-#pragma clang diagnostic pop
-    // char daemon_settings_path[1024];
     signal(SIGPIPE,SIG_IGN);
     char *end = stpcpy(stpcpy(daemon_settings_path, getenv("HOME")), "/Library/daemon");
     strcpy(end, ".run");
@@ -232,6 +227,9 @@ int battman_run_daemon(void) {
     posix_spawnattr_set_persona_np(&sattr, 99, 1);
     posix_spawnattr_set_persona_uid_np(&sattr, 0);
     posix_spawnattr_set_persona_gid_np(&sattr, 0);
+    posix_spawnattr_setprocesstype_np(&sattr, 0x300); // daemon standard
+    posix_spawnattr_setjetsam_ext(&sattr, 0, 3, 80,80);
+    posix_spawnattr_setflags(&sattr,POSIX_SPAWN_SETSID);
     char executable[1024];
     uint32_t size = 1024;
     _NSGetExecutablePath(executable, &size);
