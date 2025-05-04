@@ -131,9 +131,9 @@ static void battman_spawn_worker() {
 
 void worker_test() {
 	battman_spawn_worker();
-	char buf[10];
-	read(worker_pipefd[0],buf,10);
-	NSLog(@"buf=%s\n",buf);
+	//char buf[10];
+	//read(worker_pipefd[0],buf,10);
+	//NSLog(@"buf=%s\n",buf);
 	close(worker_pipefd[1]);
 	close(worker_pipefd[0]);
 }

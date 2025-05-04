@@ -13,18 +13,6 @@ enum sections_cl {
 	CM_SECT_COUNT
 };
 
-static NSUserDefaults *batterysaver=nil;
-static NSUserDefaults *springboard = nil;
-
-static const char *batterysaver_notif = NULL;
-static NSString *batterysaver_state = nil;
-static const char *system_lpm_notif = NULL;
-
-static NSArray *sections_cl = nil;
-static bool lpm_supported = true;
-static bool lpm_on = false;
-static float lpm_thr = 0;
-
 extern uint64_t battman_worker_call(char cmd, void *arg, uint64_t arglen);
 extern void battman_worker_oneshot(char cmd,char arg);
 
@@ -108,6 +96,7 @@ extern void battman_worker_oneshot(char cmd,char arg);
             dlclose(mobileGestalt);
         }
 #else
+	lpm_supported=1;
         /* TODO: Alternative checks if MobileGestalt is unreliable */
 #endif
         if (lpm_supported) {

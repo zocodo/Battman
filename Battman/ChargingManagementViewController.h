@@ -5,6 +5,17 @@
 {
 	UIDatePicker *fromPicker;
 	UIDatePicker *untilPicker;
+
+	NSUserDefaults *batterysaver;
+	NSUserDefaults *springboard;
+
+	const char *batterysaver_notif;
+	NSString *batterysaver_state;
+	const char *system_lpm_notif;
+
+	bool lpm_supported;
+	bool lpm_on;
+	float lpm_thr;
 }
 @end
 

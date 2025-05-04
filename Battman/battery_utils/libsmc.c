@@ -135,6 +135,10 @@ fail:
     return kIOReturnError;
 }
 
+void _smc_open() {
+	smc_open();
+}
+
 static IOReturn smc_call(int index, SMCParamStruct *inputStruct,
                          SMCParamStruct *outputStruct) {
     size_t inputSize, outputSize;

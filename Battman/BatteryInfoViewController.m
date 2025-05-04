@@ -3,6 +3,7 @@
 #import "BatteryCellView/TemperatureInfoTableViewCell.h"
 #import "BatteryDetailsViewController.h"
 #import "ChargingManagementViewController.h"
+#import "ChargingLimitViewController.h"
 #include "battery_utils/battery_utils.h"
 
 #include "common.h"
@@ -74,6 +75,8 @@ enum sections_batteryinfo {
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
+	if(section==BI_SECT_MANAGE)
+		return 2;
     return 1;
 }
 
@@ -105,7 +108,7 @@ enum sections_batteryinfo {
             pushViewController:[[BatteryDetailsViewController alloc] initWithBatteryInfo:batteryInfo]
                       animated:YES];
 	else if(indexPath.section==BI_SECT_MANAGE)
-		[self.navigationController pushViewController:[ChargingManagementViewController new] animated:YES];
+		[self.navigationController pushViewController:indexPath.row==0?[ChargingManagementViewController new]:[ChargingLimitViewController new] animated:YES];
     [tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
@@ -124,7 +127,7 @@ enum sections_batteryinfo {
         return cell;
     } else if (indexPath.section == BI_SECT_MANAGE) {
         UITableViewCell *cell = [UITableViewCell new];
-        cell.textLabel.text = _("Charging Management");
+        cell.textLabel.text = indexPath.row==0?_("Charging Management"):_("Charging Limit");
         cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
         return cell;
     }

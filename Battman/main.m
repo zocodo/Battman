@@ -215,6 +215,10 @@ int main(int argc, char * argv[]) {
 		extern void battman_run_worker(const char *);
 		battman_run_worker(argv[2]);
 		return 0;
+	}else if(argc==2&&strcmp(argv[1],"--daemon")==0) {
+		extern void daemon_main();
+		daemon_main();
+		return 0;
 	}
 #if defined(DEBUG) && !TARGET_OS_SIMULATOR
     // Redirecting is not needed for Simulator
