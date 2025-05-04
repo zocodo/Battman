@@ -38,7 +38,12 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
         close(drfd);
     }
     strcpy(end, "_settings");
-    int fd = open(buf, O_RDWR | O_CREAT);
+    int fd = open(buf, O_RDWR | O_CREAT, 0644);
+    if(fd==-1) {
+    	show_alert("ERROR open failed",buf,"1");
+    	vals=malloc(2);
+    	return self;
+    }
     char _vals[2];
     if (read(fd, _vals, 2) != 2) {
         _vals[0] = -1;
@@ -48,6 +53,11 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
     }
     lseek(fd, 0, SEEK_SET);
     vals = mmap(NULL, 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if((long long)vals==-1) {
+    	show_alert("ERROR","mmap failed","1");
+    	vals=malloc(2);
+    	return self;
+    }
     close(fd);
     return self;
 }
