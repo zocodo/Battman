@@ -1,5 +1,5 @@
 #include "libsmc.h"
-#include "common.h"
+#include "../common.h"
 #include <CoreFoundation/CFDictionary.h>
 #include <CoreFoundation/CFNumber.h>
 #include <CoreFoundation/CFString.h>
