@@ -66,6 +66,7 @@ build/preprocessed/isOSVersionAtLeast.S:
 	@mkdir -p $(@D)
 	echo ".section __TEXT,__text,regular,pure_instructions">$@
 	echo ".globl ___isOSVersionAtLeast">>$@
+	echo ".p2align 2">>$@
 	echo "___isOSVersionAtLeast:">>$@
 	echo "b ____isOSVersionAtLeast">>$@
 build/preprocessed/license/constants.c: license/license.html
