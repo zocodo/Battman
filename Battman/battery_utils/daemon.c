@@ -51,15 +51,15 @@ struct battman_daemon_settings {
 static struct battman_daemon_settings *daemon_settings;
 static int CH0ICache = -1;
 static int CH0CCache = -1;
+static int last_power_level=-1;
 static char daemon_settings_path[1024];
 
+static void update_power_level(int);
+
 static void daemon_control_thread(int fd) {
-    NSLog(CFSTR("Daemon: control fd=%d"), fd);
-    int readyFlag = 1;
-    write(fd, &readyFlag, 1);
     while (1) {
         char cmd;
-        if (recv(fd, &cmd, 1, 0) <= 0) {
+        if (read(fd, &cmd, 1) <= 0) {
             NSLog(CFSTR("Daemon: Closing bc %s"), strerror(errno));
             close(fd);
             return;
@@ -69,9 +69,46 @@ static void daemon_control_thread(int fd) {
             char val = 0;
             smc_write_safe('CH0I', &val, 1);
             smc_write_safe('CH0C', &val, 1);
-            // send(fd,&cmd,1,0);
+            write(fd,&cmd,1);
             close(fd);
             exit(0);
+        }else if(cmd==2){
+        	write(fd,&cmd,1);
+        }else if(cmd==4) {
+        	update_power_level(last_power_level);
+        }else if(cmd==5) {
+        	close(fd);
+        	pthread_exit(NULL);
+        }else if(cmd==6) {
+        	// Redirect logs
+        	// Will stop responding to commands
+        	const char *connMsg="Hello from daemon! Log redirection started!\n";
+        	write(fd,connMsg,strlen(connMsg));
+        	int pipefds[2];
+        	pipe(pipefds);
+        	dup2(pipefds[1],1);
+        	dup2(pipefds[1],2);
+        	close(pipefds[1]);
+        	int devnull=open("/dev/null",O_WRONLY);
+        	char buf[512];
+        	while(1) {
+        		int len=read(pipefds[0],buf,512);
+        		if(len<=0) {
+        			close(fd);
+        			dup2(devnull,1);
+        			dup2(devnull,2);
+        			close(devnull);
+        			close(pipefds[0]);
+        			pthread_exit(NULL);
+        		}
+        		if(write(fd,buf,len)<=0) {
+        			dup2(devnull,1);
+        			dup2(devnull,2);
+        			close(devnull);
+        			close(pipefds[0]);
+        			pthread_exit(NULL);
+        		}
+        	}
         }
     }
 }
@@ -79,7 +116,8 @@ static void daemon_control_thread(int fd) {
 static void daemon_control() {
     struct sockaddr_un sockaddr;
     sockaddr.sun_family = AF_UNIX;
-    strcpy(stpcpy(sockaddr.sun_path, getenv("HOME")), "/Library/dsck");
+    chdir(getenv("HOME"));
+    strcpy(sockaddr.sun_path,"./Library/dsck");
     remove(sockaddr.sun_path);
     umask(0);
     int sock = socket(AF_UNIX, SOCK_STREAM, 0);
@@ -94,10 +132,6 @@ static void daemon_control() {
         int conn = accept(sock, NULL, NULL);
         if (conn == -1)
             continue;
-        NSLog(CFSTR("Daemon: New connection %d"), conn);
-        // char cmd;
-        // read(conn,&cmd,1);
-        // NSLog(CFSTR("Daemon: cmd=%d"),(int)cmd);
         pthread_t ct;
         pthread_create(&ct, NULL, (void *(*)(void *))daemon_control_thread,
                        (void *)(uint64_t)conn);
@@ -105,19 +139,10 @@ static void daemon_control() {
     }
 }
 
-static void powerevent_listener(int a, void *b, int32_t c) {
-    if (c != -536723200)
-        return;
-    if (access(daemon_settings_path, F_OK) == -1) {
-        // Quit when app removed or daemon no longer needed
-        exit(0);
-    }
-    CFNumberRef capacity =
-        IORegistryEntryCreateCFProperty(b, CFSTR("CurrentCapacity"), 0, 0);
-    int val;
-    CFNumberGetValue(capacity, kCFNumberIntType, &val);
-    NSLog(CFSTR("Daemon: Value=%d"), val);
-    CFRelease(capacity);
+static void update_power_level(int val) {
+	if(val==-1)
+		return;
+	last_power_level=val;
     if (daemon_settings->enable_charging_at_level != 255) {
         if (val <= daemon_settings->enable_charging_at_level) {
             val = 0;
@@ -154,6 +179,22 @@ static void powerevent_listener(int a, void *b, int32_t c) {
     }
 }
 
+static void powerevent_listener(int a, void *b, int32_t c) {
+    if (c != -536723200)
+        return;
+    if (access(daemon_settings_path, F_OK) == -1) {
+        // Quit when app removed or daemon no longer needed
+        exit(0);
+    }
+    CFNumberRef capacity =
+        IORegistryEntryCreateCFProperty(b, CFSTR("CurrentCapacity"), 0, 0);
+    int val;
+    CFNumberGetValue(capacity, kCFNumberIntType, &val);
+    NSLog(CFSTR("Daemon: Value=%d"), val);
+    CFRelease(capacity);
+    update_power_level(val);
+}
+
 void daemon_main(void) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
@@ -162,6 +203,7 @@ void daemon_main(void) {
         abort();
 #pragma clang diagnostic pop
     // char daemon_settings_path[1024];
+    signal(SIGPIPE,SIG_IGN);
     char *end = stpcpy(stpcpy(daemon_settings_path, getenv("HOME")), "/Library/daemon");
     strcpy(end, ".run");
     int runfd = open(daemon_settings_path, O_RDWR | O_CREAT, 0666);

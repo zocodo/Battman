@@ -13,6 +13,34 @@
 
 enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
 
+int connect_to_daemon() {
+	struct sockaddr_un sockaddr;
+	sockaddr.sun_family = AF_UNIX;
+	const char *end=stpcpy(sockaddr.sun_path, "./Library/dsck");
+	sockaddr.sun_len=(unsigned char)(end-sockaddr.sun_path+1);
+	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+	if (connect(sock, (struct sockaddr *)&sockaddr, sizeof(struct sockaddr_un)) == -1) {
+  		//char errstr[1024];
+		////memset(errstr, 0, sizeof(errstr));
+		//// ^ no initialization needed for sprintf
+		//sprintf(errstr, "%s\n%s: %s", _C("Failed to connect to daemon"), L_ERR, strerror(errno));
+		//show_alert(L_ERR, errstr, L_OK);
+		close(sock);
+		// No alert bc we need to retry
+		return 0;
+	}
+	char cmd=2;
+	write(sock,&cmd,1);
+	if(read(sock,&cmd,1)!=1||cmd!=2) {
+		NSLog(@"Failed to ping daemon: %s",strerror(errno));
+		show_alert("Daemon", "Daemon is malfunctioning, likely", "ok");
+		close(sock);
+		return 0;;
+	}
+	NSLog(@"Connected to daemon and received ping!");
+	return sock;
+}
+
 @implementation ChargingLimitViewController
 
 - (instancetype)init {
@@ -42,15 +70,15 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
     
     strcpy(end, "_settings");
     int fd = open(buf, O_RDWR | O_CREAT, 0644);
-    if (fd == -1) {
-        memset(errstr, 0, sizeof(errstr));
-        sprintf(errstr, "%s %s\n%s: %s", _C("Unable to open"), buf, L_ERR, strerror(errno));
-    	show_alert(L_ERR, errstr, L_OK);
-    	vals = malloc(2);
+    if(fd==-1) {
+    	NSLog(@"open %s: Error - %s",buf,strerror(errno));
+    	show_alert("ERROR open failed","Failed to open daemon settings file","1");
+    	vals=NULL;
     	return self;
     }
     char _vals[2];
     if (read(fd, _vals, 2) != 2) {
+    	NSLog(@"Writing initial values to daemon_settings");
         _vals[0] = -1;
         _vals[1] = -1;
         lseek(fd, 0, SEEK_SET);
@@ -58,15 +86,25 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
     }
     lseek(fd, 0, SEEK_SET);
     vals = mmap(NULL, 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if ((long long)vals == -1) {
-        memset(errstr, 0, sizeof(errstr));
-        sprintf(errstr, "%s\n%s: %s", _C("mmap() failed"), L_ERR, strerror(errno));
-    	show_alert(L_ERR, errstr, L_OK);
-    	vals = malloc(2);
+    if((long long)vals==-1) {
+    	NSLog(@"mmap: Error - %s",strerror(errno));
+    	show_alert("ERROR","mmap failed","1");
+    	vals=NULL;
+    	close(fd);
     	return self;
     }
     close(fd);
-    return self;
+	if(daemon_pid) {
+		NSLog(@"Daemon likely valid, trying to connect");
+		[self connectToDaemon];
+	}
+	return self;
+}
+
+- (void)connectToDaemon {
+	if(daemon_fd)
+		return;
+	daemon_fd=connect_to_daemon();
 }
 
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)section {
@@ -82,8 +120,12 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
 }
 
 - (void)dealloc {
-    munmap(vals, 2);
-    return;
+	if(!vals)
+		return;
+	const char endconnectioncmd=5;
+	write(daemon_fd,&endconnectioncmd,1);
+	close(daemon_fd);
+	munmap(vals, 2);
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)sect {
@@ -97,31 +139,33 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 6) {
         if (daemon_pid) {
-            struct sockaddr_un sockaddr;
-            sockaddr.sun_family = AF_UNIX;
-            strcpy(stpcpy(sockaddr.sun_path, getenv("HOME")), "/Library/dsck");
-            int sock = socket(AF_UNIX, SOCK_STREAM, 0);
-            int sfd;
-            if ((sfd = connect(sock, (struct sockaddr *)&sockaddr, sizeof(struct sockaddr_un)) == -1)) {
-                char errstr[1024];
-                memset(errstr, 0, sizeof(errstr));
-                sprintf(errstr, "%s\n%s: %s", _C("Failed to connect to daemon"), L_ERR, strerror(errno));
-                show_alert(L_ERR, errstr, L_OK);
-                close(sock);
-                [tv deselectRowAtIndexPath:indexPath animated:YES];
-                return;
+        	NSLog(@"Daemon is likely active, requesting stop");
+        	if(!daemon_fd) {
+        		show_alert("error", "No connection to daemon established","ok");
+        		[tv deselectRowAtIndexPath:indexPath animated:YES];
+               		return;
+               	}
+               	char stop_cmd=3;
+            write(daemon_fd, &stop_cmd, 1);
+            if(read(daemon_fd,&stop_cmd,1)==1&&stop_cmd==3) {
+            	NSLog(@"Daemon returned 3 - stopped");
+            	daemon_pid=0;
+            	close(daemon_fd);
+            	daemon_fd=0;
             }
-            int dmp;
-            read(sfd, &dmp, 1);
-            int stop_cmd = 3;
-            send(sfd, &stop_cmd, 1, 0);
-            close(sfd);
-            close(sock);
-            daemon_pid = 0;
             [tv reloadData];
         } else {
             extern int battman_run_daemon(void);
             daemon_pid = battman_run_daemon();
+            for(int i=0;i<30;i++) {
+            	usleep(50000);
+            	[self connectToDaemon];
+            	if(daemon_fd) {
+            		break;
+            	}else if(i==29) {
+            		show_alert("Failed", "Failed to start daemon - daemon is not responsive", "ok");
+            	}
+            }
             [tv reloadData];
         }
     }
@@ -130,11 +174,13 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
 
 - (void)cltypechanged2:(UISegmentedControl *)segCon {
     vals[0] = segCon.selectedSegmentIndex ? 0 : -1;
+    [self daemonRedecide];
     [self.tableView reloadData];
 }
 
 - (void)cltypechanged:(UISegmentedControl *)segCon {
     vals[0] = segCon.selectedSegmentIndex ? 0 : -1;
+    [self daemonRedecide];
     NSIndexPath *resumeIndexLabel = [NSIndexPath indexPathForRow:3 inSection:0];
     NSIndexPath *resumeIndexSlider = [NSIndexPath indexPathForRow:4 inSection:0];
     [self.tableView reloadRowsAtIndexPaths:@[resumeIndexLabel, resumeIndexSlider] withRowAnimation:UITableViewRowAnimationFade];
@@ -245,15 +291,21 @@ enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
     BOOL isHighThr = [cell.reuseIdentifier isEqualToString:@"clhighthr"];
     // TODO: Consider do a auto slider adjusting instead of this
     if (isHighThr && value < vals[0]) {
-        show_alert(_C("Invalid Setup"), _C("Limit Value should bigger than Resume Value"), L_OK);
+        show_alert(_C("Invalid Setup"), _C("Limit Value should be bigger than Resume Value"), L_OK);
         [self.tableView reloadData];
         return;
     } else if (!isHighThr && value > vals[1]) {
-        show_alert(_C("Invalid Setup"), _C("Resume Value should smaller than Limit Value"), L_OK);
+        show_alert(_C("Invalid Setup"), _C("Resume Value should be smaller than Limit Value"), L_OK);
         [self.tableView reloadData];
         return;
     }
     vals[isHighThr] = (char)value;
+    [self daemonRedecide];
+}
+
+- (void)daemonRedecide {
+	const char redecidecmd=4;
+	write(daemon_fd,&redecidecmd,1);
 }
 
 @end

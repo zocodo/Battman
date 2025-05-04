@@ -208,6 +208,7 @@ const char *cond_localize_c(const char *str) {
 
 #ifdef DEBUG
 NSMutableAttributedString *redirectedOutput;
+void (^redirectedOutputListener)(void)=nil;
 #endif
 
 int main(int argc, char * argv[]) {
@@ -223,6 +224,7 @@ int main(int argc, char * argv[]) {
 	}
 #if defined(DEBUG) && !TARGET_OS_SIMULATOR
     // Redirecting is not needed for Simulator
+    chdir(getenv("HOME"));
     char *tty = ttyname(0);
     if (tty) {
         show_alert("Current TTY", tty, "OK");
@@ -251,6 +253,15 @@ int main(int argc, char * argv[]) {
                 NSString *output = [[NSString alloc] initWithBytes:buffer length:bytesRead encoding:NSUTF8StringEncoding];
                 NSAttributedString *attrString = [[NSAttributedString alloc] initWithString:output];
                 [redirectedOutput appendAttributedString:attrString];
+                if(redirectedOutput.length>50000)
+                	[redirectedOutput deleteCharactersInRange:NSMakeRange(0,10000)];
+                if(redirectedOutputListener) {
+		        dispatch_async(dispatch_get_main_queue(),^{
+		        	// (in case that our block is invalidated while we're waiting)
+		        	if(redirectedOutputListener)
+		        		redirectedOutputListener();
+		        });
+		}
             }
         });
 

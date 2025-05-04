@@ -1,6 +1,6 @@
 #import "SettingsViewController.h"
 #include "common.h"
-
+#include <math.h>
 
 @interface LanguageSelectionVC:UITableViewController
 @end
@@ -14,8 +14,10 @@ enum sections_settings {
 };
 
 extern NSMutableAttributedString *redirectedOutput;
+extern void (^redirectedOutputListener)(void);
 
-#ifdef DEBUG
+static BOOL _coolDebugVCPresented=0;
+
 @interface DebugViewController : UIViewController
 @property (nonatomic, readwrite, strong) UITextView *textField;
 @end
@@ -31,16 +33,46 @@ extern NSMutableAttributedString *redirectedOutput;
     [self.navigationController presentViewController:activityViewController animated:YES completion:^{}];
 }
 
+- (void)closeCoolDebug {
+	if(!_coolDebugVCPresented)
+		return;
+	_coolDebugVCPresented=0;
+	CGRect myFrame=self.navigationController.view.frame;
+	[self.navigationController.view removeFromSuperview];
+	self.navigationController.parentViewController.view.frame=CGRectMake(0,0,myFrame.size.width,myFrame.size.height*3);
+	[self.navigationController removeFromParentViewController];
+}
+
+- (void)viewDidUnload {
+	[super viewDidUnload];
+	redirectedOutputListener=nil;
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    if(_coolDebugVCPresented) {
+    	self.navigationItem.leftBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Close" style:UIBarButtonItemStyleDone target:self action:@selector(closeCoolDebug)];
+    }
 
     self.view.backgroundColor = [UIColor whiteColor];
-    self.textField = [[UITextView alloc] initWithFrame:self.view.bounds];
+    self.textField = [UITextView new];
     self.textField.font = [UIFont fontWithName:@"Courier" size:10];
     
     self.textField.text = [redirectedOutput string];
+    redirectedOutputListener=^{
+    	self.textField.text=[redirectedOutput string];
+    	if(!self.textField.scrollEnabled)
+    		return;
+    	// https://stackoverflow.com/questions/952412/uiscrollview-scroll-to-bottom-programmatically
+    	[self.textField setContentOffset:CGPointMake(0,fmax(self.textField.contentSize.height-self.textField.bounds.size.height+self.textField.contentInset.bottom,-50)) animated:YES];
+    };
 
     [self.view addSubview:self.textField];
+    self.textField.translatesAutoresizingMaskIntoConstraints=NO;
+    [self.textField.topAnchor constraintEqualToAnchor:self.view.topAnchor].active=1;
+    [self.textField.bottomAnchor constraintEqualToAnchor:self.view.bottomAnchor].active=1;
+    [self.textField.leadingAnchor constraintEqualToAnchor:self.view.leadingAnchor].active=1;
+    [self.textField.trailingAnchor constraintEqualToAnchor:self.view.trailingAnchor].active=1;
     
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] init];
     UIButton *export_button;
@@ -63,7 +95,6 @@ extern NSMutableAttributedString *redirectedOutput;
 }
 
 @end
-#endif
 
 @implementation SettingsViewController
 
@@ -84,7 +115,7 @@ extern NSMutableAttributedString *redirectedOutput;
 		return 2;
 #ifdef DEBUG
 	else if (section == SS_SECT_DEBUG)
-		return 4;
+		return 5;
 #endif
 	return 0;
 }
@@ -114,6 +145,11 @@ extern NSMutableAttributedString *redirectedOutput;
 #ifdef DEBUG
 	if (indexPath.section == SS_SECT_DEBUG) {
 		if (indexPath.row == 0) {
+			if(_coolDebugVCPresented) {
+				show_alert("Cool debug VC", "Already presented", "ok");
+				[tv deselectRowAtIndexPath:indexPath animated:YES];
+				return;
+			}
 			[self.navigationController pushViewController:[DebugViewController new] animated:YES];
 		} else if (indexPath.row == 1){
 #ifndef USE_GETTEXT
@@ -123,10 +159,45 @@ extern NSMutableAttributedString *redirectedOutput;
 #endif
 		} else if (indexPath.row == 2){
 			app_exit();
-		}else{
-			NSLog(@"TEST TEST Pressed; No test defined rn");
+		}else if(indexPath.row==3){
+			if(_coolDebugVCPresented) {
+				show_alert("Cool debug VC", "Already presented", "ok");
+				[tv deselectRowAtIndexPath:indexPath animated:YES];
+				return;
+			}
+			_coolDebugVCPresented=1;
+			UINavigationController *vc=[[UINavigationController alloc] initWithRootViewController:[DebugViewController new]];
+			UITabBarController *tbc=self.tabBarController;
+			CGFloat halfHeight=tbc.view.frame.size.height/3;
+			self.tabBarController.view.frame=CGRectMake(0,0,tbc.view.frame.size.width,halfHeight*2);
+			vc.view.frame=CGRectMake(0,halfHeight*2,tbc.view.frame.size.width,halfHeight);
+			[self.tabBarController.view.superview addSubview:vc.view];
+			[self.tabBarController addChildViewController:vc];
 			//extern void worker_test(void);
 			//worker_test();
+		}else{
+			extern int connect_to_daemon();
+			int fd=connect_to_daemon();
+			if(!fd) {
+				show_alert("Daemon", "Failed to connect to daemon", "ok");
+				[tv deselectRowAtIndexPath:indexPath animated:YES];
+				return;
+			}
+			dispatch_queue_t queue = dispatch_queue_create("daemonOutputRedirectQueue", NULL);
+			dispatch_async(queue,^{
+				char buf[512];
+				*buf=6;
+				write(fd,buf,1);
+				while(1) {
+					int len=read(fd,buf,512);
+					if(len<=0) {
+						close(fd);
+						return;
+					}
+					write(1,buf,len);
+				}
+			});
+			show_alert("Done", "Check logs", "ok");
 		}
 	}
 #endif
@@ -172,7 +243,12 @@ extern NSMutableAttributedString *redirectedOutput;
 			return cell;
 		} else if (indexPath.row == 3) {
 			UITableViewCell *cell = [UITableViewCell new];
-			cell.textLabel.text = _("TEST TEST");
+			cell.textLabel.text = _("Logs (stdout) (very cool)");
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			return cell;
+		}else if(indexPath.row==4) {
+			UITableViewCell *cell = [UITableViewCell new];
+			cell.textLabel.text = _("Redirect daemon logs");
 			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
 			return cell;
 		}
