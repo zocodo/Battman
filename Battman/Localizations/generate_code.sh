@@ -1,10 +1,29 @@
 #! /bin/bash
 
+declare -A lcs 2>/dev/null
+if [ $? != 0 ]; then
+	echo "generate_code.sh: WARNING: bash required" >&2
+	if ! type bash 2>&1 >/dev/null; then
+		echo "generate_code.sh: ERROR: no bash found" >&2
+		echo "Please, install bash." >&2
+		exit 1
+	fi
+	echo "generate_code.sh: Invoking bash" >&2
+	exec bash $0
+fi
+
 SED=sed
+if ! [[ `sed --version 2>&1` =~ "GNU" ]]; then
+	SED=gsed
+	if ! [[ `gsed --version 2>&1` =~ "GNU" ]]; then
+		echo "generate_code.sh: GNU version of sed is required">&2
+		echo "Please, install gsed." >&2
+		exit 2
+	fi
+fi
 
 msgids=`${SED} -n 's/msgid "\(.\+\)"/\1/p' Localizations/base.pot`
 locale_files=`ls Localizations/*.po`
-declare -A lcs
 
 while IFS= read i; do
 	for fn in $locale_files; do
