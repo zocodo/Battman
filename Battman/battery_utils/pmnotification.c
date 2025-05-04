@@ -32,12 +32,12 @@ typedef void
     void *            messageArgument );
 typedef void (*IOServiceMatchingCallback)(void *refcon, io_iterator_t iterator);
 
-extern int IOServiceAddMatchingNotification(void *, const char *, void *, void *, void *, void **);
+extern int IOServiceAddMatchingNotification(void *, const char *, void *, void *, void *, io_iterator_t *);
 extern void *IOServiceMatching(const char *);
-extern int IOServiceAddInterestNotification(IONotificationPortRef, void *, const char *, void *, int, void *);
-extern void *IOIteratorNext(void *);
-extern void IOObjectRelease(void *);
-extern int IORegistryEntryCreateCFProperties(void *, CFMutableDictionaryRef *, int, int);
+extern int IOServiceAddInterestNotification(IONotificationPortRef, io_service_t, const char *, void *, int, void *);
+extern io_object_t IOIteratorNext(io_iterator_t);
+extern void IOObjectRelease(io_object_t);
+extern int IORegistryEntryCreateCFProperties(io_registry_entry_t, CFMutableDictionaryRef *, int, int);
 extern void *IONotificationPortCreate(int);
 extern void IONotificationPortSetDispatchQueue(void *, void *);
 #endif
