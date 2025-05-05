@@ -42,6 +42,8 @@ typedef int kern_return_t;
 #define kIOReturnSuccess 0
 #define kIOReturnError 0xE00002BC
 #define MACH_PORT_NULL 0
+#define IO_OBJECT_NULL  ((io_object_t) 0)
+
 IOReturn IOMasterPort(mach_port_t, mach_port_t *);
 CFMutableDictionaryRef IOServiceMatching(const char *);
 io_service_t IOServiceGetMatchingService(mach_port_t, CFDictionaryRef);
