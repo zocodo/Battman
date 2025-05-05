@@ -589,3 +589,29 @@ int preferred_language_code() {
 	_preferred_language_code = ret;
 	return ret;
 }
+
+const char *target_type(void) {
+    static char *buf = NULL;
+
+    if (buf != NULL)
+        return buf;
+
+    const char *name = "hw.targettype";
+    size_t len = 0;
+
+    if (sysctlbyname(name, NULL, &len, NULL, 0) != 0 || len == 0)
+        return NULL;
+
+    buf = malloc(len + 1);
+    if (!buf)
+        return NULL;
+
+    if (sysctlbyname(name, buf, &len, NULL, 0) != 0) {
+        free(buf);
+        buf = NULL;
+        return buf;
+    }
+
+    buf[len] = '\0';
+    return buf;
+}

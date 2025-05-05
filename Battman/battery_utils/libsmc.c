@@ -110,6 +110,7 @@ static IOReturn smc_open(void) {
     mach_port_t masterPort;
     io_service_t service;
     const char *fail_title = NULL;
+    char message[1024];
 
     if (IOMasterPort(MACH_PORT_NULL, &masterPort) != kIOReturnSuccess) {
         DBGLOG(CFSTR("IOMasterPort() failed"));
@@ -118,6 +119,11 @@ static IOReturn smc_open(void) {
     }
 
     service = IOServiceGetMatchingService(masterPort, IOServiceMatching("AppleSMC"));
+    if (service == IO_OBJECT_NULL) {
+        fail_title = _C("AppleSMC Unsupported");
+        goto fail_unsupported;
+    }
+
     result = IOServiceOpen(service, mach_task_self(), 0, &gConn);
     if (result != kIOReturnSuccess) {
         /* TODO: Check entitlements and explicitly warn which we loss */
@@ -130,6 +136,11 @@ static IOReturn smc_open(void) {
 
 fail:
     show_alert_async(fail_title, _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"), L_OK, ^(bool res) {
+        app_exit();
+    });
+fail_unsupported:
+    sprintf(message, _C("Your device (%s) does not support AppleSMC. Battman requires AppleSMC to function properly."), target_type());
+    show_alert_async(fail_title, message, L_OK, ^(bool res) {
         app_exit();
     });
     return kIOReturnError;

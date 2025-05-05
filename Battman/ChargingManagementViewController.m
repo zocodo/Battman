@@ -256,7 +256,7 @@ extern void battman_worker_oneshot(char cmd, char arg);
             [LPMObject setPowerMode:val error:&err];
             lpm_on = [LPMObject getPowerMode] & 1;
             if (lpm_on != val) {
-                NSString *errorMessage = [NSString stringWithFormat:@"%@\n\n%s: %@", _("Unable to set Low Power Mode."), L_ERR, [err localizedDescription]];
+                NSString *errorMessage = [NSString stringWithFormat:@"%@\n\n%@: %@", _("Unable to set Low Power Mode."), _("Error"), [err localizedDescription]];
                 show_alert(L_FAILED, [errorMessage UTF8String], L_OK);
             } else {
                 NSLog(@"[batterySaver getPowerMode] = %lld", [LPMObject getPowerMode]);

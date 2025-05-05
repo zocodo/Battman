@@ -45,7 +45,17 @@ void battman_run_worker(const char *pipedata) {
     pthread_create(&t, NULL, (void *(*)(void *))parent_monitor, NULL);
     pthread_detach(t);
     *(int64_t *)worker_pipefd = atoll(pipedata);
-    NSUserDefaults *suite = [[NSUserDefaults alloc] initWithSuiteName:@"com.apple.powerd.lowpowermode"];
+    NSString *suite_name;
+
+    if (@available(iOS 15.0, macOS 12.0, *)) {
+        suite_name = @"com.apple.powerd.lowpowermode";
+    } else {
+        // Even this process is designed for iOS 15+, we still need to fallbacks for some curious users
+        setgid(501);
+        setuid(501);
+        suite_name = @"com.apple.coreduetd.batterysaver";
+    }
+    NSUserDefaults *suite = [[NSUserDefaults alloc] initWithSuiteName:suite_name];
     while (1) {
         char cmd;
         if (read(worker_pipefd[0], &cmd, 1) != 1) {

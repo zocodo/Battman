@@ -4,6 +4,11 @@
 #include "../battery_utils/libsmc.h"
 // Temporary ^
 
+@interface TemperatureCellView ()
+@property (nonatomic, strong) CAGradientLayer *borderGradient;
+@property (nonatomic, strong) CAGradientLayer *gradient;
+@end
+
 @implementation TemperatureCellView
 
 /* Apple lied to us, CGColorCreateGenericRGB is already a thing
@@ -11,24 +16,72 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
 
+- (void)updateColors {
+    if (@available(iOS 12.0, *)) {
+        // We already have a non published darkmode in iOS 12, some tweaks may able to enforce it
+        if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            self.borderGradient.colors = @[
+                (id)[UIColor darkGrayColor].CGColor,
+                (id)[UIColor blackColor].CGColor,
+            ];
+            self.gradient.colors = @[
+                (id)[UIColor colorWithWhite:0.40 alpha:1.0].CGColor,
+                (id)[UIColor colorWithWhite:0.05 alpha:1.0].CGColor
+            ];
+
+            return;
+        }
+    }
+    // Default
+    self.borderGradient.colors = @[
+        (id)[UIColor lightGrayColor].CGColor,
+        (id)[UIColor darkGrayColor].CGColor,
+    ];
+    self.gradient.colors = @[
+        (id)[UIColor colorWithWhite:0.5 alpha:1.0].CGColor,
+        (id)[UIColor colorWithWhite:0.1 alpha:1.0].CGColor
+    ];
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [super traitCollectionDidChange:previousTraitCollection];
+    // Handle dark mode switches
+    [self updateColors];
+}
+
 - (instancetype)initWithFrame:(CGRect)frame percentage:(CGFloat)percentage {
     self = [super initWithFrame:frame];
     UIView *temperatureView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, frame.size.width, frame.size.height)];
     temperatureView.layer.cornerRadius = 30;
     temperatureView.layer.masksToBounds = YES;
-    if (@available(iOS 13.0, *)) {
-        [temperatureView.layer setBorderColor:[UIColor systemGray2Color].CGColor];
-    } else {
-        // Detect if enabled Eclipse?
-        CGColorRef __unused colorDark = CGColorCreateGenericRGB(99.0f / 255, 99.0f / 255, 102.0f / 255, 1.0f);
-        CGColorRef colorLight = CGColorCreateGenericRGB(174.0f / 255, 174.0f / 255, 178.0f / 255, 1.0f);
-        [temperatureView.layer setBorderColor:colorLight];
-        CFRelease(colorDark);
-        CFRelease(colorLight);
-    }
-    [temperatureView.layer setBorderWidth:3];
-    [temperatureView setBackgroundColor:[UIColor whiteColor]];
-//    temperatureView.layer.backgroundColor = CGColorCreateGenericRGB(0.15, 0.15, 0.15, 1.0);
+
+    self.borderGradient = [CAGradientLayer layer];
+    self.borderGradient.frame = temperatureView.bounds;
+    self.gradient = [CAGradientLayer layer];
+    self.gradient.frame = temperatureView.bounds;
+
+    // gradients
+    self.borderGradient.startPoint = CGPointMake(0.5, 0.0);
+    self.borderGradient.endPoint   = CGPointMake(0.5, 1.0);
+    self.gradient.startPoint = CGPointMake(0.5, 0.0);
+    self.gradient.endPoint   = CGPointMake(0.5, 1.0);
+
+    // colors
+    [self updateColors];
+
+    // border
+    CAShapeLayer *maskLayer = [CAShapeLayer layer];
+    // match the same corner radius and bounds
+    maskLayer.path = CGPathCreateWithRoundedRect(CGRectMake(0, 0, frame.size.width, frame.size.height), 30, 30, nil);
+
+    // stroke only, no fill
+    maskLayer.fillColor   = [UIColor clearColor].CGColor;
+    maskLayer.strokeColor = [UIColor blackColor].CGColor; // the actual color doesn't matter; it's just a mask
+    maskLayer.lineWidth   = 5;
+
+    self.borderGradient.mask = maskLayer;
+    [temperatureView.layer addSublayer:self.borderGradient];
+    [temperatureView.layer insertSublayer:self.gradient atIndex:0];
 
     {
         GradientArcView *arcView = [[GradientArcView alloc] initWithFrame:temperatureView.bounds];

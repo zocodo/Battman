@@ -13,32 +13,33 @@
 
 enum { CL_SECTION_MAIN, CL_SECTION_COUNT };
 
-int connect_to_daemon() {
-	struct sockaddr_un sockaddr;
-	sockaddr.sun_family = AF_UNIX;
-	const char *end=stpcpy(sockaddr.sun_path, "./Library/dsck");
-	sockaddr.sun_len=(unsigned char)(end-sockaddr.sun_path+1);
-	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
-	if (connect(sock, (struct sockaddr *)&sockaddr, sizeof(struct sockaddr_un)) == -1) {
-  		//char errstr[1024];
-		////memset(errstr, 0, sizeof(errstr));
-		//// ^ no initialization needed for sprintf
-		//sprintf(errstr, "%s\n%s: %s", _C("Failed to connect to daemon"), L_ERR, strerror(errno));
-		//show_alert(L_ERR, errstr, L_OK);
-		close(sock);
-		// No alert bc we need to retry
-		return 0;
-	}
-	char cmd=2;
-	write(sock,&cmd,1);
-	if(read(sock,&cmd,1)!=1||cmd!=2) {
-		NSLog(@"Failed to ping daemon: %s",strerror(errno));
-		show_alert("Daemon", "Daemon is malfunctioning, likely", "ok");
-		close(sock);
-		return 0;;
-	}
-	NSLog(@"Connected to daemon and received ping!");
-	return sock;
+int connect_to_daemon(void) {
+    struct sockaddr_un sockaddr;
+    sockaddr.sun_family = AF_UNIX;
+    const char *end = stpcpy(sockaddr.sun_path, "./Library/dsck");
+    sockaddr.sun_len = (unsigned char)(end - sockaddr.sun_path + 1);
+    int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+    if (connect(sock, (struct sockaddr *)&sockaddr, sizeof(struct sockaddr_un)) == -1) {
+        // char errstr[1024];
+        ////memset(errstr, 0, sizeof(errstr));
+        //// ^ no initialization needed for sprintf
+        // sprintf(errstr, "%s\n%s: %s", _C("Failed to connect to daemon"), L_ERR, strerror(errno));
+        // show_alert(L_ERR, errstr, L_OK);
+        close(sock);
+        // No alert bc we need to retry
+        return 0;
+    }
+    char cmd = 2;
+    write(sock, &cmd, 1);
+    if (read(sock, &cmd, 1) != 1 || cmd != 2) {
+        NSLog(@"Failed to ping daemon: %s", strerror(errno));
+        show_alert(L_FAILED, "The daemon may not be working properly.", L_OK);
+        close(sock);
+        return 0;
+        ;
+    }
+    NSLog(@"Connected to daemon and received ping!");
+    return sock;
 }
 
 @implementation ChargingLimitViewController
@@ -65,20 +66,18 @@ int connect_to_daemon() {
         }
         close(drfd);
     }
-    
-    char errstr[1024];
-    
+
     strcpy(end, "_settings");
     int fd = open(buf, O_RDWR | O_CREAT, 0644);
-    if(fd==-1) {
-    	NSLog(@"open %s: Error - %s",buf,strerror(errno));
-    	show_alert("ERROR open failed","Failed to open daemon settings file","1");
-    	vals=NULL;
-    	return self;
+    if (fd == -1) {
+        NSLog(@"open %s: Error - %s", buf, strerror(errno));
+        show_alert(L_ERR, _C("Failed to open daemon settings file"), L_OK);
+        vals = NULL;
+        return self;
     }
     char _vals[2];
     if (read(fd, _vals, 2) != 2) {
-    	NSLog(@"Writing initial values to daemon_settings");
+        NSLog(@"Writing initial values to daemon_settings");
         _vals[0] = -1;
         _vals[1] = -1;
         lseek(fd, 0, SEEK_SET);
@@ -86,25 +85,25 @@ int connect_to_daemon() {
     }
     lseek(fd, 0, SEEK_SET);
     vals = mmap(NULL, 2, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if((long long)vals==-1) {
-    	NSLog(@"mmap: Error - %s",strerror(errno));
-    	show_alert("ERROR","mmap failed","1");
-    	vals=NULL;
-    	close(fd);
-    	return self;
+    if ((long long)vals == -1) {
+        NSLog(@"mmap: Error - %s", strerror(errno));
+        show_alert(L_ERR, _C("File mapping failed"), L_OK);
+        vals = NULL;
+        close(fd);
+        return self;
     }
     close(fd);
-	if(daemon_pid) {
-		NSLog(@"Daemon likely valid, trying to connect");
-		[self connectToDaemon];
-	}
-	return self;
+    if (daemon_pid) {
+        NSLog(@"Daemon likely valid, trying to connect");
+        [self connectToDaemon];
+    }
+    return self;
 }
 
 - (void)connectToDaemon {
-	if(daemon_fd)
-		return;
-	daemon_fd=connect_to_daemon();
+    if (daemon_fd)
+        return;
+    daemon_fd = connect_to_daemon();
 }
 
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)section {
@@ -120,12 +119,12 @@ int connect_to_daemon() {
 }
 
 - (void)dealloc {
-	if(!vals)
-		return;
-	const char endconnectioncmd=5;
-	write(daemon_fd,&endconnectioncmd,1);
-	close(daemon_fd);
-	munmap(vals, 2);
+    if (!vals)
+        return;
+    const char endconnectioncmd = 5;
+    write(daemon_fd, &endconnectioncmd, 1);
+    close(daemon_fd);
+    munmap(vals, 2);
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)sect {
@@ -139,32 +138,32 @@ int connect_to_daemon() {
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 6) {
         if (daemon_pid) {
-        	NSLog(@"Daemon is likely active, requesting stop");
-        	if(!daemon_fd) {
-        		show_alert("error", "No connection to daemon established","ok");
-        		[tv deselectRowAtIndexPath:indexPath animated:YES];
-               		return;
-               	}
-               	char stop_cmd=3;
+            NSLog(@"Daemon is likely active, requesting stop");
+            if (!daemon_fd) {
+                show_alert(L_ERR, _C("Unable to connect to the daemon."), L_OK);
+                [tv deselectRowAtIndexPath:indexPath animated:YES];
+                return;
+            }
+            char stop_cmd = 3;
             write(daemon_fd, &stop_cmd, 1);
-            if(read(daemon_fd,&stop_cmd,1)==1&&stop_cmd==3) {
-            	NSLog(@"Daemon returned 3 - stopped");
-            	daemon_pid=0;
-            	close(daemon_fd);
-            	daemon_fd=0;
+            if (read(daemon_fd, &stop_cmd, 1) == 1 && stop_cmd == 3) {
+                NSLog(@"Daemon returned 3 - stopped");
+                daemon_pid = 0;
+                close(daemon_fd);
+                daemon_fd = 0;
             }
             [tv reloadData];
         } else {
             extern int battman_run_daemon(void);
             daemon_pid = battman_run_daemon();
-            for(int i=0;i<30;i++) {
-            	usleep(50000);
-            	[self connectToDaemon];
-            	if(daemon_fd) {
-            		break;
-            	}else if(i==29) {
-            		show_alert("Failed", "Failed to start daemon - daemon is not responsive", "ok");
-            	}
+            for (int i = 0; i < 30; i++) {
+                usleep(50000);
+                [self connectToDaemon];
+                if (daemon_fd) {
+                    break;
+                } else if (i == 29) {
+                    show_alert(L_FAILED, _C("Couldn't start the daemon — it isn’t responding."), L_OK);
+                }
             }
             [tv reloadData];
         }
@@ -183,7 +182,7 @@ int connect_to_daemon() {
     [self daemonRedecide];
     NSIndexPath *resumeIndexLabel = [NSIndexPath indexPathForRow:3 inSection:0];
     NSIndexPath *resumeIndexSlider = [NSIndexPath indexPathForRow:4 inSection:0];
-    [self.tableView reloadRowsAtIndexPaths:@[resumeIndexLabel, resumeIndexSlider] withRowAnimation:UITableViewRowAnimationFade];
+    [self.tableView reloadRowsAtIndexPaths:@[ resumeIndexLabel, resumeIndexSlider ] withRowAnimation:UITableViewRowAnimationFade];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -193,11 +192,11 @@ int connect_to_daemon() {
         cell.textLabel.text = _("When limit is reached");
         NSArray *items;
         if (@available(iOS 13.0, *)) {
-            items = @[[UIImage systemImageNamed:@"pause.rectangle"], [UIImage systemImageNamed:@"arrow.rectanglepath"]];
+            items = @[ [UIImage systemImageNamed:@"pause.rectangle"], [UIImage systemImageNamed:@"arrow.rectanglepath"] ];
         } else {
             // pause.rectangle U+10029B
             // arrow.rectanglepath U+1008C1
-            items = @[@"􀊛", @"􀣁"];
+            items = @[ @"􀊛", @"􀣁" ];
         }
         UISegmentedControl *segCon = [[UISegmentedControl alloc] initWithItems:items];
         if (@available(iOS 13.0, *)) {
@@ -215,7 +214,7 @@ int connect_to_daemon() {
         cell.accessoryView = segCon;
         return cell;
     } else if (indexPath.row == 1) {
-        cell.textLabel.text = _("Limit charging at \x0028%\x0029");
+        cell.textLabel.text = _("Limit charging at (%)");
         return cell;
     } else if (indexPath.row == 2) {
         SliderTableViewCell *scell = [tv dequeueReusableCellWithIdentifier:@"clhighthr" forIndexPath:indexPath];
@@ -304,8 +303,8 @@ int connect_to_daemon() {
 }
 
 - (void)daemonRedecide {
-	const char redecidecmd=4;
-	write(daemon_fd,&redecidecmd,1);
+    const char redecidecmd = 4;
+    write(daemon_fd, &redecidecmd, 1);
 }
 
 @end

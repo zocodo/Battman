@@ -37,6 +37,7 @@
 #define IOS_CONTAINER_FMT "^/private/var/mobile/Containers/Data/Application/[0-9A-Fa-f\\-]{36}$"
 #define MAC_CONTAINER_FMT "^/Users/[^/]+/Library/Containers/[^/]+/Data$"
 #define SIM_CONTAINER_FMT "^/Users/[^/]+/Library/Developer/CoreSimulator/Devices/[0-9A-Fa-f\\-]{36}/data/Containers/Data/Application/[0-9A-Fa-f\\-]{36}$"
+#define SIM_UNSANDBOX_FMT "^/Users/[^/]+/Library/Developer/CoreSimulator/Devices/[0-9A-Fa-f\\-]{36}/data$"
 
 __BEGIN_DECLS
 
@@ -68,6 +69,8 @@ int is_rosetta(void);
 const char *lang_cfg_file(void);
 int open_lang_override(int flags,int mode);
 int preferred_language_code(void);
+
+const char *target_type(void);
 
 __END_DECLS
 

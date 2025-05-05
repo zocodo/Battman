@@ -28,7 +28,7 @@ extern bool show_alert(char *, char*,char*);
 		waterViewTR.center = batteryView.center;
 		// Create the background layer that will hold the gradient
 		CAGradientLayer *waterViewTRGradient = [CAGradientLayer layer];
-		//waterViewTRGradient.frame = batteryView.frame;
+		waterViewTRGradient.frame = batteryView.frame;
 		// Create an array of CG colors from our UIColor array
 		NSMutableArray *cgColors = [NSMutableArray array];
 		for (UIColor *color in @[[UIColor whiteColor], [UIColor whiteColor], [UIColor lightGrayColor]]) {
