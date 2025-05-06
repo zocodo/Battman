@@ -284,7 +284,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         get_charger_data(&adapter_data);
 
         /* Special case: PMUConfiguration */
-        NSString *pmuFmt = @"%u %@";
+        NSString *pmuFmt = @"%u %s";
         if (adapter_info.PMUConfiguration == (uint32_t)0xFFFFFFFF)
             pmuFmt = _("Unspecified");
 
