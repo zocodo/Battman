@@ -635,11 +635,11 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     /* B0CU(ui16): DesignCycleCount (MacBooks Only) */
     smc_read_n('B0CU', &gauge->DesignCycleCount,2);
 
-    /* BMSC(ui16): DailyMaxSoc */
-    smc_read_n('BMSC', &gauge->DailyMaxSoc,2);
+    /* BMSC(ui8): DailyMaxSoc */
+    smc_read_n('BMSC', &gauge->DailyMaxSoc,1);
 
-    /* BNSC(ui16): DailyMinSoc */
-    smc_read_n('BNSC', &gauge->DailyMinSoc,2);
+    /* BNSC(ui8): DailyMinSoc */
+    smc_read_n('BNSC', &gauge->DailyMinSoc,1);
 
     /* BUIC(ui8 ): UI Displayed SoC */
     smc_read_n('BUIC', &gauge->UISoC,1);

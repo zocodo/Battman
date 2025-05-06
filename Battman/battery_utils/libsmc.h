@@ -116,8 +116,8 @@ typedef struct gas_gauge {
 
     /* Extensions */
     char DeviceName[32];
-    uint16_t DailyMaxSoc;           /* % */
-    uint16_t DailyMinSoc;           /* % */
+    uint8_t DailyMaxSoc;           /* % */
+    uint8_t DailyMinSoc;           /* % */
     uint16_t DesignCycleCount;
     uint8_t UISoC;                  /* % */
     int8_t ChemicalSoC;             /* % */
