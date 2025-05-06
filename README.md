@@ -44,7 +44,7 @@ What other battery utils made for iOS hasn’t done
 
 - Jailbroken or install with TrollStore
 - iOS 12+ / macOS 11+ (backports welcomed)
-- arm64 (A7+ theoretically / M1+)
+- arm64 (A11+ theoretically / M1+)
 - Gettext libintl (Optional, for localizations)
 - GTK+ 3 (Optional, for running under GTK+ based WM)
 
