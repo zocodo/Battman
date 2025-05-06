@@ -107,7 +107,7 @@ static io_service_t gConn = 0;
 gas_gauge_t gGauge = {0};
 board_info_t gBoard = {0};
 
-static IOReturn smc_open(void) {
+IOReturn smc_open(void) {
     IOReturn result;
     mach_port_t masterPort;
     io_service_t service;
@@ -149,10 +149,6 @@ fail_unsupported:
         app_exit();
     });
     return kIOReturnError;
-}
-
-void _smc_open(void) {
-	smc_open();
 }
 
 static IOReturn smc_call(int index, SMCParamStruct *inputStruct,
@@ -209,7 +205,7 @@ IOReturn smc_write_safe(uint32_t key, void *bytes, uint32_t size) {
 	return kIOReturnSuccess;
 }
 
-IOReturn smc_read_safe(uint32_t key, void *bytes, uint32_t *size) {
+IOReturn smc_read_safe(uint32_t key, void *bytes, int32_t *size) {
     IOReturn result;
     SMCParamStruct inputStruct={0};
     SMCParamStruct outputStruct;
@@ -221,11 +217,20 @@ IOReturn smc_read_safe(uint32_t key, void *bytes, uint32_t *size) {
         return result;
     }
 
-	if(*size<inputStruct.param.keyInfo.dataSize) {
-		DBGLOG(CFSTR("smc_read_safe failed: buffer too short"));
-		return -1;
+	int omit_mismatch_warning=0;
+	if(*size<0) {
+		*size=-(*size);
+		omit_mismatch_warning=1;
 	}
-	*size=inputStruct.param.keyInfo.dataSize;
+	key=htonl(key);
+	if(*size<inputStruct.param.keyInfo.dataSize) {
+		DBGLOG(CFSTR("smc_read_safe %.4s WARNING: buffer too short: buf len %d; has %d; will truncate"),(char*)&key,*size,inputStruct.param.keyInfo.dataSize);
+		//return -1;
+	}else if(*size!=inputStruct.param.keyInfo.dataSize) {
+		if(!omit_mismatch_warning)
+			DBGLOG(CFSTR("smc_read_safe %.4s WARNING: size mismatch: buf len %d; has %d"),(char*)&key,*size,inputStruct.param.keyInfo.dataSize);
+		*size=inputStruct.param.keyInfo.dataSize;
+	}
 
     inputStruct.param.data8 = kSMCReadKey;
     
@@ -235,19 +240,19 @@ IOReturn smc_read_safe(uint32_t key, void *bytes, uint32_t *size) {
         return result;
     }
 
-    memcpy(bytes, outputStruct.param.bytes, inputStruct.param.keyInfo.dataSize);
+    memcpy(bytes, outputStruct.param.bytes, *size);
 
     return kIOReturnSuccess;
 }
 
-IOReturn smc_read_n(uint32_t key, void *bytes, uint32_t size) {
+IOReturn smc_read_n(uint32_t key, void *bytes, int32_t size) {
 	return smc_read_safe(key,bytes,&size);
 }
 
-IOReturn smc_read(uint32_t key, void *bytes) {
-	// TODO: Deprecate, use safe ones instead.
-	return smc_read_n(key,bytes,1024);
-}
+//IOReturn smc_read(uint32_t key, void *bytes) {
+//	// TODO: Deprecate, use safe ones instead.
+//	return smc_read_n(key,bytes,-1024);
+//}
 
 static float ioft2flt(void *bytes) {
     uint64_t res = 0;
@@ -313,7 +318,7 @@ int get_fan_status(void) {
 
     uint8_t fan_num;
 
-    result = smc_read('FNum', &fan_num);
+    result = smc_read_n('FNum', &fan_num,1);
     /* No hardware fan support, or permission deined */
     if (result != kIOReturnSuccess)
         return 0;
@@ -363,7 +368,7 @@ float *get_temperature_per_cell(void) {
     float *cells = malloc(sizeof(float) * num);
     /* TB?T(flt ): Cell ? real-time temperature */
     for (int i = 0; i < num; i++) {
-        result = smc_read('TB\0T' | ((0x30 + i) << 0x8), &retval);
+        result = smc_read_n('TB\0T' | ((0x30 + i) << 0x8), &retval,4);
         if (result != kIOReturnSuccess) {
             /* In design, you should able to get temps of all your batts */
             break;
@@ -375,8 +380,9 @@ float *get_temperature_per_cell(void) {
     if (result != kIOReturnSuccess) {
         /* TG?B(ioft): Cell ? existance & real-time temperature */
         for (int i = 0; i < num; i++) {
-            memset(ioftret, 0, sizeof(ioftret));
-            result = smc_read('TG\0B' | ((0x30 + i) << 0x8), &ioftret);
+            //memset(ioftret, 0, sizeof(ioftret));
+            // no initialization necessary
+            result = smc_read_n('TG\0B' | ((0x30 + i) << 0x8), &ioftret,8);
             if (result != kIOReturnSuccess) {
                 /* In design, you should able to get temps of all your batts */
                 free(cells);
@@ -402,16 +408,16 @@ int get_time_to_empty(void) {
     /* This is weird, why B0TF means TimeToEmpty on Embedded,
      * but TimeToFullCharge on macOS? */
     /* Tested on iPhone 12 mini: B0TF does not exist */
-    result = smc_read('B0TF', &retval);
+    result = smc_read_n('B0TF', &retval,2);
     if (result == kIOReturnSuccess)
         retval_f = retval;
 #endif
 
-    result = smc_read('B0TE', &retval);
+    result = smc_read_n('B0TE', &retval,2);
     if (result == kIOReturnSuccess)
         retval_e = retval;
 
-    result = smc_read('CHSC', &charging);
+    result = smc_read_n('CHSC', &charging,1);
     if (result != kIOReturnSuccess)
         charging = 0;
 
@@ -449,13 +455,13 @@ int estimate_time_to_full() {
     uint16_t fullcap;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
-    result = smc_read('B0FC', &fullcap);
+    result = smc_read_n('B0FC', &fullcap,2);
     if (result != kIOReturnSuccess)
         return 0;
 
     /* B0AC(si16) AverageCurrent (mA) */
     /* TODO: B0IV(si16) InstantAmperage */
-    result = smc_read('B0AC', &current);
+    result = smc_read_n('B0AC', &current,2);
     if (result != kIOReturnSuccess)
         return 0;
 
@@ -474,12 +480,12 @@ float get_battery_health(float *design_cap, float *full_cap) {
     uint16_t designcap;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
-    result = smc_read('B0FC', &fullcap);
+    result = smc_read_n('B0FC', &fullcap,2);
     if (result != kIOReturnSuccess)
         return 0;
 
     /* B0DC(ui16) DesignCapacity (mAh) */
-    result = smc_read('B0DC', &designcap);
+    result = smc_read_n('B0DC', &designcap,2);
     if (result != kIOReturnSuccess)
         return 0;
 
@@ -507,17 +513,17 @@ bool get_capacity(uint16_t *remaining, uint16_t *full, uint16_t *design) {
     B0RM = B0FC = B0DC = 0;
 
     /* B0RM(ui16) RemainingCapacity (mAh) */
-    IOReturn result = smc_read('B0RM', &B0RM);
+    IOReturn result = smc_read_n('B0RM', &B0RM,2);
     if (result != kIOReturnSuccess)
         return false;
 
     /* B0FC(ui16) FullChargeCapacity (mAh) */
-    result = smc_read('B0FC', &B0FC);
+    result = smc_read_n('B0FC', &B0FC,2);
     if (result != kIOReturnSuccess)
         return false;
 
     /* B0DC(ui16) DesignCapacity (mAh) */
-    result = smc_read('B0DC', &B0DC);
+    result = smc_read_n('B0DC', &B0DC,2);
     if (result != kIOReturnSuccess)
         return false;
 
@@ -546,103 +552,103 @@ bool get_gas_gauge(gas_gauge_t *gauge) {
     /* TODO: Continue shorten those code */
 
     /* B0AT(ui16): Temperature */
-    smc_read('B0AT', &gauge->Temperature);
+    smc_read_n('B0AT', &gauge->Temperature,2);
 
     /* B0AV(ui16): Average Voltage */
-    smc_read('B0AV', &gauge->Voltage);
+    smc_read_n('B0AV', &gauge->Voltage,2);
     
-    /* B0FI(hex_): Flags */
-    smc_read('B0FI', &gauge->Flags);
+    /* B0FI(char[2]): Flags */
+    smc_read_n('B0FI', &gauge->Flags,2);
     
     /* B0RM(ui16): RemainingCapacity */
-    smc_read('B0RM', &gauge->RemainingCapacity);
+    smc_read_n('B0RM', &gauge->RemainingCapacity,2);
     
     /* B0FC(ui16): FullChargeCapacity */
-    smc_read('B0FC', &gauge->FullChargeCapacity);
+    smc_read_n('B0FC', &gauge->FullChargeCapacity,2);
 
     /* B0AC(si16): AverageCurrent */
-    smc_read('B0AC', &gauge->AverageCurrent);
+    smc_read_n('B0AC', &gauge->AverageCurrent,2);
 
     /* B0TF(ui16): TimeToEmpty */
-    smc_read('B0TF', &gauge->TimeToEmpty);
+    smc_read_n('B0TF', &gauge->TimeToEmpty,2);
 
     /* BQX1(ui16): Qmax */
-    smc_read('BQX1', &gauge->Qmax);
+    smc_read_n('BQX1', &gauge->Qmax,2);
 
     /* B0AP(si16/si32): AveragePower */
-    smc_read('B0AP', &gauge->AveragePower);
+    smc_read_n('B0AP', &gauge->AveragePower,2);
 
     /* B0OC(si16): OCV_Current */
-    smc_read('B0OC', &gauge->OCV_Current);
+    smc_read_n('B0OC', &gauge->OCV_Current,2);
 
     /* B0OV(ui16): OCV_Voltage */
-    smc_read('B0OV', &gauge->OCV_Voltage);
+    smc_read_n('B0OV', &gauge->OCV_Voltage,2);
 
     /* B0CT(ui16): CycleCount */
-    smc_read('B0CT', &gauge->CycleCount);
+    smc_read_n('B0CT', &gauge->CycleCount,2);
 
     /* BRSC(ui16): StateOfCharge */
-    smc_read('BRSC', &gauge->StateOfCharge);
+    smc_read_n('BRSC', &gauge->StateOfCharge,2);
 
     /* B0TC(si16): TrueRemainingCapacity */
-    smc_read('B0TC', &gauge->TrueRemainingCapacity);
+    smc_read_n('B0TC', &gauge->TrueRemainingCapacity,2);
 
     /* BQCC(si16): PassedCharge */
-    smc_read('BQCC', &gauge->PassedCharge);
+    smc_read_n('BQCC', &gauge->PassedCharge,2);
 
     /* BQD1(ui16): DOD0 */
-    smc_read('BQD1', &gauge->DOD0);
+    smc_read_n('BQD1', &gauge->DOD0,2);
     
     /* TODO: BDD1(ui8/ui16): PresentDOD */
     /* ui8 (%), ui16 (mAh) */
-    // smc_read('BDD1', &gauge->PresentDOD);
+    // smc_read_n('BDD1', &gauge->PresentDOD,-2);
 
     /* B0DC(ui16): DesignCapacity */
-    smc_read('B0DC', &gauge->DesignCapacity);
+    smc_read_n('B0DC', &gauge->DesignCapacity,2);
 
     /* B0IM(si16): IMAX */
-    smc_read('B0IM', &gauge->IMAX);
+    smc_read_n('B0IM', &gauge->IMAX,2);
 
     /* B0NC(ui16): NCC */
-    smc_read('B0NC', &gauge->NCC);
+    smc_read_n('B0NC', &gauge->NCC,2);
 
     /* B0RS(si16): ResScale */
-    smc_read('B0RS', &gauge->ResScale);
+    smc_read_n('B0RS', &gauge->ResScale,2);
 
     /* B0MS(ui16): ITMiscStatus */
-    smc_read('B0MS', &gauge->ITMiscStatus);
+    smc_read_n('B0MS', &gauge->ITMiscStatus,2);
 
     /* B0I2(si16): IMAX2 */
-    smc_read('B0I2', &gauge->IMAX2);
+    smc_read_n('B0I2', &gauge->IMAX2,2);
 
-    /* B0CI(hex_): ChemID */
-    smc_read('B0CI', &gauge->ChemID);
+    /* B0CI(char[4]): ChemID */
+    smc_read_n('B0CI', &gauge->ChemID,4);
 
     /* B0SR(si16): SimRate */
-    smc_read('B0SR', &gauge->SimRate);
+    smc_read_n('B0SR', &gauge->SimRate,2);
 
     /* Extensions */
 
     /* BMDN(ch8*)[32]: DeviceName (MacBooks Only) */
-    smc_read('BMDN', &gauge->DeviceName);
+    smc_read_n('BMDN', &gauge->DeviceName,32);
 
     /* B0CU(ui16): DesignCycleCount (MacBooks Only) */
-    smc_read('B0CU', &gauge->DesignCycleCount);
+    smc_read_n('B0CU', &gauge->DesignCycleCount,2);
 
     /* BMSC(ui16): DailyMaxSoc */
-    smc_read('BMSC', &gauge->DailyMaxSoc);
+    smc_read_n('BMSC', &gauge->DailyMaxSoc,2);
 
     /* BNSC(ui16): DailyMinSoc */
-    smc_read('BNSC', &gauge->DailyMinSoc);
+    smc_read_n('BNSC', &gauge->DailyMinSoc,2);
 
     /* BUIC(ui8 ): UI Displayed SoC */
-    smc_read('BUIC', &gauge->UISoC);
+    smc_read_n('BUIC', &gauge->UISoC,1);
 
     /* B0SC(si8 ): Chemical SoC */
-    smc_read('B0SC', &gauge->ChemicalSoC);
+    smc_read_n('B0SC', &gauge->ChemicalSoC,1);
 
     /* BUPT(hex_)[8]: BMS Uptime */
-    smc_read('BUPT', &gauge->bmsUpTime);
+    smc_read_n('BUPT', &gauge->bmsUpTime,8);
     
     /* B0FD BattData */
     /* BROS MinDOD? */
@@ -670,7 +676,7 @@ int batt_cell_num(void) {
     int8_t count;
     
     /* BNCB(si8) Number of Battery Cells */
-    result = smc_read('BNCB', &count);
+    result = smc_read_n('BNCB', &count,1);
     if (result != kIOReturnSuccess)
         return -1;
     
@@ -686,7 +692,7 @@ bool battery_serial(char *serial) {
     SMC_INIT_CHK(false);
 
     /* BMSN(ch8*) Battery Serial */
-    result = smc_read('BMSN', serial);
+    result = smc_read_n('BMSN', serial,-64);
     if (result != kIOReturnSuccess)
         return false;
 
@@ -727,7 +733,7 @@ const char *not_charging_reason_str(uint64_t code) {
     memset(subreason, 0, sizeof(subreason));
     
     /* RGEN(ui8 ) NotChargingReason Generation */
-    if (gen == 0 && (smc_read('RGEN', &gen) != kIOReturnSuccess))
+    if (gen == 0 && (smc_read_n('RGEN', &gen,1) != kIOReturnSuccess))
         gen = 3; // x86_chnc
 
     /* Apple Silicon NotChargingReason */
@@ -942,7 +948,7 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
      1: Wired Charger
      2: Wireless Charger
      */
-    result = smc_read('AC-W', &charging);
+    result = smc_read_n('AC-W', &charging,1);
     if (result != kIOReturnSuccess)
         return ret;
 
@@ -955,7 +961,7 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
     uint16_t time_to_full;
     /* B0TF(ui16) TimeToFull */
     /* FIXME: determine B0TF/B0TE at runtime */
-    result = smc_read('B0TF', &time_to_full);
+    result = smc_read_n('B0TF', &time_to_full,2);
     if (result != kIOReturnSuccess)
         return kIsUnavail;
 
@@ -967,7 +973,7 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
     /* kIOPSPowerAdapterFamily */
     if (family != NULL) {
         key = 'D\0FC' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, family);
+        result = smc_read_n(key, family,4);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Family Code: %X"), charging, family);
     }
@@ -979,84 +985,84 @@ charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
         info->port = charging;
         /* D?if(ch8*) USB Port ? Firmware version */
         key = 'D\0if' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, info->firmware);
+        result = smc_read_n(key, info->firmware,12);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Firmware Version: %s"), charging, info->firmware);
 
         /* D?ih(ch8*) USB Port ? Hardware version */
         key = 'D\0ih' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, info->hardware);
+        result = smc_read_n(key, info->hardware,12);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Hardware Version: %s"), charging, info->hardware);
 
         /* D?ii(ch8*) USB Port ? Adapter Model */
         key = 'D\0ii' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, info->adapter);
+        result = smc_read_n(key, info->adapter,32);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Adapter Model: %s"), charging, info->adapter);
 
         /* D?im(ch8*) USB Port ? Vendor */
         key = 'D\0im' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, info->vendor);
+        result = smc_read_n(key, info->vendor,32);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Vendor: %s"), charging, info->vendor);
 
         /* D?in(ch8*) USB Port ? Name */
         key = 'D\0in' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, info->name);
+        result = smc_read_n(key, info->name,32);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Name: %s"), charging, info->name);
 
         /* D?is(ch8*) USB Port ? Serial */
         key = 'D\0is' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, info->serial);
+        result = smc_read_n(key, info->serial,32);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Serial: %s"), charging, info->serial);
 
         /* D?DE(ch8*) USB Port ? Description */
         key = 'D\0DE' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, &info->description);
+        result = smc_read_n(key, &info->description,32);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Description: 0x%X"), charging, info->description);
 
         /* CHI?(ui32) USB Port ? PMUConfiguration */
         key = 'CHI\0' | ((0x30 + charging) << 0x0);
-        result = smc_read(key, &info->PMUConfiguration);
+        result = smc_read_n(key, &info->PMUConfiguration,4);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, PMUConfiguration: 0x%X"), charging, info->PMUConfiguration);
 
         /* D?IR(ui16) USB Port ? Charger current rating */
         key = 'D\0IR' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, &info->current);
+        result = smc_read_n(key, &info->current,2);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Current: 0x%X"), charging, info->current);
 
         /* D?VR(ui16) USB Port ? Charger voltage rating */
         key = 'D\0VR' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, &info->voltage);
+        result = smc_read_n(key, &info->voltage,2);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Voltage: %u"), charging, info->voltage);
         
         /* D?PM(hex_) USB Port ? HVC Power Modes */
         key = 'D\0PM' | ((0x30 + charging) << 0x10);
-        memset(info->hvc_menu, 0, sizeof(info->hvc_menu));
-        result = smc_read(key, info->hvc_menu);
+        //memset(info->hvc_menu, 0, sizeof(info->hvc_menu));
+        result = smc_read_n(key, info->hvc_menu,28);
         if (result == kIOReturnSuccess) {
             DBGLOG(CFSTR("Port: %d, Modes: 0x%X"), charging, info->hvc_menu);
         } else {
-            info->hvc_menu[27] = 0xFF; /* We write a special bit for indicating failure */
+            info->hvc_menu[27] = 0xFF; /* We write a special byte for indicating failure */
         }
 
         /* D?PI(si8 ) USB Port ? Mode Index */
         key = 'D\0PI' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, &info->hvc_index);
+        result = smc_read_n(key, &info->hvc_index,1);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Index: %d"), charging, info->hvc_index);
 
         /* Other info */
         /* D?PT(ui8 ) Adapter Type */
         key = 'D\0PT' | ((0x30 + charging) << 0x10);
-        result = smc_read(key, &info->port_type);
+        result = smc_read_n(key, &info->port_type,1);
         if (result == kIOReturnSuccess)
             DBGLOG(CFSTR("Port: %d, Type: %d"), charging, info->port_type);
 
@@ -1087,12 +1093,12 @@ bool get_charger_data(charger_data_t *data) {
     memset(data, 0, sizeof(charger_data_t));
     
     /* CHCC(ui8 ) Charger Capable / Charger External Charge Capable */
-    result = smc_read('CHCC', &data->ChargerCapable);
+    result = smc_read_n('CHCC', &data->ChargerCapable,1);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charger Capable: %u"), &data->ChargerCapable);
 
     /* CHCE(ui8 ) Charger Exist / Charger External Connected */
-    result = smc_read('CHCE', &data->ChargerExist);
+    result = smc_read_n('CHCE', &data->ChargerExist,1);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charger Exist: %u"), &data->ChargerExist);
 
@@ -1100,17 +1106,17 @@ bool get_charger_data(charger_data_t *data) {
     /* CHCR(ui8 ) */
 
     /* CHBI(ui32) Charging Current */
-    result = smc_read('CHBI', &data->ChargingCurrent);
+    result = smc_read_n('CHBI', &data->ChargingCurrent,4);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charging Current: %u"), &data->ChargingCurrent);
 
     /* CHBV(ui32) Charging Voltage */
-    result = smc_read('CHBV', &data->ChargingVoltage);
+    result = smc_read_n('CHBV', &data->ChargingVoltage,4);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charging Voltage: %u"), &data->ChargingVoltage);
 
     /* BVVL(ui16) Charger Vac Voltage Limit */
-    result = smc_read('BVVL', &data->ChargerVacVoltageLimit);
+    result = smc_read_n('BVVL', &data->ChargerVacVoltageLimit,2);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charger Vac Voltage Limit: %u"), &data->ChargerVacVoltageLimit);
 
@@ -1118,22 +1124,22 @@ bool get_charger_data(charger_data_t *data) {
     /* CHFS(ui32) */
 
     /* CHNC(hex_)[8] Not Charging Reason */
-    result = smc_read('CHNC', &data->NotChargingReason);
+    result = smc_read_n('CHNC', &data->NotChargingReason,8);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Not Charging Reason: 0x%X"), &data->NotChargingReason);
 
     /* CHSL(hex_)[8] Charger Status ([64] on mobile devices) */
-    result = smc_read('CHSL', &data->ChargerStatus);
+    result = smc_read_n('CHSL', &data->ChargerStatus,-64);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charger Status: 0x%X"), &data->ChargerStatus);
 
     /* CH0D(hex_)[4] Charger ID */
-    result = smc_read('CH0D', &data->ChargerId);
+    result = smc_read_n('CH0D', &data->ChargerId,4);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charger ID: 0x%X"), &data->ChargerId);
 
     /* CHAS(ui32) Charger Configuration */
-    result = smc_read('CHAS', &data->ChargerConfiguration);
+    result = smc_read_n('CHAS', &data->ChargerConfiguration,4);
     if (result == kIOReturnSuccess)
         DBGLOG(CFSTR("Charger Configuration: 0x%X"), &data->ChargerConfiguration);
     
@@ -1188,7 +1194,7 @@ bool wireless_available(void) {
     /* Constants only do once */
     dispatch_once(&wireless_once, ^{
         /* AY-N(ui8 ) Num Accessory ports */
-        if (smc_read('AY-N', &count) != kIOReturnSuccess)
+        if (smc_read_n('AY-N', &count,1) != kIOReturnSuccess)
             count = 0;
     });
 
@@ -1201,7 +1207,7 @@ wireless_state_t wireless_charging_detect(void) {
     uint32_t st = 0;
 
     /* VBUS(ui32) Voltage Bus */
-    result = smc_read('VBUS', &st);
+    result = smc_read_n('VBUS', &st,4);
     if (result != kIOReturnSuccess)
         return false;
 
@@ -1214,7 +1220,7 @@ bool get_iktara_fw_stat(iktara_fw_t *fw) {
     uint64_t st = 0;
     
     /* WAFS(hex_) Iktara Firmware Status */
-    result = smc_read('WAFS', &st);
+    result = smc_read_n('WAFS', &st,8);
     if (result != kIOReturnSuccess)
         return false;
 
@@ -1239,7 +1245,7 @@ bool get_iktara_drv_stat(iktara_drv_t *drv) {
     uint64_t raw = 0;
 
     /* WADS(hex_) Iktara Driver Status */
-    result = smc_read('WADS', &raw);
+    result = smc_read_n('WADS', &raw,8);
     if (result != kIOReturnSuccess)
         return false;
 

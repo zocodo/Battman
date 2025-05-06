@@ -206,7 +206,7 @@ void daemon_main(void) {
     if (!daemon_settings)
         exit(0);
     close(settingsfd);
-    _smc_open();
+    smc_open();
     subscribeToPowerEvents(powerevent_listener);
     pthread_t tmp;
     pthread_create(&tmp, NULL, (void *(*)(void *))daemon_control, NULL);

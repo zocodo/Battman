@@ -515,9 +515,9 @@ bool get_charger_data(charger_data_t *data);
 const char *not_charging_reason_str(uint64_t code);
 const char *port_type_str(uint8_t pt);
 
-void _smc_open(void);
+int smc_open(void);
 int smc_write_safe(uint32_t key, void *bytes, uint32_t size);
-int smc_read_n(uint32_t key, void *bytes, uint32_t size);
+int smc_read_n(uint32_t key, void *bytes, int32_t size);
 
 bool wireless_available(void);
 wireless_state_t wireless_charging_detect(void);
