@@ -62,6 +62,7 @@ static BOOL _coolDebugVCPresented = 0;
 
     self.view.backgroundColor = [UIColor whiteColor];
     self.textField = [UITextView new];
+    self.textField.editable=0;
     self.textField.font = [UIFont fontWithName:@"Courier" size:10];
 
     self.textField.text = [redirectedOutput string];
