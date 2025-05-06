@@ -199,7 +199,11 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         _("Description"), _("Short description provided by Apple PMU on current power adapter Family Code. Sometimes may not set."),
         _("Reason"), _("If this field appears in the list, it indicates that an issue has occurred or that a condition was met, causing charging to stop."),
         _("HVC Mode"), _("High Voltage Charging (HVC) Mode may accquired by your power adapter or system, all supported modes will be listed below."),
+        _("PMU Configuration"), _("The Configuration values is the max allowed Charging Current configurations."),
     ];
+
+    // FIXME: use preferred_language() for "Copy"
+    [[UIMenuController sharedMenuController] update];
 
     [self.tableView registerClass:[SegmentedViewCell class] forCellReuseIdentifier:@"HVC"];
     [self.tableView registerClass:[SegmentedFlagViewCell class] forCellReuseIdentifier:@"FLAGS"];
@@ -208,12 +212,46 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     self.tableView.rowHeight = UITableViewAutomaticDimension;
 }
 
+- (BOOL)tableView:(UITableView *)tableView shouldShowMenuForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canPerformAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
+    return action == @selector(copy:);
+}
+
+- (void)tableView:(UITableView *)tableView performAction:(SEL)action forRowAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
+    if (action == @selector(copy:)) {
+        UIPasteboard *pasteboard;
+        NSString *pending;
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        pending = cell.detailTextLabel.text;
+        if ([cell respondsToSelector:@selector(detailLabel)]) {
+            // Suppress compiler warning about performSelector leak
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+            UILabel *detail = [cell performSelector:@selector(detailLabel)];
+#pragma clang diagnostic pop
+
+            if ([detail isKindOfClass:[UILabel class]]) {
+                pending = detail.text;
+            }
+        }
+
+        pasteboard = [UIPasteboard generalPasteboard];
+        [pasteboard setString:pending];
+
+        show_alert(_C("Copied!"), [pending UTF8String], L_OK);
+    }
+}
+
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
     if (@available(iOS 13.0, *)) {
         self = [super initWithStyle:UITableViewStyleInsetGrouped];
     } else {
         self = [super initWithStyle:UITableViewStyleGrouped];
     }
+
     self.tableView.allowsSelection = YES; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
     batteryInfo = bi;
@@ -245,6 +283,11 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         }
         get_charger_data(&adapter_data);
 
+        /* Special case: PMUConfiguration */
+        NSString *pmuFmt = @"%u %@";
+        if (adapter_info.PMUConfiguration == (uint32_t)0xFFFFFFFF)
+            pmuFmt = _("Unspecified");
+
         adapter_cells = [[NSMutableArray alloc] init];
         [adapter_cells addObjectsFromArray:@[
             @[_("Port"),                [NSString stringWithFormat:@"%d", adapter_info.port]],
@@ -274,10 +317,11 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
              */
             @[_("Description"),         [NSString stringWithUTF8String:adapter_info.description]],
             @[_("Serial No."),          [NSString stringWithUTF8String:adapter_info.serial]],
-            @[_("PMU Configuration"),   [NSString stringWithFormat:@"%u %s", adapter_info.PMUConfiguration, L_MA]],
+            @[_("PMU Configuration"),   [NSString stringWithFormat:pmuFmt, adapter_info.PMUConfiguration, L_MA]],
             @[_("Charger Configuration"),[NSString stringWithFormat:@"%u %s", adapter_data.ChargerConfiguration, L_MA]],
             @[_("HVC Mode"),            @""], /* Special type, content controlled later */
         ]];
+
         if (adapter_data.NotChargingReason != 0) {
             [adapter_cells insertObject:@[_("Reason"), [NSString stringWithUTF8String:not_charging_reason_str(adapter_data.NotChargingReason)]] atIndex:4];
         }
@@ -387,17 +431,13 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     return sections_detail.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tv
-         cellForRowAtIndexPath:(NSIndexPath *)ip {
-
+- (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip {
     if (ip.section == 0) {
-        UITableViewCell *cell=[tv dequeueReusableCellWithIdentifier:@"bdvc:sect0"];
-        cell.accessoryType=0;
-        cell.accessoryView=nil;
-        if(!cell)
+        UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:@"bdvc:sect0"];
+        cell.accessoryType = 0;
+        cell.accessoryView = nil;
+        if (!cell)
         	cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"bdvc:sect0"];
-        UILongPressGestureRecognizer *longPressRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-        [cell addGestureRecognizer:longPressRecognizer];
 
         struct battery_info_node *pending_bi = batteryInfo + ip.row + pendingLoadOffsets[ip.row];
         /* Flags special handler */
@@ -407,6 +447,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         if (pending_bi->description == _ID_("Flags") || ((uint64_t)pending_bi->description > 5000 && !strcmp(pending_bi->description, "Flags"))) {
             SegmentedFlagViewCell *cellf = [tv dequeueReusableCellWithIdentifier:@"FLAGS"];
             if (!cellf) cellf = [[SegmentedFlagViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"FLAGS"];
+
             cellf.textLabel.text = _(pending_bi->description);
             cellf.detailTextLabel.text = _(bi_node_get_string(pending_bi));
             cellf.titleLabel.text = _(pending_bi->description);
@@ -421,6 +462,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         }
 #pragma clang diagnostic pop
 
+#pragma mark - Warn Conditions
         equipDetailCell(cell, pending_bi);
         /* Warning conditions */
         equipWarningCondition_b(cell, _("Remaining Capacity"), ^warn_condition_t(NSString **str){
@@ -478,10 +520,40 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
                 }
                 if (design == 0) return code;
             }
-            /* TODO: iPhone batteries does not provide DesignCycleCount, get the data from Apple */
             if (count > design) {
                 code = WARN_EXCEDDED;
                 *str = _("Cycle Count exceeded designed cycle count, consider replacing with a genuine battery.");
+            }
+            return code;
+        });
+        equipWarningCondition_b(cell, _("Time To Empty"), ^warn_condition_t(NSString **str){
+            warn_condition_t code = WARN_NONE;
+            uint16_t remain_cap, full_cap, design_cap;
+            int tte = get_time_to_empty();
+            get_capacity(&remain_cap, &full_cap, &design_cap);
+            /* The most ideal TTE is TTE (Hour) = Capacity (mAh) / Current (mA),
+             * some user reported their non-genuine battries
+             * reporting a significant huge number of TTE */
+
+            /* Battery charging, skip */
+            if (gGauge.AverageCurrent > 0) return code;
+
+            int ideal = (remain_cap / abs(gGauge.AverageCurrent)) * 60;
+            /* Normally, TI's GG IC would not emulate its TTE bigger than ideal */
+            /* for ensurence, we check if TTE is bigger than 1.5*ideal */
+            if (tte > (ideal * 1.5)) {
+                code = WARN_UNUSUAL;
+                *str = _("Unusual Time To Empty, A non-genuine battery component may be in use.");
+            }
+            return code;
+        });
+        equipWarningCondition_b(cell, _("Depth of Discharge"), ^warn_condition_t(NSString **str){
+            warn_condition_t code = WARN_NONE;
+            /* Non-genuine batteries are likely spoofing some unremarkable data */
+            /* DOD0 is not going to bigger than Qmax */
+            if (gGauge.DOD0 > gGauge.Qmax) {
+                code = WARN_UNUSUAL;
+                *str = _("Unusual Depth of Discharge, A non-genuine battery component may be in use.");
             }
             return code;
         });
@@ -570,6 +642,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
                     [cell setAccessoryView:button];
                     [button addTarget:self action:@selector(altAccTapped:) forControlEvents:UIControlEventTouchUpInside];
                 }
+
                 cell_seg.textLabel.text = cell.textLabel.text; // For Accessory selection
                 cell_seg.titleLabel.text = cell.textLabel.text;
                 [cell_seg.segmentedControl addTarget:self action:@selector(hvcSegmentSelected:) forControlEvents:UIControlEventValueChanged];
@@ -672,36 +745,6 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-}
-
-- (void)handleLongPress:(UILongPressGestureRecognizer *)gestureRecognizer {
-    UIPasteboard *pasteboard;
-    NSString *pending;
-
-    if (gestureRecognizer.state == UIGestureRecognizerStateBegan) {
-        UITableViewCell *cell = (UITableViewCell *)gestureRecognizer.view;
-        pending = cell.detailTextLabel.text;
-        // special cases
-        if ([[cell reuseIdentifier] isEqualToString:@"HVC"]) {
-            SegmentedViewCell *cell_seg = (SegmentedViewCell *)cell;
-            pending = cell_seg.detailLabel.text;
-        }
-        if ([[cell reuseIdentifier] isEqualToString:@"FLAGS"]) {
-            SegmentedFlagViewCell *cellf = (SegmentedFlagViewCell *)cell;
-            pending = cellf.detailLabel.text;
-        }
-        if ([[cell reuseIdentifier] isEqualToString:_("Adapter Details")]) {
-            // Custom cells does not have detailTextLabel, thats how Apple desired
-            MultilineViewCell *celll = (MultilineViewCell *)cell;
-            pending = celll.detailLabel.text;
-        }
-
-        // We need better impl like PSTableCell's copy
-        pasteboard = [UIPasteboard generalPasteboard];
-        [pasteboard setString:pending];
-
-        show_alert(_C("Copied!"), [pending UTF8String], L_OK);
-    }
 }
 
 @end

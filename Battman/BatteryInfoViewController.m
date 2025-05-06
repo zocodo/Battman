@@ -31,9 +31,6 @@ enum sections_batteryinfo {
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    // Init frequently used texts to global string
-    init_common_text();
-
     // Copyright text
     UILabel *copyright;
     copyright = [[UILabel alloc] init];
