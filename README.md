@@ -65,6 +65,10 @@ make -C Battman all
 # Produced Battman.ipa will under $(CWD)/Battman/build/Battman.ipa
 ```
 
+### Known Issues
+- **A7 ~ A10** devices is not supported, since no AppleSMC provided
+   - if someone can donate some devices I can then try to make it compat
+
 ### Tested Devices
 - iPhone 12 Series (D52)
 - iPad Pro 2021 3th Gen (J51)

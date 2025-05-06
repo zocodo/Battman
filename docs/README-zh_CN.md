@@ -62,6 +62,10 @@ make -C Battman all
 # 生成的 Battman.ipa 将位于 $(CWD)/Battman/build/Battman.ipa
 ```
 
+### 已知问题
+- **A7 至 A10** 的设备不支持，因为没有AppleSMC
+   - 如果有人捐赠设备的话，我可以尝试使其兼容
+
 ### 已测试设备
 - iPhone 12 系列 (D52)
 - iPad Pro 2021 第三代 (J51)
