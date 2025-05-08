@@ -12,16 +12,6 @@ if [ $? != 0 ]; then
 	exec bash $0
 fi
 
-SED=sed
-if ! [[ `sed --version 2>&1` =~ "GNU" ]]; then
-	SED=gsed
-	if ! [[ `gsed --version 2>&1` =~ "GNU" ]]; then
-		echo "generate_code.sh: GNU version of sed is required">&2
-		echo "Please, install gsed." >&2
-		exit 2
-	fi
-fi
-
 function read_po() {
 	declare -A rpo_ret
 	local current_msgid=""
