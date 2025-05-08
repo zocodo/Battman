@@ -74,7 +74,7 @@ build/preprocessed/license/constants.c: license/license.html
 	echo "const unsigned char lh_arr[]={">$@
 	openssl sha256 -c license/license.html|$(SED) "s/^.*= /0x/g;s/:/,0x/g" >>$@
 	echo "};">>$@
-build/preprocessed/localization_data.c: Localizations/*.po Localizations/*.sh
+build/preprocessed/localization_data.c: Localizations/*.po Localizations/base.pot Localizations/*.sh
 	@mkdir -p $(@D)
 	./Localizations/generate_code.sh>$@
 

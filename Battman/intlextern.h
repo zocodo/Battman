@@ -8,11 +8,7 @@
 #ifndef intlextern_h
 #define intlextern_h
 
-#ifdef USE_GETTEXT
 #define _C(x) cond_localize_c(x)
-#else
-#define _C(x) x
-#endif
 
 #if __has_include(<libintl.h>)
 #include <libintl.h>

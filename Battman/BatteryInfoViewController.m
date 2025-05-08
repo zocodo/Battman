@@ -151,7 +151,7 @@ enum sections_batteryinfo {
 }
 
 - (void)dealloc {
-	for (struct battery_info_node *i = batteryInfo; i->description; i++) {
+	for (struct battery_info_node *i = batteryInfo; i->name; i++) {
 		if (i->content && !(i->content & BIN_IS_SPECIAL)) {
 			bi_node_free_string(i);
 		}

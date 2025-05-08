@@ -13,11 +13,6 @@
 #include <CoreFoundation/CFNumber.h>
 #include <CoreFoundation/CFString.h>
 
-#ifndef _ID_
-// TODO:
-#define _ID_(x) (x)
-#endif
-
 // Internal IDs:
 // They are intended to be here, not in headers
 
@@ -32,53 +27,53 @@ typedef enum {
 } id_bi_t;
 
 const char *bin_unit_strings[]={
-	_ID_("℃"),
+	"℃",
 	"%",
-	_ID_("mA"),
-	_ID_("mAh"),
-	_ID_("mV"),
-	_ID_("mW"),
-	_ID_("min"),
-	_ID_("Hr") // Do not modify, thats how Texas Instruments documented
+	"mA",
+	"mAh",
+	"mV",
+	"mW",
+	"min",
+	"Hr" // Do not modify, thats how Texas Instruments documented
 };
 
 struct battery_info_node main_battery_template[] = {
-    {_ID_("Device Name"), 0},
-    {_ID_("Health"), BIN_IS_BACKGROUND | BIN_UNIT_PERCENT | BIN_SECTION},
-    {_ID_("SoC"), BIN_IS_FLOAT | BIN_UNIT_PERCENT},
-    {_ID_("Average Temperature"),
+    {"Device Name","This indicates the name of the current Gas Gauge IC used by the installed battery.", 0},
+    {"Health",NULL, BIN_IS_BACKGROUND | BIN_UNIT_PERCENT | BIN_SECTION},
+    {"SoC",NULL, BIN_IS_FLOAT | BIN_UNIT_PERCENT},
+    {"Average Temperature",NULL,
      BIN_IS_FLOAT | BIN_UNIT_DEGREE_C | BIN_DETAILS_SHARED},
-    {_ID_("Charging"), BIN_IS_BOOLEAN},
-    {"ASoC(Hidden)", BIN_IS_FOREGROUND | BIN_IS_HIDDEN},
-    {_ID_("Full Charge Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_ID_("Designed Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_ID_("Remaining Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_ID_("Battery Uptime"), BIN_UNIT_MIN | BIN_IN_DETAILS},
-    {_ID_("Qmax"), BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_ID_("Depth of Discharge"), BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_ID_("Passed Charge"), BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_ID_("Voltage"), BIN_UNIT_MVOLT | BIN_IN_DETAILS},
-    {_ID_("Average Current"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
-    {_ID_("Average Power"), BIN_UNIT_MWATT | BIN_IN_DETAILS},
-    {_ID_("Cell Count"), BIN_IN_DETAILS},
-    {_ID_("Time To Empty"), BIN_UNIT_MIN | BIN_IN_DETAILS},
-    {_ID_("Cycle Count"), BIN_IN_DETAILS},
-    {_ID_("Designed Cycle Count"), BIN_IN_DETAILS},
-    {_ID_("State Of Charge"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
-    {_ID_("State Of Charge (UI)"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
-    {_ID_("Resistance Scale"), BIN_IN_DETAILS},
-    {_ID_("Battery Serial No."), 0},
-    {_ID_("Chemistry ID"), 0},
-    {_ID_("Flags"), 0},
-    {_ID_("True Remaining Capacity"), BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_ID_("OCV Current"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
-    {_ID_("OCV Voltage"), BIN_UNIT_MVOLT | BIN_IN_DETAILS},
-    {_ID_("Max Load Current"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
-    {_ID_("Max Load Current 2"), BIN_UNIT_MAMP | BIN_IN_DETAILS},
-    {_ID_("IT Misc Status"), 0},
-    {_ID_("Simulation Rate"), BIN_UNIT_HOUR | BIN_IN_DETAILS},
-    {_ID_("Daily Max SoC"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
-    {_ID_("Daily Min SoC"), BIN_UNIT_PERCENT | BIN_IN_DETAILS},
+    {"Charging",NULL, BIN_IS_BOOLEAN},
+    {"ASoC(Hidden)",NULL, BIN_IS_FOREGROUND | BIN_IS_HIDDEN},
+    {"Full Charge Capacity",NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
+    {"Designed Capacity",NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
+    {"Remaining Capacity",NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
+    {"Battery Uptime","The length of time the Battery Management System (BMS) has been up.", BIN_UNIT_MIN | BIN_IN_DETAILS},
+    {"Qmax",NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
+    {"Depth of Discharge","Current chemical depth of discharge (DOD₀). The gas gauge updates information on the DOD₀ based on open-circuit voltage (OCV) readings when in a relaxed state.", BIN_UNIT_MAH | BIN_IN_DETAILS},
+    {"Passed Charge","The cumulative capacity of the current charging or discharging cycle. It is reset to zero with each DOD₀ update.", BIN_UNIT_MAH | BIN_IN_DETAILS},
+    {"Voltage",NULL, BIN_UNIT_MVOLT | BIN_IN_DETAILS},
+    {"Average Current",NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS},
+    {"Average Power",NULL, BIN_UNIT_MWATT | BIN_IN_DETAILS},
+    {"Cell Count",NULL, BIN_IN_DETAILS},
+    {"Time To Empty",NULL, BIN_UNIT_MIN | BIN_IN_DETAILS},
+    {"Cycle Count",NULL, BIN_IN_DETAILS},
+    {"Designed Cycle Count",NULL, BIN_IN_DETAILS},
+    {"State Of Charge",NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS},
+    {"State Of Charge (UI)","The \"Battery Percentage\" displayed exactly on your status bar. This is the SoC that Apple wants to tell you.", BIN_UNIT_PERCENT | BIN_IN_DETAILS},
+    {"Resistance Scale",NULL, BIN_IN_DETAILS},
+    {"Battery Serial No.",NULL, 0},
+    {"Chemistry ID","Chemistry unique identifier (ChemID) assigned to each battery in Texas Instruments' database. It ensures accurate calculations and predictions.", 0},
+    {"Flags",NULL, 0},
+    {"True Remaining Capacity",NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
+    {"OCV Current",NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS},
+    {"OCV Voltage",NULL, BIN_UNIT_MVOLT | BIN_IN_DETAILS},
+    {"Max Load Current",NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS},
+    {"Max Load Current 2",NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS},
+    {"IT Misc Status","This field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC.", 0},
+    {"Simulation Rate","This field refers to the rate of Gas Gauge performing Impedance Track™ simulations.", BIN_UNIT_HOUR | BIN_IN_DETAILS},
+    {"Daily Max SoC",NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS},
+    {"Daily Min SoC",NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS},
     {NULL} // DO NOT DELETE
 };
 
@@ -176,14 +171,14 @@ struct battery_info_node *battery_info_init() {
 static int _impl_set_item_find_item(struct battery_info_node **head, const char *desc) {
 	if (!desc)
 		return 0;
-	for (struct battery_info_node *i = *head; i->description; i++) {
-		if (i->description == desc) {
+	for (struct battery_info_node *i = *head; i->name; i++) {
+		if (i->name == desc) {
 			*head = i;
 			return 1;
 		}
 	}
 	for (struct battery_info_node *i = (*head) - 1; i != head[1] - 1; i--) {
-		if (i->description == desc) {
+		if (i->name == desc) {
 			*head = i;
 			return 1;
 		}
@@ -237,62 +232,62 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
     
     struct battery_info_node *head_arr[2]={head,head};
     	/* Health = 100.0f * FullChargeCapacity (mAh) / DesignCapacity (mAh) */
-	BI_SET_ITEM(_ID_("Health"), 100.0f * (float)full_cap / (float)design_cap);
+	BI_SET_ITEM("Health", 100.0f * (float)full_cap / (float)design_cap);
 	/* SoC = 100.0f * RemainCapacity (mAh) / FullChargeCapacity (mAh) */
-	BI_SET_ITEM(_ID_("SoC"), 100.0f * (float)remain_cap / (float)full_cap);
+	BI_SET_ITEM("SoC", 100.0f * (float)remain_cap / (float)full_cap);
 	// No Imperial units here
-	BI_SET_ITEM(_ID_("Average Temperature"), get_temperature());
+	BI_SET_ITEM("Average Temperature", get_temperature());
 	// // TODO: Charging Type Display {"Battery Power", "AC Power", "UPS Power"}
-	BI_SET_ITEM(_ID_("Charging"), (is_charging(NULL, NULL) == kIsCharging));
+	BI_SET_ITEM("Charging", (is_charging(NULL, NULL) == kIsCharging));
 	/* ASoC = 100.0f * RemainCapacity (mAh) / DesignCapacity (mAh) */
 	BI_SET_ITEM("ASoC(Hidden)", 100.0f * remain_cap / design_cap);
 	if (inDetail) {
 		get_gas_gauge(&gGauge);
 		BI_FORMAT_ITEM_IF(strlen(gGauge.DeviceName),
-					_ID_("Device Name"), "%s", gGauge.DeviceName);
-		BI_SET_ITEM(_ID_("Full Charge Capacity"), full_cap);
-		BI_SET_ITEM(_ID_("Designed Capacity"), design_cap);
-		BI_SET_ITEM(_ID_("Remaining Capacity"), remain_cap);
-        BI_SET_ITEM(_ID_("Battery Uptime"), gGauge.bmsUpTime / 60);
-		BI_SET_ITEM(_ID_("Qmax"), gGauge.Qmax * batt_cell_num());
-		BI_SET_ITEM(_ID_("Depth of Discharge"), gGauge.DOD0);
-		BI_SET_ITEM(_ID_("Passed Charge"), gGauge.PassedCharge);
-		BI_SET_ITEM(_ID_("Voltage"), gGauge.Voltage);
-		BI_SET_ITEM(_ID_("Average Current"), gGauge.AverageCurrent);
-		BI_SET_ITEM(_ID_("Average Power"), gGauge.AveragePower);
-		BI_SET_ITEM(_ID_("Cell Count"), batt_cell_num());
+					"Device Name", "%s", gGauge.DeviceName);
+		BI_SET_ITEM("Full Charge Capacity", full_cap);
+		BI_SET_ITEM("Designed Capacity", design_cap);
+		BI_SET_ITEM("Remaining Capacity", remain_cap);
+        BI_SET_ITEM("Battery Uptime", gGauge.bmsUpTime / 60);
+		BI_SET_ITEM("Qmax", gGauge.Qmax * batt_cell_num());
+		BI_SET_ITEM("Depth of Discharge", gGauge.DOD0);
+		BI_SET_ITEM("Passed Charge", gGauge.PassedCharge);
+		BI_SET_ITEM("Voltage", gGauge.Voltage);
+		BI_SET_ITEM("Average Current", gGauge.AverageCurrent);
+		BI_SET_ITEM("Average Power", gGauge.AveragePower);
+		BI_SET_ITEM("Cell Count", batt_cell_num());
 		/* FIXME: TTE shall display "Never" when -1 */
 		int timeToEmpty = get_time_to_empty();
-		BI_SET_ITEM_IF(timeToEmpty > 0, _ID_("Time To Empty"), timeToEmpty);
-		BI_SET_ITEM(_ID_("Cycle Count"), gGauge.CycleCount);
-        BI_SET_ITEM_IF(gGauge.DesignCycleCount, _ID_("Designed Cycle Count"), gGauge.DesignCycleCount)
-		BI_SET_ITEM(_ID_("State Of Charge"), gGauge.StateOfCharge);
-        BI_SET_ITEM(_ID_("State Of Charge (UI)"), gGauge.UISoC);
+		BI_SET_ITEM_IF(timeToEmpty > 0, "Time To Empty", timeToEmpty);
+		BI_SET_ITEM("Cycle Count", gGauge.CycleCount);
+        BI_SET_ITEM_IF(gGauge.DesignCycleCount, "Designed Cycle Count", gGauge.DesignCycleCount)
+		BI_SET_ITEM("State Of Charge", gGauge.StateOfCharge);
+        BI_SET_ITEM("State Of Charge (UI)", gGauge.UISoC);
 		BI_SET_ITEM_IF(gGauge.ResScale, 
-				_ID_("Resistance Scale"), gGauge.ResScale);
-		if(!battery_serial(BI_ENSURE_STR(_ID_("Battery Serial No.")))) {
-			BI_FORMAT_ITEM(_ID_("Battery Serial No."), "None");
+				"Resistance Scale", gGauge.ResScale);
+		if(!battery_serial(BI_ENSURE_STR("Battery Serial No."))) {
+			BI_FORMAT_ITEM("Battery Serial No.", "None");
 		}
-		BI_FORMAT_ITEM(_ID_("Chemistry ID"), "0x%.8X", gGauge.ChemID);
+		BI_FORMAT_ITEM("Chemistry ID", "0x%.8X", gGauge.ChemID);
 
         /* Confirmed Flags format */
         /* bq20z45*: Battery Status (0x16): https://www.ti.com/lit/er/sluu313a/sluu313a.pdf */
-		BI_FORMAT_ITEM(_ID_("Flags"), "0x%.4X", gGauge.Flags);
+		BI_FORMAT_ITEM("Flags", "0x%.4X", gGauge.Flags);
 		BI_SET_ITEM_IF(gGauge.TrueRemainingCapacity,
-				_ID_("True Remaining Capacity"),
+				"True Remaining Capacity",
 				gGauge.TrueRemainingCapacity);
-		BI_SET_ITEM_IF(gGauge.OCV_Current, _ID_("OCV Current"),
+		BI_SET_ITEM_IF(gGauge.OCV_Current, "OCV Current",
 				gGauge.OCV_Current);
-		BI_SET_ITEM_IF(gGauge.OCV_Voltage, _ID_("OCV Voltage"),
+		BI_SET_ITEM_IF(gGauge.OCV_Voltage, "OCV Voltage",
 				gGauge.OCV_Voltage);
-		BI_SET_ITEM_IF(gGauge.IMAX, _ID_("Max Load Current"), gGauge.IMAX);
-		BI_SET_ITEM_IF(gGauge.IMAX2, _ID_("Max Load Current 2"), gGauge.IMAX2);
-		BI_FORMAT_ITEM_IF(gGauge.ITMiscStatus, _ID_("IT Misc Status"), "0x%.4X",
+		BI_SET_ITEM_IF(gGauge.IMAX, "Max Load Current", gGauge.IMAX);
+		BI_SET_ITEM_IF(gGauge.IMAX2, "Max Load Current 2", gGauge.IMAX2);
+		BI_FORMAT_ITEM_IF(gGauge.ITMiscStatus, "IT Misc Status", "0x%.4X",
 					gGauge.ITMiscStatus);
-		BI_SET_ITEM_IF(gGauge.SimRate, _ID_("Simulation Rate"),
+		BI_SET_ITEM_IF(gGauge.SimRate, "Simulation Rate",
 				gGauge.SimRate);
-        BI_SET_ITEM_IF(gGauge.DailyMaxSoc, _ID_("Daily Max SoC"), gGauge.DailyMaxSoc);
-        BI_SET_ITEM_IF(gGauge.DailyMinSoc, _ID_("Daily Min SoC"), gGauge.DailyMinSoc);
+        BI_SET_ITEM_IF(gGauge.DailyMaxSoc, "Daily Max SoC", gGauge.DailyMaxSoc);
+        BI_SET_ITEM_IF(gGauge.DailyMinSoc, "Daily Min SoC", gGauge.DailyMinSoc);
         /* TODO: This id design sucks and bringing difficulties on maintainance,
                 I want something just like:
                 extern int insert_item(char *label, ...);

@@ -38,7 +38,7 @@
 - (void)updateBatteryInfo {
     NSString *final_str = @"";
     // TODO: Arabian? We need Arabian hackers to fix this code
-    for (struct battery_info_node *i = _batteryInfo; i->description != NULL; i++) {
+    for (struct battery_info_node *i = _batteryInfo; i->name != NULL; i++) {
         if (i->content & BIN_IS_SPECIAL) {
         	uint32_t value=i->content>>16;
             if ((i->content & BIN_IS_FOREGROUND) == BIN_IS_FOREGROUND) {
@@ -51,11 +51,11 @@
 
             if ((i->content & BIN_IS_BOOLEAN) == BIN_IS_BOOLEAN && value) {
                 final_str = [NSString
-                    stringWithFormat:@"%@\n%@", final_str, _(i->description)];
+                    stringWithFormat:@"%@\n%@", final_str, _(i->name)];
             } else if ((i->content & BIN_IS_FLOAT) == BIN_IS_FLOAT) {
                 final_str =
                     [NSString stringWithFormat:@"%@\n%@: %0.2f", final_str,
-                                               _(i->description), bi_node_load_float(i)];
+                                               _(i->name), bi_node_load_float(i)];
             }
             if (i->content & BIN_HAS_UNIT) {
                 uint32_t unit = (i->content & BIN_UNIT_BITMASK) >> 6;

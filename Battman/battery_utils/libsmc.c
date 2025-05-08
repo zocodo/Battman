@@ -855,28 +855,28 @@ const char *not_charging_reason_str(uint64_t code) {
 }
 
 static const char *port_types[] = {
-    _ID_("Unknown"),
-    _ID_("Virtual"),
-    _ID_("USB-C"),
-    _ID_("USB-A"),
-    _ID_("MiniDP"),
-    _ID_("FireWire800"),
-    _ID_("HDMI"),
-    _ID_("AudioJack-Mini"),
-    _ID_("Ethernet"),
-    _ID_("MagSafe"), // This is typically old MagSafe charger port on old MacBooks
-    _ID_("MagSafe2"),
-    _ID_("SD Card"),
-    _ID_("Lightning"),
-    _ID_("30-Pin"),
-    _ID_("Inductive"), // Wireless
-    _ID_("SmartConnector"),
-    _ID_("DisplayPort")
+    "Unknown",
+    "Virtual",
+    "USB-C",
+    "USB-A",
+    "MiniDP",
+    "FireWire800",
+    "HDMI",
+    "AudioJack-Mini",
+    "Ethernet",
+    "MagSafe", // This is typically old MagSafe charger port on old MacBooks
+    "MagSafe2",
+    "SD Card",
+    "Lightning",
+    "30-Pin",
+    "Inductive", // Wireless
+    "SmartConnector",
+    "DisplayPort"
 };
 
 const char *port_type_str(uint8_t pt) {
     if (pt > 16) {
-        return _ID_("Undefined");
+        return "Undefined";
     }
     return port_types[pt];
 }
@@ -884,19 +884,19 @@ const char *port_type_str(uint8_t pt) {
 const char *charger_status_str(uint8_t code[64]) {
     const char *byte2stat = NULL;
 
-    if (code[0] == 0x00) return _ID_("None");
+    if (code[0] == 0x00) return "None";
 
     // code[0]: Charger Type I guess, each device has different 1st byte
     // MacBook Pro (13-inch, M1, 2020), Has always 0x8A set
     if (code[0] == 0x8A) {
         switch (code[1]) {
-            case 0x6C: byte2stat = _ID_("Connecting");
+            case 0x6C: byte2stat = "Connecting";
             // 0xB0
-            case 0xB4: byte2stat = _ID_("Fully Charged");
-            case 0xB8: byte2stat = _ID_("Stopped");
-            case 0xD0: byte2stat = _ID_("Disconnected");
-            case 0xD4: byte2stat = _ID_("Connected");
-            case 0xD8: byte2stat = _ID_("Charging");
+            case 0xB4: byte2stat = "Fully Charged";
+            case 0xB8: byte2stat = "Stopped";
+            case 0xD0: byte2stat = "Disconnected";
+            case 0xD4: byte2stat = "Connected";
+            case 0xD8: byte2stat = "Charging";
         }
     }
     return byte2stat;
@@ -904,31 +904,31 @@ const char *charger_status_str(uint8_t code[64]) {
 
 const char *get_adapter_family_desc(mach_port_t family) {
     switch (family) {
-        case kIOPSFamilyCodeDisconnected:               return _ID_("Disconnected");
-        case kIOPSFamilyCodeUnsupported:                return _ID_("Unsupported");
-        case kIOPSFamilyCodeFirewire:                   return _ID_("Firewire");
-        case kIOPSFamilyCodeUSBHost:                    return _ID_("USB Host"); // usb host
-        case kIOPSFamilyCodeUSBHostSuspended:           return _ID_("Suspended USB Host");
-        case kIOPSFamilyCodeUSBDevice:                  return _ID_("USB Device");
-        case kIOPSFamilyCodeUSBAdapter:                 return _ID_("Adapter");
+        case kIOPSFamilyCodeDisconnected:               return "Disconnected";
+        case kIOPSFamilyCodeUnsupported:                return "Unsupported";
+        case kIOPSFamilyCodeFirewire:                   return "Firewire";
+        case kIOPSFamilyCodeUSBHost:                    return "USB Host"; // usb host
+        case kIOPSFamilyCodeUSBHostSuspended:           return "Suspended USB Host";
+        case kIOPSFamilyCodeUSBDevice:                  return "USB Device";
+        case kIOPSFamilyCodeUSBAdapter:                 return "Adapter";
         // Consider display abbreviated DCP/CDP/SDP instead
-        case kIOPSFamilyCodeUSBChargingPortDedicated:   return _ID_("Dedicated USB Charging Port"); // usb charger
-        case kIOPSFamilyCodeUSBChargingPortDownstream:  return _ID_("Downstream USB Charging Port");
-        case kIOPSFamilyCodeUSBChargingPort:            return _ID_("USB Charging Port"); // usb charger
-        case kIOPSFamilyCodeUSBUnknown:                 return _ID_("Unknown USB");
-        case kIOPSFamilyCodeUSBCBrick:                  return _ID_("USB-C Brick"); // usb brick
-        case kIOPSFamilyCodeUSBCTypeC:                  return _ID_("USB-C Type-C"); // usb type-c
-        case kIOPSFamilyCodeUSBCPD:                     return _ID_("USB-C PD"); // pd charger
-        case kIOPSFamilyCodeAC:                         return _ID_("AC Power");
-        case kIOPSFamilyCodeExternal:                   return _ID_("Externel Power 1");
-        case kIOPSFamilyCodeExternal2:                  return _ID_("Externel Power 2");
-        case kIOPSFamilyCodeExternal3:                  return _ID_("Externel Power 3"); // baseline arcas
-        case kIOPSFamilyCodeExternal4:                  return _ID_("Externel Power 4");
-        case kIOPSFamilyCodeExternal5:                  return _ID_("Externel Power 5");
-        case kIOPSFamilyCodeExternal6:                  return _ID_("Externel Power 6"); // magsafe chg
-        case kIOPSFamilyCodeExternal7:                  return _ID_("Externel Power 7"); // magsafe acc
+        case kIOPSFamilyCodeUSBChargingPortDedicated:   return "Dedicated USB Charging Port"; // usb charger
+        case kIOPSFamilyCodeUSBChargingPortDownstream:  return "Downstream USB Charging Port";
+        case kIOPSFamilyCodeUSBChargingPort:            return "USB Charging Port"; // usb charger
+        case kIOPSFamilyCodeUSBUnknown:                 return "Unknown USB";
+        case kIOPSFamilyCodeUSBCBrick:                  return "USB-C Brick"; // usb brick
+        case kIOPSFamilyCodeUSBCTypeC:                  return "USB-C Type-C"; // usb type-c
+        case kIOPSFamilyCodeUSBCPD:                     return "USB-C PD"; // pd charger
+        case kIOPSFamilyCodeAC:                         return "AC Power";
+        case kIOPSFamilyCodeExternal:                   return "Externel Power 1";
+        case kIOPSFamilyCodeExternal2:                  return "Externel Power 2";
+        case kIOPSFamilyCodeExternal3:                  return "Externel Power 3"; // baseline arcas
+        case kIOPSFamilyCodeExternal4:                  return "Externel Power 4";
+        case kIOPSFamilyCodeExternal5:                  return "Externel Power 5";
+        case kIOPSFamilyCodeExternal6:                  return "Externel Power 6"; // magsafe chg
+        case kIOPSFamilyCodeExternal7:                  return "Externel Power 7"; // magsafe acc
     }
-    return _ID_("Unknown");
+    return "Unknown";
 }
 
 charging_state_t is_charging(mach_port_t *family, device_info_t *info) {

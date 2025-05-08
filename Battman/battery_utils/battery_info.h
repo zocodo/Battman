@@ -83,17 +83,14 @@ SPECIAL:
 // e.g. degreeC is e2 84 83 in utf8,
 // convert it to little endian, 0x8384e2, and put in the bitmask.
 
-#ifndef _ID_
-#define _ID_(x) (x)
-#endif
-
 __BEGIN_DECLS
 
 extern const char *bin_unit_strings[];
 extern void *bin_sbrk_beacon;
 
 struct battery_info_node {
-    const char *description; // NONNULL
+    const char *name; // NONNULL
+    const char *desc;
     uint32_t content;
 };
 

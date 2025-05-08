@@ -27,10 +27,6 @@
 
 #define _(x) cond_localize(x)
 
-#ifndef _ID_
-#define _ID_(x) (x)
-#endif
-
 #ifndef BATTMAN_TEXTDOMAIN
 #define BATTMAN_TEXTDOMAIN "battman"
 #endif

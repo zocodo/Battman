@@ -32,7 +32,14 @@ struct localization_entry {
 	const char **pstr;
 };
 
-extern CFStringRef localization_arr[];
+// Why 2 versions:
+// CFString is UTF-16LE but we use UTF-8 in other cases
+struct localization_arr_entry {
+	const char *pstr;
+	CFStringRef cfstr;
+};
+
+extern struct localization_arr_entry localization_arr[];
 
 #define PSTRMAP_SIZE 512
 struct localization_entry pstrmap[PSTRMAP_SIZE] = {0};
@@ -55,7 +62,7 @@ __attribute__((destructor)) static void localization_deinit() {
 
 __attribute__((constructor)) static void localization_init() {
 	for(int i = 0; i < cond_localize_cnt; i++) {
-		const char *cstr = CFStringGetCStringPtr(localization_arr[i], kCFStringEncodingUTF8);
+		const char *cstr = localization_arr[i].pstr;
 		struct localization_entry *ent = pstrmap + localization_simple_hash(cstr);
 		while (ent->pstr) {
 			ent++;
@@ -65,8 +72,8 @@ __attribute__((constructor)) static void localization_init() {
 		ent->pstr = malloc(sizeof(void *)*(cond_localize_language_cnt<<1));
 		ent->cfstr = (CFStringRef *)(ent->pstr + cond_localize_language_cnt);
 		for (int j = 0; j < cond_localize_language_cnt; j++) {
-			CFStringRef cfstr = localization_arr[cond_localize_cnt * j + i];
-			ent->pstr[j] = CFStringGetCStringPtr(cfstr, kCFStringEncodingUTF8);
+			CFStringRef cfstr = localization_arr[cond_localize_cnt * j + i].cfstr;
+			ent->pstr[j] = localization_arr[cond_localize_cnt * j + i].pstr;
 			ent->cfstr[j] = cfstr;
 		}
 	}

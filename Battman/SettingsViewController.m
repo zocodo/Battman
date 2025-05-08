@@ -337,11 +337,9 @@ static NSString *_contrib[] = {
 #ifdef USE_GETTEXT
 static int __unused cond_localize_cnt = 0;
 static int cond_localize_language_cnt = 0;
-static CFStringRef __unused localization_arr[];
 #else
 extern int cond_localize_cnt;
 extern int cond_localize_language_cnt;
-extern CFStringRef localization_arr[];
 extern CFStringRef **cond_localize_find(const char *str);
 #endif
 extern void preferred_language_code_clear(void);

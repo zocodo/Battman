@@ -28,7 +28,6 @@ static bool hvc_soft;
 static NSMutableArray *adapter_cells;
 
 /* Desc */
-static NSArray *desc_batt;
 static NSArray *desc_adap;
 static NSMutableArray *warns;
 
@@ -47,10 +46,10 @@ void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
         return cell;
     }*/
     NSString *final_str;
-    cell.textLabel.text = _(i->description);
+    cell.textLabel.text = _(i->name);
     /* Consider add a "Accessory" section in data struct */
-    if ([desc_batt indexOfObject:cell.textLabel.text] != NSNotFound) {
-        DBGLOG(@"Accessory %@, Index %lu", cell.textLabel.text, [desc_batt indexOfObject:cell.textLabel.text]);
+    if(i->desc) {
+        //DBGLOG(@"Accessory %@, Desc %@", cell.textLabel.text, components[1]);
         if (@available(iOS 13.0, *)) {
             cell.accessoryType = UITableViewCellAccessoryDetailButton;
         } else {
@@ -177,19 +176,6 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     UIRefreshControl *puller = [[UIRefreshControl alloc] init];
     [puller addTarget:self action:@selector(updateTableView) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = puller;
-
-    /* Consider add a "Accessory" section in data struct */
-    desc_batt = @[
-        _("Device Name"), _("This indicates the name of the current Gas Gauge IC used by the installed battery."),
-        _("State Of Charge (UI)"), _("The \"Battery Percentage\" displayed exactly on your status bar. This is the SoC that Apple wants to tell you."),
-        _("Battery Uptime"), _("The length of time the Battery Management System (BMS) has been up."),
-        _("Depth of Discharge"), _("Current chemical depth of discharge (DOD₀). The gas gauge updates information on the DOD₀ based on open-circuit voltage (OCV) readings when in a relaxed state."),
-        _("Chemistry ID"), _("Chemistry unique identifier (ChemID) assigned to each battery in Texas Instruments' database. It ensures accurate calculations and predictions."),
-        _("Passed Charge"), _("The cumulative capacity of the current charging or discharging cycle. It is reset to zero with each DOD₀ update."),
-        _("IT Misc Status"), _("This field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC."),
-        _("Flags"), _("The status information provided by the battery Gas Gauge IC, which may include the battery's operational modes, capabilities, or status codes. The format may vary depending on the Gas Gauge IC model."),
-        _("Simulation Rate"), _("This field refers to the rate of Gas Gauge performing Impedance Track™ simulations."),
-    ];
 
     desc_adap = @[
         _("Port"), _("Port of currently connectd adapter. On macOS, this is the USB port that the adapter currently attached."),
@@ -340,8 +326,10 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 
     NSArray *target_desc;
-    if (indexPath.section == 0)
-        target_desc = desc_batt;
+    if (indexPath.section == 0) {
+    	show_alert([cell.textLabel.text UTF8String], _C(batteryInfo[indexPath.row + pendingLoadOffsets[indexPath.row]].desc),L_OK);
+    	return;
+    }
     if (indexPath.section == [sections_detail indexOfObject:_("Adapter Details")])
         target_desc = desc_adap;
 
@@ -409,7 +397,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
 	if (section == 0) {
 		int rows = 0;
-		for (struct battery_info_node *i = batteryInfo; i->description; i++) {
+		for (struct battery_info_node *i = batteryInfo; i->name; i++) {
 			if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
 				(i->content && !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
 				if((i->content & 1) != 1 || (i->content & (1 << 5)) != 1 << 5) {
@@ -443,14 +431,14 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         /* Flags special handler */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstring-compare"
-        // _ID_ is defined as a number ID when not using Gettext
-        if (pending_bi->description == _ID_("Flags") || ((uint64_t)pending_bi->description > 5000 && !strcmp(pending_bi->description, "Flags"))) {
+	// ^ We are comparing the pointers, not string contents.
+        if (pending_bi->name == "Flags") {
             SegmentedFlagViewCell *cellf = [tv dequeueReusableCellWithIdentifier:@"FLAGS"];
             if (!cellf) cellf = [[SegmentedFlagViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"FLAGS"];
 
-            cellf.textLabel.text = _(pending_bi->description);
+            cellf.textLabel.text = _(pending_bi->name);
             cellf.detailTextLabel.text = _(bi_node_get_string(pending_bi));
-            cellf.titleLabel.text = _(pending_bi->description);
+            cellf.titleLabel.text = _(pending_bi->name);
             cellf.detailLabel.text = _(bi_node_get_string(pending_bi));
             [cellf selectByFlags:gGauge.Flags];
             if (strlen(gGauge.DeviceName)) {
