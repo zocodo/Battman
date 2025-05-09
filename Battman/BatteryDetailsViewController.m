@@ -97,7 +97,7 @@ typedef enum {
     WARN_NONE,          // OK
     WARN_GENERAL,       // General warning
     WARN_UNUSUAL,       // Unusual value warning
-    WARN_EXCEDDED,      // Excedded value warning
+    WARN_EXCEEDED,      // Exceeded value warning
     WARN_EMPTYVAL,      // Empty value warning
     WARN_MAX,           // max count of warn, should always be at bottom
 } warn_condition_t;
@@ -130,8 +130,8 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
                 case WARN_EMPTYVAL:
                     warnText = _("No value returned from sensor, device should be checked by service technician.");
                     break;
-                case WARN_EXCEDDED:
-                    warnText = _("Value exceeded than designed, device should be checked by service technician.");
+                case WARN_EXCEEDED:
+                    warnText = _("Value exceeded the designed, device should be checked by service technician.");
                     break;
                 case WARN_UNUSUAL:
                     warnText = _("Unusual value, device should be checked by service technician.");
@@ -509,7 +509,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
                 if (design == 0) return code;
             }
             if (count > design) {
-                code = WARN_EXCEDDED;
+                code = WARN_EXCEEDED;
                 *str = _("Cycle Count exceeded designed cycle count, consider replacing with a genuine battery.");
             }
             return code;
@@ -712,7 +712,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
                     case WARN_UNUSUAL:
                         title = _C("Unusual Data");
                         break;
-                    case WARN_EXCEDDED:
+                    case WARN_EXCEEDED:
                         title = _C("Data Too Large");
                         break;
                     case WARN_EMPTYVAL:
