@@ -777,7 +777,7 @@ const char *not_charging_reason_str(uint64_t code) {
         addreason(NOT_CHARGING_REASON_INHIBIT_CLIENT_ADAPTER, _C("Inhibit Client Adapter"));
         addreason(NOT_CHARGING_REASON_CELL_VOLTAGE_TOO_HIGH, _C("Cell Voltage Too High"));
         addreason(NOT_CHARGING_REASON_BATTERY_NO_CHG_REQ, _C("Battery Not Requesting Charge"));
-        addreason(NOT_CHARGING_REASON_WOMBAT, _C("WOMBAT")); // ?
+        addreason(NOT_CHARGING_REASON_WOMBAT, _C("Camera Streaming")); // Continuity Capture / Webcam
 
         /* System */
         addreason(NOT_CHARGING_REASON_VACTFB, _C("VACTFB")); // ?
@@ -854,33 +854,39 @@ const char *not_charging_reason_str(uint64_t code) {
     return reason;
 }
 
+#ifdef _C
+#undef _C
+#endif
+// Stub macro
+#define _C(x) x
 static const char *port_types[] = {
-    "Unknown",
-    "Virtual",
-    "USB-C",
-    "USB-A",
-    "MiniDP",
-    "FireWire800",
-    "HDMI",
-    "AudioJack-Mini",
-    "Ethernet",
-    "MagSafe", // This is typically old MagSafe charger port on old MacBooks
-    "MagSafe2",
-    "SD Card",
-    "Lightning",
-    "30-Pin",
-    "Inductive", // Wireless
-    "SmartConnector",
-    "DisplayPort"
+    _C("Unknown"),
+    _C("Virtual"),
+    _C("USB-C"),
+    _C("USB-A"),
+    _C("MiniDP"),
+    _C("FireWire800"),
+    _C("HDMI"),
+    _C("AudioJack-Mini"),
+    _C("Ethernet"),
+    _C("MagSafe"), // This is typically old MagSafe charger port on old MacBooks
+    _C("MagSafe2"),
+    _C("SD Card"),
+    _C("Lightning"),
+    _C("30-Pin"),
+    _C("Inductive"), // Wireless
+    _C("SmartConnector"),
+    _C("DisplayPort")
 };
 
 const char *port_type_str(uint8_t pt) {
     if (pt > 16) {
-        return "Undefined";
+        return _C("Undefined");
     }
     return port_types[pt];
 }
 
+// TODO: decode all charger status
 const char *charger_status_str(uint8_t code[64]) {
     const char *byte2stat = NULL;
 
@@ -904,31 +910,30 @@ const char *charger_status_str(uint8_t code[64]) {
 
 const char *get_adapter_family_desc(mach_port_t family) {
     switch (family) {
-        case kIOPSFamilyCodeDisconnected:               return "Disconnected";
-        case kIOPSFamilyCodeUnsupported:                return "Unsupported";
-        case kIOPSFamilyCodeFirewire:                   return "Firewire";
-        case kIOPSFamilyCodeUSBHost:                    return "USB Host"; // usb host
-        case kIOPSFamilyCodeUSBHostSuspended:           return "Suspended USB Host";
-        case kIOPSFamilyCodeUSBDevice:                  return "USB Device";
-        case kIOPSFamilyCodeUSBAdapter:                 return "Adapter";
-        // Consider display abbreviated DCP/CDP/SDP instead
-        case kIOPSFamilyCodeUSBChargingPortDedicated:   return "Dedicated USB Charging Port"; // usb charger
-        case kIOPSFamilyCodeUSBChargingPortDownstream:  return "Downstream USB Charging Port";
-        case kIOPSFamilyCodeUSBChargingPort:            return "USB Charging Port"; // usb charger
-        case kIOPSFamilyCodeUSBUnknown:                 return "Unknown USB";
-        case kIOPSFamilyCodeUSBCBrick:                  return "USB-C Brick"; // usb brick
-        case kIOPSFamilyCodeUSBCTypeC:                  return "USB-C Type-C"; // usb type-c
-        case kIOPSFamilyCodeUSBCPD:                     return "USB-C PD"; // pd charger
-        case kIOPSFamilyCodeAC:                         return "AC Power";
-        case kIOPSFamilyCodeExternal:                   return "Externel Power 1";
-        case kIOPSFamilyCodeExternal2:                  return "Externel Power 2";
-        case kIOPSFamilyCodeExternal3:                  return "Externel Power 3"; // baseline arcas
-        case kIOPSFamilyCodeExternal4:                  return "Externel Power 4";
-        case kIOPSFamilyCodeExternal5:                  return "Externel Power 5";
-        case kIOPSFamilyCodeExternal6:                  return "Externel Power 6"; // magsafe chg
-        case kIOPSFamilyCodeExternal7:                  return "Externel Power 7"; // magsafe acc
+        case kIOPSFamilyCodeDisconnected:               return _C("Disconnected");
+        case kIOPSFamilyCodeUnsupported:                return _C("Unsupported");
+        case kIOPSFamilyCodeFirewire:                   return _C("Firewire");
+        case kIOPSFamilyCodeUSBHost:                    return _C("USB Host"); // usb host
+        case kIOPSFamilyCodeUSBHostSuspended:           return _C("Suspended USB Host");
+        case kIOPSFamilyCodeUSBDevice:                  return _C("USB Device");
+        case kIOPSFamilyCodeUSBAdapter:                 return _C("USB Adapter");
+        case kIOPSFamilyCodeUSBChargingPortDedicated:   return _C("USB DCP"); // usb charger
+        case kIOPSFamilyCodeUSBChargingPortDownstream:  return _C("USB CDP");
+        case kIOPSFamilyCodeUSBChargingPort:            return _C("USB SDP"); // usb charger
+        case kIOPSFamilyCodeUSBUnknown:                 return _C("Unknown USB");
+        case kIOPSFamilyCodeUSBCBrick:                  return _C("USB-C Brick"); // usb brick
+        case kIOPSFamilyCodeUSBCTypeC:                  return _C("USB-C Type-C"); // usb type-c
+        case kIOPSFamilyCodeUSBCPD:                     return _C("USB-C PD"); // pd charger
+        case kIOPSFamilyCodeAC:                         return _C("AC Power");
+        case kIOPSFamilyCodeExternal:                   return _C("Externel Power 1");
+        case kIOPSFamilyCodeExternal2:                  return _C("Externel Power 2");
+        case kIOPSFamilyCodeExternal3:                  return _C("Externel Power 3"); // baseline arcas
+        case kIOPSFamilyCodeExternal4:                  return _C("Externel Power 4");
+        case kIOPSFamilyCodeExternal5:                  return _C("Externel Power 5");
+        case kIOPSFamilyCodeExternal6:                  return _C("Externel Power 6"); // magsafe chg
+        case kIOPSFamilyCodeExternal7:                  return _C("Externel Power 7"); // magsafe acc
     }
-    return "Unknown";
+    return _C("Unknown");
 }
 
 charging_state_t is_charging(mach_port_t *family, device_info_t *info) {
@@ -1400,6 +1405,7 @@ bool get_iktara_drv_stat(iktara_drv_t *drv) {
     DRAM(hex_): DispRam
  
     MEPG(ui8 ): SMC Power Prevent Nap
+    MSAL(hex_): Thermal control (Enable: 0x8, Disable: 0x0)
  
     TQ?B(ioft): Charger B Temperature
     TQ?d(ioft): Charger d Temperature

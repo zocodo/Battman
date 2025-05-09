@@ -171,15 +171,10 @@ int connect_to_daemon(void) {
     [tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
-- (void)cltypechanged2:(UISegmentedControl *)segCon {
-    vals[0] = segCon.selectedSegmentIndex ? 0 : -1;
-    [self daemonRedecide];
-    [self.tableView reloadData];
-}
-
 - (void)cltypechanged:(UISegmentedControl *)segCon {
     vals[0] = segCon.selectedSegmentIndex ? 0 : -1;
     [self daemonRedecide];
+    /* Refreshing the whole tableview causes animation lost */
     NSIndexPath *resumeIndexLabel = [NSIndexPath indexPathForRow:3 inSection:0];
     NSIndexPath *resumeIndexSlider = [NSIndexPath indexPathForRow:4 inSection:0];
     [self.tableView reloadRowsAtIndexPaths:@[ resumeIndexLabel, resumeIndexSlider ] withRowAnimation:UITableViewRowAnimationFade];

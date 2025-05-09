@@ -99,7 +99,7 @@ enum {
 #define NOT_CHARGING_REASON_INHIBIT_CLIENT_ADAPTER              (uint64_t)(1 << 0x14)
 #define NOT_CHARGING_REASON_CELL_VOLTAGE_TOO_HIGH               (uint64_t)(1 << 0x15)
 #define NOT_CHARGING_REASON_BATTERY_NO_CHG_REQ                  (uint64_t)(1 << 0x16)
-#define NOT_CHARGING_REASON_WOMBAT                              (uint64_t)(1 << 0x17)
+#define NOT_CHARGING_REASON_WOMBAT                              (uint64_t)(1 << 0x17) /* macOS 13 / iOS 16 */
 
 /* System controls */
 #define NOT_CHARGING_REASON_VACTFB                              (uint64_t)0x01 << (0x30 | 0x04)

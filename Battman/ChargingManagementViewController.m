@@ -103,6 +103,7 @@ extern void battman_worker_oneshot(char cmd, char arg);
             NSMutableString *finalStr = [[NSMutableString alloc] init];
             [suite synchronize];
 
+            id date, soc;
             /* State */
             id state = [suite valueForKey:@"state"];
 #if 0
@@ -113,13 +114,15 @@ extern void battman_worker_oneshot(char cmd, char arg);
             /* call setLPM with nil button, which only checks for instant LPM */
             [self setLPM:nil];
 #endif
-            if (state)
+            if (state) {
                 [finalStr appendString:lpm_on ? _("Enabled") : _("Disabled")];
-            else
-                return _("Never been used before");
+            } else {
+                [finalStr setString:_("Never been used before")];
+                goto final;
+            }
 
             /* Date */
-            id date = [suite objectForKey:@"stateChangeDate"];
+            date = [suite objectForKey:@"stateChangeDate"];
             if (date) {
                 NSDateFormatter *fmt = [[NSDateFormatter alloc] init];
                 fmt.locale = [NSLocale localeWithLocaleIdentifier:[NSString stringWithUTF8String:preferred_language()]];
@@ -130,12 +133,14 @@ extern void battman_worker_oneshot(char cmd, char arg);
             }
 
             /* at SoC */
-            id soc = [suite valueForKey:@"stateBatteryCharge"];
+            soc = [suite valueForKey:@"stateBatteryCharge"];
             if (soc) {
                 double value = [soc doubleValue];
                 NSString *strfmt = [NSString stringWithFormat:_(" at %d%% charge"), (unsigned int)(int)value];
                 [finalStr appendString:strfmt];
             }
+final:
+            [finalStr appendFormat:@"\n%@", _("These settings are retained across iTunes backups and restores.")];
             return finalStr;
         } else {
             return _("Not supported on this device");
@@ -171,6 +176,7 @@ extern void battman_worker_oneshot(char cmd, char arg);
     	show_alert(L_FAILED, _C("Something went wrong when setting this property."), L_OK);
     int new_val;
 	smc_read_n('CH0C', &new_val, 1);
+    DBGLOG(@"setBlockCharging: set: %d, new: %d", val, new_val & 0xFF);
 	new_val &= 0xFF;
 	if ((new_val != 0) != val) {
 		cswitch.on = (new_val != 0);
@@ -185,6 +191,7 @@ extern void battman_worker_oneshot(char cmd, char arg);
     	show_alert(L_FAILED, _C("Something went wrong when setting this property."), L_OK);
     int new_val;
     smc_read_n('CH0I', &new_val, 1);
+    DBGLOG(@"setBlockPower: set: %d, new: %d", val, new_val & 0xFF);
     new_val &= 0xFF;
     if ((new_val != 0) != val) {
         cswitch.on = (new_val != 0);
@@ -319,7 +326,13 @@ extern void battman_worker_oneshot(char cmd, char arg);
 
 - (void)setHideLPMAlerts:(UISwitch *)cswitch {
     BOOL val = cswitch.on;
-    [springboard setBool:val forKey:@"SBHideLowPowerAlerts"];
+    if (val) {
+        [springboard setBool:val forKey:@"SBHideLowPowerAlerts"];
+    } else {
+        // Do not keep this entry in settings
+        [springboard removeObjectForKey:@"SBHideLowPowerAlerts"];
+    }
+
     [springboard synchronize];
 
     BOOL new = NO;
@@ -377,7 +390,10 @@ tvend:
             action = @selector(setBlockPower:);
         }
         [cswitch addTarget:self action:action forControlEvents:UIControlEventValueChanged];
-        cswitch.on = (switchOn & 0xff) != 0;
+        cswitch.on = (switchOn & 0xFF) != 0;
+        /* 0: disabled, 1: enabled, 2: managed */
+        /* while 2, user cannot reset the value */
+        cswitch.enabled = !(switchOn & 0x2);
         cell.accessoryView = cswitch;
     } else if (indexPath.section == CM_SECT_SMART_CHARGING) {
 		if (indexPath.row == 0) {
