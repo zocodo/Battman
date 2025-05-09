@@ -51,6 +51,7 @@ extern const char *L_MV;
 
 bool show_alert(const char *title, const char *message, const char *cancel_button_title);
 void show_alert_async(const char *title, const char *message, const char *button, void (^completion)(bool result));
+void show_fatal_overlay_async(const char *title, const char *message);
 
 char *preferred_language(void);
 bool libintl_available(void);

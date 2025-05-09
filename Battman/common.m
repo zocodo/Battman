@@ -371,6 +371,29 @@ bool show_alert(const char *title, const char *message, const char *button) {
     return result;
 }
 
+@interface OBSetupAssistantFinishedController:UIViewController
+- (instancetype)initWithTitle:(NSString *)title detailText:(NSString *)detail;
+- (void)setInstructionalText:(NSString *)text;
+@end
+
+void show_fatal_overlay_async(const char *title, const char *message) {
+	NSBundle *obkit=[NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/OnBoardingKit.framework"];
+	if(![obkit load]) {
+		show_alert_async(title,message,"ok",^(bool idk){
+			app_exit();
+		});
+	}
+	OBSetupAssistantFinishedController *safc=[[[obkit classNamed:@"OBSetupAssistantFinishedController"] alloc] initWithTitle:[NSString stringWithUTF8String:title] detailText:[NSString stringWithUTF8String:message]];
+	if(!safc) {
+		show_alert_async(title,message,"ok",^(bool idk){
+			app_exit();
+		});
+	}
+	[safc setInstructionalText:@"Swipe up to exit"];
+	UIWindow *keyWindow=[[UIApplication sharedApplication] keyWindow];
+	keyWindow.rootViewController=safc;
+}
+
 void show_alert_async(const char *title, const char *message, const char *button, void (^completion)(bool result)) {
     DBGLOG(@"show_alert called: [%s], [%s], [%s]", title, message, button);
 

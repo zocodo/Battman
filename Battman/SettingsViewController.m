@@ -122,7 +122,7 @@ static BOOL _coolDebugVCPresented = 0;
         return 2;
 #ifdef DEBUG
     else if (section == SS_SECT_DEBUG)
-        return 5;
+        return 6;
 #endif
     return 0;
 }
@@ -182,7 +182,7 @@ static BOOL _coolDebugVCPresented = 0;
             [self.tabBarController addChildViewController:vc];
             // extern void worker_test(void);
             // worker_test();
-        } else {
+        } else if(indexPath.row==4) {
             extern int connect_to_daemon(void);
             int fd = connect_to_daemon();
             if (!fd) {
@@ -205,6 +205,8 @@ static BOOL _coolDebugVCPresented = 0;
               }
             });
             show_alert("Done", "Check logs", "ok");
+        }else{
+        	show_fatal_overlay_async("Oh no","Some fatal error occurred :(");
         }
     }
 #endif
@@ -256,6 +258,11 @@ static BOOL _coolDebugVCPresented = 0;
         } else if (indexPath.row == 4) {
             UITableViewCell *cell = [UITableViewCell new];
             cell.textLabel.text = _("Redirect daemon logs");
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            return cell;
+        }else if(indexPath.row==5) {
+            UITableViewCell *cell = [UITableViewCell new];
+            cell.textLabel.text = _("Show fatal error view");
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             return cell;
         }
