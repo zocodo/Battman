@@ -104,6 +104,9 @@
 				text=[NSString stringWithFormat:@"%d",(int)val];
 			else
 				text=[NSString stringWithFormat:@"%lld",val];
+		}else if(*ptype=='f'&&ptype[2]=='t') {
+			// flt
+			text=[NSString stringWithFormat:@"%0.3f",*(float*)&smcstr.param.bytes];
 		}else if(*ptype=='f'){
 			// flag
 			NSMutableString *ft=[NSMutableString stringWithCapacity:8*curkey->dataSize];
