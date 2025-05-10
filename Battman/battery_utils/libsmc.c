@@ -148,7 +148,7 @@ fail_unsupported:
     return kIOReturnError;
 }
 
-static IOReturn smc_call(int index, SMCParamStruct *inputStruct,
+IOReturn smc_call(int index, SMCParamStruct *inputStruct,
                          SMCParamStruct *outputStruct) {
     size_t inputSize, outputSize;
 

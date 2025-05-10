@@ -47,7 +47,7 @@ typedef struct SMCVersion {
     unsigned char major;
     unsigned char minor;
     unsigned char build;
-    unsigned char reserved; // padding for alignment
+    //unsigned char reserved; // padding for alignment
     unsigned short release;
 } SMCVersion;
 
@@ -518,6 +518,7 @@ const char *port_type_str(uint8_t pt);
 int smc_open(void);
 int smc_write_safe(uint32_t key, void *bytes, uint32_t size);
 int smc_read_n(uint32_t key, void *bytes, int32_t size);
+int smc_call(int index, SMCParamStruct *inputStruct,SMCParamStruct *outputStruct);
 
 bool wireless_available(void);
 wireless_state_t wireless_charging_detect(void);

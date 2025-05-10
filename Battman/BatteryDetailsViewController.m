@@ -6,6 +6,7 @@
 #import "SegmentedViewCell.h"
 #import "MultilineViewCell.h"
 #import "WarnAccessoryView.h"
+#import "FullSMCViewController.h"
 
 #include <sys/sysctl.h>
 
@@ -231,6 +232,10 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     }
 }
 
+- (void)showAdvanced {
+	[self.navigationController pushViewController:[FullSMCViewController new] animated:1];
+}
+
 - (instancetype)initWithBatteryInfo:(struct battery_info_node *)bi {
     if (@available(iOS 13.0, *)) {
         self = [super initWithStyle:UITableViewStyleInsetGrouped];
@@ -242,6 +247,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     battery_info_update(bi, true);
     batteryInfo = bi;
     charging_stat = is_charging(&adapter_family, &adapter_info);
+    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Advanced" style:UIBarButtonItemStylePlain target:self action:@selector(showAdvanced)];
 
     return self;
 }
