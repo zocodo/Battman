@@ -1,6 +1,19 @@
 #import "FullSMCViewController.h"
 #include "battery_utils/libsmc.h"
 
+static void hton_with_type(void *bytes,int type) {
+	if(type=='1') { // 16
+		uint16_t *val=(uint16_t*)bytes;
+		*val=htons(*val);
+	}else if(type=='3') { //32
+		uint32_t *val=(uint32_t*)bytes;
+		*val=htonl(*val);
+	}else{ //64
+		uint32_t *val=(uint32_t*)bytes;
+		*(uint64_t*)bytes=((uint64_t)htonl(*val) <<32LL)|(uint64_t)htonl(val[1]);
+	}
+}
+
 @implementation FullSMCViewController
 
 - (instancetype)init {
@@ -30,7 +43,16 @@
 		allkeys[i].dataSize=output.param.keyInfo.dataSize;
 		allkeys[i].dataType=output.param.keyInfo.dataType;
 	}
+	UISegmentedControl *endiannessControl=[[UISegmentedControl alloc] initWithItems:@[@"Little Endian", @"Big Endian"]];
+	self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithCustomView:endiannessControl];
+	endiannessControl.selectedSegmentIndex=0;
+	[endiannessControl addTarget:self action:@selector(endiannessChanged:) forControlEvents:UIControlEventValueChanged];
 	return self;
+}
+
+- (void)endiannessChanged:(UISegmentedControl *)ec {
+	mode=ec.selectedSegmentIndex;
+	[self.tableView reloadData];
 }
 
 - (void)dealloc {
@@ -91,10 +113,14 @@
 			}
 		}else if(*ptype=='u') {
 			// ui.{2}
+			if(mode&&ptype[2]!='8')
+				hton_with_type(smcstr.param.bytes,ptype[2]);
 			uint64_t val=*(uint64_t *)&smcstr.param.bytes;
 			text=[NSString stringWithFormat:@"%llu",val];
 		}else if(*ptype=='s') {
 			// si.{2}
+			if(mode&&ptype[2]!='8')
+				hton_with_type(smcstr.param.bytes,ptype[2]);
 			int64_t val=*(int64_t *)&smcstr.param.bytes;
 			if(ptype[2]=='8')
 				text=[NSString stringWithFormat:@"%d",(int)(char)val];
@@ -106,6 +132,8 @@
 				text=[NSString stringWithFormat:@"%lld",val];
 		}else if(*ptype=='f'&&ptype[2]=='t') {
 			// flt
+			if(mode)
+				hton_with_type(smcstr.param.bytes,'3');
 			text=[NSString stringWithFormat:@"%0.3f",*(float*)&smcstr.param.bytes];
 		}else if(*ptype=='f'){
 			// flag
@@ -118,11 +146,13 @@
 			text=ft;
 		}else if(*ptype=='i') {
 			// ioft
+			if(mode)
+				hton_with_type(smcstr.param.bytes,'6');
 			uint64_t res=0;
 			for(int i=0;i<8;i++) {
 				res|=(uint64_t)smcstr.param.bytes[i] << (i<<3);
 			}
-			text=[NSString stringWithFormat:@"%0.3f",(float)res/65536.0];
+			text=[NSString stringWithFormat:@"%0.3f",*(double*)smcstr.param.bytes];
 		}else{
 			text=[NSString stringWithFormat:@"(Type unknown) %0*llX",curkey->dataSize,*(uint64_t*)smcstr.param.bytes];
 		}
