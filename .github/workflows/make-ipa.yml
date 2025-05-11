@@ -56,24 +56,24 @@ jobs:
     - name: Build
       run: |
         export THEOS=~/theos
+        cp -r Battman Battman-rb
         cd Battman
-        make -j16
-        mv build/Battman.ipa Battman-debug.ipa
-        make clean
+        make -j8 &
+        cd ../Battman-rb
         mkdir -p build/Payload/Battman.app
         cp ~/1024.png build/Payload/Battman.app/1024.png
-        make RELEASE=1 -j16
+        make RELEASE=1 -j8
     - uses: actions/upload-artifact@v4
       with:
         name: Battman-DEBUG.ipa
-        path: Battman/Battman-debug.ipa
+        path: Battman/build/Battman.ipa
         if-no-files-found: error
         retention-days: 1
         compression-level: 0
     - uses: actions/upload-artifact@v4
       with:
         name: Battman.ipa
-        path: Battman/build/Battman.ipa
+        path: Battman-rb/build/Battman.ipa
         if-no-files-found: error
         retention-days: 1
         compression-level: 0
