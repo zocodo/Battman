@@ -12,6 +12,18 @@ if [ $? != 0 ]; then
 	exec bash $0
 fi
 
+support_k_subst=1
+bash -c 'echo ${HOME@K}' >/dev/null 2>&1
+if [ $? != 0 ]; then
+	# bash too old, no @K substitution
+	support_k_subst=0
+	bash -c 'echo ${HOME@Q}' >/dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "bash too old." >&2
+		exit 3
+	fi
+fi
+
 function read_po() {
 	declare -A rpo_ret
 	local current_msgid=""
@@ -57,9 +69,14 @@ function read_po() {
 			fi
 		fi
 	done<<<`cat $1`
+	if [ $support_k_subst == 0 ]; then
+		for i in "${!rpo_ret[@]}"; do
+			echo -n "[${i@Q}]=${rpo_ret[$i]@Q} "
+		done
+		return 0
+	fi
 	echo "${rpo_ret[@]@K}"
 }
-
 
 declare -A lkeys="(`read_po ./Localizations/base.pot`)"
 locale_files=`ls Localizations/*.po`

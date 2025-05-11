@@ -10,28 +10,40 @@ SDKROOT := ${THEOS}/sdks/iPhoneOS14.5.sdk
 LIBS := -lobjc
 FRAMEWORKS := -framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework IOKit -framework WebKit
 
-CFLAGS = -DDEBUG $(CFLAGS_MG) -Wno-deprecated-declarations -Werror -target arm64-apple-ios${IPHONEOS_DEPLOYMENT_TARGET} -target arm64-apple-darwin -fobjc-arc -fconstant-cfstrings
+CFLAGS = -Wno-deprecated-declarations -Werror -target arm64-apple-ios${IPHONEOS_DEPLOYMENT_TARGET} -target arm64-apple-darwin -fobjc-arc -fconstant-cfstrings
 LDFLAGS = -target arm64-apple-ios$(IPHONEOS_DEPLOYMENT_TARGET) -target arm64-apple-darwin $(LIBS) $(FRAMEWORKS) -Wl,-dead_strip_dylibs
 THEOS := ~/theos
 
+ifeq ($(wildcard ${SDKROOT}),)
+	SDKROOT = $(firstword $(wildcard ${THEOS}/sdks/iPhoneOS14.*.sdk))
+endif
 ifeq ($(shell test -e ../.git && echo exists), exists)
 COMMIT_HASH := $(shell git rev-parse --short HEAD)
 else
 COMMIT_HASH :=
 endif
 
-ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/clang && echo exists), exists)
+ifneq (${RELEASE},1)
+CFLAGS += -DDEBUG
+else
+ICON_IF_RELEASE := build/Payload/Battman.app/1024.png
+endif
+
+ifneq ($(wildcard ${THEOS}/toolchain/linux/iphone/bin/clang),)
 CC = ${THEOS}/toolchain/linux/iphone/bin/clang
 CFLAGS += -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
 LDFLAGS += -isysroot $(SDKROOT)
 NO_CLANGRT=1
-else ifneq ($(shell which xcrun),)
+else ifneq ($(wildcard /Applications/Xcode.app),)
 CC = xcrun -sdk iphoneos cc
 else
 CC = cc
+CFLAGS += -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
+LDFLAGS += -isysroot $(SDKROOT)
+NO_CLANGRT=1
 endif
 
-ifeq ($(shell test -e ${THEOS}/toolchain/linux/iphone/bin/ldid && echo exists), exists)
+ifneq ($(wildcard ${THEOS}/toolchain/linux/iphone/bin/ldid),)
 CODESIGN = ${THEOS}/toolchain/linux/iphone/bin/ldid -S
 else ifneq ($(shell which ldid),)
 CODESIGN = ldid -S
@@ -72,7 +84,8 @@ build/preprocessed/isOSVersionAtLeast.S:
 build/preprocessed/license/constants.c: license/license.html
 	@mkdir -p $(@D)
 	echo "const unsigned char lh_arr[]={">$@
-	openssl sha256 -c license/license.html|$(SED) "s/^.*= /0x/g;s/:/,0x/g" >>$@
+	sha256sum license/license.html|$(SED) "s/ .*$$//g;s/.\\{2\\}/0x\\0,/g;s/,$$//g">>$@
+	#openssl sha256 -c license/license.html|$(SED) "s/^.*= /0x/g;s/:/,0x/g" >>$@
 	echo "};">>$@
 build/preprocessed/localization_data.c: Localizations/*.po Localizations/base.pot Localizations/*.sh
 	@mkdir -p $(@D)
@@ -92,19 +105,16 @@ build/Payload/Battman.app/Battman: $(OBJECTS) $(POBJECTS) ../Battman.entitlement
 build/Payload/Battman.app/Info.plist: Info.plist
 	@mkdir -p $(@D)
 	$(SED) 's/\$$(DEVELOPMENT_LANGUAGE)/en/;s/\$$(EXECUTABLE_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_IDENTIFIER)/com.torrekie.Battman/;s/\$$(PRODUCT_NAME)/Battman/;s/\$$(PRODUCT_BUNDLE_PACKAGE_TYPE)/APPL/;s/\$$(COMMIT_HASH)/$(COMMIT_HASH)/' Info.plist > build/Payload/Battman.app/Info.plist
+ifneq (${RELEASE},1)
+	$(SED) -i 's/CFBundleIcons/CFBundleIconsDISABLED/' $@
+endif
+
 build/Payload/Battman.app/1024.png: ../Battman.svg
 	./generate_icons.sh ../Battman.svg build/Payload/Battman.app/
 build/Payload/Battman.app/license.html: license/license.html
 	cp $^ $@
-build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist build/Payload/Battman.app/1024.png build/Payload/Battman.app/license.html
+build/Battman.ipa: build/Payload/Battman.app/Battman build/Payload/Battman.app/Info.plist ${ICON_IF_RELEASE} build/Payload/Battman.app/license.html
 	cd build/ && zip -r Battman.ipa ./Payload
-#ifeq ($(shell test $(IPHONEOS_DEPLOYMENT_TARGET) -lt 13.0; echo $$?),0)
-#	# TODO: .deb process for iOS 12
-#	@echo "###### WARNING ######"
-#	@echo "This Makefile is generating an .ipa which not designed for your target."
-#	@echo "Please repack it to .deb manually in order to work on your OS!"
-#endif
-# FIXME: test: Illegal number: 13.0
 
 %/Battman.ipa: build/Battman.ipa
 	cp $< $@

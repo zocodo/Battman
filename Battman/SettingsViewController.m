@@ -13,8 +13,13 @@ enum sections_settings {
     SS_SECT_COUNT
 };
 
+#ifdef DEBUG
 extern NSMutableAttributedString *redirectedOutput;
 extern void (^redirectedOutputListener)(void);
+#else
+static NSMutableAttributedString *redirectedOutput;
+static void (^redirectedOutputListener)(void);
+#endif
 
 static BOOL _coolDebugVCPresented = 0;
 
