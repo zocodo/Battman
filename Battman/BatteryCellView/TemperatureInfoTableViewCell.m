@@ -1,5 +1,6 @@
 #import "TemperatureInfoTableViewCell.h"
 #import "../GradientArcView.h"
+#import "../CompatibilityHelper.h"
 
 #include "../battery_utils/libsmc.h"
 // Temporary ^
@@ -18,8 +19,8 @@
 
 - (void)updateColors {
     if (@available(iOS 12.0, *)) {
-        // We already have a non published darkmode in iOS 12, some tweaks may able to enforce it
-        if (UIScreen.mainScreen.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
+        // We already have a non published darkmode in iOS 12, some tweaks may be able to enforce it
+        if ([(id)UIScreen.mainScreen.traitCollection userInterfaceStyle] == UIUserInterfaceStyleDark) {
             self.borderGradient.colors = @[
                 (id)[UIColor darkGrayColor].CGColor,
                 (id)[UIColor blackColor].CGColor,

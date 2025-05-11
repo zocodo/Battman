@@ -4,6 +4,7 @@
 #import "Constants.h"
 #import "StackViewGestureHandler.h"
 #import "UIView+Fill.h"
+#import "../CompatibilityHelper.h"
 
 @interface UberSegmentedControl () <UIGestureRecognizerDelegate>
 

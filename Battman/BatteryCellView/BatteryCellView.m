@@ -1,4 +1,6 @@
 #import "BatteryCellView.h"
+#import "../CompatibilityHelper.h"
+
 extern bool show_alert(char *, char*,char*);
 @implementation BatteryCellView
 

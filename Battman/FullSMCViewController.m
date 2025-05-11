@@ -569,7 +569,7 @@ static int smctype_to_length(int type) {
 	for(const char **i=smctypes;*i!=NULL;i++) {
 		//if(*(uint32_t*)*i==*(uint32_t*)type)
 		//	selIndex=alltypes.count;
-		[alltypes addObject:[[NSString alloc] initWithBytesNoCopy:(void*)*i length:4 encoding:NSUTF8StringEncoding deallocator:^(void *a,NSUInteger b){}]];
+		[alltypes addObject:[[NSString alloc] initWithBytesNoCopy:(void*)*i length:4 encoding:NSUTF8StringEncoding freeWhenDone:0]];
 		if(alltypes.count==7||!*(i+1)) {
 			UISegmentedControl *typeControl=[[UISegmentedControl alloc] initWithItems:alltypes];
 			//if(selIndex!=-1)

@@ -1,6 +1,7 @@
 #include "../common.h"
 #include <CoreFoundation/CFDictionary.h>
 #include <CoreFoundation/CFString.h>
+#include <CoreFoundation/CFNotificationCenter.h>
 #include <stdint.h>
 #include <stdlib.h>
 

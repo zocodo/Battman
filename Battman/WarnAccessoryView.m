@@ -1,4 +1,5 @@
 #import "WarnAccessoryView.h"
+#import "CompatibilityHelper.h"
 
 @implementation WarnAccessoryView
 

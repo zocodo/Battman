@@ -13,6 +13,7 @@
 #include <TargetConditionals.h>
 #include <stdio.h>
 #include "main.h"
+#include "CompatibilityHelper.h"
 
 #ifdef DEBUG
 #define DBGLOG(...) NSLog(__VA_ARGS__)

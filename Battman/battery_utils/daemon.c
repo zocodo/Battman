@@ -221,6 +221,9 @@ int battman_run_daemon(void) {
     posix_spawnattr_set_persona_gid_np(&sattr, 0);
     posix_spawnattr_setprocesstype_np(&sattr, 0x300); // daemon standard
     posix_spawnattr_setjetsam_ext(&sattr, 0, 3, 80, 80);
+#ifndef POSIX_SPAWN_SETSID
+#define POSIX_SPAWN_SETSID 0x400
+#endif
     posix_spawnattr_setflags(&sattr, POSIX_SPAWN_SETSID);
     char executable[1024];
     uint32_t size = 1024;

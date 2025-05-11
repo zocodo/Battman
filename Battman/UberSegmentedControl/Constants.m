@@ -1,5 +1,6 @@
 #import <UIKit/UIKit.h>
 #import "Constants.h"
+#import "../CompatibilityHelper.h"
 
 @implementation ConstantsColor
 
@@ -15,7 +16,7 @@
 + (UIColor *)selectedSegmentTint {
     if (@available(iOS 13.0, *)) {
         return [UIColor colorWithDynamicProvider:^UIColor * _Nonnull(UITraitCollection * _Nonnull traits) {
-            if (traits.userInterfaceStyle == UIUserInterfaceStyleDark) {
+            if ([(id)traits userInterfaceStyle] == UIUserInterfaceStyleDark) {
                 return [[UIColor whiteColor] colorWithAlphaComponent:0.28];
             } else {
                 return [UIColor whiteColor];
