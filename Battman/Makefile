@@ -31,14 +31,14 @@ endif
 
 ifneq ($(wildcard ${THEOS}/toolchain/linux/iphone/bin/clang),)
 CC = ${THEOS}/toolchain/linux/iphone/bin/clang
-CFLAGS += -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
+CFLAGS += -isysroot $(SDKROOT)
 LDFLAGS += -isysroot $(SDKROOT)
 NO_CLANGRT=1
 else ifneq ($(wildcard /Applications/Xcode.app),)
 CC = xcrun -sdk iphoneos cc
 else
 CC = cc
-CFLAGS += -F${THEOS}/vendor/lib -isysroot $(SDKROOT)
+CFLAGS += -isysroot $(SDKROOT)
 LDFLAGS += -isysroot $(SDKROOT)
 NO_CLANGRT=1
 endif

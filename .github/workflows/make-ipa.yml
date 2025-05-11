@@ -8,25 +8,39 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
-    - name: Setup Theos Dependencies
-      run: sudo apt update -y && sudo apt install -y g++ fakeroot git perl zip unzip rename build-essential libtinfo5 libplist-utils brotli inkscape
-    - name: Cache theos and toolchain
+    - name: Cache icon
+      id: cache-icon
+      uses: actions/cache@v3
+      with:
+        key: icon-cache-battman
+        path: ~/1024.png
+    - name: Install dependencies and generate icon
+      if: steps.cache-icon.outputs.cache-hit != 'true'
+      run: |
+        sudo apt update
+        sudo apt install -y inkscape
+        ./Battman/generate_icons.sh Battman.svg ~/
+    - name: Setup toolchain dependencies
+      run: sudo apt install -y git zip build-essential libtinfo5
+    - name: Cache SDKs and toolchain
       id: cache-theos
       uses: actions/cache@v3
       with:
         key: theos-cache-battman
         path: ~/theos
-    - name: Clone theos
-      if: steps.cache-theos.outputs.cache-hit != 'true'
-      uses: actions/checkout@v4
-      with:
-        submodules: 'recursive'
-        repository: 'theos/theos'
-        path: 'theos'
-    - name: Setup theos
+    # Theos itself is not used in this project
+    #- name: Clone theos
+    #  if: steps.cache-theos.outputs.cache-hit != 'true'
+    #  uses: actions/checkout@v4
+    #  with:
+    #    submodules: 'recursive'
+    #    repository: 'theos/theos'
+    #    path: 'theos'
+    - name: Setup SDK
       if: steps.cache-theos.outputs.cache-hit != 'true'
       run: |
-        mv $GITHUB_WORKSPACE/theos ~/theos
+        #mv $GITHUB_WORKSPACE/theos ~/theos
+        mkdir -p ~/theos/sdks
         export THEOS=~/theos
         curl -LO https://github.com/sbingner/llvm-project/releases/latest/download/linux-ios-arm64e-clang-toolchain.tar.lzma
         TMP=$(mktemp -d)
@@ -46,6 +60,8 @@ jobs:
         make -j8
         mv build/Battman.ipa Battman-debug.ipa
         make clean
+        mkdir -p build/Payload/Battman.app
+        cp ~/1024.png build/Payload/Battman.app/1024.png
         make RELEASE=1 -j8
     - uses: actions/upload-artifact@v4
       with:
