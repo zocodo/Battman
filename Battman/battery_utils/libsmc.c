@@ -252,15 +252,7 @@ IOReturn smc_read_n(uint32_t key, void *bytes, int32_t size) {
 //}
 
 static float ioft2flt(void *bytes) {
-    uint64_t res = 0;
-    uint8_t *x = (uint8_t *)bytes;
-
-    /* ioft has size 8 */
-    for (uint32_t i = 0; i < 8; i++) {
-        res |= (uint64_t)x[i] << (8 * i);
-    }
-
-    return (float)res / 65536.0f;
+	return (float)*(uint64_t*)bytes / 65536.0f;
 }
 
 __attribute__((destructor)) static void smc_close(void) {

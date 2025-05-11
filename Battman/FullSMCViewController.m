@@ -96,11 +96,7 @@ static NSString *valueForSMCBuffer(uint8_t *bytes,int size,char *ptype,int mode)
 		// ioft
 		if(mode)
 			hton_with_type(bytes,'6');
-		uint64_t res=0;
-		for(int i=0;i<8;i++) {
-			res|=(uint64_t)bytes[i] << (i<<3);
-		}
-		text=[NSString stringWithFormat:@"%0.3f",*(double*)bytes];
+		text=[NSString stringWithFormat:@"%0.3f",(float)*(uint64_t*)bytes /65536.0f];
 	}else{
 		text=[NSString stringWithFormat:@"(Type unknown) %0*llX",size<<1,*(uint64_t*)bytes];
 	}
@@ -470,7 +466,13 @@ static int smctype_to_length(int type) {
 		if(endian)
 			*(uint32_t*)maxBuffer=htonl(*(uint32_t*)maxBuffer);
 	}else if(*type=='i') {
-		*(double*)maxBuffer=[num doubleValue]*65536.0;
+		uint64_t sv=[num doubleValue]*65536.0;
+		if(endian){
+			uint32_t *psv=(uint32_t*)&sv;
+			*(uint64_t*)maxBuffer=((uint64_t)htonl(*psv) <<32LL)|(uint64_t)htonl(psv[1]);
+		}else{
+			*(uint64_t*)maxBuffer=sv;
+		}
 	}
 	memcpy(buffer,maxBuffer,length);
 	[self makeHexRepresentation];
