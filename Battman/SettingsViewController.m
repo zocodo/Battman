@@ -122,7 +122,7 @@ static BOOL _coolDebugVCPresented = 0;
         return 2;
 #ifdef DEBUG
     else if (section == SS_SECT_DEBUG)
-        return 6;
+        return 7;
 #endif
     return 0;
 }
@@ -205,7 +205,7 @@ static BOOL _coolDebugVCPresented = 0;
               }
             });
             show_alert("Done", "Check logs", "ok");
-        }else{
+        }else if(indexPath.row==5){
         	show_fatal_overlay_async("Oh no","Some fatal error occurred :(");
         }
     }
@@ -265,6 +265,34 @@ static BOOL _coolDebugVCPresented = 0;
             cell.textLabel.text = _("Show fatal error view");
             cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
             return cell;
+        }else if(indexPath.row==6) {
+        	UITableViewCell *cell=[UITableViewCell new];
+        	cell.textLabel.text=@"Temp Demo";
+        	UIView *accView=[[UIView alloc] initWithFrame:CGRectMake(0,0,250,30)];
+        	UISegmentedControl *cur=[[UISegmentedControl alloc] initWithItems:@[@"27.0"]];
+        	UISegmentedControl *max=[[UISegmentedControl alloc] initWithItems:@[@"Max",@"29.0"]];
+        	UISegmentedControl *avg=[[UISegmentedControl alloc] initWithItems:@[@"Avg",@"22.0"]];
+        	max.selectedSegmentIndex=0;
+        	avg.selectedSegmentIndex=0;
+        	cur.userInteractionEnabled=0;
+        	max.userInteractionEnabled=0;
+        	avg.userInteractionEnabled=0;
+        	[accView addSubview:cur];
+        	[accView addSubview:max];
+        	[accView addSubview:avg];
+        	cur.translatesAutoresizingMaskIntoConstraints=0;
+        	avg.translatesAutoresizingMaskIntoConstraints=0;
+        	max.translatesAutoresizingMaskIntoConstraints=0;
+        	[avg.leadingAnchor constraintEqualToAnchor:accView.leadingAnchor].active=1;
+        	//[avg.widthAnchor constraintEqualToAnchor:accView.widthAnchor multiplier:0.4].active=1;
+        	[max.leadingAnchor constraintEqualToAnchor:avg.trailingAnchor constant:10].active=1;
+        	//[max.trailingAnchor constraintEqualToAnchor:accView.trailingAnchor].active=1;
+        	//[max.widthAnchor constraintEqualToAnchor:accView.widthAnchor multiplier:0.4].active=1;
+        	[cur.leadingAnchor constraintEqualToAnchor:max.trailingAnchor constant:10].active=1;
+        	[cur.trailingAnchor constraintEqualToAnchor:accView.trailingAnchor].active=1;
+        	//[cur.widthAnchor constraintEqualToAnchor:accView.widthAnchor multiplier:0.2].active=1;
+        	cell.accessoryView=accView;
+        	return cell;
         }
     }
 #endif
@@ -336,6 +364,11 @@ static NSString *_contrib[] = {
 + (NSArray *)debugGetBatteryCausesLeakDoNotUseInProduction {
     void *IOPSCopyPowerSourcesByType(int);
     return (__bridge NSArray *)IOPSCopyPowerSourcesByType(1);
+}
+
++ (NSDictionary *)debugGetTemperatureHIDData {
+	extern NSDictionary *getTemperatureHIDData();
+	return getTemperatureHIDData();
 }
 
 @end

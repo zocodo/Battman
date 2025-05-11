@@ -5,6 +5,7 @@
 #import "ChargingManagementViewController.h"
 #import "ChargingLimitViewController.h"
 #include "battery_utils/battery_utils.h"
+#import "SimpleTemperatureViewController.h"
 
 #include "common.h"
 
@@ -111,6 +112,8 @@ enum sections_batteryinfo {
         [self.navigationController pushViewController:[[BatteryDetailsViewController alloc] initWithBatteryInfo:batteryInfo] animated:YES];
 	else if (indexPath.section == BI_SECT_MANAGE)
 		[self.navigationController pushViewController:indexPath.row == 0 ? [ChargingManagementViewController new] : [ChargingLimitViewController new] animated:YES];
+    else if(indexPath.section==BI_SECT_HW_TEMP)
+    	[self.navigationController pushViewController:[SimpleTemperatureViewController new] animated:1];
     [tv deselectRowAtIndexPath:indexPath animated:YES];
 }
 
