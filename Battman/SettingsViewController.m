@@ -372,7 +372,7 @@ static NSString *_contrib[] = {
 }
 
 + (NSDictionary *)debugGetTemperatureHIDData {
-	extern NSDictionary *getTemperatureHIDData();
+	extern NSDictionary *getTemperatureHIDData(void);
 	return getTemperatureHIDData();
 }
 

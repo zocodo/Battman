@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Battman 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-05-09 15:54+0800\n"
+"POT-Creation-Date: 2025-05-13 15:26+0800\n"
 "PO-Revision-Date: 2025-01-27 17:32+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -32,8 +32,8 @@ msgid "Error"
 msgstr "Error"
 
 #: /Users/torrekie/proj/Battman/Battman/common.m:340
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:572
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:670
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:578
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:676
 msgid "None"
 msgstr "None"
 
@@ -52,67 +52,71 @@ msgstr "mAh"
 msgid "mV"
 msgstr "mV"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:27
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:32
 msgid "Logs"
 msgstr "Logs"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:109
 #: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:114
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:115
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:119
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:120
 msgid "More"
 msgstr "More"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:136
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:141
 msgid "About Battman"
 msgstr "About Battman"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:139
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:144
 msgid "Debug"
 msgstr "Debug"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:221
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:283
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:228
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:323
 msgid "Credit"
 msgstr "Credit"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:225
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:232
 msgid "Source Code"
 msgstr "Source Code"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:238
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:245
 msgid "Logs (stdout)"
 msgstr "Logs (stdout)"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:243
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:250
 msgid "Select language override"
 msgstr "Select language override"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:248
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:255
 msgid "Exit App"
 msgstr "Exit App"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:253
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:260
 msgid "Logs (stdout) (very cool)"
 msgstr "Logs (stdout) (very cool)"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:258
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:265
 msgid "Redirect daemon logs"
 msgstr "Redirect daemon logs"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:299
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:270
+msgid "Show fatal error view"
+msgstr "Show fatal error view"
+
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:339
 msgid "Battman Credit"
 msgstr "Battman Credit"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:350
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:395
 msgid "Language Override"
 msgstr "Language Override"
 
-#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:364
+#: /Users/torrekie/proj/Battman/Battman/SettingsViewController.m:409
 msgid "Clear"
 msgstr "Clear"
 
 #: /Users/torrekie/proj/Battman/Battman/ChargingManagementViewController.m:28
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:134
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:137
 msgid "Charging Management"
 msgstr "Charging Management"
 
@@ -254,53 +258,243 @@ msgstr "License"
 msgid "Terms of Use"
 msgstr "Terms of Use"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:23
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:24
 msgid "Battman"
 msgstr "Battman"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:37
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:38
 msgid "2025 Ⓒ Torrekie <me@torrekie.dev>"
 msgstr "2025 Ⓒ Torrekie <me@torrekie.dev>"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:40
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:41
 msgid "Debug Commit"
 msgstr "Debug Commit"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:49
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:50
 msgid "Sandboxed"
 msgstr "Sandboxed"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:51
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:52
 msgid "Simulator Sandboxed"
 msgstr "Simulator Sandboxed"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:53
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:54
 msgid "Simulator Unsandboxed"
 msgstr "Simulator Unsandboxed"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:56
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:57
 msgid "Unsandboxed"
 msgstr "Unsandboxed"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:68
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:69
 msgid "Battery"
 msgstr "Battery"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:95
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:96
 msgid "Battery Info"
 msgstr "Battery Info"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:97
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:98
 msgid "Hardware Temperature"
 msgstr "Hardware Temperature"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:99
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:100
 msgid "Manage"
 msgstr "Manage"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:134
+#: /Users/torrekie/proj/Battman/Battman/BatteryInfoViewController.m:137
 msgid "Charging Limit"
 msgstr "Charging Limit"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:42
+#, objc-format
+msgid "(partial) %016llX..."
+msgstr "(partial) %016llX..."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:63
+msgid "Unknown array"
+msgstr "Unknown array"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:104
+#, objc-format
+msgid "(Unknown type) %0*llX"
+msgstr "(Unknown type) %0*llX"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:166
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:172
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:184
+msgid "Jump to"
+msgstr "Jump to"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:166
+msgid "Enter the key below."
+msgstr "Enter the key below."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:168
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:346
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:355
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:550
+msgid "Cancel"
+msgstr "Cancel"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:169
+msgid "Jump"
+msgstr "Jump"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:172
+msgid "Invalid key"
+msgstr "Invalid key"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:184
+msgid "Key not found"
+msgstr "Key not found"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:203
+msgid "Click a row to edit"
+msgstr "Click a row to edit"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:206
+msgid "Jump to key"
+msgstr "Jump to key"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:228
+msgid "(Unable to read)"
+msgstr "(Unable to read)"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:303
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:663
+msgid "Write to SMC"
+msgstr "Write to SMC"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:327
+msgid "Type Change"
+msgstr "Type Change"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:327
+#, objc-format
+msgid ""
+"Are you sure you want to interpret the item \"%.4s\" as type \"%.4s\"? This "
+"may cause undefined behavior."
+msgstr ""
+"Are you sure you want to interpret the item \"%.4s\" as type \"%.4s\"? This "
+"may cause undefined behavior."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:328
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:334
+msgid "Proceed"
+msgstr "Proceed"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:333
+#, c-format
+msgid "Are you 100% sure?"
+msgstr "Are you 100% sure?"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:333
+#, objc-format
+msgid ""
+"The type \"%.4s\" you requested is %d bytes long, which doesn't match the "
+"current length of %d bytes. Only continue if you're certain of the "
+"consequences. Proceed?"
+msgstr ""
+"The type \"%.4s\" you requested is %d bytes long, which doesn't match the "
+"current length of %d bytes. Only continue if you're certain of the "
+"consequences. Proceed?"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:393
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:401
+msgid "Array"
+msgstr "Array"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:393
+msgid "Element count mismatch."
+msgstr "Element count mismatch."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:401
+msgid "Invalid value detected."
+msgstr "Invalid value detected."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:414
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:426
+msgid "Flags Editor"
+msgstr "Flags Editor"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:414
+msgid "Data too long"
+msgstr "Data too long"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:426
+msgid "Invalid flag value found"
+msgstr "Invalid flag value found"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:446
+msgid "Hex Editing"
+msgstr "Hex Editing"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:446
+msgid "Please use the hex editor below instead."
+msgstr "Please use the hex editor below instead."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:493
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:503
+msgid "Hex Editor"
+msgstr "Hex Editor"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:493
+msgid "Data length mismatch"
+msgstr "Data length mismatch"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:503
+msgid "Invalid value detected"
+msgstr "Invalid value detected"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:535
+msgid "Disclaimer"
+msgstr "Disclaimer"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:535
+msgid "Please read the entire message."
+msgstr "Please read the entire message."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:535
+msgid ""
+"Writing to the SMC can be harmful. If unexpected behavior occurs, the "
+"developers offer NO WARRANTY to the fullest extent permitted by law."
+msgstr ""
+"Writing to the SMC can be harmful. If unexpected behavior occurs, the "
+"developers offer NO WARRANTY to the fullest extent permitted by law."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:535
+msgid "Make sure you understand what you're doing before continuing."
+msgstr "Make sure you understand what you're doing before continuing."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:536
+msgid "I understand, write to SMC NOW"
+msgstr "I understand, write to SMC NOW"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:545
+msgid "AppleSMC"
+msgstr "AppleSMC"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:545
+msgid "Failed to write to SMC."
+msgstr "Failed to write to SMC."
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:583
+#, objc-format
+msgid "%.4s(%d byte(s)) %.4s"
+msgstr "%.4s(%d byte(s)) %.4s"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:630
+msgid "Hex Dump"
+msgstr "Hex Dump"
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:648
+msgid "No data is sent to the SMC until you click \"Write to SMC.\""
+msgstr "No data is sent to the SMC until you click \"Write to SMC.\""
+
+#: /Users/torrekie/proj/Battman/Battman/FullSMCViewController.m:656
+msgid "Refetch Data"
+msgstr "Refetch Data"
 
 #: /Users/torrekie/proj/Battman/Battman/main.m:165
 msgid "locale_name"
@@ -405,17 +599,17 @@ msgstr "Limit Value should be bigger than Resume Value"
 msgid "Resume Value should be smaller than Limit Value"
 msgstr "Resume Value should be smaller than Limit Value"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:69
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:281
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:70
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:287
 msgid "True"
 msgstr "True"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:71
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:281
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:72
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:287
 msgid "False"
 msgstr "False"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:131
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:132
 msgid ""
 "No value returned from sensor, device should be checked by service "
 "technician."
@@ -423,32 +617,32 @@ msgstr ""
 "No value returned from sensor, device should be checked by service "
 "technician."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:134
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:135
 msgid ""
-"Value exceeded than designed, device should be checked by service technician."
+"Value exceeded the designed, device should be checked by service technician."
 msgstr ""
-"Value exceeded than designed, device should be checked by service technician."
+"Value exceeded the designed, device should be checked by service technician."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:137
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:138
 msgid "Unusual value, device should be checked by service technician."
 msgstr "Unusual value, device should be checked by service technician."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:141
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:142
 msgid ""
 "Significant abnormal data, device should be checked by service technician."
 msgstr ""
 "Significant abnormal data, device should be checked by service technician."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:155
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:156
 msgid "Internal Battery"
 msgstr "Internal Battery"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:181
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:279
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:182
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:285
 msgid "Port"
 msgstr "Port"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:181
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:182
 msgid ""
 "Port of currently connectd adapter. On macOS, this is the USB port that the "
 "adapter currently attached."
@@ -456,13 +650,13 @@ msgstr ""
 "Port of currently connectd adapter. On macOS, this is the USB port that the "
 "adapter currently attached."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:182
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:282
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:339
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:183
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:288
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:345
 msgid "Type"
 msgstr "Type"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:182
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:183
 msgid ""
 "This field refers to the Family Code (kIOPSPowerAdapterFamilyKey) of "
 "currently connected power adapter."
@@ -470,12 +664,12 @@ msgstr ""
 "This field refers to the Family Code (kIOPSPowerAdapterFamilyKey) of "
 "currently connected power adapter."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:183
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:284
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:184
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:290
 msgid "Current Rating"
 msgstr "Current Rating"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:183
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:184
 msgid ""
 "Current rating of connected power source, this does not indicates the real-"
 "time passing current."
@@ -483,12 +677,12 @@ msgstr ""
 "Current rating of connected power source, this does not indicates the real-"
 "time passing current."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:184
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:285
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:185
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:291
 msgid "Voltage Rating"
 msgstr "Voltage Rating"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:184
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:185
 msgid ""
 "Voltage rating of connected power source, this does not indicates the real-"
 "time passing voltage."
@@ -496,12 +690,12 @@ msgstr ""
 "Voltage rating of connected power source, this does not indicates the real-"
 "time passing voltage."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:185
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:304
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:186
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:310
 msgid "Description"
 msgstr "Description"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:185
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:186
 msgid ""
 "Short description provided by Apple PMU on current power adapter Family "
 "Code. Sometimes may not set."
@@ -509,12 +703,12 @@ msgstr ""
 "Short description provided by Apple PMU on current power adapter Family "
 "Code. Sometimes may not set."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:186
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:312
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:187
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:318
 msgid "Reason"
 msgstr "Reason"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:186
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:187
 msgid ""
 "If this field appears in the list, it indicates that an issue has occurred "
 "or that a condition was met, causing charging to stop."
@@ -522,13 +716,13 @@ msgstr ""
 "If this field appears in the list, it indicates that an issue has occurred "
 "or that a condition was met, causing charging to stop."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:187
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:308
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:588
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:188
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:314
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:594
 msgid "HVC Mode"
 msgstr "HVC Mode"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:187
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:188
 msgid ""
 "High Voltage Charging (HVC) Mode may accquired by your power adapter or "
 "system, all supported modes will be listed below."
@@ -536,108 +730,112 @@ msgstr ""
 "High Voltage Charging (HVC) Mode may accquired by your power adapter or "
 "system, all supported modes will be listed below."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:188
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:306
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:189
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:312
 msgid "PMU Configuration"
 msgstr "PMU Configuration"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:188
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:189
 msgid ""
 "The Configuration values is the max allowed Charging Current configurations."
 msgstr ""
 "The Configuration values is the max allowed Charging Current configurations."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:230
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:231
 msgid "Copied!"
 msgstr "Copied!"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:260
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:250
+msgid "Advanced"
+msgstr "Advanced"
+
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:266
 msgid "Gas Gauge (Basic)"
 msgstr "Gas Gauge (Basic)"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:264
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:333
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:391
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:412
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:561
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:270
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:339
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:397
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:418
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:567
 msgid "Adapter Details"
 msgstr "Adapter Details"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:275
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:281
 msgid "Unspecified"
 msgstr "Unspecified"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:281
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:287
 msgid "Compatibility"
 msgstr "Compatibility"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:281
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:287
 msgid "External Connected"
 msgstr "External Connected"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:281
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:287
 msgid "Charger Capable"
 msgstr "Charger Capable"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:283
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:289
 msgid "Status"
 msgstr "Status"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:283
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:289
 msgid "Not Charging"
 msgstr "Not Charging"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:283
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:44
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:230
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:289
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:48
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:270
 msgid "Charging"
 msgstr "Charging"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:286
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:292
 msgid "Charging Current"
 msgstr "Charging Current"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:287
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:293
 msgid "Charging Voltage"
 msgstr "Charging Voltage"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:288
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:294
 msgid "Charger ID"
 msgstr "Charger ID"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:289
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:295
 msgid "Model Name"
 msgstr "Model Name"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:290
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:296
 msgid "Manufacturer"
 msgstr "Manufacturer"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:291
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:297
 msgid "Model"
 msgstr "Model"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:292
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:298
 msgid "Firmware Version"
 msgstr "Firmware Version"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:293
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:299
 msgid "Hardware Version"
 msgstr "Hardware Version"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:305
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:311
 msgid "Serial No."
 msgstr "Serial No."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:307
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:313
 msgid "Charger Configuration"
 msgstr "Charger Configuration"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:315
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:321
 msgid "Port Type"
 msgstr "Port Type"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:341
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:347
 msgid ""
 "\"External Power\" indicator may suggest that the connected adapter is a "
 "wireless charger. Most information may not be displayed because wireless "
@@ -647,7 +845,7 @@ msgstr ""
 "wireless charger. Most information may not be displayed because wireless "
 "chargers are handled differently by the hardware."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:389
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:395
 msgid ""
 "All Gas Gauge metrics are dynamically retrieved from the onboard sensor "
 "array in real time. Should anomalies be detected in specific readings, this "
@@ -659,7 +857,7 @@ msgstr ""
 "may indicate the presence of unauthorized components or require diagnostics "
 "through Apple Authorised Service Provider."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:392
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:398
 msgid ""
 "All adapter information is dynamically retrieved from the hardware of the "
 "currently connected adapter (or cable if you are using Lightning ports). If "
@@ -673,29 +871,29 @@ msgstr ""
 "providing the relevant information, or there may be a hardware issue with "
 "the power source."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:456
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:48
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:238
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:462
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:52
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:279
 msgid "Remaining Capacity"
 msgstr "Remaining Capacity"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:462
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:468
 msgid ""
 "Unusual Remaining Capacity, A non-genuine battery component may be in use."
 msgstr ""
 "Unusual Remaining Capacity, A non-genuine battery component may be in use."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:465
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:471
 msgid "Remaining Capacity not detected."
 msgstr "Remaining Capacity not detected."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:469
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:60
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:250
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:475
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:72
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:291
 msgid "Cycle Count"
 msgstr "Cycle Count"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:513
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:519
 msgid ""
 "Cycle Count exceeded designed cycle count, consider replacing with a genuine "
 "battery."
@@ -703,57 +901,57 @@ msgstr ""
 "Cycle Count exceeded designed cycle count, consider replacing with a genuine "
 "battery."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:517
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:59
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:249
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:523
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:71
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:290
 msgid "Time To Empty"
 msgstr "Time To Empty"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:534
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:540
 msgid "Unusual Time To Empty, A non-genuine battery component may be in use."
 msgstr "Unusual Time To Empty, A non-genuine battery component may be in use."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:538
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:51
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:241
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:544
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:57
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:282
 msgid "Depth of Discharge"
 msgstr "Depth of Discharge"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:544
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:550
 msgid ""
 "Unusual Depth of Discharge, A non-genuine battery component may be in use."
 msgstr ""
 "Unusual Depth of Discharge, A non-genuine battery component may be in use."
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:647
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:653
 msgid "Not HVC"
 msgstr "Not HVC"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:651
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:657
 msgid "Software Controlled"
 msgstr "Software Controlled"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:657
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:663
 msgid "Unavailable"
 msgstr "Unavailable"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:710
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:716
 msgid "Error Data"
 msgstr "Error Data"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:713
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:719
 msgid "Unusual Data"
 msgstr "Unusual Data"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:716
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:722
 msgid "Data Too Large"
 msgstr "Data Too Large"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:719
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:725
 msgid "Empty Data"
 msgstr "Empty Data"
 
-#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:722
+#: /Users/torrekie/proj/Battman/Battman/BatteryDetailsViewController.m:728
 msgid "Wrong Data"
 msgstr "Wrong Data"
 
@@ -779,7 +977,7 @@ msgstr ""
 "please reinstall by checking instructions at https://github.com/Torrekie/"
 "Battman"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:147
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:146
 #, c-format
 msgid ""
 "Your device (%s) does not support AppleSMC. Battman requires AppleSMC to "
@@ -788,389 +986,389 @@ msgstr ""
 "Your device (%s) does not support AppleSMC. Battman requires AppleSMC to "
 "function properly."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:744
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:806
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:733
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:795
 msgid "Fully Charged"
 msgstr "Fully Charged"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:745
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:734
 msgid "Too Cold"
 msgstr "Too Cold"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:746
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:735
 msgid "Too Hot"
 msgstr "Too Hot"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:747
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:736
 msgid "Too Cold To Start"
 msgstr "Too Cold To Start"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:748
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:737
 msgid "Too Hot To Start"
 msgstr "Too Hot To Start"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:751
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:740
 msgid "Charger Wachdog Timeout"
 msgstr "Charger Wachdog Timeout"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:752
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:741
 msgid "Battery Not Present"
 msgstr "Battery Not Present"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:753
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:742
 msgid "VBUS Not Present"
 msgstr "VBUS Not Present"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:755
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:744
 msgid "High SoC High Temp Stopped"
 msgstr "High SoC High Temp Stopped"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:756
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:745
 msgid "Sensor Communication Failed"
 msgstr "Sensor Communication Failed"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:759
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:748
 msgid "Accessory Connecting"
 msgstr "Accessory Connecting"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:760
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:749
 msgid "Kiosk Mode"
 msgstr "Kiosk Mode"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:761
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:750
 msgid "CoreMotion"
 msgstr "CoreMotion"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:762
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:751
 msgid "USB-PD Connecting"
 msgstr "USB-PD Connecting"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:765
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:754
 msgid "setbatt Controlled"
 msgstr "setbatt Controlled"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:767
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:826
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:828
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:756
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:815
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:817
 msgid "Predictive Charging"
 msgstr "Predictive Charging"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:769
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:758
 msgid "Wireless Charger Controlled"
 msgstr "Wireless Charger Controlled"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:771
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:760
 msgid "Gas Gauge FW Updating"
 msgstr "Gas Gauge FW Updating"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:774
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:763
 msgid "Battery Inhibit Inflow Unsupported"
 msgstr "Battery Inhibit Inflow Unsupported"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:776
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:765
 msgid "PCTM"
 msgstr "PCTM"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:777
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:766
 msgid "Inhibit Client Adapter"
 msgstr "Inhibit Client Adapter"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:778
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:825
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:767
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:814
 msgid "Cell Voltage Too High"
 msgstr "Cell Voltage Too High"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:779
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:807
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:768
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:796
 msgid "Battery Not Requesting Charge"
 msgstr "Battery Not Requesting Charge"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:780
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:769
 msgid "Camera Streaming"
 msgstr "Camera Streaming"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:783
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:772
 msgid "VACTFB"
 msgstr "VACTFB"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:784
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:773
 msgid "Field Diagnostics"
 msgstr "Field Diagnostics"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:785
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:774
 msgid "Inhibit Inflow"
 msgstr "Inhibit Inflow"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:786
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:775
 msgid "Carrier Mode Testing"
 msgstr "Carrier Mode Testing"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:790
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:779
 msgid "Vbatt Fault"
 msgstr "Vbatt Fault"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:791
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:780
 msgid "Ibatt MinFault"
 msgstr "Ibatt MinFault"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:792
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:781
 msgid "Charger Communication Failure"
 msgstr "Charger Communication Failure"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:793
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:782
 msgid "Cell Check Fault"
 msgstr "Cell Check Fault"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:794
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:783
 msgid "Charged Too Long"
 msgstr "Charged Too Long"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:796
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:785
 msgid "Permanent Battery Failure"
 msgstr "Permanent Battery Failure"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:804
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:793
 msgid "No Battery"
 msgstr "No Battery"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:805
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:794
 msgid "Bad Battery"
 msgstr "Bad Battery"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:808
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:797
 msgid "Using AC Power"
 msgstr "Using AC Power"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:809
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:798
 msgid "G3 Mechanical Off"
 msgstr "G3 Mechanical Off"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:810
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:799
 msgid "Adapter Disabled"
 msgstr "Adapter Disabled"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:811
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:800
 msgid "Unknown Adapter"
 msgstr "Unknown Adapter"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:812
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:801
 msgid "Adapter Not Allowed"
 msgstr "Adapter Not Allowed"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:813
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:802
 msgid "Calibration"
 msgstr "Calibration"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:814
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:803
 msgid "Charging Disabled"
 msgstr "Charging Disabled"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:815
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:804
 msgid "OS Charging Disabled"
 msgstr "OS Charging Disabled"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:816
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:805
 msgid "Charging Limit Reached"
 msgstr "Charging Limit Reached"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:817
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:806
 msgid "Upstream Charging Disabled"
 msgstr "Upstream Charging Disabled"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:818
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:807
 msgid "PowerManagement Chagring Disabled"
 msgstr "PowerManagement Chagring Disabled"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:819
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:808
 msgid "Battery Temperature over 50℃"
 msgstr "Battery Temperature over 50℃"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:820
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:809
 msgid "Battery Temperature over 45℃"
 msgstr "Battery Temperature over 45℃"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:821
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:810
 msgid "Temperature Gradient Too High"
 msgstr "Temperature Gradient Too High"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:822
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:811
 msgid "TEMP_NOT_ATV_VLD"
 msgstr "TEMP_NOT_ATV_VLD"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:823
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:812
 msgid "BATTERY_TCA"
 msgstr "BATTERY_TCA"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:824
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:813
 msgid "OW_TDM_LINK_ACTIVE"
 msgstr "OW_TDM_LINK_ACTIVE"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:827
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:816
 msgid "VACTFB_NO_CHG"
 msgstr "VACTFB_NO_CHG"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:830
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:819
 msgid "INVALID_NOT_CHARGING_REASON_VALUE"
 msgstr "INVALID_NOT_CHARGING_REASON_VALUE"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:863
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:936
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:852
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:925
 msgid "Unknown"
 msgstr "Unknown"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:864
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:853
 msgid "Virtual"
 msgstr "Virtual"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:865
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:854
 msgid "USB-C"
 msgstr "USB-C"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:866
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:855
 msgid "USB-A"
 msgstr "USB-A"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:867
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:856
 msgid "MiniDP"
 msgstr "MiniDP"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:868
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:857
 msgid "FireWire800"
 msgstr "FireWire 800"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:869
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:858
 msgid "HDMI"
 msgstr "HDMI"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:870
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:859
 msgid "AudioJack-Mini"
 msgstr "AudioJack-Mini"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:871
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:860
 msgid "Ethernet"
 msgstr "Ethernet"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:872
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:861
 msgid "MagSafe"
 msgstr "MagSafe"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:873
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:862
 msgid "MagSafe2"
 msgstr "MagSafe 2"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:874
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:863
 msgid "SD Card"
 msgstr "SD Card"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:875
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:864
 msgid "Lightning"
 msgstr "Lightning"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:876
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:865
 msgid "30-Pin"
 msgstr "30-Pin"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:877
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:866
 msgid "Inductive"
 msgstr "Inductive"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:878
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:867
 msgid "SmartConnector"
 msgstr "SmartConnector"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:879
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:868
 msgid "DisplayPort"
 msgstr "DisplayPort"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:884
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:873
 msgid "Undefined"
 msgstr "Undefined"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:913
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:902
 msgid "Disconnected"
 msgstr "Disconnected"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:914
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:903
 msgid "Unsupported"
 msgstr "Unsupported"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:915
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:904
 msgid "Firewire"
 msgstr "FireWire"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:916
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:905
 msgid "USB Host"
 msgstr "USB Host"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:917
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:906
 msgid "Suspended USB Host"
 msgstr "Suspended USB Host"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:918
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:907
 msgid "USB Device"
 msgstr "USB Device"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:919
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:908
 msgid "USB Adapter"
 msgstr "USB Adapter"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:920
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:909
 msgid "USB DCP"
 msgstr "USB DCP"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:921
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:910
 msgid "USB CDP"
 msgstr "USB CDP"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:922
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:911
 msgid "USB SDP"
 msgstr "USB SDP"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:923
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:912
 msgid "Unknown USB"
 msgstr "Unknown USB"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:924
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:913
 msgid "USB-C Brick"
 msgstr "USB-C Brick"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:925
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:914
 msgid "USB-C Type-C"
 msgstr "USB-C Type-C"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:926
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:915
 msgid "USB-C PD"
 msgstr "USB-C PD"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:927
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:916
 msgid "AC Power"
 msgstr "AC Power"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:928
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:917
 msgid "Externel Power 1"
 msgstr "Externel Power 1"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:929
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:918
 msgid "Externel Power 2"
 msgstr "Externel Power 2"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:930
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:919
 msgid "Externel Power 3"
 msgstr "Externel Power 3"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:931
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:920
 msgid "Externel Power 4"
 msgstr "Externel Power 4"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:932
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:921
 msgid "Externel Power 5"
 msgstr "Externel Power 5"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:933
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:922
 msgid "Externel Power 6"
 msgstr "Externel Power 6"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:934
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/libsmc.c:923
 msgid "Externel Power 7"
 msgstr "Externel Power 7"
 
@@ -1195,11 +1393,11 @@ msgid "Hr"
 msgstr "Hr"
 
 #: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:40
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:235
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:275
 msgid "Device Name"
 msgstr "Device Name"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:40
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:41
 msgid ""
 "This indicates the name of the current Gas Gauge IC used by the installed "
 "battery."
@@ -1207,46 +1405,46 @@ msgstr ""
 "This indicates the name of the current Gas Gauge IC used by the installed "
 "battery."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:41
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:224
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:44
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:264
 msgid "Health"
 msgstr "Health"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:42
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:226
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:45
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:266
 msgid "SoC"
 msgstr "SoC"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:43
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:228
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:46
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:268
 msgid "Avg. Temperature"
 msgstr "Avg. Temperature"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:46
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:236
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:50
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:277
 msgid "Full Charge Capacity"
 msgstr "Full Charge Capacity"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:47
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:237
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:51
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:278
 msgid "Designed Capacity"
 msgstr "Designed Capacity"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:49
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:239
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:53
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:280
 msgid "Battery Uptime"
 msgstr "Battery Uptime"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:49
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:54
 msgid "The length of time the Battery Management System (BMS) has been up."
 msgstr "The length of time the Battery Management System (BMS) has been up."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:50
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:240
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:56
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:281
 msgid "Qmax"
 msgstr "Qmax"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:52
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:58
 msgid ""
 "Current chemical depth of discharge (DOD₀). The gas gauge updates "
 "information on the DOD₀ based on open-circuit voltage (OCV) readings when in "
@@ -1256,12 +1454,12 @@ msgstr ""
 "information on the DOD₀ based on open-circuit voltage (OCV) readings when in "
 "a relaxed state."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:53
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:242
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:62
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:283
 msgid "Passed Charge"
 msgstr "Passed Charge"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:53
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:63
 msgid ""
 "The cumulative capacity of the current charging or discharging cycle. It is "
 "reset to zero with each DOD₀ update."
@@ -1269,42 +1467,42 @@ msgstr ""
 "The cumulative capacity of the current charging or discharging cycle. It is "
 "reset to zero with each DOD₀ update."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:54
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:243
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:66
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:284
 msgid "Voltage"
 msgstr "Voltage"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:55
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:244
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:67
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:285
 msgid "Avg. Current"
 msgstr "Avg. Current"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:56
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:245
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:68
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:286
 msgid "Avg. Power"
 msgstr "Avg. Power"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:57
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:246
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:69
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:287
 msgid "Cell Count"
 msgstr "Cell Count"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:61
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:251
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:73
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:292
 msgid "Designed Cycle Count"
 msgstr "Designed Cycle Count"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:62
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:252
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:74
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:294
 msgid "State Of Charge"
 msgstr "State Of Charge"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:63
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:253
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:75
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:295
 msgid "State Of Charge (UI)"
 msgstr "State Of Charge (UI)"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:63
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:76
 msgid ""
 "The \"Battery Percentage\" displayed exactly on your status bar. This is the "
 "SoC that Apple wants to tell you."
@@ -1312,22 +1510,22 @@ msgstr ""
 "The \"Battery Percentage\" displayed exactly on your status bar. This is the "
 "SoC that Apple wants to tell you."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:64
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:254
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:79
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:296
 msgid "Resistance Scale"
 msgstr "Resistance Scale"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:65
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:255
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:256
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:80
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:298
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:299
 msgid "Battery Serial No."
 msgstr "Battery Serial No."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:66
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:81
 msgid "Chemistry ID"
 msgstr "Chemistry ID"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:66
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:82
 msgid ""
 "Chemistry unique identifier (ChemID) assigned to each battery in Texas "
 "Instruments' database. It ensures accurate calculations and predictions."
@@ -1335,42 +1533,42 @@ msgstr ""
 "Chemistry unique identifier (ChemID) assigned to each battery in Texas "
 "Instruments' database. It ensures accurate calculations and predictions."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:67
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:263
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:86
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:306
 msgid "Flags"
 msgstr "Flags"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:68
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:264
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:87
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:308
 msgid "True Remaining Capacity"
 msgstr "True Remaining Capacity"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:69
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:265
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:88
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:310
 msgid "OCV Current"
 msgstr "OCV Current"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:70
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:266
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:89
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:312
 msgid "OCV Voltage"
 msgstr "OCV Voltage"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:71
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:267
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:90
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:314
 msgid "Max Load Current"
 msgstr "Max Load Current"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:72
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:268
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:91
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:315
 msgid "Max Load Current 2"
 msgstr "Max Load Current 2"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:73
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:269
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:92
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:316
 msgid "IT Misc Status"
 msgstr "IT Misc Status"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:73
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:93
 msgid ""
 "This field refers to the miscellaneous data returned by battery Impedance "
 "Track™ Gas Gauge IC."
@@ -1378,12 +1576,12 @@ msgstr ""
 "This field refers to the miscellaneous data returned by battery Impedance "
 "Track™ Gas Gauge IC."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:74
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:270
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:96
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:318
 msgid "Simulation Rate"
 msgstr "Simulation Rate"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:74
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:97
 msgid ""
 "This field refers to the rate of Gas Gauge performing Impedance Track™ "
 "simulations."
@@ -1391,12 +1589,12 @@ msgstr ""
 "This field refers to the rate of Gas Gauge performing Impedance Track™ "
 "simulations."
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:75
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:271
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:100
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:319
 msgid "Daily Max SoC"
 msgstr "Daily Max SoC"
 
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:76
-#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:272
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:101
+#: /Users/torrekie/proj/Battman/Battman/battery_utils/battery_info.c:321
 msgid "Daily Min SoC"
 msgstr "Daily Min SoC"

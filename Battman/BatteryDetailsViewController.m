@@ -247,7 +247,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     battery_info_update(bi, true);
     batteryInfo = bi;
     charging_stat = is_charging(&adapter_family, &adapter_info);
-    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Advanced" style:UIBarButtonItemStylePlain target:self action:@selector(showAdvanced)];
+    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:_("Advanced") style:UIBarButtonItemStylePlain target:self action:@selector(showAdvanced)];
 
     return self;
 }

@@ -89,6 +89,10 @@
 		68B291272DC7547B0089BA1F /* ChargingLimitViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291252DC7547B0089BA1F /* ChargingLimitViewController.m */; };
 		68B291282DC75F610089BA1F /* pmnotification.c in Sources */ = {isa = PBXBuildFile; fileRef = 68B2911E2DC754100089BA1F /* pmnotification.c */; };
 		68B2912B2DC799A40089BA1F /* BatterySubscriberViewControllerBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291292DC799A40089BA1F /* BatterySubscriberViewControllerBase.m */; };
+		68B291362DD1E6960089BA1F /* SimpleTemperatureViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291322DD1E6960089BA1F /* SimpleTemperatureViewController.m */; };
+		68B291372DD1E6960089BA1F /* CompatibilityHelper.c in Sources */ = {isa = PBXBuildFile; fileRef = 68B291332DD1E6960089BA1F /* CompatibilityHelper.c */; };
+		68B291382DD1E6960089BA1F /* FullSMCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291352DD1E6960089BA1F /* FullSMCViewController.m */; };
+		68B2913A2DD1FEDA0089BA1F /* hid.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291392DD1FEDA0089BA1F /* hid.m */; };
 		68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2D2D85606000919BC2 /* GradientArcView.m */; };
 		68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */; };
 		68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */; };
@@ -182,6 +186,13 @@
 		68B291262DC7547B0089BA1F /* ChargingLimitViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ChargingLimitViewController.h; sourceTree = "<group>"; };
 		68B291292DC799A40089BA1F /* BatterySubscriberViewControllerBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BatterySubscriberViewControllerBase.m; sourceTree = "<group>"; };
 		68B2912A2DC799A40089BA1F /* BatterySubscriberViewControllerBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BatterySubscriberViewControllerBase.h; sourceTree = "<group>"; };
+		68B291302DD1E6960089BA1F /* SimpleTemperatureViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleTemperatureViewController.h; sourceTree = "<group>"; };
+		68B291312DD1E6960089BA1F /* CompatibilityHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompatibilityHelper.h; sourceTree = "<group>"; };
+		68B291322DD1E6960089BA1F /* SimpleTemperatureViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleTemperatureViewController.m; sourceTree = "<group>"; };
+		68B291332DD1E6960089BA1F /* CompatibilityHelper.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = CompatibilityHelper.c; sourceTree = "<group>"; };
+		68B291342DD1E6960089BA1F /* FullSMCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FullSMCViewController.h; sourceTree = "<group>"; };
+		68B291352DD1E6960089BA1F /* FullSMCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FullSMCViewController.m; sourceTree = "<group>"; };
+		68B291392DD1FEDA0089BA1F /* hid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hid.m; sourceTree = "<group>"; };
 		68B33C3F2DAF9B38008EA090 /* inductive_status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = inductive_status.h; sourceTree = "<group>"; };
 		68B5FF292D85602100919BC2 /* GradientArcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientArcView.h; sourceTree = "<group>"; };
 		68B5FF2D2D85606000919BC2 /* GradientArcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GradientArcView.m; sourceTree = "<group>"; };
@@ -254,6 +265,12 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				68B291332DD1E6960089BA1F /* CompatibilityHelper.c */,
+				68B291312DD1E6960089BA1F /* CompatibilityHelper.h */,
+				68B291342DD1E6960089BA1F /* FullSMCViewController.h */,
+				68B291352DD1E6960089BA1F /* FullSMCViewController.m */,
+				68B291302DD1E6960089BA1F /* SimpleTemperatureViewController.h */,
+				68B291322DD1E6960089BA1F /* SimpleTemperatureViewController.m */,
 				68B2912A2DC799A40089BA1F /* BatterySubscriberViewControllerBase.h */,
 				68B291292DC799A40089BA1F /* BatterySubscriberViewControllerBase.m */,
 				68B291262DC7547B0089BA1F /* ChargingLimitViewController.h */,
@@ -311,6 +328,7 @@
 		68A3EAF42D5204D2003381DF /* battery_utils */ = {
 			isa = PBXGroup;
 			children = (
+				68B291392DD1FEDA0089BA1F /* hid.m */,
 				68B2911F2DC754100089BA1F /* daemon.c */,
 				68B2911E2DC754100089BA1F /* pmnotification.c */,
 				68B291202DC754100089BA1F /* smctest.c */,
@@ -610,7 +628,9 @@
 				68AE40BD2D8EB8870023D7B0 /* Constants.m in Sources */,
 				68AE40B92D8EB8870023D7B0 /* MultiSelectSegmentedControl.m in Sources */,
 				68AE40BA2D8EB8870023D7B0 /* DividerView.m in Sources */,
+				68B2913A2DD1FEDA0089BA1F /* hid.m in Sources */,
 				68B2912B2DC799A40089BA1F /* BatterySubscriberViewControllerBase.m in Sources */,
+				68B291362DD1E6960089BA1F /* SimpleTemperatureViewController.m in Sources */,
 				6838BF762DBF810D007EB66C /* localized.c in Sources */,
 				687743372D4E08AD00375A2C /* BatteryInfoViewController.m in Sources */,
 				687743472D4F6C7800375A2C /* SPWaterProgressIndicatorView.m in Sources */,
@@ -622,6 +642,7 @@
 				68AE40BB2D8EB8870023D7B0 /* UIView+Fill.m in Sources */,
 				68AE40B82D8EB8870023D7B0 /* UberSegmentedControl.m in Sources */,
 				68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */,
+				68B291382DD1E6960089BA1F /* FullSMCViewController.m in Sources */,
 				68B291232DC754100089BA1F /* daemon.c in Sources */,
 				68A3EAFB2D5204D2003381DF /* battery_info.c in Sources */,
 				68B291282DC75F610089BA1F /* pmnotification.c in Sources */,
@@ -630,6 +651,7 @@
 				6838BFAC2DC3984C007EB66C /* SliderTableViewCell.m in Sources */,
 				68171A372D534E6B00DD4224 /* BatteryDetailsViewController.m in Sources */,
 				68B291212DC754100089BA1F /* worker.m in Sources */,
+				68B291372DD1E6960089BA1F /* CompatibilityHelper.c in Sources */,
 				687743362D4E08AD00375A2C /* SettingsViewController.m in Sources */,
 				68B291272DC7547B0089BA1F /* ChargingLimitViewController.m in Sources */,
 				68171A302D5221C400DD4224 /* libsmc.c in Sources */,

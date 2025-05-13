@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Availability.h>
+
 /*
 If building with Theos iOS 9.3 sdk, please remove liblaunch.dylib from libSystem.B.tbd
 Tested:
@@ -15,12 +17,12 @@ This project targets iOS 14.*, building with newer sdks is not recommended.
 TODO: Test on such iOS versions
 */
 
-#if __ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__ < 100000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 100000
 #define TARGET_OS_OSX 0
 #endif
 
-#if __ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__ < 140000
-#if __ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__ < 120000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 140000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 120000
 #undef __OSX_AVAILABLE_STARTING
 #define __OSX_AVAILABLE_STARTING(a,b) 
 #else
@@ -29,7 +31,7 @@ TODO: Test on such iOS versions
 #endif
 #endif
 
-#if __ENVIRONMENT_IPHONE_OS_VERSION_MIN_REQUIRED__ < 130000
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 130000
 #ifdef __OBJC__
 
 #import <UIKit/UIKit.h>
