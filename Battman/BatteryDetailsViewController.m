@@ -10,27 +10,15 @@
 
 #include <sys/sysctl.h>
 
-// TODO: Function for advanced users to call SMC themselves.
-// or add them to tracklist
-static NSMutableArray *sections_detail;
-// TODO: Config
-NSTimeInterval reload_interval = 5.0;
-BOOL configured_autorefresh = NO;
-
-/* Adapter Details */
-static charging_state_t charging_stat;
-static mach_port_t adapter_family;
-static device_info_t adapter_info;
-static charger_data_t adapter_data;
-static hvc_menu_t *hvc_menu;
-static int8_t hvc_index;
-static size_t hvc_menu_size;
-static bool hvc_soft;
-static NSMutableArray *adapter_cells;
-
 /* Desc */
-static NSArray *desc_adap;
-static NSMutableArray *warns;
+@interface BatteryDetailsViewController ()
+{
+	hvc_menu_t *hvc_menu;
+	int8_t hvc_index;
+	size_t hvc_menu_size;
+	bool hvc_soft;
+}
+@end
 
 void equipDetailCell(UITableViewCell *cell, struct battery_info_node *i) {
     // PLEASE ENSURE no hidden cell is here when calling
@@ -103,17 +91,16 @@ typedef enum {
     WARN_MAX,           // max count of warn, should always be at bottom
 } warn_condition_t;
 
-void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel, warn_condition_t (^condition)(NSString **warn)) {
+void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel, warn_condition_t (^condition)(const char **warn)) {
     if (!equippedCell.textLabel.text) {
         DBGLOG(@"equipWarningCondition() called too early");
         return;
     }
     if (condition == nil) return;
     if (![equippedCell.textLabel.text isEqualToString:textLabel]) return;
-    if (warns == nil) warns = [NSMutableArray array];
 
     UITableViewCellAccessoryType oldType = [equippedCell accessoryType];
-    NSString *warnText;
+    const char *warnText=nil;
     warn_condition_t number = condition(&warnText);
     if (number == WARN_NONE) {
         [equippedCell setAccessoryType:oldType];
@@ -125,28 +112,43 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         [equippedCell setAccessoryView:button];
         equippedCell.detailTextLabel.textColor = [UIColor systemRedColor];
         
-
-        if (warnText == nil) {
+        if (warnText == NULL) {
             switch (number) {
                 case WARN_EMPTYVAL:
-                    warnText = _("No value returned from sensor, device should be checked by service technician.");
+                    warnText = _C("No value returned from sensor, device should be checked by service technician.");
                     break;
                 case WARN_EXCEEDED:
-                    warnText = _("Value exceeded the designed, device should be checked by service technician.");
+                    warnText = _C("Value exceeded the designed, device should be checked by service technician.");
                     break;
                 case WARN_UNUSUAL:
-                    warnText = _("Unusual value, device should be checked by service technician.");
+                    warnText = _C("Unusual value, device should be checked by service technician.");
                     break;
                 case WARN_GENERAL:
                 default:
-                    warnText = _("Significant abnormal data, device should be checked by service technician.");
+                    warnText = _C("Significant abnormal data, device should be checked by service technician.");
                     break;
             }
         }
-        NSString *warn_strid = [NSString stringWithFormat:@"%@_%d", textLabel, number];
-        if ([warns indexOfObject:warn_strid] == NSNotFound) {
-            [warns addObjectsFromArray:@[warn_strid, warnText]];
-        }
+	button.warn_content=warnText;
+	const char *title;
+	switch(number) {
+		case WARN_GENERAL:
+			title = _C("Error Data");
+			break;
+		case WARN_UNUSUAL:
+			title = _C("Unusual Data");
+			break;
+		case WARN_EXCEEDED:
+			title = _C("Data Too Large");
+			break;
+		case WARN_EMPTYVAL:
+			title = _C("Empty Data");
+			break;
+		default:
+			title = _C("Wrong Data");
+			break;
+	}
+	button.warn_title=title;
     }
 }
 
@@ -167,27 +169,9 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-    if (configured_autorefresh) {
-        (void)[NSTimer scheduledTimerWithTimeInterval:reload_interval
-                                               target:self
-                                             selector:@selector(updateTableView)
-                                             userInfo:nil
-                                              repeats:YES];
-    }
     UIRefreshControl *puller = [[UIRefreshControl alloc] init];
     [puller addTarget:self action:@selector(updateTableView) forControlEvents:UIControlEventValueChanged];
     self.refreshControl = puller;
-
-    desc_adap = @[
-        _("Port"), _("Port of currently connectd adapter. On macOS, this is the USB port that the adapter currently attached."),
-        _("Type"), _("This field refers to the Family Code (kIOPSPowerAdapterFamilyKey) of currently connected power adapter."),
-        _("Current Rating"), _("Current rating of connected power source, this does not indicates the real-time passing current."),
-        _("Voltage Rating"), _("Voltage rating of connected power source, this does not indicates the real-time passing voltage."),
-        _("Description"), _("Short description provided by Apple PMU on current power adapter Family Code. Sometimes may not set."),
-        _("Reason"), _("If this field appears in the list, it indicates that an issue has occurred or that a condition was met, causing charging to stop."),
-        _("HVC Mode"), _("High Voltage Charging (HVC) Mode may accquired by your power adapter or system, all supported modes will be listed below."),
-        _("PMU Configuration"), _("The Configuration values is the max allowed Charging Current configurations."),
-    ];
 
     // FIXME: use preferred_language() for "Copy"
     [[UIMenuController sharedMenuController] update];
@@ -245,100 +229,42 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
     self.tableView.allowsSelection = YES; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
-    batteryInfo = bi;
-    charging_stat = is_charging(&adapter_family, &adapter_info);
-    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:_("Advanced") style:UIBarButtonItemStylePlain target:self action:@selector(showAdvanced)];
+    batteryInfoStruct = bi;
+    int sectionNum=0;
+    for(struct battery_info_node *i=bi;i->name;i++) {
+	    if((i->content&BIN_SECTION)==BIN_SECTION) {
+		    batteryInfo[sectionNum]=i+1;
+		    sectionNum++;
+	    }
+    }
+    for(int i=0;i<sectionNum;i++) {
+	    pendingLoadOffsets[i]=malloc(64);
+    }
+    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Advanced" style:UIBarButtonItemStylePlain target:self action:@selector(showAdvanced)];
 
     return self;
 }
 
+- (void)dealloc {
+	for(int i=0;i<BI_SECTION_NUM;i++)
+		free(pendingLoadOffsets[i]);
+}
+
 - (void)updateTableView {
-    [self.refreshControl beginRefreshing];
-    battery_info_update(batteryInfo, true);
-    charging_stat = is_charging(&adapter_family, &adapter_info);
-
-    /* Dynasects */
-    /* TODO: Handle the scene that if battery not present */
-#if !__has_feature(objc_arc)
-    if (sections_detail) [sections_detail dealloc];
-    if (adapter_cells) [adapter_cells dealloc];
-#endif
-    sections_detail = [NSMutableArray arrayWithArray:@[_("Gas Gauge (Basic)")]];
-
-    if (charging_stat > 0) {
-        DBGLOG(@"charging_stat: %d", charging_stat);
-        [sections_detail addObject:_("Adapter Details")];
-
-        const char *adapter_family_str = NULL;
-        if (adapter_family) {
-            adapter_family_str = get_adapter_family_desc(adapter_family);
-        }
-        get_charger_data(&adapter_data);
-
-        /* Special case: PMUConfiguration */
-        NSString *pmuFmt = @"%u %s";
-        if (adapter_info.PMUConfiguration == (uint32_t)0xFFFFFFFF)
-            pmuFmt = _("Unspecified");
-
-        adapter_cells = [[NSMutableArray alloc] init];
-        [adapter_cells addObjectsFromArray:@[
-            @[_("Port"),                [NSString stringWithFormat:@"%d", adapter_info.port]],
-            // This is terrible
-            @[_("Compatibility"),       [NSString stringWithFormat:@"%@: %@\n%@: %@", _("External Connected"), (adapter_data.ChargerExist == 1) ? _("True") : _("False"), _("Charger Capable"), (adapter_data.ChargerCapable == 1) ? _("True") : _("False")]],
-            @[_("Type"),                [NSString stringWithFormat:@"%@ (%.8X)", _(adapter_family_str), adapter_family]],
-            @[_("Status"),              (charging_stat == kIsPausing || adapter_data.NotChargingReason != 0) ? _("Not Charging") : _("Charging")],
-            @[_("Current Rating"),      [NSString stringWithFormat:@"%u %s", adapter_info.current, L_MA]],
-            @[_("Voltage Rating"),      [NSString stringWithFormat:@"%u %s", adapter_info.voltage, L_MV]],
-            @[_("Charging Current"),    [NSString stringWithFormat:@"%u %s", adapter_data.ChargingCurrent, L_MA]],
-            @[_("Charging Voltage"),    [NSString stringWithFormat:@"%u %s", adapter_data.ChargingVoltage, L_MV]],
-            @[_("Charger ID"),          [NSString stringWithFormat:@"0x%.4X", adapter_data.ChargerId]],
-            @[_("Model Name"),          [NSString stringWithUTF8String:adapter_info.name]],
-            @[_("Manufacturer"),        [NSString stringWithUTF8String:adapter_info.vendor]],
-            @[_("Model"),               [NSString stringWithUTF8String:adapter_info.adapter]],
-            @[_("Firmware Version"),    [NSString stringWithUTF8String:adapter_info.firmware]],
-            @[_("Hardware Version"),    [NSString stringWithUTF8String:adapter_info.hardware]],
-            /* Known Descriptions:
-             pd charger: USB-C PD Charger
-             usb charger: USB Charger
-             usb host: USB Host device
-             usb brick: USB Brick Charger
-             usb type-c: Type-C Charger
-             baseline arcas: Wireless Charger (Not MagSafe)
-             magsafe chg: MagSafe Charger
-             magsafe acc: MagSafe Accessory (Typically MagSafe Battery Pack)
-             */
-            @[_("Description"),         [NSString stringWithUTF8String:adapter_info.description]],
-            @[_("Serial No."),          [NSString stringWithUTF8String:adapter_info.serial]],
-            @[_("PMU Configuration"),   [NSString stringWithFormat:pmuFmt, adapter_info.PMUConfiguration, L_MA]],
-            @[_("Charger Configuration"),[NSString stringWithFormat:@"%u %s", adapter_data.ChargerConfiguration, L_MA]],
-            @[_("HVC Mode"),            @""], /* Special type, content controlled later */
-        ]];
-
-        if (adapter_data.NotChargingReason != 0) {
-            [adapter_cells insertObject:@[_("Reason"), [NSString stringWithUTF8String:not_charging_reason_str(adapter_data.NotChargingReason)]] atIndex:4];
-        }
-        if (adapter_info.port_type != 0) {
-            [adapter_cells insertObject:@[_("Port Type"), _(port_type_str(adapter_info.port_type))] atIndex:1];
-        }
-    }
-    /* TODO: Secondary Adapter & Accessory Adapter */
-    /* TODO: Gas Gauge (Advanced) */
-
-    [self.tableView reloadData];
-    [self.refreshControl endRefreshing];
+	[self.refreshControl beginRefreshing];
+	battery_info_update(batteryInfoStruct, true);
+	[self.tableView reloadData];
+	[self.refreshControl endRefreshing];
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 
     NSArray *target_desc;
-    if (indexPath.section == 0) {
-    	show_alert([cell.textLabel.text UTF8String], _C(batteryInfo[indexPath.row + pendingLoadOffsets[indexPath.row]].desc),L_OK);
-    	return;
-    }
-    if (indexPath.section == [sections_detail indexOfObject:_("Adapter Details")])
-        target_desc = desc_adap;
-
+    show_alert([cell.textLabel.text UTF8String], _C(batteryInfo[indexPath.section][indexPath.row + pendingLoadOffsets[indexPath.section][indexPath.row]].desc),L_OK);
+    return;
+    // TODO: Implement this
+#if 0
     NSUInteger index = [target_desc indexOfObject:cell.textLabel.text];
     if (index != NSNotFound) {
         /* Special case: External */
@@ -351,6 +277,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         }
     }
     DBGLOG(@"Accessory Pressed, %@", cell.textLabel.text);
+#endif
 }
 
 - (void)altAccTapped:(UIButton *)button {
@@ -378,62 +305,61 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 }
 
 - (NSString *)tableView:(id)tv titleForHeaderInSection:(NSInteger)section {
+	if(batteryInfo[section][-1].content&(1<<5))
+		return nil;
     // Doesn't matter, it will be changed by willDisplayHeaderView
     return @"This is a Title yeah";
 }
 
 - (void)tableView:(UITableView *)tableView willDisplayHeaderView:(UIView *)view forSection:(NSInteger)section {
-    UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
-    header.textLabel.text = sections_detail[section];
+	UITableViewHeaderFooterView *header = (UITableViewHeaderFooterView *)view;
+	header.textLabel.text=_(batteryInfo[section][-1].name);
 }
 
 - (NSString *)tableView:(UITableView *)tableView
     titleForFooterInSection:(NSInteger)section {
+	if(batteryInfo[section][-1].content&(1<<5))
+		return nil;
     /* Don't remove this, otherwise users will blame us */
     /* TODO: Identify other Gas Gauging system */
     if (section == 0) {
         return _("All Gas Gauge metrics are dynamically retrieved from the onboard sensor array in real time. Should anomalies be detected in specific readings, this may indicate the presence of unauthorized components or require diagnostics through Apple Authorised Service Provider.");
     }
-    if (section == [sections_detail indexOfObject:_("Adapter Details")]) {
+    if (section == 1) {
         return _("All adapter information is dynamically retrieved from the hardware of the currently connected adapter (or cable if you are using Lightning ports). If any of the data is missing, it may indicate that the power source is not providing the relevant information, or there may be a hardware issue with the power source.");
     }
     return nil;
 }
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
-	if (section == 0) {
-		int rows = 0;
-		for (struct battery_info_node *i = batteryInfo; i->name; i++) {
-			if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
+	int rows = 0;
+	if(batteryInfo[section][-1].content&(1<<5))
+		return rows;
+	for (struct battery_info_node *i = batteryInfo[section]; i->name&&(i->content&BIN_SECTION)!=BIN_SECTION; i++) {
+		if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
 				(i->content && !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
-				if((i->content & 1) != 1 || (i->content & (1 << 5)) != 1 << 5) {
-					pendingLoadOffsets[rows] = (unsigned char)((i - batteryInfo) - rows);
-					rows++;
-				}
+			if((i->content & 1) != 1 || (i->content & (1 << 5)) != 1 << 5) {
+				pendingLoadOffsets[section][rows] = (unsigned char)((i - batteryInfo[section]) - rows);
+				rows++;
 			}
 		}
-		pendingLoadOffsets[rows] = 255;
-		return rows;
 	}
-    if (section == [sections_detail indexOfObject:_("Adapter Details")]) {
-        return adapter_cells.count;
-    }
-	return 0;
+	pendingLoadOffsets[section][rows] = 255;
+	return rows;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(id)tv {
-    return sections_detail.count;
+	return BI_SECTION_NUM;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip {
-    if (ip.section == 0) {
         UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:@"bdvc:sect0"];
         cell.accessoryType = 0;
         cell.accessoryView = nil;
         if (!cell)
         	cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"bdvc:sect0"];
 
-        struct battery_info_node *pending_bi = batteryInfo + ip.row + pendingLoadOffsets[ip.row];
+        struct battery_info_node *pending_bi = batteryInfo[ip.section] + ip.row + pendingLoadOffsets[ip.section][ip.row];
         /* Flags special handler */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstring-compare"
@@ -459,20 +385,20 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 #pragma mark - Warn Conditions
         equipDetailCell(cell, pending_bi);
         /* Warning conditions */
-        equipWarningCondition_b(cell, _("Remaining Capacity"), ^warn_condition_t(NSString **str){
+        equipWarningCondition_b(cell, _("Remaining Capacity"), ^warn_condition_t(const char **str){
             warn_condition_t code = WARN_NONE;
             uint16_t remain_cap, full_cap, design_cap;
             get_capacity(&remain_cap, &full_cap, &design_cap);
             if (remain_cap > full_cap) {
                 code = WARN_UNUSUAL;
-                *str = _("Unusual Remaining Capacity, A non-genuine battery component may be in use.");
+                *str = _C("Unusual Remaining Capacity, A non-genuine battery component may be in use.");
             } else if (remain_cap == 0) {
                 code = WARN_EMPTYVAL;
-                *str = _("Remaining Capacity not detected.");
+                *str = _C("Remaining Capacity not detected.");
             }
             return code;
         });
-        equipWarningCondition_b(cell, _("Cycle Count"), ^warn_condition_t(NSString **str){
+        equipWarningCondition_b(cell, _("Cycle Count"), ^warn_condition_t(const char **str){
             warn_condition_t code = WARN_NONE;
             int count, design;
             count = gGauge.CycleCount;
@@ -516,11 +442,11 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
             }
             if (count > design) {
                 code = WARN_EXCEEDED;
-                *str = _("Cycle Count exceeded designed cycle count, consider replacing with a genuine battery.");
+                *str = _C("Cycle Count exceeded designed cycle count, consider replacing with a genuine battery.");
             }
             return code;
         });
-        equipWarningCondition_b(cell, _("Time To Empty"), ^warn_condition_t(NSString **str){
+        equipWarningCondition_b(cell, _("Time To Empty"), ^warn_condition_t(const char **str){
             warn_condition_t code = WARN_NONE;
             uint16_t remain_cap, full_cap, design_cap;
             int tte = get_time_to_empty();
@@ -537,17 +463,17 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
             /* for ensurence, we check if TTE is bigger than 1.5*ideal */
             if (tte > (ideal * 1.5)) {
                 code = WARN_UNUSUAL;
-                *str = _("Unusual Time To Empty, A non-genuine battery component may be in use.");
+                *str = _C("Unusual Time To Empty, A non-genuine battery component may be in use.");
             }
             return code;
         });
-        equipWarningCondition_b(cell, _("Depth of Discharge"), ^warn_condition_t(NSString **str){
+        equipWarningCondition_b(cell, _("Depth of Discharge"), ^warn_condition_t(const char **str){
             warn_condition_t code = WARN_NONE;
             /* Non-genuine batteries are likely spoofing some unremarkable data */
             /* DOD0 is not going to bigger than Qmax */
             if (gGauge.DOD0 > gGauge.Qmax) {
                 code = WARN_UNUSUAL;
-                *str = _("Unusual Depth of Discharge, A non-genuine battery component may be in use.");
+                *str = _C("Unusual Depth of Discharge, A non-genuine battery component may be in use.");
             }
             return code;
         });
@@ -560,38 +486,13 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
             }
         }
         /* TODO: record 1st-read capacity data in defaults in order to observe battery problems */
-    	return cell;
-    }
-
-    // Consider make this an adapter_info.c?
-    if (ip.section == [sections_detail indexOfObject:_("Adapter Details")]) {
-        UITableViewCell *cell = [tv dequeueReusableCellWithIdentifier:@"bdvc:addt"];
-        if (!cell) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:@"bdvc:addt"];
-        }
-
-        NSArray *adapter_cell = adapter_cells[ip.row];
-        cell.textLabel.text = adapter_cell[0];
-        cell.detailTextLabel.text = adapter_cell[1];
-        MultilineViewCell *celll = (MultilineViewCell *)cell;
-        celll.titleLabel.text = adapter_cell[0];
-        celll.detailLabel.text = ([adapter_cell[1] length] == 0) ? _("None") : adapter_cell[1];
-
-        if ([desc_adap indexOfObject:cell.textLabel.text] != NSNotFound) {
-            DBGLOG(@"Accessory %@, Index %lu", cell.textLabel.text, [desc_adap indexOfObject:cell.textLabel.text]);
-            if (@available(iOS 13, *)) {
-                cell.accessoryType = UITableViewCellAccessoryDetailButton;
-            } else {
-                WarnAccessoryView *button = [WarnAccessoryView altAccessoryView];
-                [cell setAccessoryType:UITableViewCellAccessoryNone];
-                [cell setAccessoryView:button];
-                [button addTarget:self action:@selector(altAccTapped:) forControlEvents:UIControlEventTouchUpInside];
-            }
-        } else {
-            cell.accessoryType = UITableViewCellAccessoryNone;
-        }
         /* HVC Mode special handler */
-        if ([cell.textLabel.text isEqualToString:_("HVC Mode")]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wstring-compare"
+        if (pending_bi->name=="HVC Mode") {
+#pragma clang diagnostic pop
+		device_info_t adapter_info;
+		is_charging(NULL,&adapter_info);
             /* Parse HVC Modes if have any */
             if (adapter_info.hvc_menu[27] != 0xFF) {
 #ifdef DEBUG
@@ -679,8 +580,6 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         }
 //        [cell layoutIfNeeded];
         return cell;
-    }
-    return nil;
 }
 
 - (void)hvcSegmentSelected:(UISegmentedControl *)segment {
@@ -699,42 +598,8 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     DBGLOG(@"FIXME: hvcSegmentSelected without cell view!");
 }
 
-- (void)warnTapped:(UIButton *)button {
-    UIView *view = button;
-    UITableViewCell *cell;
-    while (view && ![view isKindOfClass:[UITableViewCell class]]) {
-        view = [view superview];
-    }
-    if (view) {
-        const char *title = NULL;
-        cell = (UITableViewCell *)view;
-        for (int i = 0; i < WARN_MAX; i++) {
-            CFIndex index = [warns indexOfObject:[NSString stringWithFormat:@"%@_%d", cell.textLabel.text, i]];
-            if (index != NSNotFound) {
-                switch (i) {
-                    case WARN_GENERAL:
-                        title = _C("Error Data");
-                        break;
-                    case WARN_UNUSUAL:
-                        title = _C("Unusual Data");
-                        break;
-                    case WARN_EXCEEDED:
-                        title = _C("Data Too Large");
-                        break;
-                    case WARN_EMPTYVAL:
-                        title = _C("Empty Data");
-                        break;
-                    default:
-                        title = _C("Wrong Data");
-                        break;
-                }
-                const char *content = [[warns objectAtIndex:index + 1] UTF8String];
-                show_alert(title, content, L_OK);
-                return;
-            }
-        }
-    }
-    DBGLOG(@"warnTapped: Something goes wrong! view: %@, cell: %@", view, cell);
+- (void)warnTapped:(WarnAccessoryView *)button {
+	show_alert(button.warn_title,button.warn_content,L_OK);
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
