@@ -24,101 +24,100 @@ const char *bin_unit_strings[] = {
 };
 
 struct battery_info_node main_battery_template[] = {
-	{_C("Gas Gauge (Basic)"),NULL,BIN_SECTION},
-    {_C("Device Name"),
+    { _C("Gas Gauge (Basic)"), NULL, BIN_SECTION },
+    { _C("Device Name"),
      _C("This indicates the name of the current Gas Gauge IC used by the "
-        "installed battery."),
-     0},
-    {_C("Health"), NULL, BIN_IS_BACKGROUND | BIN_UNIT_PERCENT},
-    {_C("SoC"), NULL, BIN_IS_FLOAT | BIN_UNIT_PERCENT},
-    {_C("Avg. Temperature"), NULL,
-     BIN_IS_FLOAT | BIN_UNIT_DEGREE_C | BIN_DETAILS_SHARED},
-    {_C("Charging"), NULL, BIN_IS_BOOLEAN},
-    {"ASoC(Hidden)", NULL, BIN_IS_FOREGROUND | BIN_IS_HIDDEN},
-    {_C("Full Charge Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_C("Designed Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_C("Remaining Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_C("Battery Uptime"),
+           "installed battery."),
+     0 },
+    { _C("Health"), NULL, BIN_IS_BACKGROUND | BIN_UNIT_PERCENT },
+    { _C("SoC"), NULL, BIN_IS_FLOAT | BIN_UNIT_PERCENT },
+    { _C("Avg. Temperature"), NULL, BIN_IS_FLOAT | BIN_UNIT_DEGREE_C | BIN_DETAILS_SHARED },
+    { _C("Charging"), NULL, BIN_IS_BOOLEAN },
+    { "ASoC(Hidden)", NULL, BIN_IS_FOREGROUND | BIN_IS_HIDDEN },
+    { _C("Full Charge Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
+    { _C("Designed Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
+    { _C("Remaining Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
+    { _C("Battery Uptime"),
      _C("The length of time the Battery Management System (BMS) has been up."),
-     BIN_UNIT_MIN | BIN_IN_DETAILS},
-    {_C("Qmax"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_C("Depth of Discharge"),
+     BIN_UNIT_MIN | BIN_IN_DETAILS },
+    { _C("Qmax"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
+    { _C("Depth of Discharge"),
      _C("Current chemical depth of discharge (DOD₀). The gas gauge updates "
-        "information on the DOD₀ based on open-circuit voltage (OCV) readings "
-        "when in a relaxed state."),
-     BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_C("Passed Charge"),
+           "information on the DOD₀ based on open-circuit voltage (OCV) readings "
+           "when in a relaxed state."),
+     BIN_UNIT_MAH | BIN_IN_DETAILS },
+    { _C("Passed Charge"),
      _C("The cumulative capacity of the current charging or discharging cycle. "
-        "It is reset to zero with each DOD₀ update."),
-     BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_C("Voltage"), NULL, BIN_UNIT_MVOLT | BIN_IN_DETAILS},
-    {_C("Avg. Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS},
-    {_C("Avg. Power"), NULL, BIN_UNIT_MWATT | BIN_IN_DETAILS},
-    {_C("Cell Count"), NULL, BIN_IN_DETAILS},
-    /* TODO: TimeToFull */
-    {_C("Time To Empty"), NULL, BIN_UNIT_MIN | BIN_IN_DETAILS},
-    {_C("Cycle Count"), NULL, BIN_IN_DETAILS},
-    {_C("Designed Cycle Count"), NULL, BIN_IN_DETAILS},
-    {_C("State Of Charge"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS},
-    {_C("State Of Charge (UI)"),
+           "It is reset to zero with each DOD₀ update."),
+     BIN_UNIT_MAH | BIN_IN_DETAILS },
+    { _C("Voltage"), NULL, BIN_UNIT_MVOLT | BIN_IN_DETAILS },
+    { _C("Avg. Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
+    { _C("Avg. Power"), NULL, BIN_UNIT_MWATT | BIN_IN_DETAILS },
+    { _C("Cell Count"), NULL, BIN_IN_DETAILS },
+ /* TODO: TimeToFull */
+    { _C("Time To Empty"), NULL, BIN_UNIT_MIN | BIN_IN_DETAILS },
+    { _C("Cycle Count"), NULL, BIN_IN_DETAILS },
+    { _C("Designed Cycle Count"), NULL, BIN_IN_DETAILS },
+    { _C("State Of Charge"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS },
+    { _C("State Of Charge (UI)"),
      _C("The \"Battery Percentage\" displayed exactly on your status bar. This "
-        "is the SoC that Apple wants to tell you."),
-     BIN_UNIT_PERCENT | BIN_IN_DETAILS},
-    {_C("Resistance Scale"), NULL, BIN_IN_DETAILS},
-    {_C("Battery Serial No."), NULL, 0},
-    {_C("Chemistry ID"),
+           "is the SoC that Apple wants to tell you."),
+     BIN_UNIT_PERCENT | BIN_IN_DETAILS },
+    { _C("Resistance Scale"), NULL, BIN_IN_DETAILS },
+    { _C("Battery Serial No."), NULL, 0 },
+    { _C("Chemistry ID"),
      _C("Chemistry unique identifier (ChemID) assigned to each battery in "
-        "Texas Instruments' database. It ensures accurate calculations and "
-        "predictions."),
-     0},
-    {_C("Flags"), NULL, 0},
-    {_C("True Remaining Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS},
-    {_C("OCV Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS},
-    {_C("OCV Voltage"), NULL, BIN_UNIT_MVOLT | BIN_IN_DETAILS},
-    {_C("Max Load Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS},
-    {_C("Max Load Current 2"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS},
-    {_C("IT Misc Status"),
+           "Texas Instruments' database. It ensures accurate calculations and "
+           "predictions."),
+     0 },
+    { _C("Flags"), NULL, 0 },
+    { _C("True Remaining Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
+    { _C("OCV Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
+    { _C("OCV Voltage"), NULL, BIN_UNIT_MVOLT | BIN_IN_DETAILS },
+    { _C("Max Load Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
+    { _C("Max Load Current 2"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
+    { _C("IT Misc Status"),
      _C("This field refers to the miscellaneous data returned by battery "
-        "Impedance Track™ Gas Gauge IC."),
-     0},
-    {_C("Simulation Rate"),
+           "Impedance Track™ Gas Gauge IC."),
+     0 },
+    { _C("Simulation Rate"),
      _C("This field refers to the rate of Gas Gauge performing Impedance "
-        "Track™ simulations."),
-     BIN_UNIT_HOUR | BIN_IN_DETAILS},
-    {_C("Daily Max SoC"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS},
-    {_C("Daily Min SoC"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS},
-    {_C("Adapter Details"),NULL,BIN_SECTION},
-    {_C("Port"),_C("Port of currently connected adapter. On macOS, this is the USB port that the adapter currently attached."),BIN_IN_DETAILS},
-    {_C("Port Type"),NULL,0},
-    {_C("Compatibility"),NULL,0},
-    {_C("Type"), _C("This field refers to the Family Code (kIOPSPowerAdapterFamilyKey) of currently connected power adapter."),0},
-    {_C("Status"),NULL,0},
-    {_C("Reason"), _C("If this field appears in the list, it indicates that an issue has occurred or that a condition was met, causing charging to stop."),0},
-    {_C("Current Rating"), _C("Current rating of connected power source, this does not indicates the real-time passing current."),BIN_IN_DETAILS|BIN_UNIT_MAMP},
-    {_C("Voltage Rating"), _C("Voltage rating of connected power source, this does not indicates the real-time passing voltage."),BIN_IN_DETAILS|BIN_UNIT_MVOLT},
-    {_C("Charging Current"),NULL,BIN_IN_DETAILS|BIN_UNIT_MAMP},
-    {_C("Charging Voltage"),NULL,BIN_IN_DETAILS|BIN_UNIT_MVOLT},
-    {_C("Charger ID"),NULL,0},
-    {_C("Model Name"),NULL,0},
-    {_C("Manufacturer"),NULL,0},
-    {_C("Model"),NULL,0},
-    {_C("Firmware Version"),NULL,0},
-    {_C("Hardware Version"),NULL,0},
-    {_C("Description"), _C("Short description provided by Apple PMU on current power adapter Family Code. Sometimes may not set."),0},
-    {_C("Serial No."),NULL,0},
-    {_C("PMU Configuration"), _C("The Configuration values is the max allowed Charging Current configurations."),BIN_IN_DETAILS|BIN_UNIT_MAMP},
-    {_C("Charger Configuration"),NULL,BIN_IN_DETAILS|BIN_UNIT_MAMP},
-    {_C("HVC Mode"), _C("High Voltage Charging (HVC) Mode may accquired by your power adapter or system, all supported modes will be listed below."),BIN_IN_DETAILS},
-    {NULL} // DO NOT DELETE
+           "Track™ simulations."),
+     BIN_UNIT_HOUR | BIN_IN_DETAILS },
+    { _C("Daily Max SoC"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS },
+    { _C("Daily Min SoC"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS },
+    { _C("Adapter Details"), NULL, BIN_SECTION },
+    { _C("Port"), _C("Port of currently connected adapter. On macOS, this is the USB port that the adapter currently attached."), BIN_IN_DETAILS },
+    { _C("Port Type"), NULL, 0 },
+    { _C("Compatibility"), NULL, 0 },
+    { _C("Type"), _C("This field refers to the Family Code (kIOPSPowerAdapterFamilyKey) of currently connected power adapter."), 0 },
+    { _C("Status"), NULL, 0 },
+    { _C("Reason"), _C("If this field appears in the list, it indicates that an issue has occurred or that a condition was met, causing charging to stop."), 0 },
+    { _C("Current Rating"), _C("Current rating of connected power source, this does not indicates the real-time passing current."), BIN_IN_DETAILS | BIN_UNIT_MAMP },
+    { _C("Voltage Rating"), _C("Voltage rating of connected power source, this does not indicates the real-time passing voltage."), BIN_IN_DETAILS | BIN_UNIT_MVOLT },
+    { _C("Charging Current"), NULL, BIN_IN_DETAILS | BIN_UNIT_MAMP },
+    { _C("Charging Voltage"), NULL, BIN_IN_DETAILS | BIN_UNIT_MVOLT },
+    { _C("Charger ID"), NULL, 0 },
+    { _C("Model Name"), NULL, 0 },
+    { _C("Manufacturer"), NULL, 0 },
+    { _C("Model"), NULL, 0 },
+    { _C("Firmware Version"), NULL, 0 },
+    { _C("Hardware Version"), NULL, 0 },
+    { _C("Description"), _C("Short description provided by Apple PMU on current power adapter Family Code. Sometimes may not set."), 0 },
+    { _C("Serial No."), NULL, 0 },
+    { _C("PMU Configuration"), _C("The Configuration values is the max allowed Charging Current configurations."), BIN_IN_DETAILS | BIN_UNIT_MAMP },
+    { _C("Charger Configuration"), NULL, BIN_IN_DETAILS | BIN_UNIT_MAMP },
+    { _C("HVC Mode"), _C("High Voltage Charging (HVC) Mode may accquired by your power adapter or system, all supported modes will be listed below."), BIN_IN_DETAILS },
+    { NULL }  // DO NOT DELETE
 };
 
 struct iopm_property {
-	const char *name;
-	CFStringRef **candidates;
-	int property_type; // 0 = don't care : default s_int32
-	int in_detail;
-	double multiplier; // when multiplier==0, no multiplier is applied
-			   // which means, multiplier 0 is equivalent to 1
+    const char *name;
+    CFStringRef **candidates;
+    int property_type; // 0 = don't care : default s_int32
+    int in_detail;
+    double multiplier; // when multiplier==0, no multiplier is applied
+                       // which means, multiplier 0 is equivalent to 1
 };
 
 // Special types:
@@ -127,78 +126,86 @@ struct iopm_property {
 // 501 - CFStringRef
 // (CFStringRef) 1 - first item in array (fail if not an array, will not crash)
 
-#define IPCandidateGroup(...) (CFStringRef*[]){__VA_ARGS__,NULL}
-#define IPCandidate(...) (CFStringRef[]){__VA_ARGS__,NULL}
-#define IPSingleCandidate(...) (CFStringRef*[]){(CFStringRef[]){__VA_ARGS__,NULL},NULL}
+#define IPCandidateGroup(...) \
+    (CFStringRef *[]) { __VA_ARGS__, NULL }
+#define IPCandidate(...) \
+    (CFStringRef[]) { __VA_ARGS__, NULL }
+#define IPSingleCandidate(...) \
+    (CFStringRef *[]) { (CFStringRef[]) { __VA_ARGS__, NULL }, NULL }
 
-struct iopm_property iopm_items[]={
-	{_C("Avg. Temperature"), IPSingleCandidate(CFSTR("Temperature")),kCFNumberSInt16Type,0,1.0/100.0},
-	{_C("Charging"),IPSingleCandidate(CFSTR("IsCharging")),500,0,0},
-	{_C("Full Charge Capacity"),IPSingleCandidate(CFSTR("AppleRawMaxCapacity")),kCFNumberSInt16Type,1,0},
-	{_C("Designed Capacity"),IPSingleCandidate(CFSTR("DesignCapacity")),kCFNumberSInt16Type,1,0},
-	{_C("Remaining Capacity"),IPSingleCandidate(CFSTR("AppleRawCurrentCapacity")),kCFNumberSInt16Type,1,0},
-	{_C("Battery Uptime"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("LifetimeData"),CFSTR("TotalOperatingTime")),0,1,1.0/60.0},
-	{_C("Qmax"),IPCandidateGroup(IPCandidate(CFSTR("BatteryData"),CFSTR("Qmax"),(CFStringRef)1),IPCandidate(CFSTR("BatteryData"),CFSTR("QmaxCell0"))),0,1,0},
-	{_C("Depth of Discharge"),IPCandidateGroup(IPCandidate(CFSTR("BatteryData"),CFSTR("DOD0"),(CFStringRef)1),IPCandidate(CFSTR("BatteryFCCData"),CFSTR("DOD0"))),0,1,0},
-	{_C("Passed Charge"),IPCandidateGroup(IPCandidate(CFSTR("BatteryData"),CFSTR("PassedCharge")),IPCandidate(CFSTR("BatteryFCCData"),CFSTR("PassedCharge"))),0,1,0},
-	{_C("Voltage"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("Voltage")),0,1,0},
-	{_C("Avg. Current"),IPSingleCandidate(CFSTR("InstantAmperage")),0,1,0},
-	{_C("Cycle Count"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("CycleCount")),0,1,0},
-	{_C("State Of Charge"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("StateOfCharge")),0,1,0},
-	{_C("State Of Charge (UI)"),IPSingleCandidate(CFSTR("CurrentCapacity")),0,1,0},
-	{_C("Resistance Scale"),IPSingleCandidate(CFSTR("BatteryFCCData"),CFSTR("ResScale")),0,1,0},
-	{_C("Battery Serial No."),IPSingleCandidate(CFSTR("Serial")),501,1,0},
-	// Chemistry ID: To be done programmatically
-	// Flags: TBD Prg/ly
-	{_C("True Remaining Capacity"),IPSingleCandidate(CFSTR("AbsoluteCapacity")),0,1,0},
-	//{_C("IT Misc Status"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("ITMiscStatus")),0,1,0},
-	{_C("Simulation Rate"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("SimRate")),0,1,0},
-	{_C("Daily Max SoC"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("DailyMaxSoc")),0,1,0},
-	{_C("Daily Min SoC"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("DailyMinSoc")),0,1,0},
-	{NULL}
+struct iopm_property iopm_items[] = {
+    { _C("Avg. Temperature"), IPSingleCandidate(CFSTR("Temperature")), kCFNumberSInt16Type, 0, 1.0 / 100.0 },
+    { _C("Charging"), IPSingleCandidate(CFSTR("IsCharging")), 500, 0, 0 },
+    { _C("Full Charge Capacity"), IPSingleCandidate(CFSTR("AppleRawMaxCapacity")), kCFNumberSInt16Type, 1, 0 },
+    { _C("Designed Capacity"), IPSingleCandidate(CFSTR("DesignCapacity")), kCFNumberSInt16Type, 1, 0 },
+    { _C("Remaining Capacity"), IPSingleCandidate(CFSTR("AppleRawCurrentCapacity")), kCFNumberSInt16Type, 1, 0 },
+    { _C("Battery Uptime"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("LifetimeData"), CFSTR("TotalOperatingTime")), 0, 1, 1.0 / 60.0 },
+    { _C("Qmax"), IPCandidateGroup(IPCandidate(CFSTR("BatteryData"), CFSTR("Qmax"), (CFStringRef)1), IPCandidate(CFSTR("BatteryData"), CFSTR("QmaxCell0"))), 0, 1, 0 },
+    { _C("Depth of Discharge"), IPCandidateGroup(IPCandidate(CFSTR("BatteryData"), CFSTR("DOD0"), (CFStringRef)1), IPCandidate(CFSTR("BatteryFCCData"), CFSTR("DOD0"))), 0, 1, 0 },
+    { _C("Passed Charge"), IPCandidateGroup(IPCandidate(CFSTR("BatteryData"), CFSTR("PassedCharge")), IPCandidate(CFSTR("BatteryFCCData"), CFSTR("PassedCharge"))), 0, 1, 0 },
+    { _C("Voltage"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("Voltage")), 0, 1, 0 },
+    { _C("Avg. Current"), IPSingleCandidate(CFSTR("InstantAmperage")), 0, 1, 0 },
+    { _C("Cycle Count"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("CycleCount")), 0, 1, 0 },
+    { _C("State Of Charge"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("StateOfCharge")), 0, 1, 0 },
+    { _C("State Of Charge (UI)"), IPSingleCandidate(CFSTR("CurrentCapacity")), 0, 1, 0 },
+    { _C("Resistance Scale"), IPSingleCandidate(CFSTR("BatteryFCCData"), CFSTR("ResScale")), 0, 1, 0 },
+    { _C("Battery Serial No."), IPSingleCandidate(CFSTR("Serial")), 501, 1, 0 },
+ // Chemistry ID: To be done programmatically
+  // Flags: TBD Prg/ly
+    { _C("True Remaining Capacity"), IPSingleCandidate(CFSTR("AbsoluteCapacity")), 0, 1, 0 },
+ //{_C("IT Misc Status"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("ITMiscStatus")),0,1,0},
+    { _C("Simulation Rate"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("SimRate")), 0, 1, 0 },
+    { _C("Daily Max SoC"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("DailyMaxSoc")), 0, 1, 0 },
+    { _C("Daily Min SoC"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("DailyMinSoc")), 0, 1, 0 },
+    { NULL }
 };
 
-struct battery_info_node *bi_construct_array(void) {
+struct battery_info_node *bi_construct_array(void)
+{
     struct battery_info_node *val = malloc(sizeof(main_battery_template));
     memcpy(val, main_battery_template, sizeof(main_battery_template));
     return val;
 }
 
 void bi_node_change_content_value(struct battery_info_node *node,
-                                  int identifier, unsigned short value) {
+    int identifier, unsigned short value)
+{
     node += identifier;
     uint16_t *sects = (uint16_t *)&node->content;
-    sects[1] = value;
+    sects[1]        = value;
 }
 
 void bi_node_change_content_value_float(struct battery_info_node *node,
-                                        int identifier, float value) {
+    int identifier, float value)
+{
     node += identifier;
     assert((node->content & BIN_IS_FLOAT) == BIN_IS_FLOAT);
     uint32_t *vptr = (uint32_t *)&value;
-    uint32_t vr = *vptr;
+    uint32_t vr    = *vptr;
     // TODO: No magic numbers!
     node->content =
         ((vr & ((uint64_t)0b11 << 30)) | (vr & (((1 << 4) - 1) << 23)) << 3 |
-         (vr & (((1 << 10) - 1) << 13)) << 3) |
+            (vr & (((1 << 10) - 1) << 13)) << 3) |
         (node->content & ((1 << 16) - 1));
     // overwrite higher bits;
 }
 
-float bi_node_load_float(struct battery_info_node *node) {
+float bi_node_load_float(struct battery_info_node *node)
+{
     float ret;
     uint32_t *vptr = (uint32_t *)&ret;
-    uint32_t vr = node->content;
+    uint32_t vr    = node->content;
     *vptr =
         ((vr & ((uint64_t)0b11 << 30)) | (vr & (((1 << 4) - 1) << 26)) >> 3 |
-         (vr & (((1 << 10) - 1) << 16)) >> 3);
+            (vr & (((1 << 10) - 1) << 16)) >> 3);
     return ret;
 }
 
 void bi_node_set_hidden(struct battery_info_node *node, int identifier,
-                        bool hidden) {
+    bool hidden)
+{
     node += identifier;
-    //assert((node->content & BIN_IN_DETAILS) == BIN_IN_DETAILS);
+    // assert((node->content & BIN_IN_DETAILS) == BIN_IN_DETAILS);
     if (hidden) {
         node->content |= (1 << 5);
     } else {
@@ -209,7 +216,8 @@ void bi_node_set_hidden(struct battery_info_node *node, int identifier,
 #include <mach/mach.h>
 
 char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
-                            uint64_t length) {
+    uint64_t length)
+{
     node += identifier;
     assert(!(node->content & BIN_IS_SPECIAL));
 
@@ -219,8 +227,7 @@ char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
         // Use vm_allocate to prevent possible unexpected heap allocation (it
         // crashes in current data structure)
         // TODO: get rid of hardcoded length
-        int result = vm_allocate(mach_task_self(), (vm_address_t *)&allocen,
-                                 256, VM_FLAGS_ANYWHERE);
+        int result = vm_allocate(mach_task_self(), (vm_address_t *)&allocen, 256, VM_FLAGS_ANYWHERE);
         if (result != KERN_SUCCESS) {
             // Fallback to malloc
             // allocen = malloc(length);
@@ -231,26 +238,29 @@ char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
     return bi_node_get_string(node);
 }
 
-char *bi_node_get_string(struct battery_info_node *node) {
+char *bi_node_get_string(struct battery_info_node *node)
+{
     return (char *)(((uint64_t)node->content) << 3);
 }
 
-void bi_node_free_string(struct battery_info_node *node) {
+void bi_node_free_string(struct battery_info_node *node)
+{
     if (!node->content)
         return;
-    vm_deallocate(mach_task_self(), (vm_address_t)bi_node_get_string(node),
-                  256);
+    vm_deallocate(mach_task_self(), (vm_address_t)bi_node_get_string(node), 256);
     node->content = 0;
 }
 
-struct battery_info_node *battery_info_init() {
+struct battery_info_node *battery_info_init()
+{
     struct battery_info_node *info = bi_construct_array();
     battery_info_update(info, false);
     return info;
 }
 
 static int _impl_set_item_find_item(struct battery_info_node **head,
-                                    const char *desc) {
+    const char *desc)
+{
     if (!desc)
         return 0;
     for (struct battery_info_node *i = *head; i->name; i++) {
@@ -269,7 +279,8 @@ static int _impl_set_item_find_item(struct battery_info_node **head,
 }
 
 static char *_impl_set_item(struct battery_info_node **head, const char *desc,
-                            uint64_t value, float valueAsFloat, int options) {
+    uint64_t value, float valueAsFloat, int options)
+{
     if (!_impl_set_item_find_item(head, desc))
         return NULL;
     struct battery_info_node *i = *head;
@@ -292,138 +303,140 @@ static char *_impl_set_item(struct battery_info_node **head, const char *desc,
     return NULL;
 }
 
-#define BI_SET_ITEM(name, value)                                               \
+#define BI_SET_ITEM(name, value) \
     _impl_set_item(head_arr, name, (uint64_t)(value), (float)(value), 0)
 #define BI_ENSURE_STR(name) _impl_set_item(head_arr, name, 0, 0, 2)
-#define BI_FORMAT_ITEM(name, ...)                                              \
+#define BI_FORMAT_ITEM(name, ...) \
     sprintf(_impl_set_item(head_arr, name, 0, 0, 2), __VA_ARGS__)
-#define BI_SET_ITEM_IF(cond, name, value)                                      \
-    if (cond) {                                                                \
-        BI_SET_ITEM(name, value);                                              \
-        _impl_set_item(head_arr, name, 0, 0, 1);                               \
-    } else {                                                                   \
-        _impl_set_item(head_arr, name, 1, 0, 1);                               \
+#define BI_SET_ITEM_IF(cond, name, value)        \
+    if (cond) {                                  \
+        BI_SET_ITEM(name, value);                \
+        _impl_set_item(head_arr, name, 0, 0, 1); \
+    } else {                                     \
+        _impl_set_item(head_arr, name, 1, 0, 1); \
     }
-#define BI_FORMAT_ITEM_IF(cond, name, ...)                                     \
-    if (cond) {                                                                \
-        BI_FORMAT_ITEM(name, __VA_ARGS__);                                     \
-    } else {                                                                   \
-        _impl_set_item(head_arr, name, 1, 0, 1);                               \
+#define BI_FORMAT_ITEM_IF(cond, name, ...)       \
+    if (cond) {                                  \
+        BI_FORMAT_ITEM(name, __VA_ARGS__);       \
+    } else {                                     \
+        _impl_set_item(head_arr, name, 1, 0, 1); \
     }
-#define BI_SET_HIDDEN(name,value) _impl_set_item(head_arr,name,value,0,1)
+#define BI_SET_HIDDEN(name, value) _impl_set_item(head_arr, name, value, 0, 1)
 
 extern void *IOServiceMatching(const char *);
-extern void *IOServiceGetMatchingService(int,void*);
-extern int IORegistryEntryCreateCFProperties(void*,CFMutableDictionaryRef*,int,int);
+extern void *IOServiceGetMatchingService(int, void *);
+extern int IORegistryEntryCreateCFProperties(void *, CFMutableDictionaryRef *, int, int);
 
-void battery_info_update_iokit(struct battery_info_node *head, bool inDetail) {
-	void *service=IOServiceGetMatchingService(0,IOServiceMatching("IOPMPowerSource"));
-	struct battery_info_node *head_arr[2] = {head, head};
-	CFMutableDictionaryRef info;
-	int ret=IORegistryEntryCreateCFProperties(service,&info,0,0);
-	if(ret!=0) {
-		fprintf(stderr, "battery_info_update_iokit: Failed to get info from IOPMPowerSource\n");
-		return;
-	}
-	uint16_t remain_cap,full_cap,design_cap;
-	uint16_t temperature;
-	CFNumberRef designCapacityNum=CFDictionaryGetValue(info,CFSTR("DesignCapacity"));
-	CFNumberRef fullCapacityNum=CFDictionaryGetValue(info,CFSTR("AppleRawMaxCapacity"));
-	CFNumberRef remainingCapacityNum=CFDictionaryGetValue(info,CFSTR("AppleRawCurrentCapacity"));
-	if(!designCapacityNum||!fullCapacityNum||!remainingCapacityNum) {
-		// Basic info required
-		fprintf(stderr, "battery_info_update_iokit: Basic info required not present\n");
-		CFRelease(info);
-		return;
-	}
-	CFNumberGetValue(designCapacityNum,kCFNumberSInt16Type,(void*)&design_cap);
-	CFNumberGetValue(fullCapacityNum,kCFNumberSInt16Type,(void*)&full_cap);
-	CFNumberGetValue(remainingCapacityNum,kCFNumberSInt16Type,(void*)&remain_cap);
-	BI_SET_ITEM(_C("Health"), 100.0f * (float)full_cap / (float)design_cap);
-	BI_SET_ITEM(_C("SoC"), 100.0f * (float)remain_cap / (float)full_cap);
-	BI_SET_ITEM("ASoC(Hidden)", 100.0f * remain_cap / design_cap);
-	if(inDetail) {
-		CFDictionaryRef batteryData=CFDictionaryGetValue(info,CFSTR("BatteryData"));
-		if(batteryData) {
-			int val;
-			CFNumberRef ChemIDNum=CFDictionaryGetValue(batteryData,CFSTR("ChemID"));
-			if(ChemIDNum)
-				CFNumberGetValue(ChemIDNum,kCFNumberSInt32Type,(void*)&val);
-			BI_FORMAT_ITEM_IF(ChemIDNum,_C("Chemistry ID"),"0x%.8X",val);
-			CFNumberRef FlagsNum=CFDictionaryGetValue(batteryData,CFSTR("Flags"));
-			if(FlagsNum)
-				CFNumberGetValue(FlagsNum,kCFNumberSInt32Type,(void*)&val);
-			BI_FORMAT_ITEM_IF(FlagsNum,_C("Flags"), "0x%.4X", val);
-			CFNumberRef ITMiscNum=CFDictionaryGetValue(batteryData,CFSTR("ITMiscStatus"));
-			if(ITMiscNum)
-				CFNumberGetValue(ITMiscNum,kCFNumberSInt32Type,(void*)&val);
-			BI_FORMAT_ITEM_IF(ITMiscNum,_C("IT Misc Status"), "0x%.4X", val);
-		}
-	}
-	CFTypeRef lastItem;
-	for(struct iopm_property *i=iopm_items;i->name;i++) {
-		int succ=0;
-		for(CFStringRef **ppath=i->candidates;*ppath;ppath++) {
-			lastItem=info;
-			for(CFStringRef *elem=*ppath;*elem;elem++) {
-				if(*elem==(CFStringRef)1) {
-					if(CFGetTypeID(lastItem)!=CFArrayGetTypeID()) {
-						lastItem=NULL;
-						break;
-					}
-					lastItem=CFArrayGetValueAtIndex(lastItem,0);
-				}else{
-					if(CFGetTypeID(lastItem)!=CFDictionaryGetTypeID()) {
-						lastItem=NULL;
-						break;
-					}
-					lastItem=CFDictionaryGetValue(lastItem,*elem);
-				}
-				if(!lastItem)
-					break;
-			}
-			if(!lastItem)
-				continue;
-			int val=0;
-			if(i->property_type==500) {
-				if(CFGetTypeID(lastItem)!=CFBooleanGetTypeID())
-					continue;
-				val=CFBooleanGetValue(lastItem);
-			}else if(i->property_type==501) {
-				if(CFGetTypeID(lastItem)!=CFStringGetTypeID())
-					continue;
-				CFStringGetCString(lastItem,BI_ENSURE_STR(i->name),256,kCFStringEncodingUTF8);
-				succ=1;
-				break;
-			}else{
-				if(CFGetTypeID(lastItem)!=CFNumberGetTypeID())
-					continue;
-				CFNumberGetValue(lastItem,i->property_type?i->property_type:kCFNumberSInt32Type,(void*)&val);
-				if(i->property_type==kCFNumberSInt16Type)
-					val=(int)(short)val;
-			}
-			if(i->multiplier) {
-				BI_SET_ITEM(i->name,(double)val * i->multiplier);
-			}else{
-				BI_SET_ITEM(i->name,val);
-			}
-			succ=1;
-			break;
-		}
-		if(!succ) {
-			BI_SET_ITEM_IF(0,i->name,0);
-		}
-	}
-	CFRelease(info);
+void battery_info_update_iokit(struct battery_info_node *head, bool inDetail)
+{
+    void *service                         = IOServiceGetMatchingService(0, IOServiceMatching("IOPMPowerSource"));
+    struct battery_info_node *head_arr[2] = { head, head };
+    CFMutableDictionaryRef info;
+    int ret = IORegistryEntryCreateCFProperties(service, &info, 0, 0);
+    if (ret != 0) {
+        fprintf(stderr, "battery_info_update_iokit: Failed to get info from IOPMPowerSource\n");
+        return;
+    }
+    uint16_t remain_cap, full_cap, design_cap;
+    uint16_t temperature;
+    CFNumberRef designCapacityNum    = CFDictionaryGetValue(info, CFSTR("DesignCapacity"));
+    CFNumberRef fullCapacityNum      = CFDictionaryGetValue(info, CFSTR("AppleRawMaxCapacity"));
+    CFNumberRef remainingCapacityNum = CFDictionaryGetValue(info, CFSTR("AppleRawCurrentCapacity"));
+    if (!designCapacityNum || !fullCapacityNum || !remainingCapacityNum) {
+        // Basic info required
+        fprintf(stderr, "battery_info_update_iokit: Basic info required not present\n");
+        CFRelease(info);
+        return;
+    }
+    CFNumberGetValue(designCapacityNum, kCFNumberSInt16Type, (void *)&design_cap);
+    CFNumberGetValue(fullCapacityNum, kCFNumberSInt16Type, (void *)&full_cap);
+    CFNumberGetValue(remainingCapacityNum, kCFNumberSInt16Type, (void *)&remain_cap);
+    BI_SET_ITEM(_C("Health"), 100.0f * (float)full_cap / (float)design_cap);
+    BI_SET_ITEM(_C("SoC"), 100.0f * (float)remain_cap / (float)full_cap);
+    BI_SET_ITEM("ASoC(Hidden)", 100.0f * remain_cap / design_cap);
+    if (inDetail) {
+        CFDictionaryRef batteryData = CFDictionaryGetValue(info, CFSTR("BatteryData"));
+        if (batteryData) {
+            int val = 0;
+            CFNumberRef ChemIDNum = CFDictionaryGetValue(batteryData, CFSTR("ChemID"));
+            if (ChemIDNum)
+                CFNumberGetValue(ChemIDNum, kCFNumberSInt32Type, (void *)&val);
+            BI_FORMAT_ITEM_IF(ChemIDNum, _C("Chemistry ID"), "0x%.8X", val);
+            CFNumberRef FlagsNum = CFDictionaryGetValue(batteryData, CFSTR("Flags"));
+            if (FlagsNum)
+                CFNumberGetValue(FlagsNum, kCFNumberSInt32Type, (void *)&val);
+            BI_FORMAT_ITEM_IF(FlagsNum, _C("Flags"), "0x%.4X", val);
+            CFNumberRef ITMiscNum = CFDictionaryGetValue(batteryData, CFSTR("ITMiscStatus"));
+            if (ITMiscNum)
+                CFNumberGetValue(ITMiscNum, kCFNumberSInt32Type, (void *)&val);
+            BI_FORMAT_ITEM_IF(ITMiscNum, _C("IT Misc Status"), "0x%.4X", val);
+        }
+    }
+    CFTypeRef lastItem;
+    for (struct iopm_property *i = iopm_items; i->name; i++) {
+        int succ = 0;
+        for (CFStringRef **ppath = i->candidates; *ppath; ppath++) {
+            lastItem = info;
+            for (CFStringRef *elem = *ppath; *elem; elem++) {
+                if (*elem == (CFStringRef)1) {
+                    if (CFGetTypeID(lastItem) != CFArrayGetTypeID()) {
+                        lastItem = NULL;
+                        break;
+                    }
+                    lastItem = CFArrayGetValueAtIndex(lastItem, 0);
+                } else {
+                    if (CFGetTypeID(lastItem) != CFDictionaryGetTypeID()) {
+                        lastItem = NULL;
+                        break;
+                    }
+                    lastItem = CFDictionaryGetValue(lastItem, *elem);
+                }
+                if (!lastItem)
+                    break;
+            }
+            if (!lastItem)
+                continue;
+            int val = 0;
+            if (i->property_type == 500) {
+                if (CFGetTypeID(lastItem) != CFBooleanGetTypeID())
+                    continue;
+                val = CFBooleanGetValue(lastItem);
+            } else if (i->property_type == 501) {
+                if (CFGetTypeID(lastItem) != CFStringGetTypeID())
+                    continue;
+                CFStringGetCString(lastItem, BI_ENSURE_STR(i->name), 256, kCFStringEncodingUTF8);
+                succ = 1;
+                break;
+            } else {
+                if (CFGetTypeID(lastItem) != CFNumberGetTypeID())
+                    continue;
+                CFNumberGetValue(lastItem, i->property_type ? i->property_type : kCFNumberSInt32Type, (void *)&val);
+                if (i->property_type == kCFNumberSInt16Type)
+                    val = (int)(short)val;
+            }
+            if (i->multiplier) {
+                BI_SET_ITEM(i->name, (double)val * i->multiplier);
+            } else {
+                BI_SET_ITEM(i->name, val);
+            }
+            succ = 1;
+            break;
+        }
+        if (!succ) {
+            BI_SET_ITEM_IF(0, i->name, 0);
+        }
+    }
+    CFRelease(info);
 }
 
 extern const char *cond_localize_c(const char *);
 
-void battery_info_update(struct battery_info_node *head, bool inDetail) {
+void battery_info_update(struct battery_info_node *head, bool inDetail)
+{
     uint16_t remain_cap, full_cap, design_cap;
     get_capacity(&remain_cap, &full_cap, &design_cap);
 
-    struct battery_info_node *head_arr[2] = {head, head};
+    struct battery_info_node *head_arr[2] = { head, head };
     /* Health = 100.0f * FullChargeCapacity (mAh) / DesignCapacity (mAh) */
     BI_SET_ITEM(_C("Health"), 100.0f * (float)full_cap / (float)design_cap);
     /* SoC = 100.0f * RemainCapacity (mAh) / FullChargeCapacity (mAh) */
@@ -433,14 +446,13 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
     // // TODO: Charging Type Display {"Battery Power", "AC Power", "UPS Power"}
     mach_port_t adapter_family;
     device_info_t adapter_info;
-    charging_state_t charging_stat=is_charging(&adapter_family, &adapter_info);
-    BI_SET_ITEM(_C("Charging"), (charging_stat== kIsCharging));
+    charging_state_t charging_stat = is_charging(&adapter_family, &adapter_info);
+    BI_SET_ITEM(_C("Charging"), (charging_stat == kIsCharging));
     /* ASoC = 100.0f * RemainCapacity (mAh) / DesignCapacity (mAh) */
     BI_SET_ITEM("ASoC(Hidden)", 100.0f * remain_cap / design_cap);
     if (inDetail) {
         get_gas_gauge(&gGauge);
-        BI_FORMAT_ITEM_IF(strlen(gGauge.DeviceName), _C("Device Name"), "%s",
-                          gGauge.DeviceName);
+        BI_FORMAT_ITEM_IF(strlen(gGauge.DeviceName), _C("Device Name"), "%s", gGauge.DeviceName);
         BI_SET_ITEM(_C("Full Charge Capacity"), full_cap);
         BI_SET_ITEM(_C("Designed Capacity"), design_cap);
         BI_SET_ITEM(_C("Remaining Capacity"), remain_cap);
@@ -456,12 +468,10 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
         int timeToEmpty = get_time_to_empty();
         BI_SET_ITEM_IF(timeToEmpty > 0, _C("Time To Empty"), timeToEmpty);
         BI_SET_ITEM(_C("Cycle Count"), gGauge.CycleCount);
-        BI_SET_ITEM_IF(gGauge.DesignCycleCount, _C("Designed Cycle Count"),
-                       gGauge.DesignCycleCount)
+        BI_SET_ITEM_IF(gGauge.DesignCycleCount, _C("Designed Cycle Count"), gGauge.DesignCycleCount)
         BI_SET_ITEM(_C("State Of Charge"), gGauge.StateOfCharge);
         BI_SET_ITEM(_C("State Of Charge (UI)"), gGauge.UISoC);
-        BI_SET_ITEM_IF(gGauge.ResScale, _C("Resistance Scale"),
-                       gGauge.ResScale);
+        BI_SET_ITEM_IF(gGauge.ResScale, _C("Resistance Scale"), gGauge.ResScale);
         if (!battery_serial(BI_ENSURE_STR(_C("Battery Serial No.")))) {
             BI_FORMAT_ITEM(_C("Battery Serial No."), "None");
         }
@@ -472,47 +482,43 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
          * https://www.ti.com/lit/er/sluu313a/sluu313a.pdf */
         BI_FORMAT_ITEM(_C("Flags"), "0x%.4X", gGauge.Flags);
         BI_SET_ITEM_IF(gGauge.TrueRemainingCapacity,
-                       _C("True Remaining Capacity"),
-                       gGauge.TrueRemainingCapacity);
-        BI_SET_ITEM_IF(gGauge.OCV_Current, _C("OCV Current"),
-                       gGauge.OCV_Current);
-        BI_SET_ITEM_IF(gGauge.OCV_Voltage, _C("OCV Voltage"),
-                       gGauge.OCV_Voltage);
+            _C("True Remaining Capacity"),
+            gGauge.TrueRemainingCapacity);
+        BI_SET_ITEM_IF(gGauge.OCV_Current, _C("OCV Current"), gGauge.OCV_Current);
+        BI_SET_ITEM_IF(gGauge.OCV_Voltage, _C("OCV Voltage"), gGauge.OCV_Voltage);
         BI_SET_ITEM_IF(gGauge.IMAX, _C("Max Load Current"), gGauge.IMAX);
         BI_SET_ITEM_IF(gGauge.IMAX2, _C("Max Load Current 2"), gGauge.IMAX2);
-        BI_FORMAT_ITEM_IF(gGauge.ITMiscStatus, _C("IT Misc Status"), "0x%.4X",
-                          gGauge.ITMiscStatus);
+        BI_FORMAT_ITEM_IF(gGauge.ITMiscStatus, _C("IT Misc Status"), "0x%.4X", gGauge.ITMiscStatus);
         BI_SET_ITEM_IF(gGauge.SimRate, _C("Simulation Rate"), gGauge.SimRate);
-        BI_SET_ITEM_IF(gGauge.DailyMaxSoc, _C("Daily Max SoC"),
-                       gGauge.DailyMaxSoc);
-        BI_SET_ITEM_IF(gGauge.DailyMinSoc, _C("Daily Min SoC"),
-                       gGauge.DailyMinSoc);
-	charger_data_t adapter_data;
-	if(charging_stat>0) {
-		get_charger_data(&adapter_data);
-		BI_SET_HIDDEN(_C("Adapter Details"),0);
-		BI_SET_ITEM(_C("Port"),adapter_info.port);
-		BI_FORMAT_ITEM(_C("Compatibility"),"%s: %s\n%s: %s",cond_localize_c("External Connected"),adapter_data.ChargerExist?cond_localize_c("True"):cond_localize_c("False"),cond_localize_c("Charger Capable"),adapter_data.ChargerCapable?cond_localize_c("True"):cond_localize_c("False"));
-		BI_FORMAT_ITEM(_C("Type"),"%s (%.8X)",get_adapter_family_desc(adapter_family),adapter_family);
-		BI_FORMAT_ITEM(_C("Status"),"%s",(charging_stat == kIsPausing || adapter_data.NotChargingReason != 0)?cond_localize_c("Not Charging"):cond_localize_c("Charging"));
-		BI_SET_ITEM(_C("Current Rating"),adapter_info.current);
-		BI_SET_ITEM(_C("Voltage Rating"),adapter_info.voltage);
-		BI_SET_ITEM(_C("Charging Current"),adapter_data.ChargingCurrent);
-		BI_SET_ITEM(_C("Charging Voltage"),adapter_data.ChargingVoltage);
-		BI_FORMAT_ITEM(_C("Charger ID"),"0x%.4X",adapter_data.ChargerId);
-		BI_FORMAT_ITEM_IF(*adapter_info.name,_C("Model Name"),"%s",adapter_info.name);
-		BI_FORMAT_ITEM_IF(*adapter_info.vendor,_C("Manufacturer"),"%s",adapter_info.vendor);
-		BI_FORMAT_ITEM_IF(*adapter_info.adapter,_C("Model"),"%s",adapter_info.adapter);
-		BI_FORMAT_ITEM_IF(*adapter_info.firmware,_C("Firmware Version"),"%s",adapter_info.firmware);
-		BI_FORMAT_ITEM_IF(*adapter_info.hardware,_C("Hardware Version"),"%s",adapter_info.hardware);
-		BI_FORMAT_ITEM_IF(*adapter_info.description,_C("Description"),"%s",adapter_info.description);
-		BI_FORMAT_ITEM_IF(*adapter_info.serial,_C("Serial No."),"%s",adapter_info.serial);
-		BI_SET_ITEM(_C("PMU Configuration"),adapter_info.PMUConfiguration);
-		BI_SET_ITEM(_C("Charger Configuration"),adapter_data.ChargerConfiguration);
-		BI_FORMAT_ITEM_IF(adapter_data.NotChargingReason!=0,_C("Reason"),"%s",not_charging_reason_str(adapter_data.NotChargingReason));
-		BI_FORMAT_ITEM_IF(adapter_info.port_type!=0,_C("Port Type"),"%s",cond_localize_c(port_type_str(adapter_info.port_type)));
-	}else{
-		BI_SET_HIDDEN(_C("Adapter Details"),1);
-	}
+        BI_SET_ITEM_IF(gGauge.DailyMaxSoc, _C("Daily Max SoC"), gGauge.DailyMaxSoc);
+        BI_SET_ITEM_IF(gGauge.DailyMinSoc, _C("Daily Min SoC"), gGauge.DailyMinSoc);
+        charger_data_t adapter_data;
+        if (charging_stat > 0) {
+            get_charger_data(&adapter_data);
+            BI_SET_HIDDEN(_C("Adapter Details"), 0);
+            BI_SET_ITEM(_C("Port"), adapter_info.port);
+            /* FIXME: no direct use of cond_localize_c(), do locales like names */
+            BI_FORMAT_ITEM(_C("Compatibility"), "%s: %s\n%s: %s", cond_localize_c("External Connected"), adapter_data.ChargerExist ? cond_localize_c("True") : cond_localize_c("False"), cond_localize_c("Charger Capable"), adapter_data.ChargerCapable ? cond_localize_c("True") : cond_localize_c("False"));
+            BI_FORMAT_ITEM(_C("Type"), "%s (%.8X)", get_adapter_family_desc(adapter_family), adapter_family);
+            BI_FORMAT_ITEM(_C("Status"), "%s", (charging_stat == kIsPausing || adapter_data.NotChargingReason != 0) ? cond_localize_c("Not Charging") : cond_localize_c("Charging"));
+            BI_SET_ITEM(_C("Current Rating"), adapter_info.current);
+            BI_SET_ITEM(_C("Voltage Rating"), adapter_info.voltage);
+            BI_SET_ITEM(_C("Charging Current"), adapter_data.ChargingCurrent);
+            BI_SET_ITEM(_C("Charging Voltage"), adapter_data.ChargingVoltage);
+            BI_FORMAT_ITEM(_C("Charger ID"), "0x%.4X", adapter_data.ChargerId);
+            BI_FORMAT_ITEM_IF(*adapter_info.name, _C("Model Name"), "%s", adapter_info.name);
+            BI_FORMAT_ITEM_IF(*adapter_info.vendor, _C("Manufacturer"), "%s", adapter_info.vendor);
+            BI_FORMAT_ITEM_IF(*adapter_info.adapter, _C("Model"), "%s", adapter_info.adapter);
+            BI_FORMAT_ITEM_IF(*adapter_info.firmware, _C("Firmware Version"), "%s", adapter_info.firmware);
+            BI_FORMAT_ITEM_IF(*adapter_info.hardware, _C("Hardware Version"), "%s", adapter_info.hardware);
+            BI_FORMAT_ITEM_IF(*adapter_info.description, _C("Description"), "%s", adapter_info.description);
+            BI_FORMAT_ITEM_IF(*adapter_info.serial, _C("Serial No."), "%s", adapter_info.serial);
+            BI_SET_ITEM(_C("PMU Configuration"), adapter_info.PMUConfiguration);
+            BI_SET_ITEM(_C("Charger Configuration"), adapter_data.ChargerConfiguration);
+            BI_FORMAT_ITEM_IF(adapter_data.NotChargingReason != 0, _C("Reason"), "%s", not_charging_reason_str(adapter_data.NotChargingReason));
+            BI_FORMAT_ITEM_IF(adapter_info.port_type != 0, _C("Port Type"), "%s", cond_localize_c(port_type_str(adapter_info.port_type)));
+        } else {
+            BI_SET_HIDDEN(_C("Adapter Details"), 1);
+        }
     }
 }

@@ -35,7 +35,7 @@ static BOOL _coolDebugVCPresented = 0;
 - (void)DebugExportPressed {
     NSString *str = [redirectedOutput string];
     UIActivityViewController *activityViewController = [[UIActivityViewController alloc] initWithActivityItems:@[ str ] applicationActivities:nil];
-    activityViewController.popoverPresentationController.sourceView=self.navigationController.view;
+    activityViewController.popoverPresentationController.sourceView = self.navigationController.view;
     [self.navigationController presentViewController:activityViewController
                                             animated:YES
                                           completion:^{

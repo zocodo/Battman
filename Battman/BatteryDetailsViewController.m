@@ -230,23 +230,23 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     self.tableView.allowsSelection = YES; // for now no ops specified it will just be stuck
     battery_info_update(bi, true);
     batteryInfoStruct = bi;
-    int sectionNum=0;
-    for(struct battery_info_node *i=bi;i->name;i++) {
-	    if((i->content&BIN_SECTION)==BIN_SECTION) {
-		    batteryInfo[sectionNum]=i+1;
+    int sectionNum = 0;
+    for (struct battery_info_node *i = bi; i->name; i++) {
+	    if ((i->content & BIN_SECTION) == BIN_SECTION) {
+		    batteryInfo[sectionNum] = i + 1;
 		    sectionNum++;
 	    }
     }
-    for(int i=0;i<sectionNum;i++) {
-	    pendingLoadOffsets[i]=malloc(64);
+    for(int i = 0; i < sectionNum; i++) {
+	    pendingLoadOffsets[i] = malloc(64);
     }
-    self.navigationItem.rightBarButtonItem=[[UIBarButtonItem alloc] initWithTitle:@"Advanced" style:UIBarButtonItemStylePlain target:self action:@selector(showAdvanced)];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:_("Advanced") style:UIBarButtonItemStylePlain target:self action:@selector(showAdvanced)];
 
     return self;
 }
 
 - (void)dealloc {
-	for(int i=0;i<BI_SECTION_NUM;i++)
+	for (int i = 0; i < BI_SECTION_NUM; i++)
 		free(pendingLoadOffsets[i]);
 }
 
@@ -333,12 +333,12 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
 - (NSInteger)tableView:(id)tv numberOfRowsInSection:(NSInteger)section {
 	int rows = 0;
-	if(batteryInfo[section][-1].content&(1<<5))
+	if (batteryInfo[section][-1].content & (1 << 5))
 		return rows;
-	for (struct battery_info_node *i = batteryInfo[section]; i->name&&(i->content&BIN_SECTION)!=BIN_SECTION; i++) {
+	for (struct battery_info_node *i = batteryInfo[section]; i->name && (i->content & BIN_SECTION) != BIN_SECTION; i++) {
 		if ((i->content & BIN_DETAILS_SHARED) == BIN_DETAILS_SHARED ||
 				(i->content && !((i->content & BIN_IS_SPECIAL) == BIN_IS_SPECIAL))) {
-			if((i->content & 1) != 1 || (i->content & (1 << 5)) != 1 << 5) {
+			if ((i->content & 1) != 1 || (i->content & (1 << 5)) != 1 << 5) {
 				pendingLoadOffsets[section][rows] = (unsigned char)((i - batteryInfo[section]) - rows);
 				rows++;
 			}
@@ -470,8 +470,8 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         equipWarningCondition_b(cell, _("Depth of Discharge"), ^warn_condition_t(const char **str){
             warn_condition_t code = WARN_NONE;
             /* Non-genuine batteries are likely spoofing some unremarkable data */
-            /* DOD0 is not going to bigger than Qmax */
-            if (gGauge.DOD0 > gGauge.Qmax) {
+            /* DOD0 is not going to bigger than Qmax normally, but sometimes it do exceeds when discharging/charging with adapter attached */
+            if (gGauge.DOD0 > (gGauge.Qmax * 2)) {
                 code = WARN_UNUSUAL;
                 *str = _C("Unusual Depth of Discharge, A non-genuine battery component may be in use.");
             }
@@ -489,10 +489,10 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
         /* HVC Mode special handler */
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wstring-compare"
-        if (pending_bi->name=="HVC Mode") {
+        if (pending_bi->name == "HVC Mode") {
 #pragma clang diagnostic pop
 		device_info_t adapter_info;
-		is_charging(NULL,&adapter_info);
+		is_charging(NULL, &adapter_info);
             /* Parse HVC Modes if have any */
             if (adapter_info.hvc_menu[27] != 0xFF) {
 #ifdef DEBUG

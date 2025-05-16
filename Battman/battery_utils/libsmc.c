@@ -140,11 +140,14 @@ IOReturn smc_open(void) {
     return kIOReturnSuccess;
 
 fail:
-    //show_fatal_overlay_async(fail_title, _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"));
+    if (is_carbon())
+        show_fatal_overlay_async(fail_title, _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"));
 	return kIOReturnError;
 fail_unsupported:
-    //sprintf(message, _C("Your device (%s) does not support AppleSMC. Battman requires AppleSMC to function properly."), target_type());
-    //show_fatal_overlay_async(fail_title, message);
+    if (is_carbon()) {
+        sprintf(message, _C("Your device (%s) does not support AppleSMC. Battman requires AppleSMC to function properly."), target_type());
+        show_fatal_overlay_async(fail_title, message);
+    }
     return kIOReturnError;
 }
 

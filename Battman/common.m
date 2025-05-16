@@ -377,25 +377,26 @@ bool show_alert(const char *title, const char *message, const char *button) {
 @end
 
 void show_fatal_overlay_async(const char *title, const char *message) {
-	show_alert_async(title,message,"ok",^(bool idk){
+	show_alert_async(title, message, L_OK, ^(bool idk) {
 		app_exit();
 	});
 	return;
-	NSBundle *obkit=[NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/OnBoardingKit.framework"];
-	if(![obkit load]) {
-		show_alert_async(title,message,"ok",^(bool idk){
+
+	NSBundle *obkit = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/OnBoardingKit.framework"];
+	if (![obkit load]) {
+		show_alert_async(title, message, L_OK, ^(bool idk) {
 			app_exit();
 		});
 	}
-	OBSetupAssistantFinishedController *safc=[[[obkit classNamed:@"OBSetupAssistantFinishedController"] alloc] initWithTitle:[NSString stringWithUTF8String:title] detailText:[NSString stringWithUTF8String:message]];
-	if(!safc) {
-		show_alert_async(title,message,"ok",^(bool idk){
+	OBSetupAssistantFinishedController *safc = [[[obkit classNamed:@"OBSetupAssistantFinishedController"] alloc] initWithTitle:[NSString stringWithUTF8String:title] detailText:[NSString stringWithUTF8String:message]];
+	if (!safc) {
+		show_alert_async(title, message, L_OK, ^(bool idk) {
 			app_exit();
 		});
 	}
-	[safc setInstructionalText:@"Swipe up to exit"];
-	UIWindow *keyWindow=[[UIApplication sharedApplication] keyWindow];
-	keyWindow.rootViewController=safc;
+	[safc setInstructionalText:_("Swipe up to exit")];
+	UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+	keyWindow.rootViewController = safc;
 }
 
 void show_alert_async(const char *title, const char *message, const char *button, void (^completion)(bool result)) {
