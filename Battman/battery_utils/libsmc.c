@@ -854,12 +854,13 @@ static const char *port_types[] = {
     _C("USB-C"),
     _C("USB-A"),
     _C("MiniDP"),
-    _C("FireWire800"),
+    _C("FireWire 800"),
     _C("HDMI"),
     _C("AudioJack-Mini"),
     _C("Ethernet"),
     _C("MagSafe"), // This is typically old MagSafe charger port on old MacBooks
-    _C("MagSafe2"),
+    _C("MagSafe 2"),
+    /* TODO: Things changed since MagSafe3 added, try to get a list from IOAM */
     _C("SD Card"),
     _C("Lightning"),
     _C("30-Pin"),
