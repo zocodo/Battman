@@ -25,10 +25,7 @@ const char *bin_unit_strings[] = {
 
 struct battery_info_node main_battery_template[] = {
     { _C("Gas Gauge (Basic)"), NULL, BIN_SECTION },
-    { _C("Device Name"),
-     _C("This indicates the name of the current Gas Gauge IC used by the "
-           "installed battery."),
-     0 },
+    { _C("Device Name"), _C("This indicates the name of the current Gas Gauge IC used by the installed battery."), },
     { _C("Health"), NULL, BIN_IS_BACKGROUND | BIN_UNIT_PERCENT },
     { _C("SoC"), NULL, BIN_IS_FLOAT | BIN_UNIT_PERCENT },
     { _C("Avg. Temperature"), NULL, BIN_IS_FLOAT | BIN_UNIT_DEGREE_C | BIN_DETAILS_SHARED },
@@ -37,19 +34,10 @@ struct battery_info_node main_battery_template[] = {
     { _C("Full Charge Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
     { _C("Designed Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
     { _C("Remaining Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
-    { _C("Battery Uptime"),
-     _C("The length of time the Battery Management System (BMS) has been up."),
-     BIN_UNIT_MIN | BIN_IN_DETAILS },
+    { _C("Battery Uptime"), _C("The length of time the Battery Management System (BMS) has been up."), BIN_UNIT_MIN | BIN_IN_DETAILS },
     { _C("Qmax"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
-    { _C("Depth of Discharge"),
-     _C("Current chemical depth of discharge (DOD₀). The gas gauge updates "
-           "information on the DOD₀ based on open-circuit voltage (OCV) readings "
-           "when in a relaxed state."),
-     BIN_UNIT_MAH | BIN_IN_DETAILS },
-    { _C("Passed Charge"),
-     _C("The cumulative capacity of the current charging or discharging cycle. "
-           "It is reset to zero with each DOD₀ update."),
-     BIN_UNIT_MAH | BIN_IN_DETAILS },
+    { _C("Depth of Discharge"), _C("Current chemical depth of discharge (DOD₀). The gas gauge updates information on the DOD₀ based on open-circuit voltage (OCV) readings when in a relaxed state."), BIN_UNIT_MAH | BIN_IN_DETAILS },
+    { _C("Passed Charge"), _C("The cumulative capacity of the current charging or discharging cycle. It is reset to zero with each DOD₀ update."), BIN_UNIT_MAH | BIN_IN_DETAILS },
     { _C("Voltage"), NULL, BIN_UNIT_MVOLT | BIN_IN_DETAILS },
     { _C("Avg. Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
     { _C("Avg. Power"), NULL, BIN_UNIT_MWATT | BIN_IN_DETAILS },
@@ -59,17 +47,11 @@ struct battery_info_node main_battery_template[] = {
     { _C("Cycle Count"), NULL, BIN_IN_DETAILS },
     { _C("Designed Cycle Count"), NULL, BIN_IN_DETAILS },
     { _C("State Of Charge"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS },
-    { _C("State Of Charge (UI)"),
-     _C("The \"Battery Percentage\" displayed exactly on your status bar. This "
-           "is the SoC that Apple wants to tell you."),
-     BIN_UNIT_PERCENT | BIN_IN_DETAILS },
+    { _C("State Of Charge (UI)"), _C("The \"Battery Percentage\" displayed exactly on your status bar. This is the SoC that Apple wants to tell you."), BIN_UNIT_PERCENT | BIN_IN_DETAILS },
     { _C("Resistance Scale"), NULL, BIN_IN_DETAILS },
     { _C("Battery Serial No."), NULL, 0 },
     { _C("Chemistry ID"),
-     _C("Chemistry unique identifier (ChemID) assigned to each battery in "
-           "Texas Instruments' database. It ensures accurate calculations and "
-           "predictions."),
-     0 },
+     _C("Chemistry unique identifier (ChemID) assigned to each battery in Texas Instruments' database. It ensures accurate calculations and predictions."), 0 },
     { _C("Flags"), NULL, 0 },
     { _C("True Remaining Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
     { _C("OCV Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
@@ -77,13 +59,8 @@ struct battery_info_node main_battery_template[] = {
     { _C("Max Load Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
     { _C("Max Load Current 2"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
     { _C("IT Misc Status"),
-     _C("This field refers to the miscellaneous data returned by battery "
-           "Impedance Track™ Gas Gauge IC."),
-     0 },
-    { _C("Simulation Rate"),
-     _C("This field refers to the rate of Gas Gauge performing Impedance "
-           "Track™ simulations."),
-     BIN_UNIT_HOUR | BIN_IN_DETAILS },
+     _C("This field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC."), 0 },
+    { _C("Simulation Rate"), _C("This field refers to the rate of Gas Gauge performing Impedance Track™ simulations."), BIN_UNIT_HOUR | BIN_IN_DETAILS },
     { _C("Daily Max SoC"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS },
     { _C("Daily Min SoC"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS },
     { _C("Adapter Details"), NULL, BIN_SECTION },
