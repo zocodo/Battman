@@ -26,6 +26,9 @@
 	<key>platform-application</key>
 	<true/>
 	<!-- containerize -->
+	<!--<key>com.apple.private.security.container-required</key>
+	<true/>-->
+	<!-- ^ Required when making system app -->
 	<key>com.apple.private.security.container-manager</key>
 	<true/>
 	<key>com.apple.private.security.storage.AppDataContainers</key>

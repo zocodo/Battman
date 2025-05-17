@@ -364,9 +364,9 @@ void battery_info_update_iokit_with_data(struct battery_info_node *head, const v
 	CFNumberGetValue(designCapacityNum,kCFNumberSInt16Type,(void*)&design_cap);
 	CFNumberGetValue(fullCapacityNum,kCFNumberSInt16Type,(void*)&full_cap);
 	CFNumberGetValue(remainingCapacityNum,kCFNumberSInt16Type,(void*)&remain_cap);
-	BI_SET_ITEM(_C("Health"), 100.0f * (float)full_cap / (float)design_cap);
-	BI_SET_ITEM(_C("SoC"), 100.0f * (float)remain_cap / (float)full_cap);
-	BI_SET_ITEM("ASoC(Hidden)", 100.0f * remain_cap / design_cap);
+	BI_SET_ITEM_IF(1,_C("Health"), 100.0f * (float)full_cap / (float)design_cap);
+	BI_SET_ITEM_IF(1,_C("SoC"), 100.0f * (float)remain_cap / (float)full_cap);
+	BI_SET_ITEM("ASoC(Hidden)", 100.0f * (float)remain_cap / (float)design_cap);
 	if(inDetail) {
 		CFDictionaryRef batteryData=CFDictionaryGetValue(info,CFSTR("BatteryData"));
 		if(batteryData) {

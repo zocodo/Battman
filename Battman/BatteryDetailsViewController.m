@@ -248,6 +248,8 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     for(int i = 0; i < sectionNum; i++) {
 	    pendingLoadOffsets[i] = malloc(64);
     }
+    if(!hasSMC)
+	    return self;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:_("Advanced") style:UIBarButtonItemStylePlain target:self action:@selector(showAdvanced)];
 
     return self;
