@@ -163,8 +163,16 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     [self updateTableView];
 }
 
-- (void)batteryStatusDidUpdate {
-	[self updateTableView];
+- (void)batteryStatusDidUpdate:(NSDictionary *)info {
+	BOOL charging=[info[@"IsCharging"] boolValue];
+	if(charging!=last_charging) {
+		last_charging=charging;
+		[self updateTableView];
+		return;
+	}
+	battery_info_update_iokit_with_data(batteryInfoStruct,(__bridge CFDictionaryRef)info,1);
+	[self.tableView reloadData];
+	// DO NOT CALL updateTableView
 }
 
 - (void)viewDidLoad {

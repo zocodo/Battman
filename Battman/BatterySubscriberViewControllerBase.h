@@ -6,4 +6,5 @@
 	id observerToUnsubscribe;
 }
 - (void)batteryStatusDidUpdate;
+- (void)batteryStatusDidUpdate:(NSDictionary *)info;
 @end

@@ -124,6 +124,8 @@ struct iopm_property {
 // 0 - signed int32 - equivalent to kCFNumberSInt32Type
 // 500 - bool
 // 501 - CFStringRef
+// 502 - bool (set hidden)
+// 502 - bool (set hidden - inverted)
 // (CFStringRef) 1 - first item in array (fail if not an array, will not crash)
 
 #define IPCandidateGroup(...) \
@@ -133,31 +135,47 @@ struct iopm_property {
 #define IPSingleCandidate(...) \
     (CFStringRef *[]) { (CFStringRef[]) { __VA_ARGS__, NULL }, NULL }
 
-struct iopm_property iopm_items[] = {
-    { _C("Avg. Temperature"), IPSingleCandidate(CFSTR("Temperature")), kCFNumberSInt16Type, 0, 1.0 / 100.0 },
-    { _C("Charging"), IPSingleCandidate(CFSTR("IsCharging")), 500, 0, 0 },
-    { _C("Full Charge Capacity"), IPSingleCandidate(CFSTR("AppleRawMaxCapacity")), kCFNumberSInt16Type, 1, 0 },
-    { _C("Designed Capacity"), IPSingleCandidate(CFSTR("DesignCapacity")), kCFNumberSInt16Type, 1, 0 },
-    { _C("Remaining Capacity"), IPSingleCandidate(CFSTR("AppleRawCurrentCapacity")), kCFNumberSInt16Type, 1, 0 },
-    { _C("Battery Uptime"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("LifetimeData"), CFSTR("TotalOperatingTime")), 0, 1, 1.0 / 60.0 },
-    { _C("Qmax"), IPCandidateGroup(IPCandidate(CFSTR("BatteryData"), CFSTR("Qmax"), (CFStringRef)1), IPCandidate(CFSTR("BatteryData"), CFSTR("QmaxCell0"))), 0, 1, 0 },
-    { _C("Depth of Discharge"), IPCandidateGroup(IPCandidate(CFSTR("BatteryData"), CFSTR("DOD0"), (CFStringRef)1), IPCandidate(CFSTR("BatteryFCCData"), CFSTR("DOD0"))), 0, 1, 0 },
-    { _C("Passed Charge"), IPCandidateGroup(IPCandidate(CFSTR("BatteryData"), CFSTR("PassedCharge")), IPCandidate(CFSTR("BatteryFCCData"), CFSTR("PassedCharge"))), 0, 1, 0 },
-    { _C("Voltage"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("Voltage")), 0, 1, 0 },
-    { _C("Avg. Current"), IPSingleCandidate(CFSTR("InstantAmperage")), 0, 1, 0 },
-    { _C("Cycle Count"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("CycleCount")), 0, 1, 0 },
-    { _C("State Of Charge"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("StateOfCharge")), 0, 1, 0 },
-    { _C("State Of Charge (UI)"), IPSingleCandidate(CFSTR("CurrentCapacity")), 0, 1, 0 },
-    { _C("Resistance Scale"), IPSingleCandidate(CFSTR("BatteryFCCData"), CFSTR("ResScale")), 0, 1, 0 },
-    { _C("Battery Serial No."), IPSingleCandidate(CFSTR("Serial")), 501, 1, 0 },
- // Chemistry ID: To be done programmatically
-  // Flags: TBD Prg/ly
-    { _C("True Remaining Capacity"), IPSingleCandidate(CFSTR("AbsoluteCapacity")), 0, 1, 0 },
- //{_C("IT Misc Status"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("ITMiscStatus")),0,1,0},
-    { _C("Simulation Rate"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("SimRate")), 0, 1, 0 },
-    { _C("Daily Max SoC"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("DailyMaxSoc")), 0, 1, 0 },
-    { _C("Daily Min SoC"), IPSingleCandidate(CFSTR("BatteryData"), CFSTR("DailyMinSoc")), 0, 1, 0 },
-    { NULL }
+struct iopm_property iopm_items[]={
+	{_C("Avg. Temperature"), IPSingleCandidate(CFSTR("Temperature")),kCFNumberSInt16Type,0,1.0/100.0},
+	{_C("Charging"),IPSingleCandidate(CFSTR("IsCharging")),500,0,0},
+	{_C("Full Charge Capacity"),IPSingleCandidate(CFSTR("AppleRawMaxCapacity")),kCFNumberSInt16Type,1,0},
+	{_C("Designed Capacity"),IPSingleCandidate(CFSTR("DesignCapacity")),kCFNumberSInt16Type,1,0},
+	{_C("Remaining Capacity"),IPSingleCandidate(CFSTR("AppleRawCurrentCapacity")),kCFNumberSInt16Type,1,0},
+	{_C("Battery Uptime"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("LifetimeData"),CFSTR("TotalOperatingTime")),0,1,1.0/60.0},
+	{_C("Qmax"),IPCandidateGroup(IPCandidate(CFSTR("BatteryData"),CFSTR("Qmax"),(CFStringRef)1),IPCandidate(CFSTR("BatteryData"),CFSTR("QmaxCell0"))),0,1,0},
+	{_C("Depth of Discharge"),IPCandidateGroup(IPCandidate(CFSTR("BatteryData"),CFSTR("DOD0"),(CFStringRef)1),IPCandidate(CFSTR("BatteryFCCData"),CFSTR("DOD0"))),0,1,0},
+	{_C("Passed Charge"),IPCandidateGroup(IPCandidate(CFSTR("BatteryData"),CFSTR("PassedCharge")),IPCandidate(CFSTR("BatteryFCCData"),CFSTR("PassedCharge"))),0,1,0},
+	{_C("Voltage"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("Voltage")),0,1,0},
+	{_C("Avg. Current"),IPSingleCandidate(CFSTR("InstantAmperage")),0,1,0},
+	{_C("Cycle Count"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("CycleCount")),0,1,0},
+	{_C("State Of Charge"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("StateOfCharge")),0,1,0},
+	{_C("State Of Charge (UI)"),IPSingleCandidate(CFSTR("CurrentCapacity")),0,1,0},
+	{_C("Resistance Scale"),IPSingleCandidate(CFSTR("BatteryFCCData"),CFSTR("ResScale")),0,1,0},
+	{_C("Battery Serial No."),IPSingleCandidate(CFSTR("Serial")),501,1,0},
+	// Chemistry ID: To be done programmatically
+	// Flags: TBD Prg/ly
+	{_C("True Remaining Capacity"),IPSingleCandidate(CFSTR("AbsoluteCapacity")),0,1,0},
+	//{_C("IT Misc Status"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("ITMiscStatus")),0,1,0},
+	{_C("Simulation Rate"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("SimRate")),0,1,0},
+	{_C("Daily Max SoC"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("DailyMaxSoc")),0,1,0},
+	{_C("Daily Min SoC"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("DailyMinSoc")),0,1,0},
+	{_C("Adapter Details"),IPSingleCandidate(CFSTR("IsCharging")),503,1,0},
+	// Port???
+	// Port Type???
+	// Type TBD programmatically
+	// Status???
+	{_C("Current Rating"),IPSingleCandidate(CFSTR("AdapterDetails"),CFSTR("Current")),0,1,0},
+	{_C("Voltage Rating"),IPSingleCandidate(CFSTR("AdapterDetails"),CFSTR("Voltage")),0,1,0},
+	// Charger ID prog
+	{_C("Description"),IPSingleCandidate(CFSTR("AdapterDetails"),CFSTR("Description")),501,1,0},
+	{_C("PMU Configuration"),IPSingleCandidate(CFSTR("AdapterDetails"),CFSTR("PMUConfiguration")),0,1,0},
+	{_C("Model Name"),IPSingleCandidate(CFSTR("AdapterDetails"),CFSTR("Name")),501,1,0},
+	// Model p
+	{_C("Manufacturer"),IPSingleCandidate(CFSTR("AdapterDetails"),CFSTR("Manufacturer")),501,1,0},
+	{_C("Firmware Version"),IPSingleCandidate(CFSTR("AdapterDetails"),CFSTR("FwVersion")),501,1,0},
+	{_C("Hardware Version"),IPSingleCandidate(CFSTR("AdapterDetails"),CFSTR("HwVersion")),501,1,0},
+	{_C("Serial No."),IPSingleCandidate(CFSTR("AdapterDetails"),CFSTR("SerialString")),501,1,0},
+	{NULL}
 };
 
 struct battery_info_node *bi_construct_array(void)
@@ -327,106 +345,121 @@ extern void *IOServiceMatching(const char *);
 extern void *IOServiceGetMatchingService(int, void *);
 extern int IORegistryEntryCreateCFProperties(void *, CFMutableDictionaryRef *, int, int);
 
-void battery_info_update_iokit(struct battery_info_node *head, bool inDetail)
-{
-    void *service                         = IOServiceGetMatchingService(0, IOServiceMatching("IOPMPowerSource"));
-    struct battery_info_node *head_arr[2] = { head, head };
-    CFMutableDictionaryRef info;
-    int ret = IORegistryEntryCreateCFProperties(service, &info, 0, 0);
-    if (ret != 0) {
-        fprintf(stderr, "battery_info_update_iokit: Failed to get info from IOPMPowerSource\n");
-        return;
-    }
-    uint16_t remain_cap, full_cap, design_cap;
-    uint16_t temperature;
-    CFNumberRef designCapacityNum    = CFDictionaryGetValue(info, CFSTR("DesignCapacity"));
-    CFNumberRef fullCapacityNum      = CFDictionaryGetValue(info, CFSTR("AppleRawMaxCapacity"));
-    CFNumberRef remainingCapacityNum = CFDictionaryGetValue(info, CFSTR("AppleRawCurrentCapacity"));
-    if (!designCapacityNum || !fullCapacityNum || !remainingCapacityNum) {
-        // Basic info required
-        fprintf(stderr, "battery_info_update_iokit: Basic info required not present\n");
-        CFRelease(info);
-        return;
-    }
-    CFNumberGetValue(designCapacityNum, kCFNumberSInt16Type, (void *)&design_cap);
-    CFNumberGetValue(fullCapacityNum, kCFNumberSInt16Type, (void *)&full_cap);
-    CFNumberGetValue(remainingCapacityNum, kCFNumberSInt16Type, (void *)&remain_cap);
-    BI_SET_ITEM(_C("Health"), 100.0f * (float)full_cap / (float)design_cap);
-    BI_SET_ITEM(_C("SoC"), 100.0f * (float)remain_cap / (float)full_cap);
-    BI_SET_ITEM("ASoC(Hidden)", 100.0f * remain_cap / design_cap);
-    if (inDetail) {
-        CFDictionaryRef batteryData = CFDictionaryGetValue(info, CFSTR("BatteryData"));
-        if (batteryData) {
-            int val = 0;
-            CFNumberRef ChemIDNum = CFDictionaryGetValue(batteryData, CFSTR("ChemID"));
-            if (ChemIDNum)
-                CFNumberGetValue(ChemIDNum, kCFNumberSInt32Type, (void *)&val);
-            BI_FORMAT_ITEM_IF(ChemIDNum, _C("Chemistry ID"), "0x%.8X", val);
-            CFNumberRef FlagsNum = CFDictionaryGetValue(batteryData, CFSTR("Flags"));
-            if (FlagsNum)
-                CFNumberGetValue(FlagsNum, kCFNumberSInt32Type, (void *)&val);
-            BI_FORMAT_ITEM_IF(FlagsNum, _C("Flags"), "0x%.4X", val);
-            CFNumberRef ITMiscNum = CFDictionaryGetValue(batteryData, CFSTR("ITMiscStatus"));
-            if (ITMiscNum)
-                CFNumberGetValue(ITMiscNum, kCFNumberSInt32Type, (void *)&val);
-            BI_FORMAT_ITEM_IF(ITMiscNum, _C("IT Misc Status"), "0x%.4X", val);
-        }
-    }
-    CFTypeRef lastItem;
-    for (struct iopm_property *i = iopm_items; i->name; i++) {
-        int succ = 0;
-        for (CFStringRef **ppath = i->candidates; *ppath; ppath++) {
-            lastItem = info;
-            for (CFStringRef *elem = *ppath; *elem; elem++) {
-                if (*elem == (CFStringRef)1) {
-                    if (CFGetTypeID(lastItem) != CFArrayGetTypeID()) {
-                        lastItem = NULL;
-                        break;
-                    }
-                    lastItem = CFArrayGetValueAtIndex(lastItem, 0);
-                } else {
-                    if (CFGetTypeID(lastItem) != CFDictionaryGetTypeID()) {
-                        lastItem = NULL;
-                        break;
-                    }
-                    lastItem = CFDictionaryGetValue(lastItem, *elem);
-                }
-                if (!lastItem)
-                    break;
-            }
-            if (!lastItem)
-                continue;
-            int val = 0;
-            if (i->property_type == 500) {
-                if (CFGetTypeID(lastItem) != CFBooleanGetTypeID())
-                    continue;
-                val = CFBooleanGetValue(lastItem);
-            } else if (i->property_type == 501) {
-                if (CFGetTypeID(lastItem) != CFStringGetTypeID())
-                    continue;
-                CFStringGetCString(lastItem, BI_ENSURE_STR(i->name), 256, kCFStringEncodingUTF8);
-                succ = 1;
-                break;
-            } else {
-                if (CFGetTypeID(lastItem) != CFNumberGetTypeID())
-                    continue;
-                CFNumberGetValue(lastItem, i->property_type ? i->property_type : kCFNumberSInt32Type, (void *)&val);
-                if (i->property_type == kCFNumberSInt16Type)
-                    val = (int)(short)val;
-            }
-            if (i->multiplier) {
-                BI_SET_ITEM(i->name, (double)val * i->multiplier);
-            } else {
-                BI_SET_ITEM(i->name, val);
-            }
-            succ = 1;
-            break;
-        }
-        if (!succ) {
-            BI_SET_ITEM_IF(0, i->name, 0);
-        }
-    }
-    CFRelease(info);
+// void *info is ok bc CFDictionaryRef is literally typedef of void *
+void battery_info_update_iokit_with_data(struct battery_info_node *head, const void *info, bool inDetail) {
+	struct battery_info_node *head_arr[2] = {head, head};
+	uint16_t remain_cap,full_cap,design_cap;
+	uint16_t temperature;
+	CFNumberRef designCapacityNum=CFDictionaryGetValue(info,CFSTR("DesignCapacity"));
+	CFNumberRef fullCapacityNum=CFDictionaryGetValue(info,CFSTR("AppleRawMaxCapacity"));
+	CFNumberRef remainingCapacityNum=CFDictionaryGetValue(info,CFSTR("AppleRawCurrentCapacity"));
+	if(!designCapacityNum||!fullCapacityNum||!remainingCapacityNum) {
+		// Basic info required
+		fprintf(stderr, "battery_info_update_iokit: Basic info required not present\n");
+		CFRelease(info);
+		return;
+	}
+	CFNumberGetValue(designCapacityNum,kCFNumberSInt16Type,(void*)&design_cap);
+	CFNumberGetValue(fullCapacityNum,kCFNumberSInt16Type,(void*)&full_cap);
+	CFNumberGetValue(remainingCapacityNum,kCFNumberSInt16Type,(void*)&remain_cap);
+	BI_SET_ITEM(_C("Health"), 100.0f * (float)full_cap / (float)design_cap);
+	BI_SET_ITEM(_C("SoC"), 100.0f * (float)remain_cap / (float)full_cap);
+	BI_SET_ITEM("ASoC(Hidden)", 100.0f * remain_cap / design_cap);
+	if(inDetail) {
+		CFDictionaryRef batteryData=CFDictionaryGetValue(info,CFSTR("BatteryData"));
+		if(batteryData) {
+			int val;
+			CFNumberRef ChemIDNum=CFDictionaryGetValue(batteryData,CFSTR("ChemID"));
+			if(ChemIDNum)
+				CFNumberGetValue(ChemIDNum,kCFNumberSInt32Type,(void*)&val);
+			BI_FORMAT_ITEM_IF(ChemIDNum,_C("Chemistry ID"),"0x%.8X",val);
+			CFNumberRef FlagsNum=CFDictionaryGetValue(batteryData,CFSTR("Flags"));
+			if(FlagsNum)
+				CFNumberGetValue(FlagsNum,kCFNumberSInt32Type,(void*)&val);
+			BI_FORMAT_ITEM_IF(FlagsNum,_C("Flags"), "0x%.4X", val);
+			CFNumberRef ITMiscNum=CFDictionaryGetValue(batteryData,CFSTR("ITMiscStatus"));
+			if(ITMiscNum)
+				CFNumberGetValue(ITMiscNum,kCFNumberSInt32Type,(void*)&val);
+			BI_FORMAT_ITEM_IF(ITMiscNum,_C("IT Misc Status"), "0x%.4X", val);
+		}
+	}
+	CFTypeRef lastItem;
+	for(struct iopm_property *i=iopm_items;i->name;i++) {
+		int succ=0;
+		for(CFStringRef **ppath=i->candidates;*ppath;ppath++) {
+			lastItem=info;
+			for(CFStringRef *elem=*ppath;*elem;elem++) {
+				if(*elem==(CFStringRef)1) {
+					if(CFGetTypeID(lastItem)!=CFArrayGetTypeID()) {
+						lastItem=NULL;
+						break;
+					}
+					lastItem=CFArrayGetValueAtIndex(lastItem,0);
+				}else{
+					if(CFGetTypeID(lastItem)!=CFDictionaryGetTypeID()) {
+						lastItem=NULL;
+						break;
+					}
+					lastItem=CFDictionaryGetValue(lastItem,*elem);
+				}
+				if(!lastItem)
+					break;
+			}
+			if(!lastItem)
+				continue;
+			int val=0;
+			if(i->property_type==500) {
+				if(CFGetTypeID(lastItem)!=CFBooleanGetTypeID())
+					continue;
+				val=CFBooleanGetValue(lastItem);
+			}else if(i->property_type==501) {
+				if(CFGetTypeID(lastItem)!=CFStringGetTypeID())
+					continue;
+				CFStringGetCString(lastItem,BI_ENSURE_STR(i->name),256,kCFStringEncodingUTF8);
+				succ=1;
+				break;
+			}else if(i->property_type==502) {
+				if(CFGetTypeID(lastItem)!=CFBooleanGetTypeID())
+					continue;
+				succ=!CFBooleanGetValue(lastItem);
+				BI_SET_HIDDEN(i->name,!succ);
+				break;
+			}else if(i->property_type==503) {
+				if(CFGetTypeID(lastItem)!=CFBooleanGetTypeID())
+					continue;
+				succ=CFBooleanGetValue(lastItem);
+				BI_SET_HIDDEN(i->name,!succ);
+				break;
+			}else{
+				if(CFGetTypeID(lastItem)!=CFNumberGetTypeID())
+					continue;
+				CFNumberGetValue(lastItem,i->property_type?i->property_type:kCFNumberSInt32Type,(void*)&val);
+				if(i->property_type==kCFNumberSInt16Type)
+					val=(int)(short)val;
+			}
+			if(i->multiplier) {
+				BI_SET_ITEM(i->name,(double)val * i->multiplier);
+			}else{
+				BI_SET_ITEM(i->name,val);
+			}
+			succ=1;
+			break;
+		}
+		//BI_SET_HIDDEN(i->name,!succ);
+		//TODO: Handle hiding unsuccessful fetches outside
+	}
+}
+
+void battery_info_update_iokit(struct battery_info_node *head, bool inDetail) {
+	void *service=IOServiceGetMatchingService(0,IOServiceMatching("IOPMPowerSource"));
+	CFMutableDictionaryRef info;
+	int ret=IORegistryEntryCreateCFProperties(service,&info,0,0);
+	if(ret!=0) {
+		fprintf(stderr, "battery_info_update_iokit: Failed to get info from IOPMPowerSource\n");
+		return;
+	}
+	battery_info_update_iokit_with_data(head,info,inDetail);
+	CFRelease(info);
 }
 
 extern const char *cond_localize_c(const char *);

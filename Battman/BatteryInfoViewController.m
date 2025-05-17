@@ -24,8 +24,8 @@ enum sections_batteryinfo {
     return _("Battman");
 }
 
-- (void)batteryStatusDidUpdate {
-	battery_info_update(batteryInfo, 0);
+- (void)batteryStatusDidUpdate:(NSDictionary *)info {
+	battery_info_update_iokit_with_data(batteryInfo,(__bridge CFDictionaryRef)info,0);
 	[super batteryStatusDidUpdate];
 }
 

@@ -112,6 +112,8 @@ char *bi_node_ensure_string(struct battery_info_node *node, int identifier,
 char *bi_node_get_string(struct battery_info_node *node);
 void bi_node_free_string(struct battery_info_node *node);
 void battery_info_update(struct battery_info_node *head, bool inDetail);
+void battery_info_update_iokit_with_data(struct battery_info_node *head, const void *info, bool inDetail);
+void battery_info_update_iokit(struct battery_info_node *head, bool inDetail);
 struct battery_info_node *battery_info_init(void);
 
 __END_DECLS

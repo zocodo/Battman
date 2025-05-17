@@ -2,6 +2,10 @@
 
 @implementation BatterySubscriberViewControllerBase
 
+- (void)batteryStatusDidUpdate:(NSDictionary *)info {
+	[self batteryStatusDidUpdate];
+}
+
 - (void)batteryStatusDidUpdate {
 	[self.tableView reloadData];
 }
@@ -14,7 +18,7 @@
 - (void)viewDidAppear:(BOOL)a {
 	[super viewDidAppear:a];
 	observerToUnsubscribe = [[NSNotificationCenter defaultCenter] addObserverForName:@"SMC60000" object:nil queue:NSOperationQueue.mainQueue usingBlock:^(NSNotification *n){
-		[self batteryStatusDidUpdate];
+		[self batteryStatusDidUpdate:n.userInfo];
 	}];
 }
 

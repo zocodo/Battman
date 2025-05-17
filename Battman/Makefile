@@ -94,7 +94,7 @@ build/preprocessed/localization_data.c: Localizations/*.po Localizations/base.po
 
 $(OBJECTS): build/objects/%.o: %
 	@mkdir -p $(@D)
-	$(CC) $(CFLAGS) -I.$(subst build/preprocessed,,$(dir $<)) -c $< -o $@
+	$(CC) $(CFLAGS) -I./$(subst build/preprocessed,,$(dir $<)) -c $< -o $@
 $(POBJECTS): build/objects/%.o: build/preprocessed/%
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -I.$(dir $<) -c $< -o $@
