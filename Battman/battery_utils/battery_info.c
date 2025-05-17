@@ -224,6 +224,8 @@ void bi_node_set_hidden(struct battery_info_node *node, int identifier,
 {
     node += identifier;
     // assert((node->content & BIN_IN_DETAILS) == BIN_IN_DETAILS);
+    if(!node->content)
+	    return;
     if (hidden) {
         node->content |= (1 << 5);
     } else {
@@ -445,8 +447,8 @@ void battery_info_update_iokit_with_data(struct battery_info_node *head, const v
 			succ=1;
 			break;
 		}
-		//BI_SET_HIDDEN(i->name,!succ);
-		//TODO: Handle hiding unsuccessful fetches outside
+		if(succ)
+			BI_SET_HIDDEN(i->name,0);
 	}
 }
 
@@ -464,8 +466,14 @@ void battery_info_update_iokit(struct battery_info_node *head, bool inDetail) {
 
 extern const char *cond_localize_c(const char *);
 
-void battery_info_update(struct battery_info_node *head, bool inDetail)
-{
+void battery_info_update(struct battery_info_node *head, bool inDetail) {
+	if(!hasSMC) {
+		for(struct battery_info_node *i=head+1;i->name;i++) {
+			bi_node_set_hidden(i,0,1);
+		}
+		battery_info_update_iokit(head,inDetail);
+		return;
+	}
     uint16_t remain_cap, full_cap, design_cap;
     get_capacity(&remain_cap, &full_cap, &design_cap);
 

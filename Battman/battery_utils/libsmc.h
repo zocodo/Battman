@@ -10,6 +10,8 @@
        Please file an issue if you would like to contribute!
 #endif
 
+extern int hasSMC;
+
 /* SMC operations */
 typedef CF_ENUM(UInt8, SMCIndex) {
     /* the user client method name constants */

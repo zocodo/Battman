@@ -98,6 +98,8 @@ enum {
     if (result != kIOReturnSuccess)     \
     return FAIL_RETURN
 
+int hasSMC=1;
+
 extern bool show_alert(const char *, const char *, const char *);
 extern void show_alert_async(const char *, const char *, const char *, void (^)(bool));
 extern void app_exit(void);
@@ -108,6 +110,8 @@ gas_gauge_t gGauge = {0};
 board_info_t gBoard = {0};
 
 IOReturn smc_open(void) {
+	if(!hasSMC)
+		goto fail;
     IOReturn result;
     mach_port_t masterPort;
     io_service_t service;
@@ -139,15 +143,18 @@ IOReturn smc_open(void) {
 
     return kIOReturnSuccess;
 
+fail_unsupported:
+    hasSMC=0;
 fail:
-    if (is_carbon())
+    // Info will be fetched via IOPMPowerSource if no SMC present
+    /*if (is_carbon())
         show_fatal_overlay_async(fail_title, _C("This typically means you did not install Battman with correct entitlements, please reinstall by checking instructions at https://github.com/Torrekie/Battman"));
 	return kIOReturnError;
 fail_unsupported:
     if (is_carbon()) {
         sprintf(message, _C("Your device (%s) does not support AppleSMC. Battman requires AppleSMC to function properly."), target_type());
         show_fatal_overlay_async(fail_title, message);
-    }
+    }*/
     return kIOReturnError;
 }
 
