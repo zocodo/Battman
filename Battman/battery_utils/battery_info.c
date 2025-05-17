@@ -137,7 +137,7 @@ struct iopm_property {
 
 struct iopm_property iopm_items[]={
 	{_C("Avg. Temperature"), IPSingleCandidate(CFSTR("Temperature")),kCFNumberSInt16Type,0,1.0/100.0},
-	{_C("Charging"),IPSingleCandidate(CFSTR("IsCharging")),500,0,0},
+	{_C("Charging"),IPSingleCandidate(CFSTR("AppleRawExternalConnected")),500,0,0},
 	{_C("Full Charge Capacity"),IPSingleCandidate(CFSTR("AppleRawMaxCapacity")),kCFNumberSInt16Type,1,0},
 	{_C("Designed Capacity"),IPSingleCandidate(CFSTR("DesignCapacity")),kCFNumberSInt16Type,1,0},
 	{_C("Remaining Capacity"),IPSingleCandidate(CFSTR("AppleRawCurrentCapacity")),kCFNumberSInt16Type,1,0},
@@ -159,7 +159,7 @@ struct iopm_property iopm_items[]={
 	{_C("Simulation Rate"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("SimRate")),0,1,0},
 	{_C("Daily Max SoC"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("DailyMaxSoc")),0,1,0},
 	{_C("Daily Min SoC"),IPSingleCandidate(CFSTR("BatteryData"),CFSTR("DailyMinSoc")),0,1,0},
-	{_C("Adapter Details"),IPSingleCandidate(CFSTR("IsCharging")),503,1,0},
+	{_C("Adapter Details"),IPSingleCandidate(CFSTR("AppleRawExternalConnected")),503,1,0},
 	// Port???
 	// Port Type???
 	// Type TBD programmatically

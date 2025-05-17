@@ -164,7 +164,7 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 }
 
 - (void)batteryStatusDidUpdate:(NSDictionary *)info {
-	BOOL charging=[info[@"IsCharging"] boolValue];
+	BOOL charging=[info[@"AppleRawExternalConnected"] boolValue];
 	if(charging!=last_charging) {
 		last_charging=charging;
 		[self updateTableView];
