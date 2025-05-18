@@ -82,7 +82,7 @@ const char *acc_powermode_string(AccessoryPowermode powermode) {
 	static char modestr[32];
 	// IOAM modes are starting form 1
 	if ((powermode - 1) < kIOAMPowermodeCount) {
-		return acc_powermodes[powermode - 1];
+		return _C(acc_powermodes[powermode - 1]);
 	}
 
 	snprintf(modestr, 32, "<%d>", powermode);
@@ -94,7 +94,7 @@ const char *acc_powermode_string_supported(accessory_powermode_t mode) {
 
 	static char buffer[1024];
 	memset(buffer, 0, sizeof(buffer));
-	sprintf(buffer, "%s: ", _C("Supported"));
+	sprintf(buffer, "%s: ", _C("Supported List"));
 	for (size_t i = 0; i < mode.supported_cnt; i++) {
 		sprintf(buffer, "%s%s<%lu %s>\n", buffer, acc_powermode_string(mode.supported[i]), mode.supported_lim[i], L_MA);
 	}
@@ -130,11 +130,12 @@ io_iterator_t IOAccessoryManagerGetServices(void) {
 
 /* TODO: Runtime check of Sim IOAM existence */
 
-io_connect_t acc_open_with_port(int port) {
+io_service_t acc_open_with_port(int port) {
 #if TARGET_OS_SIMULATOR
 	return MACH_PORT_NULL;
 #endif
 
+	/*
 	IOReturn kr = kIOReturnSuccess;
 	io_connect_t connect = MACH_PORT_NULL;
 
@@ -147,13 +148,17 @@ io_connect_t acc_open_with_port(int port) {
 	}
 
 	return connect;
+*/
+	return IOAccessoryManagerGetServiceWithPrimaryPort(port);
 }
 
 SInt32 get_accid(io_connect_t connect) {
 #if TARGET_OS_SIMULATOR
 	return 100;
 #else
-	return IOAccessoryManagerGetAccessoryID(connect);
+	SInt32 accid = IOAccessoryManagerGetAccessoryID(connect);
+	DBGLOG(CFSTR("accid: %d"), accid);
+	return accid;
 #endif
 }
 
@@ -180,7 +185,7 @@ SInt32 get_acc_allowed_features(io_connect_t connect) {
 	} else {
 		DBGLOG(CFSTR("get_allowed_features: None"));
 	}
-	CFRelease(AllowedFeatures);
+	if (AllowedFeatures) CFRelease(AllowedFeatures);
 
 	return buffer;
 }
@@ -220,7 +225,8 @@ accessory_info_t get_acc_info(io_connect_t connect) {
 			NSLog(CFSTR("get_acc_info(%d): CF Error"), queries[i].key);
 			continue;
 		}
-		CFRelease(buffer);
+		DBGLOG(CFSTR("get_acc_info(%d): got %s"), queries[i].key, (char *)queries[i].dest);
+		if (buffer) CFRelease(buffer);
 	}
 #endif
 	return info;
@@ -237,16 +243,19 @@ accessory_powermode_t get_acc_powermode(io_connect_t connect) {
 
 	supported = IORegistryEntryCreateCFProperty(connect, CFSTR("IOAccessorySupportedPowerModes"), kCFAllocatorDefault, kNilOptions);
 	if (supported) {
+#if DEBUG
+		CFShow(supported);
+#endif
 		mode.supported_cnt = CFArrayGetCount(supported);
 		for (int i = 0; i < mode.supported_cnt; i++) {
 			CFNumberRef value = CFArrayGetValueAtIndex(supported, i);
 			if (CFNumberGetValue(value, kCFNumberSInt32Type, &mode.supported[i])) {
 				mode.supported_lim[i] = IOAccessoryManagerPowerModeCurrentLimit(connect, mode.supported[i]);
 			}
-			CFRelease(value);
+			if (value) CFRelease(value);
 		}
 	}
-	CFRelease(supported);
+	if (supported) CFRelease(supported);
 #endif
 	return mode;
 }
@@ -272,7 +281,7 @@ bool get_acc_supervised(io_connect_t connect) {
 	supervised = IORegistryEntryCreateCFProperty(connect, CFSTR("SupervisedAccessoryAttached"), kCFAllocatorDefault, kNilOptions);
 
 	bool ret = (supervised == kCFBooleanTrue);
-	CFRelease(supervised);
+	if (supervised) CFRelease(supervised);
 
 	return ret;
 }
@@ -286,7 +295,7 @@ bool get_acc_supervised_transport_restricted(io_connect_t connect) {
 	restricted = IORegistryEntryCreateCFProperty(connect, CFSTR("SupervisedTransportsRestricted"), kCFAllocatorDefault, kNilOptions);
 	
 	bool ret = (restricted == kCFBooleanTrue);
-	CFRelease(restricted);
+	if (restricted) CFRelease(restricted);
 	
 	return ret;
 }

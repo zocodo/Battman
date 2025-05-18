@@ -322,7 +322,19 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
 
     NSArray *target_desc;
-    show_alert([cell.textLabel.text UTF8String], _C(batteryInfo[indexPath.section][indexPath.row + pendingLoadOffsets[indexPath.section][indexPath.row]].desc), L_OK);
+	NSString *titleLabel;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+	UILabel *title = [cell performSelector:@selector(titleLabel)];
+#pragma clang diagnostic pop
+	
+	if ([title isKindOfClass:[UILabel class]]) {
+		titleLabel = title.text;
+	} else {
+		titleLabel = cell.textLabel.text;
+	}
+
+    show_alert([titleLabel UTF8String], _C(batteryInfo[indexPath.section][indexPath.row + pendingLoadOffsets[indexPath.section][indexPath.row]].desc), L_OK);
     return;
     // TODO: Implement this
 #if 0

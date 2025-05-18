@@ -128,43 +128,43 @@ typedef enum {
 	kIOAMPowermodeCount = kIOAMPowermodeLowVoltage,
 } AccessoryPowermode;
 
-SInt32 IOAccessoryPortGetPort(io_connect_t connect);
-SInt32 IOAccessoryPortGetManagerPrimaryPort(io_connect_t connect);
-SInt32 IOAccessoryPortGetTransportType(io_connect_t connect);
-SInt32 IOAccessoryPortGetStreamType(io_connect_t connect);
+SInt32 IOAccessoryPortGetPort(io_service_t service);
+SInt32 IOAccessoryPortGetManagerPrimaryPort(io_service_t service);
+SInt32 IOAccessoryPortGetTransportType(io_service_t service);
+SInt32 IOAccessoryPortGetStreamType(io_service_t service);
 
 io_service_t IOAccessoryManagerGetServiceWithPrimaryPort(SInt32 port);
-SInt32 IOAccessoryManagerGetPrimaryPort(io_connect_t connect);
-SInt32 IOAccessoryManagerGetType(io_connect_t connect);
-SInt32 IOAccessoryManagerGetBatteryPackMode(io_connect_t connect);
-io_registry_entry_t IOAccessoryManagerGetUpstreamService(io_connect_t connect);
-SInt32 IOAccessoryManagerGetUpstreamPrimaryPort(io_connect_t connect);
-SInt32 IOAccessoryManagerGetAccessoryID(io_connect_t connect);
-CFNumberRef IOAccessoryManagerCopyAccessoryDeviceUID(io_connect_t connect);
-IOReturn IOAccessoryManagerGetDigitalID(io_connect_t connect, UInt8 *bytes);
-IOReturn IOAccesoryManagerGetDigitalIDSInt32erfaceDeviceInfo(io_connect_t connect, UInt8 *bytes);
-IOReturn IOAccesoryManagerGetDigitalIDAccessoryVersionInfo(io_connect_t connect, UInt8 *bytes);
-IOReturn IOAccessoryManagerCopyDeviceInfo(io_connect_t connect, AccessoryInfo infoID, CFTypeRef *a3);
+SInt32 IOAccessoryManagerGetPrimaryPort(io_service_t service);
+SInt32 IOAccessoryManagerGetType(io_service_t service);
+SInt32 IOAccessoryManagerGetBatteryPackMode(io_service_t service);
+io_registry_entry_t IOAccessoryManagerGetUpstreamService(io_service_t service);
+SInt32 IOAccessoryManagerGetUpstreamPrimaryPort(io_service_t service);
+SInt32 IOAccessoryManagerGetAccessoryID(io_service_t service);
+CFNumberRef IOAccessoryManagerCopyAccessoryDeviceUID(io_service_t service);
+IOReturn IOAccessoryManagerGetDigitalID(io_service_t service, UInt8 *bytes);
+IOReturn IOAccesoryManagerGetDigitalIDSInt32erfaceDeviceInfo(io_service_t service, UInt8 *bytes);
+IOReturn IOAccesoryManagerGetDigitalIDAccessoryVersionInfo(io_service_t service, UInt8 *bytes);
+IOReturn IOAccessoryManagerCopyDeviceInfo(io_service_t service, AccessoryInfo infoID, CFTypeRef *a3);
 
-SInt32 IOAccessoryManagerGetPowerMode(io_connect_t connect);
-SInt32 IOAccessoryManagerGetActivePowerMode(io_connect_t connect);
-unsigned long IOAccessoryManagerPowerModeCurrentLimit(io_connect_t connect, AccessoryPowermode mode);
+SInt32 IOAccessoryManagerGetPowerMode(io_service_t service);
+SInt32 IOAccessoryManagerGetActivePowerMode(io_service_t service);
+unsigned long IOAccessoryManagerPowerModeCurrentLimit(io_service_t service, AccessoryPowermode mode);
 
-bool IOAccessoryManagerPowerDuringSleepIsSupported(io_connect_t connect);
-bool IOAccessoryManagerGetPowerDuringSleep(io_connect_t connect);
-SInt32 IOAccessoryManagerGetSleepPowerCurrentLimit(io_connect_t connect);
+bool IOAccessoryManagerPowerDuringSleepIsSupported(io_service_t service);
+bool IOAccessoryManagerGetPowerDuringSleep(io_service_t service);
+SInt32 IOAccessoryManagerGetSleepPowerCurrentLimit(io_service_t service);
 
-IOReturn IOAccessoryManagerGetUSBConnectType(io_connect_t connect, SInt32 *type, bool *active);
-IOReturn IOAccessoryManagerGetUSBConnectTypePublished(io_connect_t connect, SInt32 *published, bool *active);
-IOReturn IOAccessoryManagerGetUSBChargingVoltage(io_connect_t connect, SInt32 *voltage);
-IOReturn IOAccessoryManagerGetUSBCurrentLimit(io_connect_t connect, SInt32 *ilim);
-IOReturn IOAccessoryManagerSetUSBCurrentLimitBase(io_connect_t connect, uint64_t input);
-IOReturn IOAccessoryManagerRestoreUSBCurrentLimitBase(io_connect_t connect);
-IOReturn IOAccessoryManagerGetUSBCurrentLimitBase(io_connect_t connect, SInt32 *ilimBase);
-IOReturn IOAccessoryManagerSetUSBCurrentOffset(io_connect_t connect, SInt32 offset);
-IOReturn IOAccessoryManagerGetUSBCurrentLimitOffset(io_connect_t connect, SInt32 *offset);
-IOReturn IOAccessoryManagerSetUSBCurrentLimitMaximum(io_connect_t connect, uint64_t ilimMax);
-IOReturn IOAccessoryManagerClearUSBCurrentLimitMaximum(io_connect_t connect);
+IOReturn IOAccessoryManagerGetUSBConnectType(io_service_t service, SInt32 *type, bool *active);
+IOReturn IOAccessoryManagerGetUSBConnectTypePublished(io_service_t service, SInt32 *published, bool *active);
+IOReturn IOAccessoryManagerGetUSBChargingVoltage(io_service_t service, SInt32 *voltage);
+IOReturn IOAccessoryManagerGetUSBCurrentLimit(io_service_t service, SInt32 *ilim);
+IOReturn IOAccessoryManagerSetUSBCurrentLimitBase(io_service_t service, uint64_t input);
+IOReturn IOAccessoryManagerRestoreUSBCurrentLimitBase(io_service_t service);
+IOReturn IOAccessoryManagerGetUSBCurrentLimitBase(io_service_t service, SInt32 *ilimBase);
+IOReturn IOAccessoryManagerSetUSBCurrentOffset(io_service_t service, SInt32 offset);
+IOReturn IOAccessoryManagerGetUSBCurrentLimitOffset(io_service_t service, SInt32 *offset);
+IOReturn IOAccessoryManagerSetUSBCurrentLimitMaximum(io_service_t service, uint64_t ilimMax);
+IOReturn IOAccessoryManagerClearUSBCurrentLimitMaximum(io_service_t service);
 
 __END_DECLS
 

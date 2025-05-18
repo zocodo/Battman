@@ -95,6 +95,8 @@
 		<string>AppleSMCClient</string>
 		<string>AppleSmartBatteryManagerUserClient</string>
 		<string>IOReportUserClient</string>
+		<string>IOAccessoryManagerUserClient</string>
+		<string>IOAccessoryPortUserClient</string>
 	</array>
 	<key>com.apple.security.iokit-user-client-class</key>
 	<array>
@@ -103,6 +105,8 @@
 		<string>AppleSMCClient</string>
 		<string>AppleSmartBatteryManagerUserClient</string>
 		<string>IOReportUserClient</string>
+		<string>IOAccessoryManagerUserClient</string>
+		<string>IOAccessoryPortUserClient</string>
 	</array>
 	<key>com.apple.private.iokit.rootdomain-set-property</key>
 	<true/>

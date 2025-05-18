@@ -568,9 +568,9 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
 			SInt32 acc_id = get_accid(connect);
 			/* 100: No device connected */
 			/* TODO: On simulators, fake an accessory to test UI */
-            if (acc_id != 100) {
+            if (acc_id != 100 && acc_id != -1 && connect != MACH_PORT_NULL) {
                 BI_SET_HIDDEN(_C("Inductive Adapter"), 0);
-				BI_FORMAT_ITEM_IF(acc_id != -1, _C("Acc. ID"), "%s", acc_id_string(acc_id));
+				BI_FORMAT_ITEM(_C("Acc. ID"), "%s", acc_id_string(acc_id));
 				SInt32 features = get_acc_allowed_features(connect);
                 BI_FORMAT_ITEM_IF(features != -1, _C("Allowed Features"), "0x%.8X", features);
 				accessory_info_t accinfo = get_acc_info(connect);
@@ -585,7 +585,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
                 BI_FORMAT_ITEM_IF(*accinfo.hwVer, _C("Acc. Hardware Version"), "%s", accinfo.hwVer);
 				BI_FORMAT_ITEM(_C("Battery Pack"), "%s", get_acc_battery_pack_mode(connect) ? L_TRUE : L_FALSE);
 				accessory_powermode_t mode = get_acc_powermode(connect);
-                BI_FORMAT_ITEM(_C("Power Mode"), "%s: %s\n%s: %s\n%s", cond_localize_c("Configured"), acc_powermode_string(mode.mode), cond_localize_c("Active"), acc_powermode_string(mode.active), acc_powermode_string_supported(mode));
+                BI_FORMAT_ITEM(_C("Power Mode"), "%s: %s\n%s: %s\n%s", cond_localize_c("Configured Mode"), acc_powermode_string(mode.mode), cond_localize_c("Active Mode"), acc_powermode_string(mode.active), acc_powermode_string_supported(mode));
 				accessory_sleeppower_t sleep = get_acc_sleeppower(connect);
 				if (sleep.supported) {
 					BI_FORMAT_ITEM(_C("Sleep Power"), "%s\n%s: %d", sleep.enabled ? cond_localize_c("Enabled") : cond_localize_c("Disabled"), cond_localize_c("Limit"), sleep.limit);
@@ -598,6 +598,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
                     
                 }
             } else {
+				NSLog(CFSTR("could not find IOAccessoryManager service"));
                 BI_SET_HIDDEN(_C("Inductive Adapter"), 1);
             }
         } else {
