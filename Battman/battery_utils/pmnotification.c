@@ -44,8 +44,6 @@ extern void IONotificationPortSetDispatchQueue(void *, void *);
 extern void *dispatch_get_global_queue(int, int);
 #endif
 
-extern void NSLog(CFStringRef, ...);
-
 // IOServiceMatchingCallback
 static void stpe_cb(void **pcb, io_iterator_t it) {
     if (!it)

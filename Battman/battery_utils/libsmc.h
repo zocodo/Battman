@@ -425,7 +425,7 @@ typedef struct board_info {
 typedef enum {
     kIsPresent = 1, /* Capable */
     kIsDetected,    /* Detected */
-} wireless_state_t;
+} accessory_state_t;
 
 typedef struct iktara_fw {
     bool Charging;              /* (WAFS & 0xF000000) == 0xE000000 */
@@ -522,8 +522,8 @@ int smc_write_safe(uint32_t key, void *bytes, uint32_t size);
 int smc_read_n(uint32_t key, void *bytes, int32_t size);
 int smc_call(int index, SMCParamStruct *inputStruct,SMCParamStruct *outputStruct);
 
-bool wireless_available(void);
-wireless_state_t wireless_charging_detect(void);
+bool accessory_available(void);
+accessory_state_t accessory_charging_detect(void);
 bool get_iktara_fw_stat(iktara_fw_t *fw);
 bool get_iktara_drv_stat(iktara_drv_t *drv);
 __END_DECLS

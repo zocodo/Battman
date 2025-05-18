@@ -64,7 +64,6 @@
 		6838BF6B2DB8D06B007EB66C /* licensing.S in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF652DB8D06B007EB66C /* licensing.S */; };
 		6838BF6F2DB8D89E007EB66C /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF6E2DB8D89E007EB66C /* WebKit.framework */; };
 		6838BF762DBF810D007EB66C /* localized.c in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF752DBF810D007EB66C /* localized.c */; };
-		6838BF7C2DC22CF6007EB66C /* libMobileGestalt.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6838BF7B2DC22CF6007EB66C /* libMobileGestalt.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		6838BF832DC27F1E007EB66C /* ChargingManagementViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6838BF822DC27F1E007EB66C /* ChargingManagementViewController.m */; };
 		6838BFAC2DC3984C007EB66C /* SliderTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6838BFAB2DC3984C007EB66C /* SliderTableViewCell.m */; };
 		684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 687743152D461E4400375A2C /* intl.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -93,6 +92,7 @@
 		68B291372DD1E6960089BA1F /* CompatibilityHelper.c in Sources */ = {isa = PBXBuildFile; fileRef = 68B291332DD1E6960089BA1F /* CompatibilityHelper.c */; };
 		68B291382DD1E6960089BA1F /* FullSMCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291352DD1E6960089BA1F /* FullSMCViewController.m */; };
 		68B2913A2DD1FEDA0089BA1F /* hid.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291392DD1FEDA0089BA1F /* hid.m */; };
+		68B2913D2DD86AAB0089BA1F /* accessory.c in Sources */ = {isa = PBXBuildFile; fileRef = 68B2913C2DD86AAB0089BA1F /* accessory.c */; };
 		68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2D2D85606000919BC2 /* GradientArcView.m */; };
 		68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */; };
 		68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */; };
@@ -193,6 +193,10 @@
 		68B291342DD1E6960089BA1F /* FullSMCViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FullSMCViewController.h; sourceTree = "<group>"; };
 		68B291352DD1E6960089BA1F /* FullSMCViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FullSMCViewController.m; sourceTree = "<group>"; };
 		68B291392DD1FEDA0089BA1F /* hid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = hid.m; sourceTree = "<group>"; };
+		68B2913B2DD86AAB0089BA1F /* accessory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = accessory.h; sourceTree = "<group>"; };
+		68B2913C2DD86AAB0089BA1F /* accessory.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = accessory.c; sourceTree = "<group>"; };
+		68B2913F2DD86ABF0089BA1F /* IOAccessoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOAccessoryManager.h; sourceTree = "<group>"; };
+		68B291402DD9EAAB0089BA1F /* libIOAccessoryManager.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libIOAccessoryManager.tbd; path = usr/lib/libIOAccessoryManager.tbd; sourceTree = SDKROOT; };
 		68B33C3F2DAF9B38008EA090 /* inductive_status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = inductive_status.h; sourceTree = "<group>"; };
 		68B5FF292D85602100919BC2 /* GradientArcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientArcView.h; sourceTree = "<group>"; };
 		68B5FF2D2D85606000919BC2 /* GradientArcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GradientArcView.m; sourceTree = "<group>"; };
@@ -221,7 +225,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6838BF7C2DC22CF6007EB66C /* libMobileGestalt.tbd in Frameworks */,
 				6838BF6F2DB8D89E007EB66C /* WebKit.framework in Frameworks */,
 				684A9EF22D65F0AF006265DC /* intl.framework in Frameworks */,
 				68A3EAFD2D5204EA003381DF /* IOKit.framework in Frameworks */,
@@ -265,6 +268,7 @@
 		686AECC12D3B93CB0059ECD0 /* Battman */ = {
 			isa = PBXGroup;
 			children = (
+				68B2913E2DD86ABF0089BA1F /* EXTERNAL_HEADERS */,
 				68B291332DD1E6960089BA1F /* CompatibilityHelper.c */,
 				68B291312DD1E6960089BA1F /* CompatibilityHelper.h */,
 				68B291342DD1E6960089BA1F /* FullSMCViewController.h */,
@@ -318,6 +322,7 @@
 		687743162D461E5100375A2C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				68B291402DD9EAAB0089BA1F /* libIOAccessoryManager.tbd */,
 				6838BF7B2DC22CF6007EB66C /* libMobileGestalt.tbd */,
 				6838BF6E2DB8D89E007EB66C /* WebKit.framework */,
 				68A3EAFC2D5204EA003381DF /* IOKit.framework */,
@@ -343,6 +348,8 @@
 				68D6DEC02D77071300E129A0 /* not_charging_reason.h */,
 				68D6DEC12D770B9F00E129A0 /* kiosk_mode.h */,
 				68B33C3F2DAF9B38008EA090 /* inductive_status.h */,
+				68B2913B2DD86AAB0089BA1F /* accessory.h */,
+				68B2913C2DD86AAB0089BA1F /* accessory.c */,
 			);
 			path = battery_utils;
 			sourceTree = "<group>";
@@ -387,6 +394,14 @@
 				68AE40BF2D8EB9190023D7B0 /* README.md */,
 			);
 			path = UberSegmentedControl;
+			sourceTree = "<group>";
+		};
+		68B2913E2DD86ABF0089BA1F /* EXTERNAL_HEADERS */ = {
+			isa = PBXGroup;
+			children = (
+				68B2913F2DD86ABF0089BA1F /* IOAccessoryManager.h */,
+			);
+			path = EXTERNAL_HEADERS;
 			sourceTree = "<group>";
 		};
 		68DCA5B42D40EDE8004D0104 /* Localizations */ = {
@@ -625,6 +640,7 @@
 				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
 				6838BF832DC27F1E007EB66C /* ChargingManagementViewController.m in Sources */,
 				687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */,
+				68B2913D2DD86AAB0089BA1F /* accessory.c in Sources */,
 				68AE40BD2D8EB8870023D7B0 /* Constants.m in Sources */,
 				68AE40B92D8EB8870023D7B0 /* MultiSelectSegmentedControl.m in Sources */,
 				68AE40BA2D8EB8870023D7B0 /* DividerView.m in Sources */,

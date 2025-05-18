@@ -3,7 +3,13 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define BI_SECTION_NUM 2
+enum {
+    BI_SECTION_GENERAL,
+    BI_SECTION_ADAPTER,
+    BI_SECTION_ACCESSORY,
+    BI_SECTION_NUM,
+};
+
 #define BI_APPROX_ROWS 64
 
 /* ->content structure:

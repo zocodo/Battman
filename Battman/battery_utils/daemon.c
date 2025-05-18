@@ -25,8 +25,6 @@
 #include <sys/un.h>
 #include <unistd.h>
 
-extern void NSLog(CFStringRef, ...);
-
 #if __has_include(<spawn_private.h>)
 #include <spawn_private.h>
 #else

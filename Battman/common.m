@@ -330,6 +330,8 @@ const char *L_NONE;
 const char *L_MA;
 const char *L_MAH;
 const char *L_MV;
+const char *L_TRUE;
+const char *L_FALSE;
 /* This function is for speed up PO generation */
 void init_common_text(void) {
     static bool done = false;
@@ -341,6 +343,8 @@ void init_common_text(void) {
         L_MA = _C("mA");
         L_MAH = _C("mAh");
         L_MV = _C("mV");
+        L_TRUE = _C("True");
+        L_FALSE = _C("False");
     }
     done = true;
 }

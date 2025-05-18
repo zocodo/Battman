@@ -73,44 +73,98 @@ typedef CF_ENUM(UInt8, IOAMIndex) {
 	kIOAMLDCMSetState,				// uint64_t
 };
 
+/*
+enum {
+    kIOAMConnectionTypeVirtual,
+    kIOAMConnectionTypeLightning,
+    kIOAMConnectionTypeBT,
+    kIOAMConnectionTypeOrion,
+    kIOAMConnectionTypeC26,
+    kIOAMConnectionTypeIP,
+    kIOAMConnectionTypeUSB,
+    kIOAMConnectionTypeBuiltInHW,
+    kIOAMConnectionTypeScorpius,
+    kIOAMConnectionTypeInductive,
+    kIOAMConnectionTypeNFC,
+};
+
+typedef CF_ENUM(SInt32, IOAMTransportType) {
+    kIOAMTransportTypeUSBD,
+    kIOAMTransportTypeMikeyBus,
+    kIOAMTransportTypeBT,
+    kIOAMTransportTypeBLE,
+    kIOAMTransportTypeAirPlay,
+    kIOAMTransportTypeGeneric,
+    kIOAMTransportTypeUART,
+    kIOAMTransportTypeAID,
+    kIOAMTransportTypeUSBH,
+    kIOAMTransportTypeScorpius,
+    kIOAMTransportTypeBattery,
+    kIOAMTransportTypeTouchController,
+    kIOAMTransportTypeInductive,
+    kIOAMTransportTypeNFC,
+};
+*/
 typedef enum {
-        kInterfaceDeviceSerialNumber,
-        kInterfaceModuleSerialNumber,
-        kAccessorySerialNumber,
-        kAccessoryManufacturer,
-        kAccessoryName,
-        kAccessoryModelNumber,
-        kAccessoryFirmwareVersion,
-        kAccessoryHardwareVersion,
-        kAccessoryPPID
+    kIOAMInterfaceDeviceSerialNumber = 1,   // CFNumberRef SInt64
+    kIOAMInterfaceModuleSerialNumber,       // CFStringRef char[32]
+    kIOAMAccessorySerialNumber,             // CFStringRef char[32]
+    kIOAMAccessoryManufacturer,             // CFStringRef char[256]
+    kIOAMAccessoryName,                     // CFStringRef char[256]
+    kIOAMAccessoryModelNumber,              // CFStringRef char[256]
+    kIOAMAccessoryFirmwareVersion,          // CFStringRef char[256]
+    kIOAMAccessoryHardwareVersion,
+    kIOAMAccessoryPPID                      // CFStringRef char[256]
 } AccessoryInfo;
 
+typedef enum {
+	kIOAMPowermodeOff = 1,
+	kIOAMPowermodeLow,
+	kIOAMPowermodeOn,
+	kIOAMPowermodeHighCurrent,
+	kIOAMPowermodeHighCurrentBM3,
+	kIOAMPowermodeLowVoltage,
+
+	kIOAMPowermodeCount = kIOAMPowermodeLowVoltage,
+} AccessoryPowermode;
+
+SInt32 IOAccessoryPortGetPort(io_connect_t connect);
+SInt32 IOAccessoryPortGetManagerPrimaryPort(io_connect_t connect);
+SInt32 IOAccessoryPortGetTransportType(io_connect_t connect);
+SInt32 IOAccessoryPortGetStreamType(io_connect_t connect);
+
 io_service_t IOAccessoryManagerGetServiceWithPrimaryPort(SInt32 port);
-SInt32 IOAccessoryManagerGetPrimaryPort(io_registry_entry_t entry);
-SInt32 IOAccessoryManagerGetType(io_registry_entry_t entry);
-io_registry_entry_t IOAccessoryManagerGetUpstreamService(io_registry_entry_t entry);
-SInt32 IOAccessoryManagerGetUpstreamPrimaryPort(io_registry_entry_t entry);
-SInt32 __fastcall IOAccessoryManagerGetAccessoryID(io_registry_entry_t entry);
-CFNumberRef __fastcall IOAccessoryManagerCopyAccessoryDeviceUID(io_registry_entry_t entry);
-IOReturn __fastcall IOAccessoryManagerGetDigitalID(io_registry_entry_t entry, UInt8 *bytes);
-IOReturn __fastcall IOAccesoryManagerGetDigitalIDSInt32erfaceDeviceInfo(io_registry_entry_t entry, UInt8 *bytes);
-IOReturn __fastcall IOAccesoryManagerGetDigitalIDAccessoryVersionInfo(io_registry_entry_t entry, UInt8 *bytes);
-IOReturn __fastcall IOAccessoryManagerCopyDeviceInfo(io_registry_entry_t entry, AccessoryInfo infoID, CFTypeRef *a3);
-SInt32 __fastcall IOAccessoryManagerGetPowerMode(io_registry_entry_t entry);
-SInt32 __fastcall IOAccessoryManagerGetActivePowerMode(io_registry_entry_t entry);
-SInt32 __fastcall IOAccessoryManagerGetSleepPowerCurrentLimit(io_registry_entry_t entry);
-bool __fastcall IOAccessoryManagerGetPowerDuringSleep(io_registry_entry_t entry);
-IOReturn __fastcall IOAccessoryManagerGetUSBConnectType(io_registry_entry_t entry, SInt32 *type, bool *active);
-IOReturn __fastcall IOAccessoryManagerGetUSBConnectTypePublished(io_registry_entry_t entry, SInt32 *published, bool *active);
-IOReturn __fastcall IOAccessoryManagerGetUSBChargingVoltage(io_registry_entry_t entry, SInt32 *voltage);
-IOReturn __fastcall IOAccessoryManagerGetUSBCurrentLimit(io_registry_entry_t entry, SInt32 *ilim);
-IOReturn __fastcall IOAccessoryManagerSetUSBCurrentLimitBase(io_registry_entry_t entry, uint64_t input);
-IOReturn __fastcall IOAccessoryManagerRestoreUSBCurrentLimitBase(io_registry_entry_t entry);
-IOReturn __fastcall IOAccessoryManagerGetUSBCurrentLimitBase(io_registry_entry_t entry, SInt32 *ilimBase);
-IOReturn __fastcall IOAccessoryManagerSetUSBCurrentOffset(io_registry_entry_t entry, SInt32 offset);
-IOReturn __fastcall IOAccessoryManagerGetUSBCurrentLimitOffset(io_registry_entry_t entry, SInt32 *offset);
-IOReturn __fastcall IOAccessoryManagerSetUSBCurrentLimitMaximum(io_registry_entry_t entry, uint64_t ilimMax);
-IOReturn __fastcall IOAccessoryManagerClearUSBCurrentLimitMaximum(io_registry_entry_t entry);
+SInt32 IOAccessoryManagerGetPrimaryPort(io_connect_t connect);
+SInt32 IOAccessoryManagerGetType(io_connect_t connect);
+SInt32 IOAccessoryManagerGetBatteryPackMode(io_connect_t connect);
+io_registry_entry_t IOAccessoryManagerGetUpstreamService(io_connect_t connect);
+SInt32 IOAccessoryManagerGetUpstreamPrimaryPort(io_connect_t connect);
+SInt32 IOAccessoryManagerGetAccessoryID(io_connect_t connect);
+CFNumberRef IOAccessoryManagerCopyAccessoryDeviceUID(io_connect_t connect);
+IOReturn IOAccessoryManagerGetDigitalID(io_connect_t connect, UInt8 *bytes);
+IOReturn IOAccesoryManagerGetDigitalIDSInt32erfaceDeviceInfo(io_connect_t connect, UInt8 *bytes);
+IOReturn IOAccesoryManagerGetDigitalIDAccessoryVersionInfo(io_connect_t connect, UInt8 *bytes);
+IOReturn IOAccessoryManagerCopyDeviceInfo(io_connect_t connect, AccessoryInfo infoID, CFTypeRef *a3);
+
+SInt32 IOAccessoryManagerGetPowerMode(io_connect_t connect);
+SInt32 IOAccessoryManagerGetActivePowerMode(io_connect_t connect);
+unsigned long IOAccessoryManagerPowerModeCurrentLimit(io_connect_t connect, AccessoryPowermode mode);
+
+bool IOAccessoryManagerPowerDuringSleepIsSupported(io_connect_t connect);
+bool IOAccessoryManagerGetPowerDuringSleep(io_connect_t connect);
+SInt32 IOAccessoryManagerGetSleepPowerCurrentLimit(io_connect_t connect);
+
+IOReturn IOAccessoryManagerGetUSBConnectType(io_connect_t connect, SInt32 *type, bool *active);
+IOReturn IOAccessoryManagerGetUSBConnectTypePublished(io_connect_t connect, SInt32 *published, bool *active);
+IOReturn IOAccessoryManagerGetUSBChargingVoltage(io_connect_t connect, SInt32 *voltage);
+IOReturn IOAccessoryManagerGetUSBCurrentLimit(io_connect_t connect, SInt32 *ilim);
+IOReturn IOAccessoryManagerSetUSBCurrentLimitBase(io_connect_t connect, uint64_t input);
+IOReturn IOAccessoryManagerRestoreUSBCurrentLimitBase(io_connect_t connect);
+IOReturn IOAccessoryManagerGetUSBCurrentLimitBase(io_connect_t connect, SInt32 *ilimBase);
+IOReturn IOAccessoryManagerSetUSBCurrentOffset(io_connect_t connect, SInt32 offset);
+IOReturn IOAccessoryManagerGetUSBCurrentLimitOffset(io_connect_t connect, SInt32 *offset);
+IOReturn IOAccessoryManagerSetUSBCurrentLimitMaximum(io_connect_t connect, uint64_t ilimMax);
+IOReturn IOAccessoryManagerClearUSBCurrentLimitMaximum(io_connect_t connect);
 
 __END_DECLS
 

@@ -1,5 +1,7 @@
 #include "battery_info.h"
+#include "common.h"
 #include "libsmc.h"
+#include "accessory.h"
 #include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -25,7 +27,10 @@ const char *bin_unit_strings[] = {
 
 struct battery_info_node main_battery_template[] = {
     { _C("Gas Gauge (Basic)"), NULL, BIN_SECTION },
-    { _C("Device Name"), _C("This indicates the name of the current Gas Gauge IC used by the installed battery."), },
+    {
+     _C("Device Name"),
+     _C("This indicates the name of the current Gas Gauge IC used by the installed battery."),
+     },
     { _C("Health"), NULL, BIN_IS_BACKGROUND | BIN_UNIT_PERCENT },
     { _C("SoC"), NULL, BIN_IS_FLOAT | BIN_UNIT_PERCENT },
     { _C("Avg. Temperature"), NULL, BIN_IS_FLOAT | BIN_UNIT_DEGREE_C | BIN_DETAILS_SHARED },
@@ -42,7 +47,7 @@ struct battery_info_node main_battery_template[] = {
     { _C("Avg. Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
     { _C("Avg. Power"), NULL, BIN_UNIT_MWATT | BIN_IN_DETAILS },
     { _C("Cell Count"), NULL, BIN_IN_DETAILS },
- /* TODO: TimeToFull */
+    /* TODO: TimeToFull */
     { _C("Time To Empty"), NULL, BIN_UNIT_MIN | BIN_IN_DETAILS },
     { _C("Cycle Count"), NULL, BIN_IN_DETAILS },
     { _C("Designed Cycle Count"), NULL, BIN_IN_DETAILS },
@@ -50,8 +55,7 @@ struct battery_info_node main_battery_template[] = {
     { _C("State Of Charge (UI)"), _C("The \"Battery Percentage\" displayed exactly on your status bar. This is the SoC that Apple wants to tell you."), BIN_UNIT_PERCENT | BIN_IN_DETAILS },
     { _C("Resistance Scale"), NULL, BIN_IN_DETAILS },
     { _C("Battery Serial No."), NULL, 0 },
-    { _C("Chemistry ID"),
-     _C("Chemistry unique identifier (ChemID) assigned to each battery in Texas Instruments' database. It ensures accurate calculations and predictions."), 0 },
+    { _C("Chemistry ID"), _C("Chemistry unique identifier (ChemID) assigned to each battery in Texas Instruments' database. It ensures accurate calculations and predictions."), 0 },
     { _C("Flags"), NULL, 0 },
     { _C("True Remaining Capacity"), NULL, BIN_UNIT_MAH | BIN_IN_DETAILS },
     { _C("OCV Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
@@ -85,6 +89,23 @@ struct battery_info_node main_battery_template[] = {
     { _C("PMU Configuration"), _C("The Configuration values is the max allowed Charging Current configurations."), BIN_IN_DETAILS | BIN_UNIT_MAMP },
     { _C("Charger Configuration"), NULL, BIN_IN_DETAILS | BIN_UNIT_MAMP },
     { _C("HVC Mode"), _C("High Voltage Charging (HVC) Mode may accquired by your power adapter or system, all supported modes will be listed below."), BIN_IN_DETAILS },
+    { _C("Inductive Adapter"), NULL, BIN_SECTION },
+    /* FIXME: We are meeting situations that needing rows with same names but not same sections, current data structure cannot let us do this. */
+    { _C("Acc. ID"), NULL, 0 },
+    { _C("Allowed Features"), _C("Accessory Feature Flags, I don't know how to parse it yet."), 0 },
+    { _C("Acc. Serial No."), NULL, 0 },
+    { _C("Acc. Manufacturer"), NULL, 0 },
+    { _C("Acc. Product ID"), NULL, 0},
+    { _C("Acc. Model"), NULL, 0 },
+    { _C("Acc. Name"), NULL, 0 },
+    { _C("Acc. PPID"), NULL, 0 },
+    { _C("Acc. Firmware Version"), NULL, 0 },
+    { _C("Acc. Hardware Version"), NULL, 0 },
+    { _C("Battery Pack"), _C("This indicates if an accessory is now working as a Battery Pack."), 0 },
+    { _C("Power Mode"), NULL, 0 },
+    { _C("Sleep Power"), NULL, 0 },
+    { _C("Supervised Acc. Attached"), NULL, 0 },
+    { _C("Supervised Transports Restricted"), NULL, 0 },
     { NULL }  // DO NOT DELETE
 };
 
@@ -320,9 +341,15 @@ static char *_impl_set_item(struct battery_info_node **head, const char *desc,
     }
 #define BI_SET_HIDDEN(name, value) _impl_set_item(head_arr, name, value, 0, 1)
 
-extern void *IOServiceMatching(const char *);
-extern void *IOServiceGetMatchingService(int, void *);
-extern int IORegistryEntryCreateCFProperties(void *, CFMutableDictionaryRef *, int, int);
+#if !__has_include(<IOKit/IOKitLib.h>)
+typedef __darwin_mach_port_t mach_port_t;
+typedef mach_port_t io_object_t;
+typedef io_object_t io_service_t;
+typedef io_object_t io_registry_entry_t;
+extern io_service_t IOServiceMatching(const char *);
+extern io_service_t IOServiceGetMatchingService(mach_port_t, CFDictionaryRef);
+extern int IORegistryEntryCreateCFProperties(io_registry_entry_t, CFMutableDictionaryRef *, CFAllocatorRef, uint32_t);
+#endif
 
 // void *info is ok bc CFDictionaryRef is literally typedef of void *
 void battery_info_update_iokit_with_data(struct battery_info_node *head, const void *info, bool inDetail) {
@@ -347,11 +374,11 @@ void battery_info_update_iokit_with_data(struct battery_info_node *head, const v
 	if(inDetail) {
 		CFDictionaryRef batteryData=CFDictionaryGetValue(info,CFSTR("BatteryData"));
 		if(batteryData) {
-			int val;
+			int val = 0;
 			CFNumberRef ChemIDNum=CFDictionaryGetValue(batteryData,CFSTR("ChemID"));
 			if(ChemIDNum)
-				CFNumberGetValue(ChemIDNum,kCFNumberSInt32Type,(void*)&val);
-			BI_FORMAT_ITEM_IF(ChemIDNum,_C("Chemistry ID"),"0x%.8X",val);
+				CFNumberGetValue(ChemIDNum, kCFNumberSInt32Type,(void *)&val);
+			BI_FORMAT_ITEM_IF(ChemIDNum, _C("Chemistry ID"), "0x%.8X", val);
 			CFNumberRef FlagsNum=CFDictionaryGetValue(batteryData,CFSTR("Flags"));
 			if(FlagsNum)
 				CFNumberGetValue(FlagsNum,kCFNumberSInt32Type,(void*)&val);
@@ -430,14 +457,14 @@ void battery_info_update_iokit_with_data(struct battery_info_node *head, const v
 }
 
 void battery_info_update_iokit(struct battery_info_node *head, bool inDetail) {
-	void *service=IOServiceGetMatchingService(0,IOServiceMatching("IOPMPowerSource"));
+	io_service_t service = IOServiceGetMatchingService(0,IOServiceMatching("IOPMPowerSource"));
 	CFMutableDictionaryRef info;
-	int ret=IORegistryEntryCreateCFProperties(service,&info,0,0);
-	if(ret!=0) {
+	int ret = IORegistryEntryCreateCFProperties(service, &info, 0, 0);
+	if (ret != 0) {
 		fprintf(stderr, "battery_info_update_iokit: Failed to get info from IOPMPowerSource\n");
 		return;
 	}
-	battery_info_update_iokit_with_data(head,info,inDetail);
+	battery_info_update_iokit_with_data(head, info, inDetail);
 	CFRelease(info);
 }
 
@@ -491,7 +518,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
         BI_SET_ITEM(_C("State Of Charge (UI)"), gGauge.UISoC);
         BI_SET_ITEM_IF(gGauge.ResScale, _C("Resistance Scale"), gGauge.ResScale);
         if (!battery_serial(BI_ENSURE_STR(_C("Battery Serial No.")))) {
-            BI_FORMAT_ITEM(_C("Battery Serial No."), "None");
+            BI_FORMAT_ITEM(_C("Battery Serial No."), "%s", L_NONE);
         }
         BI_FORMAT_ITEM("Chemistry ID", "0x%.8X", gGauge.ChemID);
 
@@ -516,7 +543,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
             BI_SET_HIDDEN(_C("Adapter Details"), 0);
             BI_SET_ITEM(_C("Port"), adapter_info.port);
             /* FIXME: no direct use of cond_localize_c(), do locales like names */
-            BI_FORMAT_ITEM(_C("Compatibility"), "%s: %s\n%s: %s", cond_localize_c("External Connected"), adapter_data.ChargerExist ? cond_localize_c("True") : cond_localize_c("False"), cond_localize_c("Charger Capable"), adapter_data.ChargerCapable ? cond_localize_c("True") : cond_localize_c("False"));
+            BI_FORMAT_ITEM(_C("Compatibility"), "%s: %s\n%s: %s", cond_localize_c("External Connected"), adapter_data.ChargerExist ? L_TRUE : L_FALSE, cond_localize_c("Charger Capable"), adapter_data.ChargerCapable ? L_TRUE : L_FALSE);
             BI_FORMAT_ITEM(_C("Type"), "%s (%.8X)", get_adapter_family_desc(adapter_family), adapter_family);
             BI_FORMAT_ITEM(_C("Status"), "%s", (charging_stat == kIsPausing || adapter_data.NotChargingReason != 0) ? cond_localize_c("Not Charging") : cond_localize_c("Charging"));
             BI_SET_ITEM(_C("Current Rating"), adapter_info.current);
@@ -535,8 +562,47 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
             BI_SET_ITEM(_C("Charger Configuration"), adapter_data.ChargerConfiguration);
             BI_FORMAT_ITEM_IF(adapter_data.NotChargingReason != 0, _C("Reason"), "%s", not_charging_reason_str(adapter_data.NotChargingReason));
             BI_FORMAT_ITEM_IF(adapter_info.port_type != 0, _C("Port Type"), "%s", cond_localize_c(port_type_str(adapter_info.port_type)));
+            /* Inductive Adapter Section */
+			/* 1: internal, 512: inductive */
+			io_connect_t connect = acc_open_with_port(512);
+			SInt32 acc_id = get_accid(connect);
+			/* 100: No device connected */
+			/* TODO: On simulators, fake an accessory to test UI */
+            if (acc_id != 100) {
+                BI_SET_HIDDEN(_C("Inductive Adapter"), 0);
+				BI_FORMAT_ITEM_IF(acc_id != -1, _C("Acc. ID"), "%s", acc_id_string(acc_id));
+				SInt32 features = get_acc_allowed_features(connect);
+                BI_FORMAT_ITEM_IF(features != -1, _C("Allowed Features"), "0x%.8X", features);
+				accessory_info_t accinfo = get_acc_info(connect);
+                BI_FORMAT_ITEM_IF(*accinfo.serial, _C("Acc. Serial No."), "%s", accinfo.serial);
+                BI_FORMAT_ITEM_IF(*accinfo.vendor, _C("Acc. Manufacturer"), "%s", accinfo.vendor);
+				/* TODO: VID/PID from IOHIDDevice */
+                //BI_FORMAT_ITEM(_C("Acc. Product ID"), "0x%0.4X", 0x1399);
+                BI_FORMAT_ITEM_IF(*accinfo.model, _C("Acc. Model"), "%s", accinfo.model);
+                BI_FORMAT_ITEM_IF(*accinfo.name, _C("Acc. Name"), "%s", accinfo.name);
+                BI_FORMAT_ITEM_IF(*accinfo.PPID, _C("Acc. PPID"), "%s", accinfo.PPID);
+                BI_FORMAT_ITEM_IF(*accinfo.fwVer, _C("Acc. Firmware Version"), "%s", accinfo.fwVer);
+                BI_FORMAT_ITEM_IF(*accinfo.hwVer, _C("Acc. Hardware Version"), "%s", accinfo.hwVer);
+				BI_FORMAT_ITEM(_C("Battery Pack"), "%s", get_acc_battery_pack_mode(connect) ? L_TRUE : L_FALSE);
+				accessory_powermode_t mode = get_acc_powermode(connect);
+                BI_FORMAT_ITEM(_C("Power Mode"), "%s: %s\n%s: %s\n%s", cond_localize_c("Configured"), acc_powermode_string(mode.mode), cond_localize_c("Active"), acc_powermode_string(mode.active), acc_powermode_string_supported(mode));
+				accessory_sleeppower_t sleep = get_acc_sleeppower(connect);
+				if (sleep.supported) {
+					BI_FORMAT_ITEM(_C("Sleep Power"), "%s\n%s: %d", sleep.enabled ? cond_localize_c("Enabled") : cond_localize_c("Disabled"), cond_localize_c("Limit"), sleep.limit);
+				} else {
+					BI_FORMAT_ITEM(_C("Sleep Power"), "%s", cond_localize_c("Unsupported"));
+				}
+				BI_FORMAT_ITEM(_C("Supervised Acc. Attached"), "%s", get_acc_supervised(connect) ? L_TRUE : L_FALSE);
+				BI_FORMAT_ITEM(_C("Supervised Transports Restricted"), "%s", get_acc_supervised_transport_restricted(connect) ? L_TRUE : L_FALSE);
+                if (1 /* accessory.transport_type == Inductive_InBand */) {
+                    
+                }
+            } else {
+                BI_SET_HIDDEN(_C("Inductive Adapter"), 1);
+            }
         } else {
             BI_SET_HIDDEN(_C("Adapter Details"), 1);
+			BI_SET_HIDDEN(_C("Inductive Adapter"), 1);
         }
     }
 }

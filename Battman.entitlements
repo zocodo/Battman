@@ -73,6 +73,16 @@
 	<key>com.apple.powerd.lowpowermode.allow</key>
 	<true/>
 
+	<!-- IOAccessoryManager -->
+	<key>com.apple.accessories.transport.allowauth</key>
+	<true/>
+	<key>com.apple.accessory.testing</key>
+	<true/>
+	<key>com.apple.private.accessories.showallconnections</key>
+	<true/>
+	<key>com.apple.private.externalaccessory.showallaccessories</key>
+	<true/>
+
 	<!-- IOKit -->
 	<key>com.apple.system.diagnostics.iokit-properties</key>
 	<true/>

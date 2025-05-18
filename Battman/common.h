@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <dlfcn.h>
 #include <TargetConditionals.h>
+#include <CoreFoundation/CoreFoundation.h>
 #include <stdio.h>
 #include "main.h"
 #include "CompatibilityHelper.h"
@@ -42,6 +43,10 @@
 
 __BEGIN_DECLS
 
+#ifndef __OBJC__
+void NSLog(CFStringRef fmt, ...);
+#endif
+
 extern const char *L_OK;
 extern const char *L_FAILED;
 extern const char *L_ERR;
@@ -49,6 +54,8 @@ extern const char *L_NONE;
 extern const char *L_MA;
 extern const char *L_MAH;
 extern const char *L_MV;
+extern const char *L_TRUE;
+extern const char *L_FALSE;
 
 bool show_alert(const char *title, const char *message, const char *cancel_button_title);
 void show_alert_async(const char *title, const char *message, const char *button, void (^completion)(bool result));

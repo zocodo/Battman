@@ -23,6 +23,7 @@
 #include <CoreFoundation/CFString.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/sysctl.h>
 #if __has_include(<mach/mach.h>)
 #include <mach/mach.h>
 #else
@@ -84,14 +85,6 @@ enum {
 };
 #endif
 
-#ifdef DEBUG
-#define DBGALT(x, y, z) show_alert(x, y, z)
-#define DBGLOG(...) NSLog(__VA_ARGS__)
-#else
-#define DBGALT(x, y, z)
-#define DBGLOG(...)
-#endif
-
 #define SMC_INIT_CHK(FAIL_RETURN)       \
     IOReturn result = kIOReturnSuccess; \
     if (gConn == 0) result = smc_open();\
@@ -103,7 +96,6 @@ int hasSMC=1;
 extern bool show_alert(const char *, const char *, const char *);
 extern void show_alert_async(const char *, const char *, const char *, void (^)(bool));
 extern void app_exit(void);
-extern void NSLog(CFStringRef, ...);
 
 static io_service_t gConn = 0;
 gas_gauge_t gGauge = {0};
@@ -858,29 +850,34 @@ const char *not_charging_reason_str(uint64_t code) {
 #endif
 // Stub macro
 #define _C(x) x
+/* Currently we only identify port types when port is a powersource */
+/* Possible values: 1, 2, 3, 9, 10, 12, 13, 14, 17, 18, 19 */
 static const char *port_types[] = {
     _C("Unknown"),
     _C("Virtual"),
     _C("USB-C"),
     _C("USB-A"),
-    _C("MiniDP"),
+    _C("Mini DP"),
     _C("FireWire 800"),
     _C("HDMI"),
-    _C("AudioJack-Mini"),
+    _C("Audio Jack (Mini)"),
     _C("Ethernet"),
     _C("MagSafe"), // This is typically old MagSafe charger port on old MacBooks
     _C("MagSafe 2"),
-    /* TODO: Things changed since MagSafe3 added, try to get a list from IOAM */
     _C("SD Card"),
-    _C("Lightning"),
-    _C("30-Pin"),
-    _C("Inductive"), // Wireless
-    _C("SmartConnector"),
-    _C("DisplayPort")
+    _C("Lightning"), // Lightning to Lightning port
+    _C("30-Pin"), // Wow, who still using this
+    _C("Inductive"), // iPhone wireless charging
+    _C("Smart Connector"),
+    _C("Display Port"),
+    _C("MagSafe 3"), // 2021 introduced MagSafe 3 for MacBooks
+    // We need help on testing 'Inductive', 'Contactless' and 'Wireless'
+    _C("Contactless"),
+    _C("Wireless")
 };
 
 const char *port_type_str(uint8_t pt) {
-    if (pt > 16) {
+    if (pt > 19) {
         return _C("Undefined");
     }
     return port_types[pt];
@@ -912,14 +909,14 @@ const char *get_adapter_family_desc(mach_port_t family) {
     switch (family) {
         case kIOPSFamilyCodeDisconnected:               return _C("Disconnected");
         case kIOPSFamilyCodeUnsupported:                return _C("Unsupported");
-        case kIOPSFamilyCodeFirewire:                   return _C("Firewire");
+        case kIOPSFamilyCodeFirewire:                   return _C("FireWire");
         case kIOPSFamilyCodeUSBHost:                    return _C("USB Host"); // usb host
-        case kIOPSFamilyCodeUSBHostSuspended:           return _C("Suspended USB Host");
+        case kIOPSFamilyCodeUSBHostSuspended:           return _C("USB SDP");
         case kIOPSFamilyCodeUSBDevice:                  return _C("USB Device");
         case kIOPSFamilyCodeUSBAdapter:                 return _C("USB Adapter");
         case kIOPSFamilyCodeUSBChargingPortDedicated:   return _C("USB DCP"); // usb charger
         case kIOPSFamilyCodeUSBChargingPortDownstream:  return _C("USB CDP");
-        case kIOPSFamilyCodeUSBChargingPort:            return _C("USB SDP"); // usb charger
+        case kIOPSFamilyCodeUSBChargingPort:            return _C("USB CP"); // usb charger
         case kIOPSFamilyCodeUSBUnknown:                 return _C("Unknown USB");
         case kIOPSFamilyCodeUSBCBrick:                  return _C("USB-C Brick"); // usb brick
         case kIOPSFamilyCodeUSBCTypeC:                  return _C("USB-C Type-C"); // usb type-c
@@ -1190,7 +1187,7 @@ hvc_menu_t *hvc_menu_parse(uint8_t *input, size_t *size) {
  CHIE(hex_)[1]: Inflow Inhibit
  CHIS(ui32): Charger Input State (like D?AP)?
  */
-bool wireless_available(void) {
+bool accessory_available(void) {
     SMC_INIT_CHK(false);
 
     static uint8_t count = 0;
@@ -1199,14 +1196,14 @@ bool wireless_available(void) {
     /* Constants only do once */
     dispatch_once(&wireless_once, ^{
         /* AY-N(ui8 ) Num Accessory ports */
-        if (smc_read_n('AY-N', &count,1) != kIOReturnSuccess)
+        if (smc_read_n('AY-N', &count, 1) != kIOReturnSuccess)
             count = 0;
     });
 
     return (count != 0);
 }
 
-wireless_state_t wireless_charging_detect(void) {
+accessory_state_t accessory_charging_detect(void) {
     SMC_INIT_CHK(0);
 
     uint32_t st = 0;
@@ -1216,7 +1213,7 @@ wireless_state_t wireless_charging_detect(void) {
     if (result != kIOReturnSuccess)
         return false;
 
-    return (st & 0xFE);
+    return (st & 2);
 }
 
 bool get_iktara_fw_stat(iktara_fw_t *fw) {
