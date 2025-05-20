@@ -197,6 +197,7 @@
 		68B2913C2DD86AAB0089BA1F /* accessory.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = accessory.c; sourceTree = "<group>"; };
 		68B2913F2DD86ABF0089BA1F /* IOAccessoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOAccessoryManager.h; sourceTree = "<group>"; };
 		68B291402DD9EAAB0089BA1F /* libIOAccessoryManager.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libIOAccessoryManager.tbd; path = usr/lib/libIOAccessoryManager.tbd; sourceTree = SDKROOT; };
+		68B291432DDC60510089BA1F /* iokitextern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iokitextern.h; sourceTree = "<group>"; };
 		68B33C3F2DAF9B38008EA090 /* inductive_status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = inductive_status.h; sourceTree = "<group>"; };
 		68B5FF292D85602100919BC2 /* GradientArcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientArcView.h; sourceTree = "<group>"; };
 		68B5FF2D2D85606000919BC2 /* GradientArcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GradientArcView.m; sourceTree = "<group>"; };
@@ -307,6 +308,7 @@
 				68DCA5AB2D3F9A10004D0104 /* gtkextern.h */,
 				68DCA5AD2D3F9BFD004D0104 /* glibextern.h */,
 				68DCA5AE2D3FA4DA004D0104 /* intlextern.h */,
+				68B291432DDC60510089BA1F /* iokitextern.h */,
 			);
 			path = Battman;
 			sourceTree = "<group>";

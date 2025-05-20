@@ -1,4 +1,5 @@
 #include "../common.h"
+#include "../iokitextern.h"
 #include <CoreFoundation/CFDictionary.h>
 #include <CoreFoundation/CFString.h>
 #include <CoreFoundation/CFNotificationCenter.h>
@@ -10,32 +11,6 @@
 #else
 #define kIOFirstMatchNotification "IOServiceFirstMatch"
 #define kIOGeneralInterest "IOGeneralInterest"
-#endif
-
-#if __has_include(<IOKit/IOKitLib.h>)
-#include <IOKit/IOKitLib.h>
-#else
-/* Consider move those externs a single shared header */
-typedef __darwin_mach_port_t mach_port_t;
-typedef mach_port_t io_object_t;
-
-typedef io_object_t io_iterator_t;
-typedef io_object_t io_service_t;
-typedef io_object_t io_registry_entry_t;
-
-typedef struct IONotificationPort *IONotificationPortRef;
-
-typedef void (*IOServiceInterestCallback)(void *refcon, io_service_t service, uint32_t messageType, void *messageArgument);
-typedef void (*IOServiceMatchingCallback)(void *refcon, io_iterator_t iterator);
-
-extern int IOServiceAddMatchingNotification(void *, const char *, void *, void *, void *, io_iterator_t *);
-extern void *IOServiceMatching(const char *);
-extern int IOServiceAddInterestNotification(IONotificationPortRef, io_service_t, const char *, void *, int, void *);
-extern io_object_t IOIteratorNext(io_iterator_t);
-extern void IOObjectRelease(io_object_t);
-extern int IORegistryEntryCreateCFProperties(io_registry_entry_t, CFMutableDictionaryRef *, int, int);
-extern void *IONotificationPortCreate(int);
-extern void IONotificationPortSetDispatchQueue(void *, void *);
 #endif
 
 #if __has_include(<dispatch/dispatch.h>)

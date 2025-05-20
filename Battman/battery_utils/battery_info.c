@@ -341,15 +341,7 @@ static char *_impl_set_item(struct battery_info_node **head, const char *desc,
     }
 #define BI_SET_HIDDEN(name, value) _impl_set_item(head_arr, name, value, 0, 1)
 
-#if !__has_include(<IOKit/IOKitLib.h>)
-typedef __darwin_mach_port_t mach_port_t;
-typedef mach_port_t io_object_t;
-typedef io_object_t io_service_t;
-typedef io_object_t io_registry_entry_t;
-extern io_service_t IOServiceMatching(const char *);
-extern io_service_t IOServiceGetMatchingService(mach_port_t, CFDictionaryRef);
-extern int IORegistryEntryCreateCFProperties(io_registry_entry_t, CFMutableDictionaryRef *, CFAllocatorRef, uint32_t);
-#endif
+#include "../iokitextern.h"
 
 // void *info is ok bc CFDictionaryRef is literally typedef of void *
 void battery_info_update_iokit_with_data(struct battery_info_node *head, const void *info, bool inDetail) {

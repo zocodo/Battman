@@ -1,15 +1,7 @@
 #ifndef _IOACCESSORYMANAGER_H
 #define _IOACCESSORYMANAGER_H
 
-#include <CoreFoundation/CoreFoundation.h>
-#if __has_include(<IOKit/IOKitLib.h>)
-#include <IOKit/IOKitLib.h>
-#else
-typedef __darwin_mach_port_t mach_port_t;
-typedef mach_port_t io_object_t;
-typedef io_object_t io_service_t;
-typedef int IOReturn;
-#endif
+#include "../iokitextern.h"
 
 /* The name of defs are guessed, since Apple has not exposed anything */
 

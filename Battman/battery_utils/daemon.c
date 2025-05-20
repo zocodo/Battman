@@ -8,6 +8,7 @@
 #define LIBIOSEXEC_H
 
 #include "../common.h"
+#include "../iokitextern.h"
 #include "libsmc.h"
 #include <CoreFoundation/CFDictionary.h>
 #include <CoreFoundation/CFNumber.h>
@@ -37,8 +38,7 @@ extern int posix_spawnattr_setjetsam_ext(posix_spawnattr_t *, int, int, int, int
 
 extern char **environ;
 
-extern CFTypeRef IORegistryEntryCreateCFProperty(void *, CFStringRef, int, int);
-extern void subscribeToPowerEvents(void (*cb)(int, void *, int32_t));
+extern void subscribeToPowerEvents(void (*cb)(int, io_registry_entry_t, int32_t));
 
 struct battman_daemon_settings {
     unsigned char enable_charging_at_level;
@@ -173,7 +173,7 @@ static void update_power_level(int val) {
     }
 }
 
-static void powerevent_listener(int a, void *b, int32_t c) {
+static void powerevent_listener(int a, io_registry_entry_t b, int32_t c) {
     if (c != -536723200)
         return;
     if (access(daemon_settings_path, F_OK) == -1) {

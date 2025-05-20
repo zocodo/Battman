@@ -17,6 +17,7 @@
 
 #include "libsmc.h"
 #include "../common.h"
+#include "../iokitextern.h"
 #include "../intlextern.h"
 #include <dispatch/dispatch.h>
 #include <CoreFoundation/CFBase.h>
@@ -31,29 +32,7 @@ typedef unsigned int mach_port_t;
 extern mach_port_t mach_task_self_;
 #define mach_task_self() mach_task_self_
 #endif
-#if __has_include(<IOKit/IOKitLib.h>)
-#include <IOKit/IOKitLib.h>
-#else
-typedef mach_port_t io_service_t;
-typedef mach_port_t io_connect_t;
-typedef mach_port_t io_object_t;
-typedef mach_port_t task_port_t;
-typedef int IOReturn;
-typedef int kern_return_t;
-#define kIOReturnSuccess 0
-#define kIOReturnError 0xE00002BC
-#define MACH_PORT_NULL 0
-#define IO_OBJECT_NULL  ((io_object_t) 0)
 
-IOReturn IOMasterPort(mach_port_t, mach_port_t *);
-CFMutableDictionaryRef IOServiceMatching(const char *);
-io_service_t IOServiceGetMatchingService(mach_port_t, CFDictionaryRef);
-kern_return_t IOServiceOpen(io_service_t, task_port_t, uint32_t,
-                            io_connect_t *);
-kern_return_t IOConnectCallStructMethod(mach_port_t, uint32_t, const void *,
-                                        size_t, void *, size_t *);
-kern_return_t IOServiceClose(io_service_t);
-#endif
 #if __has_include(<IOKit/pwr_mgt/IOPM.h>)
 #include <IOKit/pwr_mgt/IOPM.h>
 #else
