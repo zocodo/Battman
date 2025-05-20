@@ -381,11 +381,7 @@ bool show_alert(const char *title, const char *message, const char *button) {
 @end
 
 void show_fatal_overlay_async(const char *title, const char *message) {
-	show_alert_async(title, message, L_OK, ^(bool idk) {
-		app_exit();
-	});
-	return;
-
+	/* FIXME: This seems completely black on Sims */
 	NSBundle *obkit = [NSBundle bundleWithPath:@"/System/Library/PrivateFrameworks/OnBoardingKit.framework"];
 	if (![obkit load]) {
 		show_alert_async(title, message, L_OK, ^(bool idk) {
@@ -399,6 +395,7 @@ void show_fatal_overlay_async(const char *title, const char *message) {
 		});
 	}
 	[safc setInstructionalText:_("Swipe up to exit")];
+
 	UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
 	keyWindow.rootViewController = safc;
 }

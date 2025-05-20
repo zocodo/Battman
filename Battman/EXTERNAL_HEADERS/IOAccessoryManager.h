@@ -44,26 +44,26 @@ typedef CF_ENUM(UInt8, IOAMIndex) {
 	kIOAMConfigureAllowedFeatures,			// uint64_t[2]{Allow, Revoke}
 	kIOAMConfigureDPDNConfigOverride,		// uint64_t[4]{dpdn1B, dpdn2B, dpdn1T, dpdn2T}
 	kIOAMConfigureUSBPowerIgnore = 15,		// uint64_t
-
+	
 	kIOAMCheckPinVoltage,				// uint64_t[2]{PinID, Meas} -> uint64_t
-
+	
 	kIOAMConfigurePowerLowVoltageSelect,		// uint64_t
-
+	
 	kIOAMRequestAccessoryPowerOff,			// void
-
+	
 	kIOAMSetGoldbond,				// uint64_t
 	kIOAMConfigureGoldbondMode = 20,		// uint64_t[2]{setMask, clearMask}
-
+	
 	kIOAMRequestLdcmMeasurement,			// uint64_t
 	kIOAMGetLdcmParams,				// void -> uint64_t[126]
-
+	
 	kIOAMSetVoltageDetected,			// uint64_t
 	kIOAMChallengeCryptoDock9Pin,
 	kIOAMChallengeCryptoDock = 25,
 	kIOAMConfigureUSBPreventSourceDetection,	// uint64_t
 	kIOAMSelectEisPin,				// uint64_t{Enable, PinID} -> uint64_t
 	kIOAMGetFreePinMask,				// void -> uint64_t
-
+	
 	kIOAMLDCMGetAvailablePins,			// void -> uint64_t[2]
 	kIOAMSetLDCM = 30,				// uint64_t[2] -> uint64_t[2]
 	kIOAMLDCMSetLiquidDetected,			// uint64_t
@@ -113,7 +113,7 @@ typedef enum {
     kIOAMAccessoryName,                     // CFStringRef char[256]
     kIOAMAccessoryModelNumber,              // CFStringRef char[256]
     kIOAMAccessoryFirmwareVersion,          // CFStringRef char[256]
-    kIOAMAccessoryHardwareVersion,
+    kIOAMAccessoryHardwareVersion,			// CFStringRef char[256]
     kIOAMAccessoryPPID                      // CFStringRef char[256]
 } AccessoryInfo;
 

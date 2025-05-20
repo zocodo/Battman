@@ -3,6 +3,12 @@
 //#include "intlextern.h"
 #include <mach/mach.h>
 
+#if TARGET_OS_SIMULATOR
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunreachable-code"
+#pragma clang diagnostic ignored "-Wunused-variable"
+#endif
+
 io_iterator_t gAccessories;
 io_service_t gAccPrimary;
 
@@ -299,3 +305,7 @@ bool get_acc_supervised_transport_restricted(io_connect_t connect) {
 	
 	return ret;
 }
+
+#if TARGET_OS_SIMULATOR
+#pragma clang diagnostic pop
+#endif

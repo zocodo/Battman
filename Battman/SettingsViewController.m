@@ -212,7 +212,7 @@ static BOOL _coolDebugVCPresented = 0;
             });
             show_alert("Done", "Check logs", "ok");
         }else if(indexPath.row==5){
-        	show_fatal_overlay_async("Oh no","Some fatal error occurred :(");
+        	show_fatal_overlay_async("Oh no", "Some fatal error occurred :(");
         }
     }
 #endif

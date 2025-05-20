@@ -136,7 +136,7 @@ IOReturn smc_open(void) {
     return kIOReturnSuccess;
 
 fail_unsupported:
-    hasSMC=0;
+    hasSMC = 0;
 fail:
     // Info will be fetched via IOPMPowerSource if no SMC present
     /*if (is_carbon())

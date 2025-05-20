@@ -21,6 +21,8 @@
 
 UILabel *equipCellTitle(UITableViewCell *cell, NSString *text)
 {
+	// textLabel always exist
+	cell.textLabel.text = text;
     if ([cell respondsToSelector:@selector(titleLabel)]) {
         // Suppress compiler warning about performSelector leak
 #pragma clang diagnostic push
@@ -32,9 +34,8 @@ UILabel *equipCellTitle(UITableViewCell *cell, NSString *text)
             title.text = text;
         }
         return title;
-    } else {
-        cell.textLabel.text = text;
     }
+
     return cell.textLabel;
 }
 UILabel *equipCellDetail(UITableViewCell *cell, NSString *text)
@@ -323,13 +324,15 @@ void equipWarningCondition_b(UITableViewCell *equippedCell, NSString *textLabel,
 
     NSArray *target_desc;
 	NSString *titleLabel;
+	if ([cell respondsToSelector:@selector(titleLabel)]) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-	UILabel *title = [cell performSelector:@selector(titleLabel)];
+		UILabel *title = [cell performSelector:@selector(titleLabel)];
 #pragma clang diagnostic pop
-	
-	if ([title isKindOfClass:[UILabel class]]) {
-		titleLabel = title.text;
+		
+		if ([title isKindOfClass:[UILabel class]]) {
+			titleLabel = title.text;
+		}
 	} else {
 		titleLabel = cell.textLabel.text;
 	}
