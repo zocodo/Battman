@@ -504,23 +504,20 @@ void open_url(const char *url) {
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
     /* TODO: open url inside DE */
-#if TARGET_OS_IPHONE
+
     NSString *urlStr = [NSString stringWithUTF8String:url];
     NSURL *URL = [NSURL URLWithString:urlStr];
     if (URL) {
+#if TARGET_OS_IPHONE
         // Ensure URL opening is done on the main thread.
         dispatch_async(dispatch_get_main_queue(), ^{
             [[UIApplication sharedApplication] openURL:URL];
         });
-    }
 #endif
 #if TARGET_OS_OSX
-    NSString *urlStr = [NSString stringWithUTF8String:url];
-    NSURL *URL = [NSURL URLWithString:urlStr];
-    if (URL) {
-        [[NSWorkspace sharedWorkspace] openURL:URL];
-    }
+		[[NSWorkspace sharedWorkspace] openURL:URL];
 #endif
+    }
 #pragma clang diagnostic pop
 }
 

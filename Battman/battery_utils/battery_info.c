@@ -1,5 +1,5 @@
 #include "battery_info.h"
-#include "common.h"
+#include "../common.h"
 #include "libsmc.h"
 #include "accessory.h"
 #include <assert.h>

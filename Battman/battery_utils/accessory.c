@@ -1,5 +1,5 @@
 #include "accessory.h"
-#include "common.h"
+#include "../common.h"
 //#include "intlextern.h"
 #include <mach/mach.h>
 
