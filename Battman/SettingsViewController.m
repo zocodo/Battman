@@ -2,7 +2,7 @@
 #include "common.h"
 #include <math.h>
 
-#include "selfcheck.h"
+#include "security/selfcheck.h"
 
 @interface LanguageSelectionVC : UITableViewController
 @end

@@ -218,7 +218,7 @@ NSMutableAttributedString *redirectedOutput;
 void (^redirectedOutputListener)(void)=nil;
 #endif
 
-#include "selfcheck.h"
+#include "security/selfcheck.h"
 int main(int argc, char * argv[]) {
 	pull_fatal_notif();
     // FIXME: use getopt()
