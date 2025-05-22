@@ -89,7 +89,7 @@ struct battery_info_node main_battery_template[] = {
     { _C("PMU Configuration"), _C("The Configuration values is the max allowed Charging Current configurations."), BIN_IN_DETAILS | BIN_UNIT_MAMP },
     { _C("Charger Configuration"), NULL, BIN_IN_DETAILS | BIN_UNIT_MAMP },
     { _C("HVC Mode"), _C("High Voltage Charging (HVC) Mode may accquired by your power adapter or system, all supported modes will be listed below."), BIN_IN_DETAILS },
-    { _C("Inductive Adapter"), NULL, BIN_SECTION },
+    { _C("Inductive Port"), NULL, BIN_SECTION },
     /* FIXME: We are meeting situations that needing rows with same names but not same sections, current data structure cannot let us do this. */
     { _C("Acc. ID"), NULL, 0 },
     { _C("Allowed Features"), _C("Accessory Feature Flags, I don't know how to parse it yet."), 0 },
@@ -276,8 +276,7 @@ struct battery_info_node *battery_info_init()
     return info;
 }
 
-static int _impl_set_item_find_item(struct battery_info_node **head,
-    const char *desc)
+static int _impl_set_item_find_item(struct battery_info_node **head, const char *desc)
 {
     if (!desc)
         return 0;
@@ -554,14 +553,14 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
             BI_SET_ITEM(_C("Charger Configuration"), adapter_data.ChargerConfiguration);
             BI_FORMAT_ITEM_IF(adapter_data.NotChargingReason != 0, _C("Reason"), "%s", not_charging_reason_str(adapter_data.NotChargingReason));
             BI_FORMAT_ITEM_IF(adapter_info.port_type != 0, _C("Port Type"), "%s", cond_localize_c(port_type_str(adapter_info.port_type)));
-            /* Inductive Adapter Section */
+            /* Inductive Port Section */
 			/* 1: internal, 512: inductive */
 			io_connect_t connect = acc_open_with_port(512);
 			SInt32 acc_id = get_accid(connect);
 			/* 100: No device connected */
 			/* TODO: On simulators, fake an accessory to test UI */
             if (acc_id != 100 && acc_id != -1 && connect != MACH_PORT_NULL) {
-                BI_SET_HIDDEN(_C("Inductive Adapter"), 0);
+                BI_SET_HIDDEN(_C("Inductive Port"), 0);
 				BI_FORMAT_ITEM(_C("Acc. ID"), "%s", acc_id_string(acc_id));
 				SInt32 features = get_acc_allowed_features(connect);
                 BI_FORMAT_ITEM_IF(features != -1, _C("Allowed Features"), "0x%.8X", features);
@@ -590,12 +589,11 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
                     
                 }
             } else {
-				NSLog(CFSTR("could not find IOAccessoryManager service"));
-                BI_SET_HIDDEN(_C("Inductive Adapter"), 1);
+                BI_SET_HIDDEN(_C("Inductive Port"), 1);
             }
         } else {
             BI_SET_HIDDEN(_C("Adapter Details"), 1);
-			BI_SET_HIDDEN(_C("Inductive Adapter"), 1);
+			BI_SET_HIDDEN(_C("Inductive Port"), 1);
         }
     }
 }

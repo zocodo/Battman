@@ -2,6 +2,8 @@
 #include "common.h"
 #include <math.h>
 
+#include "selfcheck.h"
+
 @interface LanguageSelectionVC : UITableViewController
 @end
 
@@ -128,7 +130,7 @@ static BOOL _coolDebugVCPresented = 0;
         return 2;
 #ifdef DEBUG
     else if (section == SS_SECT_DEBUG)
-        return 7;
+        return 8;
 #endif
     return 0;
 }
@@ -213,7 +215,9 @@ static BOOL _coolDebugVCPresented = 0;
             show_alert("Done", "Check logs", "ok");
         }else if(indexPath.row==5){
         	show_fatal_overlay_async("Oh no", "Some fatal error occurred :(");
-        }
+		}else if(indexPath.row==7){
+			push_fatal_notif();
+		}
     }
 #endif
 
@@ -299,7 +303,12 @@ static BOOL _coolDebugVCPresented = 0;
         	//[cur.widthAnchor constraintEqualToAnchor:accView.widthAnchor multiplier:0.2].active=1;
         	cell.accessoryView=accView;
         	return cell;
-        }
+		}else if(indexPath.row==7) {
+			UITableViewCell *cell = [UITableViewCell new];
+			cell.textLabel.text = _("Trigger fatal notify");
+			cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+			return cell;
+		}
     }
 #endif
     UITableViewCell *batteryChargeCell = [UITableViewCell new];

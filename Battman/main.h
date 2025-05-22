@@ -35,6 +35,8 @@ __BEGIN_DECLS
 
 #ifdef __OBJC__
 NSString *cond_localize(const char *str);
+#else
+CFStringRef cond_localize(const char *str);
 #endif
 
 const char *cond_localize_c(const char *str);

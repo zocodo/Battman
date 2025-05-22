@@ -63,8 +63,8 @@ SPECIAL:
 #define BIN_IS_BACKGROUND           (0 | BIN_IS_FLOAT | BIN_AFFECTS_BATTERY_CELL)
 #define BIN_IS_HIDDEN               (1 << 1)
 #define BIN_UNIT_BITMASK            (((1 << 7) - 1) << 6)
-#define BIN_SECTION			(1<<13|BIN_IS_SPECIAL)
-#define BIN_SECTION_HIDDEN		(1<<14)
+#define BIN_SECTION					(1 << 13 | BIN_IS_SPECIAL)
+#define BIN_SECTION_HIDDEN			(1 << 14)
 // ^ Use >>6 when retrieving, max 7 bits
 #define BIN_DETAILS_SHARED          (1 << 14 | BIN_IS_SPECIAL)
 #define BIN_IN_DETAILS              (1 << 14 | BIN_IS_HIDDEN | BIN_IS_SPECIAL)

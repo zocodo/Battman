@@ -218,7 +218,9 @@ NSMutableAttributedString *redirectedOutput;
 void (^redirectedOutputListener)(void)=nil;
 #endif
 
+#include "selfcheck.h"
 int main(int argc, char * argv[]) {
+	pull_fatal_notif();
     // FIXME: use getopt()
 	if (argc == 3 && strcmp(argv[1], "--worker") == 0) {
 		extern void battman_run_worker(const char *);

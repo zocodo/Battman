@@ -93,6 +93,7 @@
 		68B291382DD1E6960089BA1F /* FullSMCViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291352DD1E6960089BA1F /* FullSMCViewController.m */; };
 		68B2913A2DD1FEDA0089BA1F /* hid.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B291392DD1FEDA0089BA1F /* hid.m */; };
 		68B2913D2DD86AAB0089BA1F /* accessory.c in Sources */ = {isa = PBXBuildFile; fileRef = 68B2913C2DD86AAB0089BA1F /* accessory.c */; };
+		68B2914A2DDC76B10089BA1F /* selfcheck.c in Sources */ = {isa = PBXBuildFile; fileRef = 68B291492DDC76B00089BA1F /* selfcheck.c */; };
 		68B5FF2E2D85606000919BC2 /* GradientArcView.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2D2D85606000919BC2 /* GradientArcView.m */; };
 		68B5FF302D85617400919BC2 /* TemperatureInfoTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68B5FF2F2D85617400919BC2 /* TemperatureInfoTableViewCell.m */; };
 		68D6DEBE2D745DBC00E129A0 /* SegmentedViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 68D6DEBD2D745DBC00E129A0 /* SegmentedViewCell.m */; };
@@ -198,6 +199,8 @@
 		68B2913F2DD86ABF0089BA1F /* IOAccessoryManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOAccessoryManager.h; sourceTree = "<group>"; };
 		68B291402DD9EAAB0089BA1F /* libIOAccessoryManager.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libIOAccessoryManager.tbd; path = usr/lib/libIOAccessoryManager.tbd; sourceTree = SDKROOT; };
 		68B291432DDC60510089BA1F /* iokitextern.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = iokitextern.h; sourceTree = "<group>"; };
+		68B291482DDC76B00089BA1F /* selfcheck.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = selfcheck.h; sourceTree = "<group>"; };
+		68B291492DDC76B00089BA1F /* selfcheck.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = selfcheck.c; sourceTree = "<group>"; };
 		68B33C3F2DAF9B38008EA090 /* inductive_status.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = inductive_status.h; sourceTree = "<group>"; };
 		68B5FF292D85602100919BC2 /* GradientArcView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GradientArcView.h; sourceTree = "<group>"; };
 		68B5FF2D2D85606000919BC2 /* GradientArcView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GradientArcView.m; sourceTree = "<group>"; };
@@ -287,6 +290,7 @@
 				68AE40A42D8EB7710023D7B0 /* CustomUIElements */,
 				68171A362D534E6B00DD4224 /* BatteryDetailsViewController.h */,
 				68171A322D534E6B00DD4224 /* BatteryDetailsViewController.m */,
+				68B291472DDC76720089BA1F /* security */,
 				68A3EAF42D5204D2003381DF /* battery_utils */,
 				687743432D4F6C7800375A2C /* BatteryCellView.h */,
 				687743412D4F6C7800375A2C /* BatteryCellView.m */,
@@ -404,6 +408,15 @@
 				68B2913F2DD86ABF0089BA1F /* IOAccessoryManager.h */,
 			);
 			path = EXTERNAL_HEADERS;
+			sourceTree = "<group>";
+		};
+		68B291472DDC76720089BA1F /* security */ = {
+			isa = PBXGroup;
+			children = (
+				68B291482DDC76B00089BA1F /* selfcheck.h */,
+				68B291492DDC76B00089BA1F /* selfcheck.c */,
+			);
+			path = security;
 			sourceTree = "<group>";
 		};
 		68DCA5B42D40EDE8004D0104 /* Localizations */ = {
@@ -642,6 +655,7 @@
 				68DCA5A92D3F9339004D0104 /* common.m in Sources */,
 				6838BF832DC27F1E007EB66C /* ChargingManagementViewController.m in Sources */,
 				687743482D4F6C7800375A2C /* BatteryInfoTableViewCell.m in Sources */,
+				68B2914A2DDC76B10089BA1F /* selfcheck.c in Sources */,
 				68B2913D2DD86AAB0089BA1F /* accessory.c in Sources */,
 				68AE40BD2D8EB8870023D7B0 /* Constants.m in Sources */,
 				68AE40B92D8EB8870023D7B0 /* MultiSelectSegmentedControl.m in Sources */,
