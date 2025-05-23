@@ -49,15 +49,18 @@ const char *acc_id_50_5e[] = {
 	"Digital ID: reversed orientation",
 };
 
+/* Sadly I didn't got the full list of accids, but we can guess */
+// 62: MagSafe Charger
+// 64: MagSafe Battery
 const char *acc_id_string(SInt32 accid) {
 	static char idstr[256];
 
 	if (accid < 16) sprintf(idstr, "%d\n%s", accid, acc_id_0_f[accid]);
-	if (0x5f > accid && accid > 0x4F && accid != 0x59) {
+	if (95 > accid && accid > 79 && accid != 89) {
 		sprintf(idstr, "%d\n(%s)", accid, acc_id_50_5e[accid]);
 	}
-	if (accid == 0x46) sprintf(idstr, "%d\n%s", accid, "Scorpius: unknown");
-	if (accid == 0x47) sprintf(idstr, "%d\n%s", accid, "Scorpius: pencil");
+	if (accid == 70) sprintf(idstr, "%d\n%s", accid, "Scorpius: unknown");
+	if (accid == 71) sprintf(idstr, "%d\n%s", accid, "Scorpius: pencil");
 
 	if (strlen(idstr)) {
 		return idstr;

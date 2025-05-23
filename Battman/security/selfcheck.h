@@ -17,7 +17,7 @@
 #include <unistd.h>
 #include <notify.h>
 
-#include "common.h"
+#include "../common.h"
 
 #if !defined(LICENSE) || LICENSE == LICENSE_MIT
 #define kBattmanFatalNotifyKey "com.torrekie.Battman.fatal"

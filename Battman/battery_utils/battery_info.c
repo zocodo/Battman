@@ -62,8 +62,9 @@ struct battery_info_node main_battery_template[] = {
     { _C("OCV Voltage"), NULL, BIN_UNIT_MVOLT | BIN_IN_DETAILS },
     { _C("Max Load Current"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
     { _C("Max Load Current 2"), NULL, BIN_UNIT_MAMP | BIN_IN_DETAILS },
-    { _C("IT Misc Status"),
-     _C("This field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC."), 0 },
+	/* TODO: Parse ITMiscStatus
+	 * Known components: DOD0Update, FastQmaxUpdate, ITSimulation, QmaxAtEOC, QmaxDisqualified, QmaxDOD0, QmaxUpdate, RaUpdate */
+	{ _C("IT Misc Status"), _C("This field refers to the miscellaneous data returned by battery Impedance Track™ Gas Gauge IC."), 0 },
     { _C("Simulation Rate"), _C("This field refers to the rate of Gas Gauge performing Impedance Track™ simulations."), BIN_UNIT_HOUR | BIN_IN_DETAILS },
     { _C("Daily Max SoC"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS },
     { _C("Daily Min SoC"), NULL, BIN_UNIT_PERCENT | BIN_IN_DETAILS },
@@ -347,37 +348,37 @@ void battery_info_update_iokit_with_data(struct battery_info_node *head, const v
 	struct battery_info_node *head_arr[2] = {head, head};
 	uint16_t remain_cap,full_cap,design_cap;
 	uint16_t temperature;
-	CFNumberRef designCapacityNum=CFDictionaryGetValue(info,CFSTR("DesignCapacity"));
-	CFNumberRef fullCapacityNum=CFDictionaryGetValue(info,CFSTR("AppleRawMaxCapacity"));
-	CFNumberRef remainingCapacityNum=CFDictionaryGetValue(info,CFSTR("AppleRawCurrentCapacity"));
+	CFNumberRef designCapacityNum=CFDictionaryGetValue(info, CFSTR("DesignCapacity"));
+	CFNumberRef fullCapacityNum=CFDictionaryGetValue(info, CFSTR("AppleRawMaxCapacity"));
+	CFNumberRef remainingCapacityNum=CFDictionaryGetValue(info, CFSTR("AppleRawCurrentCapacity"));
 	if(!designCapacityNum||!fullCapacityNum||!remainingCapacityNum) {
 		// Basic info required
 		fprintf(stderr, "battery_info_update_iokit: Basic info required not present\n");
 		CFRelease(info);
 		return;
 	}
-	CFNumberGetValue(designCapacityNum,kCFNumberSInt16Type,(void*)&design_cap);
-	CFNumberGetValue(fullCapacityNum,kCFNumberSInt16Type,(void*)&full_cap);
-	CFNumberGetValue(remainingCapacityNum,kCFNumberSInt16Type,(void*)&remain_cap);
+	CFNumberGetValue(designCapacityNum, kCFNumberSInt16Type, (void *)&design_cap);
+	CFNumberGetValue(fullCapacityNum, kCFNumberSInt16Type, (void *)&full_cap);
+	CFNumberGetValue(remainingCapacityNum, kCFNumberSInt16Type, (void *)&remain_cap);
 	BI_SET_ITEM_IF(1,_C("Health"), 100.0f * (float)full_cap / (float)design_cap);
 	BI_SET_ITEM_IF(1,_C("SoC"), 100.0f * (float)remain_cap / (float)full_cap);
 	BI_SET_ITEM("ASoC(Hidden)", 100.0f * (float)remain_cap / (float)design_cap);
-	if(inDetail) {
-		CFDictionaryRef batteryData=CFDictionaryGetValue(info,CFSTR("BatteryData"));
-		if(batteryData) {
+	if (inDetail) {
+		CFDictionaryRef batteryData = CFDictionaryGetValue(info, CFSTR("BatteryData"));
+		if (batteryData) {
 			int val = 0;
-			CFNumberRef ChemIDNum=CFDictionaryGetValue(batteryData,CFSTR("ChemID"));
-			if(ChemIDNum)
-				CFNumberGetValue(ChemIDNum, kCFNumberSInt32Type,(void *)&val);
+			CFNumberRef ChemIDNum = CFDictionaryGetValue(batteryData, CFSTR("ChemID"));
+			if (ChemIDNum)
+				CFNumberGetValue(ChemIDNum, kCFNumberSInt32Type, (void *)&val);
 			BI_FORMAT_ITEM_IF(ChemIDNum, _C("Chemistry ID"), "0x%.8X", val);
-			CFNumberRef FlagsNum=CFDictionaryGetValue(batteryData,CFSTR("Flags"));
-			if(FlagsNum)
-				CFNumberGetValue(FlagsNum,kCFNumberSInt32Type,(void*)&val);
-			BI_FORMAT_ITEM_IF(FlagsNum,_C("Flags"), "0x%.4X", val);
-			CFNumberRef ITMiscNum=CFDictionaryGetValue(batteryData,CFSTR("ITMiscStatus"));
-			if(ITMiscNum)
-				CFNumberGetValue(ITMiscNum,kCFNumberSInt32Type,(void*)&val);
-			BI_FORMAT_ITEM_IF(ITMiscNum,_C("IT Misc Status"), "0x%.4X", val);
+			CFNumberRef FlagsNum = CFDictionaryGetValue(batteryData, CFSTR("Flags"));
+			if (FlagsNum)
+				CFNumberGetValue(FlagsNum, kCFNumberSInt32Type, (void *)&val);
+			BI_FORMAT_ITEM_IF(FlagsNum, _C("Flags"), "0x%.4X", val);
+			CFNumberRef ITMiscNum = CFDictionaryGetValue(batteryData, CFSTR("ITMiscStatus"));
+			if (ITMiscNum)
+				CFNumberGetValue(ITMiscNum, kCFNumberSInt32Type,(void *)&val);
+			BI_FORMAT_ITEM_IF(ITMiscNum, _C("IT Misc Status"), "0x%.4X", val);
 		}
 	}
 	CFTypeRef lastItem;
@@ -535,7 +536,7 @@ void battery_info_update(struct battery_info_node *head, bool inDetail) {
             BI_SET_ITEM(_C("Port"), adapter_info.port);
             /* FIXME: no direct use of cond_localize_c(), do locales like names */
             BI_FORMAT_ITEM(_C("Compatibility"), "%s: %s\n%s: %s", cond_localize_c("External Connected"), adapter_data.ChargerExist ? L_TRUE : L_FALSE, cond_localize_c("Charger Capable"), adapter_data.ChargerCapable ? L_TRUE : L_FALSE);
-            BI_FORMAT_ITEM(_C("Type"), "%s (%.8X)", get_adapter_family_desc(adapter_family), adapter_family);
+            BI_FORMAT_ITEM(_C("Type"), "%s (%.8X)", cond_localize_c(get_adapter_family_desc(adapter_family)), adapter_family);
             BI_FORMAT_ITEM(_C("Status"), "%s", (charging_stat == kIsPausing || adapter_data.NotChargingReason != 0) ? cond_localize_c("Not Charging") : cond_localize_c("Charging"));
             BI_SET_ITEM(_C("Current Rating"), adapter_info.current);
             BI_SET_ITEM(_C("Voltage Rating"), adapter_info.voltage);
