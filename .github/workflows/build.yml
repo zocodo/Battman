@@ -1,0 +1,30 @@
+name: Build Battman
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git odcctools bash clang make sed grep ld64 ldid libintl-dev iphoneos.sdk
+
+      - name: Build Battman
+        working-directory: Battman
+        run: make all
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: battman-build
+          path: Battman/*.deb
