@@ -3,6 +3,8 @@ name: Make ipa
 on:
   push:
     branches: ["master"]
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-22.04
